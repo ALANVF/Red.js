@@ -22,7 +22,7 @@ Red.evalRed(`
 	]
 `);
 Red.evalFile("./core/scalars.red");
-Red.evalFile("./core/real-natives.red");
+Red.evalFile("./core/natives.red");
 Red.evalFile("./core/actions.red");
 Red.evalFile("./core/operators.red");
 /* ------------------------------------- */
