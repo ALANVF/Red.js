@@ -1,0 +1,58 @@
+TL;DR:
+- Fix bugs.
+- Redo bad/incomplete code.
+- Finish implementing features.
+
+Finish very soon:
+- Completely redo `context!`s.
+- Fix path stuff for other things supporting path access.
+- Going along with that, try to fix accessing stuff in the global system object.
+- Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
+- Fix refinements for natives and actions.
+
+Finish somewhat soon:
+- Add support for map! literals.
+- Implement (more) math natives.
+- Implement the `make` action for more datatypes.
+- Allow including files (kinda already done?).
+- Add newline markers in blocks (will require rewriting many things).
+- Redo literally everything related to vectors.
+- Give functions custom contexts so that `self` can be used in a function inside an object/context.
+
+Finish sometime:
+- Finish all natives.
+- Finish all actions.
+- Add builtin utility functions.
+- Implement remaining datatypes.
+- Add more rules to the parser (mostly done).
+- Make error messages way more helpful/descriptive.
+- Add the Parse dialect.
+- Figure out what to do with the routine! type.
+- Add the reactor!/deep-reactor! type (I don't even know where to start with that one).
+- Add the port! type (and actors and stuff).
+- Add extra stuff the the global system object.
+- Finish implementing macros.
+
+Finish if I'm still bored:
+- Add support for interacting with the DOM (and maybe have it act like Red/View).
+- Make a JS ffi (and maybe use Rebol's library! type for it).
+- Make a variant of Red/System but for js (kinda like the previous thing).
+- Add a binary language mode like what Red has.
+- Add the DELECT native from Rebol.
+- Add the utype! type from Rebol (although it's not completely finished).
+- Implement Rebol's module system (along with the module! type).
+- Optimize the runtime a ton.
+- Optimize the runtime even more.
+- Optimize the parser as well.
+
+Finish if I'm still bored:
+- Make a C ffi (and maybe use Rebol's library! type for it).
+- Allow compiling to/running on WebAssembly.
+
+Big things already done:
+- Completely redo the tokenizer (might redo it a third time).
+- Use RawDatatype for types instead of type constructors (ew).
+- Fix get/lit word parameters in new natives and actions.
+- Add support for running .red files (make sure to detect the header!).
+- Add support for user-defined functions.
+- Make the API's naming conventions less horrible.
