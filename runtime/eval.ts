@@ -23,7 +23,7 @@ export function stringifyRed(
 		if(value.refines.length > 0) {
 			for(const ref of value.refines) {
 				if(ref.name instanceof Red.RawInteger) {
-					throw Error("error!");
+					throw new Error("error!");
 				} else {
 					out += "/" + ref.name.name;
 				}
@@ -38,23 +38,27 @@ export function stringifyRed(
 
 		return out;
 	} else {
-		return RedActions.$$mold(ctx, value).toJsString();
+		try {
+			return RedActions.$$mold(ctx, value).toJsString();
+		} catch(_) {
+			return `${value}`;
+		}
 	}
 }
 
 function loadFunctionRefs(
 	fn:   Red.RawAnyFunc,
-	path: Red.RawPath
+	path: Red.AnyType[]
 ) {
 	const out = new RedFunctionCall(fn, [], []);
 
-	for(const word of path.path) {
+	for(const word of path) {
 		let name: Red.RawWord;
 		
 		if(Red.isAnyWord(word) || word instanceof Red.RawRefinement)
 			name = word.word;
 		else
-			throw Error(`Error at ${word}`);
+			throw new Error(`Error at ${word}`);
 
 		out.refines.push(new Red.RawRefinement(name));
 	}
@@ -69,36 +73,31 @@ function transformPath(
 		get?: []
 	} = {}
 ): ExprType {
-	path = new Red.RawPath(path.path.slice(path.index-1));
-	
-	const firstValue = path.path[0];
+	const isGet = _.get !== undefined;
+	const values = path.path.slice(path.index - 1);
+	const firstValue = values.shift()!;
 
 	if(!(firstValue instanceof Red.RawWord)) {
-		throw Error(`Error at ${path}`);
+		throw new Error(`Error at ${path}`);
 	}
 
-	let firstWord = RedNatives.$$get(ctx, firstValue);
+	let value: Red.AnyType = RedNatives.$$get(ctx, firstValue);
 
-	if(firstWord instanceof Red.Native || firstWord instanceof Red.Action || firstWord instanceof Red.RawFunction) {
-		if(_.get === undefined) {
-			return loadFunctionRefs(firstWord, new Red.RawPath(path.path.slice(1)));
-		} else if(_.get !== undefined && path.path.slice(1).length == 0) {
-			return firstWord;
-		} else {
-			throw Error("Can't get a refined function!");
-		}
-	} else if(firstWord instanceof Red.Context) {
-		return transformPath(firstWord, new Red.RawPath(path.path.slice(1)), _);
-	} else {
-		for(let word of path.path.slice(1)) {
-			if(!(word instanceof Red.RawWord)) {
-				word = evalSingle(ctx, word);
+	while(values.length > 0) {
+		if(value instanceof Red.Native || value instanceof Red.Action || value instanceof Red.RawFunction) {
+			if(!isGet) {
+				return loadFunctionRefs(value, values);
+			} else if(isGet && values.length == 0) {
+				return value;
+			} else {
+				throw new Error("Can't get a refined function!");
 			}
-			firstWord = RedActions.$$pick(ctx, firstWord as any, word as any); // FIX: contexts/maps use select. this should probably use $$evalPath
+		} else {
+			value = RedActions.$evalPath(ctx, value, values.shift()!, new Red.RawLogic(false));
 		}
-
-		return firstWord;
 	}
+
+	return value;
 }
 
 function totalArity(func: RedFunctionCall): number {
@@ -133,7 +132,7 @@ function fixOps(expr: RedFunctionCall) {
 		if(a.length == 2 && o.length == 1) {
 			return new RedFunctionCall(o[0], [], a.reverse());
 		} else if(a.length < 2 || o.length < 1) {
-			throw Error("Error in binary expression!");
+			throw new Error("Error in binary expression!");
 		} else {
 			return new RedFunctionCall(o[0], [], [flip(o.slice(1), a.slice(1)), a[0]]);
 		}
@@ -142,25 +141,23 @@ function fixOps(expr: RedFunctionCall) {
 	return flip(ops.reverse(), args.reverse());
 }
 
+// TODO: fix this for functions located inside an object!
 function fnCreateTempCtx(
 	ctx: Red.Context,
 	fn:  Red.RawFunction
 ): Red.Context {
-	const out = new Red.Context("", ctx);
+	const out = new Red.Context(ctx);
 	
 	for(const local of fn.locals) {
-		out.words.push(new Red.RawWord(local));
-		out.values.push(new Red.RawUnset());
+		out.addWord(local, new Red.RawUnset());
 	}
 
 	for(const arg of fn.args.map(a => a.name.word)) {
-		out.words.push(arg);
-		out.values.push(new Red.RawUnset());
+		out.addWord(arg.name, new Red.RawUnset());
 	}
 
 	for(const ref of fn.refines.map(r => r.ref.word)) {
-		out.words.push(ref);
-		out.values.push(new Red.RawNone());
+		out.addWord(ref.name, new Red.RawNone());
 	}
 
 	return out;
@@ -173,14 +170,14 @@ function fnRunInCtx(
 	refines: [Red.RawRefinement, Red.AnyType[]][]
 ) {
 	for(let i = 0; i < args.length; i++) {
-		ctx.setWord(fn.args[i].name.word, args[i]);
+		ctx.setWord(fn.args[i].name.name, args[i]);
 	}
 
 	for(const [ref, args] of refines) {
-		ctx.setWord(ref.word, new Red.RawLogic(true));
+		ctx.setWord(ref.word.name, new Red.RawLogic(true));
 
 		for(let i = 0; i < fn.getRefine(ref).addArgs.length; i++) {
-			ctx.words.push(fn.getRefine(ref).addArgs[i].name.word);
+			ctx.words.push(fn.getRefine(ref).addArgs[i].name.name);
 			ctx.values.push(args[i]);
 		}
 	}
@@ -211,7 +208,7 @@ export function callNative(
 	const refArity = refines.map(r => fn.getRefine(r).addArgs.length).reduce((a1, a2) => a1 + a2, 0);
 	
 	if(funcArity + refArity != args.length) {
-		throw Error(`Invalid number of arguments passed to native ${fn.name}`);
+		throw new Error(`Invalid number of arguments passed to native ${fn.name}`);
 	} else if(funcArity + refArity == 0) {
 		return fn.func(ctx);
 	} else if(funcArity == args.length) {
@@ -230,7 +227,7 @@ export function callNative(
 			const refineOptions: Record<string, any> = {};
 			for(const ref of refines) {
 				if(ref.name instanceof Red.RawInteger) {
-					throw Error("Functions may not have integer refinements!");
+					throw new Error("Functions may not have integer refinements!");
 				} else {
 					refineOptions[ref.name.name] = [];
 				}
@@ -253,7 +250,7 @@ export function callAction(
 	const refArity = refines.map(r => fn.getRefine(r).addArgs.length).reduce((a1, a2) => a1 + a2, 0);
 	
 	if(funcArity + refArity != args.length) {
-		throw Error(`Invalid number of arguments passed to action ${fn.name}`);
+		throw new Error(`Invalid number of arguments passed to action ${fn.name}`);
 	} else if(funcArity + refArity == 0) {
 		return fn.func(ctx);
 	} else if(funcArity == args.length) {
@@ -272,7 +269,7 @@ export function callAction(
 			const refineOptions: Record<string, any> = {};
 			for(const ref of refines) {
 				if(ref.name instanceof Red.RawInteger) {
-					throw Error("Functions may not have integer refinements!");
+					throw new Error("Functions may not have integer refinements!");
 				} else {
 					refineOptions[ref.name.name] = [];
 				}
@@ -295,7 +292,7 @@ export function callFunction(
 	const refArity = refines.map(r => fn.getRefine(r).addArgs.length).reduce((a1, a2) => a1 + a2, 0);
 	
 	if(funcArity + refArity != args.length) {
-		throw Error(`Invalid number of arguments passed to action ${fn.name}`);
+		throw new Error(`Invalid number of arguments passed to action ${fn.name}`);
 	} else if(funcArity + refArity == 0) {
 		return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, [], []);
 	} else if(funcArity + refArity == args.length) {
@@ -338,7 +335,7 @@ export function callFunction(
 			return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, fnArgs, refOptions);
 		}
 	} else {
-		throw Error("error!");
+		throw new Error("error!");
 	}
 }
 
@@ -399,7 +396,7 @@ export function evalSingle(
 			return callOp(ctx, value.func, [value.passed[0], value.passed[1]]);
 		}
 	} else if(value instanceof Red.RawParen) {
-		return RedNatives.$$do(ctx, new Red.RawParen(value.values.slice(value.index-1)));
+		return RedNatives.$$do(ctx, value);
 	} else {
 		return value;
 	}
@@ -501,10 +498,7 @@ export function groupSingle(
 				const next = groupSingle(ctx, b);
 				
 				if(next.made instanceof Red.RawParen) {
-					next.made = RedNatives.$$do(
-						ctx,
-						new Red.RawParen(next.made.values.slice(next.made.index-1))
-					);
+					next.made = RedNatives.$$do(ctx, next.made);
 				}
 
 				out.passed.push(next.made);
@@ -542,11 +536,11 @@ export function groupSingle(
 		};
 	} else if(made instanceof Red.RawSetPath) {
 		const value = new Red.RawPath(made.path.slice(0, -1));
-		const index = made.path.slice(-1)[0];
-		const out = new RedFunctionCall(RedActions._POKE, [], [value, index]); // FIX: maps and contexts use put, not poke
+		const last = made.path[made.path.length - 1];
+		const out = new RedFunctionCall(RedActions.SET_PATH, [], [value, last]); // FIX: maps and contexts use put, not poke
 		const next = groupSingle(ctx, b);
 
-		out.passed.push(next.made);
+		out.passed.push(next.made, new Red.RawLogic(false));
 
 		return {
 			made: out,
@@ -563,10 +557,7 @@ export function groupSingle(
 				const next = groupSingle(ctx, b);
 				
 				if(next.made instanceof Red.RawParen) {
-					next.made = RedNatives.$$do(
-						ctx,
-						new Red.RawParen(next.made.values.slice(next.made.index-1))
-					);
+					next.made = RedNatives.$$do(ctx, next.made);
 				}
 
 				out.passed.push(next.made);

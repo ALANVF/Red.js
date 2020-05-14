@@ -24,7 +24,7 @@ export function $$make(
 			} else if(value instanceof Red.RawTypeset) {
 				out.push(...value.types);
 			} else {
-				throw Error("error!");
+				throw new Error("error!");
 			}
 		}
 		

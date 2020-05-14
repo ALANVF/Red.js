@@ -113,7 +113,7 @@ export class RawIssue implements RawValue {
 
 /// scalars
 export class RawInteger implements RawValue {
-	_1=null; // fix for dumb union bug
+	#_1 = undefined; // fix for dumb union bug
 	
 	constructor(public value: number) {
 		if(value % 1 != 0) {
@@ -123,7 +123,7 @@ export class RawInteger implements RawValue {
 }
 
 export class RawFloat implements RawValue {
-	_2=null; // fix for dumb union bug
+	#_2 = undefined; // fix for dumb union bug
 	
 	constructor(public value: number) {}
 }
@@ -136,7 +136,7 @@ export class RawMoney implements RawValue {
 }
 
 export class RawPercent implements RawValue {
-	_3=null; // fix for dumb union bug
+	#_3 = undefined; // fix for dumb union bug
 	
 	constructor(public value: number) {}
 }
@@ -532,200 +532,19 @@ export type AnyType =
 
 
 /// contexts
-// all of this needs redone
 export class Context implements RawValue {
-	static $ = new Context("");
-
-	words:  RawWord[];
-	values: AnyType[];
+	static $ = new Context();
+	
+	outer?: Context;
+	words:  string[] = [];
+	values: AnyType[] = [];
 	
 	constructor(
-		public name:   string,
-		public outer?: Context
+		outer?: Context,
+		entries: [string, AnyType][] = []
 	) {
-		this.words = [];
-		this.values = [];
-	}
-
-	findWord(targetWord: RawWord, caseSensitive: boolean = false): number {
-		for(let i = 0; i < this.words.length; i++) {
-			if(caseSensitive) {
-				if(this.words[i].name == targetWord.name) {
-					return i;
-				}
-			} else {
-				if(this.words[i].name.toLowerCase() == targetWord.name.toLowerCase()) {
-					return i;
-				}
-			}
-		}
-
-		if(this.outer === undefined) {
-			return -1;
-		} else {
-			return this.outer.findWord(targetWord, caseSensitive);
-		}
-	}
-
-	getWord(targetWord: RawWord, caseSensitive: boolean = false): AnyType {
-		for(let i = 0; i < this.words.length; i++) {
-			if(caseSensitive) {
-				if(this.words[i].name == targetWord.name) {
-					return this.values[i];
-				}
-			} else {
-				if(this.words[i].name.toLowerCase() == targetWord.name.toLowerCase()) {
-					return this.values[i];
-				}
-			}
-		}
+		this.outer = outer;
 		
-		if(this.outer === undefined) {
-			return new RawUnset();
-		} else {
-			return this.outer.getWord(targetWord, caseSensitive);
-		}
-	}
-
-	setWord(targetWord: RawWord, value: AnyType, caseSensitive: boolean = false): AnyType {
-		for(let i = 0; i < this.words.length; i++) {
-			if(caseSensitive) {
-				if(this.words[i].name == targetWord.name) {
-					return this.values[i] = value;
-				}
-			} else {
-				if(this.words[i].name.toLowerCase() == targetWord.name.toLowerCase()) {
-					return this.values[i] = value;
-				}
-			}
-		}
-		
-		if(this.outer === undefined) {
-			if(caseSensitive) {
-				this.words.push(targetWord);
-				this.values.push(value);
-			} else {
-				this.words.push(new RawWord(targetWord.name.toLowerCase()));
-				this.values.push(value);
-			}
-
-			return value;
-		} else {
-			if(this.outer.findWord(targetWord, caseSensitive) == -1) {
-				this.words.push(targetWord);
-				this.values.push(value);
-
-				return value;
-			} else {
-				return this.outer.setWord(targetWord, value, caseSensitive);
-			}
-		}
-	}
-
-	removeWord(targetWord: RawWord, caseSensitive: boolean = false) {
-		for(let i = 0; i < this.words.length; i++) {
-			if(caseSensitive) {
-				if(this.words[i].name == targetWord.name) {
-					this.words.splice(i, 1);
-					this.values.splice(i, 1);
-					return;
-				}
-			} else {
-				if(this.words[i].name.toLowerCase() == targetWord.name.toLowerCase()) {
-					this.words.splice(i, 1);
-					this.values.splice(i, 1);
-					return;
-				}
-			}
-		}
-		
-		if(this.outer !== undefined) {
-			this.outer.removeWord(targetWord, caseSensitive);
-		}
-	}
-
-	findPath(path: RawPath, caseSensitive: boolean = false): number {
-		if(!(path.path[0] instanceof RawWord)) return -1;
-
-		if(path.path.length == 1) {
-			return this.findWord(path.path[0] as RawWord, caseSensitive);
-		} else {
-			const c = this.getWord(path.path[0] as RawWord, caseSensitive);
-			
-			if(c instanceof Context) {
-				return c.findPath(new RawPath(path.path.slice(1)), caseSensitive);
-			} else {
-				return -1;
-			}
-		}
-	}
-
-	getPath(path: RawPath, caseSensitive: boolean = false): AnyType {
-		if(!(path.path[0] instanceof RawWord)) return new RawUnset();
-
-		if(path.path.length == 1) {
-			return this.getWord(path.path[0] as RawWord, caseSensitive);
-		} else {
-			const c = this.getWord(path.path[0] as RawWord, caseSensitive);
-			
-			if(c instanceof Context) {
-				return c.getPath(new RawPath(path.path.slice(1)), caseSensitive);
-			} else {
-				return new RawUnset();
-			}
-		}
-	}
-
-	setPath(path: RawPath, value: AnyType, caseSensitive: boolean = false): AnyType {
-		if(path.path.length == 1) {
-			return this.setWord(path.path[0] as RawWord, value, caseSensitive);
-		} else {
-			const c = this.getWord(path.path[0] as RawWord, caseSensitive);
-			
-			if(c instanceof Context) {
-				return c.setPath(new RawPath(path.path.slice(1)), value, caseSensitive);
-			} else {
-				throw new Error("error!");
-			}
-		}
-	}
-
-	removePath(path: RawPath, caseSensitive: boolean = false) {
-		if(path.path.length == 1) {
-			this.removeWord(path.path[0] as RawWord, caseSensitive);
-		} else {
-			const c = this.getWord(path.path[0] as RawWord, caseSensitive);
-			
-			if(c instanceof Context) {
-				c.removePath(new RawPath(path.path.slice(1)), caseSensitive);
-			} else {
-				throw new Error("error!");
-			}
-		}
-	}
-}
-
-export class RawObject implements RawValue {
-	static id: number = 0;
-	
-	id:     number;
-	words:  string[];
-	values: AnyType[];
-	
-	constructor(
-		entries:  [string, AnyType][],
-		inherit?: RawObject
-	) {
-		if(inherit === undefined) {
-			this.id = ++RawObject.id;
-			this.words = [];
-			this.values = [];
-		} else {
-			this.id = inherit.id;
-			this.words = [...inherit.words];
-			this.values = [...inherit.values];
-		}
-
 		if(entries.length > 0) {
 			for(const [word, value] of entries) {
 				this.addWord(word, value);
@@ -735,26 +554,36 @@ export class RawObject implements RawValue {
 	
 	hasWord(
 		word:          string,
-		caseSensitive: boolean = false
+		caseSensitive: boolean = false,
+		recursive:     boolean = false
 	): boolean {
 		if(caseSensitive) {
-			return this.words.includes(word);
+			return this.words.includes(word) || (
+				recursive && this.outer !== undefined && this.outer.hasWord(word, true, true)
+			);
 		} else {
 			word = word.toLowerCase();
-			return this.words.find(w => w.toLowerCase() == word) !== undefined;
+			return this.words.find(w => w.toLowerCase() == word) !== undefined || (
+				recursive && this.outer !== undefined && this.outer.hasWord(word, false, true)
+			);
 		}
 	}
 
 	getWord<T extends RawValue = AnyType>(
 		word:          string,
-		caseSensitive: boolean = false
+		caseSensitive: boolean = false,
+		recursive:     boolean = false
 	): T {
 		const index = caseSensitive
 			? this.words.indexOf(word)
 			: this.words.findIndex(w => w.toLowerCase() == word.toLowerCase());
 		
 		if(index == -1) {
-			throw Error(`Error: Undefined word "${word}" in object!`);
+			if(recursive && this.outer) {
+				return this.outer.getWord<T>(word, caseSensitive, true);
+			} else {
+				throw Error(`Error: Undefined word "${word}" in context!`);
+			}
 		} else {
 			return this.values[index] as T;
 		}
@@ -763,14 +592,19 @@ export class RawObject implements RawValue {
 	setWord(
 		word:          string,
 		value:         AnyType,
-		caseSensitive: boolean = false
+		caseSensitive: boolean = false,
+		recursive:     boolean = false
 	) {
 		const index = caseSensitive
 			? this.words.indexOf(word)
 			: this.words.findIndex(w => w.toLowerCase() == word.toLowerCase());
 		
 		if(index == -1) {
-			throw Error(`Error: Undefined word "${word}" in object!`);
+			if(recursive && this.outer) {
+				this.outer.setWord(word, value, caseSensitive, true);
+			} else {
+				throw Error(`Error: Undefined word "${word}" in in context!`);
+			}
 		} else {
 			this.values[index] = value;
 		}
@@ -779,17 +613,50 @@ export class RawObject implements RawValue {
 	addWord(
 		word:          string,
 		value:         AnyType,
-		caseSensitive: boolean = false
+		caseSensitive: boolean = false,
+		recursive:     boolean = false
 	) {
 		const index = caseSensitive
 			? this.words.indexOf(word)
 			: this.words.findIndex(w => w.toLowerCase() == word.toLowerCase());
 		
 		if(index == -1) {
-			this.words.push(word);
-			this.values.push(value);
+			if(recursive && this.outer && !this.outer.hasWord(word, caseSensitive)) {
+				this.outer.addWord(word, value, caseSensitive, true);
+			} else {
+				this.words.push(word);
+				this.values.push(value);
+			}
 		} else {
 			this.values[index] = value;
+		}
+	}
+}
+
+export class RawObject extends Context {
+	static id: number = 0;
+	
+	id: number;
+	
+	constructor(
+		outer?:  Context,
+		parent?: RawObject,
+		entries: [string, AnyType][] = [],
+	) {
+		super(outer);
+		
+		if(parent === undefined) {
+			this.id = ++RawObject.id;
+		} else {
+			this.id = parent.id;
+			this.words = [...parent.words];
+			this.values = [...parent.values];
+		}
+
+		if(entries.length > 0) {
+			for(const [word, value] of entries) {
+				this.addWord(word, value);
+			}
 		}
 	}
 }
@@ -1073,7 +940,7 @@ export function wrap(value: any): AnyType {
 	} else if(value instanceof DataView) {
 		throw Error("unimplemented!");
 	} else if(typeof value == "object") {
-		const obj = new RawObject([]);
+		const obj = new RawObject();
 
 		for(const k of Object.getOwnPropertyNames(value)) {
 			obj.addWord(k, wrap(value[k]), true);

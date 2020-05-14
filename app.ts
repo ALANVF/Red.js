@@ -29,14 +29,23 @@ const io = rl.createInterface({
 	prompt: "> "
 });
 
+io.prompt();
 io.on("line", (input: string) => {
 	if(input == "quit") {
 		io.close();
 	} else {
 		try {
-			console.log(Red.evalRed(input));
+			const res = Red.evalRed(input);
+
+			if(!(res instanceof Red.Types.RawUnset)) {
+				console.log(res);
+			}
 		} catch(e) {
 			console.log(e);
 		}
+
+		console.log();
+
+		io.prompt();
 	}
 });

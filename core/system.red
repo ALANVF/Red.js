@@ -1,5 +1,6 @@
 Red []
 
+'comment [
 system/script: make context! [
 	title: none
 	header: none
@@ -36,4 +37,5 @@ system/standard: make context! [
 		date: none
 		type: none
 	]
+]
 ]

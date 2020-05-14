@@ -1,14 +1,14 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-	"moduleResolution": "node",
-    "target": "esnext",
-	"lib": ["es6", "dom", "ESNext.BigInt"],
-	"strict": true,
-	"allowJs": true,
-    "sourceMap": true
-  },
-  "exclude": [
-    "node_modules"
-  ]
+	"compilerOptions": {
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"target": "esnext",
+		"lib": ["es6", "dom", "esnext.bigint"],
+		"strict": true,
+		"allowJs": true,
+		"sourceMap": true
+	},
+	"exclude": [
+		"node_modules"
+	]
 }

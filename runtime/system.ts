@@ -1,31 +1,25 @@
 import * as Red from "../red-types";
 
-export const system  = new Red.Context("system", Red.Context.$);
-export const system$ = new Red.RawWord("system");
+export const system = new Red.Context();
+export const system$words = new Red.Context();
+export const system$options = new Red.Context();
+export const system$std = new Red.Context();
 
-Red.Context.$.setWord(system$, system);
-//Red.Context.$.setWord(system$, system);
+Red.Context.$.addWord("system", system);
 
-export const system$words = new Red.RawWord("words");
-const system$options = new Red.RawWord("options");
-const system$std = new Red.RawWord("standard");
-
-function addDatatype(name: string, datatype: Function) {
-	system.setPath(
-		new Red.RawPath([system$words, new Red.RawWord(name)]),
-		new Red.RawDatatype(name, datatype)
-	);
-}
-
-system.setWord(system$options, new Red.Context("options", system));
-system.setWord(system$words, new Red.Context("words", system));
-system.setWord(system$std, new Red.RawNone());
+system.addWord("words", system$words);
+system.addWord("options", system$options);
+system.addWord("standard", system$std);
 
 /* system/options */
-system.setPath(new Red.RawPath([system$options, new Red.RawWord("path")]), new Red.RawFile("./"));
-system.setPath(new Red.RawPath([system$options, new Red.RawWord("args")]), new Red.RawNone());
+system$options.addWord("path", new Red.RawFile("./"));
+system$options.addWord("args", new Red.RawNone());
 
 /* system/words */
+function addDatatype(name: string, datatype: Function) {
+	system$words.addWord(name, new Red.RawDatatype(name, datatype));
+}
+
 addDatatype("red-value!", Red.RawValue);
 addDatatype("datatype!", Red.RawDatatype);
 
@@ -84,21 +78,21 @@ addDatatype("native!", Red.Native);
 addDatatype("action!", Red.Action);
 
 // typesets
-system.setPath(
-	new Red.RawPath([system$words, new Red.RawWord("number!")]),
+system.addWord(
+	"number!",
 	new Red.RawTypeset(
 		"integer! float! percent! money!"
 			.split(/\s+/)
-			.map(n => system.getPath(new Red.RawPath([system$words, new Red.RawWord(n)])) as Red.RawDatatype)
+			.map(n => system$words.getWord<Red.RawDatatype>(n))
 	)
 );
 
-system.setPath(
-	new Red.RawPath([system$words, new Red.RawWord("any-word!")]),
+system.addWord(
+	"any-word!",
 	new Red.RawTypeset(
 		"word! set-word! lit-word! get-word!"
 			.split(/\s+/)
-			.map(n => system.getPath(new Red.RawPath([system$words, new Red.RawWord(n)])) as Red.RawDatatype)
+			.map(n => system$words.getWord<Red.RawDatatype>(n))
 	)
 );
 
@@ -138,11 +132,7 @@ const types = `
 	tag! email!
 	date!`.trim();
 
-system.setPath(
-	new Red.RawPath([system$words, new Red.RawWord("any-type!")]),
-	new Red.RawTypeset(
-		types
-			.split(/\s+/)
-			.map(n => system.getPath(new Red.RawPath([system$words, new Red.RawWord(n)])) as Red.RawDatatype)
-	)
+system$words.addWord(
+	"any-type!",
+	new Red.RawTypeset(types.split(/\s+/).map(n => system$words.getWord<Red.RawDatatype>(n)))
 );

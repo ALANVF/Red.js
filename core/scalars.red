@@ -2,6 +2,7 @@ Red []
 
 yes: on: true
 no: off: false
+none: none
 
 tab:		 #"^-"
 cr: 		 #"^M"

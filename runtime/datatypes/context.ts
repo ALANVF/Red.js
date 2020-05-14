@@ -1,132 +1,113 @@
 import * as Red from "../../red-types";
-import RedNatives from "../natives";
 import RedActions from "../actions";
 import {evalSingle, groupSingle} from "../eval";
 
-/* Native functions */
-// TODO: switch this to transformPath from eval.ts (this doesn't seem to be mentioned anywhere else)
+/* Native actions */
 export function $evalPath(
-	ctx: Red.Context,
+	ctx:     Red.Context,
 	context: Red.Context,
-	value: Red.AnyType,
-	isCase: boolean
+	value:   Red.AnyType,
+	isCase:  boolean
 ): Red.AnyType {
-	let getVal;
+	let getVal: Red.AnyType;
 
-	if(value instanceof Red.RawPath) {
-		if(value.path.slice(value.index-1).length == 1) {
-			getVal = value = value.path.slice(value.index-1)[0];
-		} else {
-			getVal = value.path.slice(value.index-1)[0];
-		}
-
-		if(!(getVal instanceof Red.RawWord)) {
-			getVal = evalSingle(ctx, getVal);
-		}
-	} else {
+	if(value instanceof Red.RawWord) {
 		getVal = value;
+	} else {
+		getVal = evalSingle(ctx, value);
 	}
 
 	if(getVal instanceof Red.RawWord) {
-		return RedNatives.$$get(context, getVal, {case: isCase ? [] : undefined});
+		return context.getWord(getVal.name, isCase);
 	} else {
-		throw new Error(`Invalid path accessor ${value}`);
+		throw new Error(`Invalid accessor ${value}`);
 	}
 }
 
 export function $setPath(
-	ctx: Red.Context,
-	context: Red.Context,
-	value: Red.AnyType,
+	ctx:      Red.Context,
+	context:  Red.Context,
+	value:    Red.AnyType,
 	newValue: Red.AnyType,
-	isCase: boolean
+	isCase:   boolean
 ): Red.AnyType {
 	let getVal: Red.AnyType;
 
-	if(value instanceof Red.RawPath) {
-		if(value.path.slice(value.index-1).length == 1) {
-			getVal = value = value.path.slice(value.index-1)[0];
-		} else {
-			getVal = value.path.slice(value.index-1)[0];
-		}
-
-		if(!(getVal instanceof Red.RawWord)) {
-			getVal = evalSingle(ctx, getVal);
-		}
-	} else {
+	if(value instanceof Red.RawWord) {
 		getVal = value;
+	} else {
+		getVal = evalSingle(ctx, value);
 	}
 
 	if(getVal instanceof Red.RawWord) {
-		return RedNatives.$$set(context, getVal, newValue, {case: isCase ? [] : undefined});
+		context.setWord(getVal.name, newValue, isCase);
+		return newValue;
 	} else {
-		throw new Error(`Invalid path accessor ${value}`);
+		throw new Error(`Invalid accessor ${value}`);
 	}
 }
 
 export function $add(
-	ctx: Red.Context,
+	ctx:     Red.Context,
 	context: Red.Context,
-	word: Red.AnyType,
-	_isCase: boolean
+	value:   Red.AnyType,
+	isCase:  boolean
 ) {
 	let getVal: Red.AnyType;
 
-	if(word instanceof Red.RawPath) {
-		if(word.path.slice(word.index-1).length == 1) {
-			getVal = word = word.path.slice(word.index-1)[0];
-		} else {
-			throw new Error("error!");
-		}
-
-		if(!(getVal instanceof Red.RawWord)) {
-			getVal = evalSingle(ctx, getVal);
-		}
+	if(value instanceof Red.RawWord) {
+		getVal = value;
 	} else {
-		getVal = word;
+		getVal = evalSingle(ctx, value);
 	}
 
 	if(getVal instanceof Red.RawWord) {
-		context.words.push(getVal);
-		context.values.push(new Red.RawNone()); // maybe change to unset?
+		context.addWord(getVal.name, new Red.RawNone(), isCase);
 	} else {
-		throw new Error(`Invalid path accessor ${word}`);
+		throw new Error(`Invalid accessor ${value}`);
 	}
 }
 
 /* Actions */
 export function $$make(
-	ctx: Red.Context,
+	ctx:    Red.Context,
 	_proto: Red.AnyType,
-	spec: Red.RawBlock
+	spec:   Red.RawBlock
 ): Red.Context {
 	let blk = [...spec.values];
-	const out = new Red.Context("", ctx);
+	const out = new Red.Context(ctx);
 
 	// this doesn't work quite like it does normally in Red, but it works for now
 	while(blk.length > 0) {
 		const head = blk[0];
 
 		if(head instanceof Red.RawSetWord) {
-			$add(ctx, out, head.word, false);
-		}
+			blk.shift();
 
-		const grouped = groupSingle(out, blk);
-		evalSingle(out, grouped.made);
-		blk = grouped.restNodes;
+			const grouped = groupSingle(out, blk);
+			
+			out.addWord(head.name, evalSingle(out, grouped.made));
+			blk = grouped.restNodes;
+		} else {
+			const grouped = groupSingle(out, blk);
+			evalSingle(out, grouped.made);
+			blk = grouped.restNodes;
+		}
 	}
 
+	out.outer = undefined;
+	
 	return out;
 }
 
 export function $$form(
-	ctx: Red.Context,
+	ctx:     Red.Context,
 	context: Red.Context,
-	buffer: string[],
-	_part?: number
+	buffer:  string[],
+	_part?:  number
 ): boolean {
 	for(let i = 0; i < context.words.length; i++) {
-		buffer.push(RedActions.$$form(ctx, context.words[i]).toJsString());
+		buffer.push(context.words[i]);
 		buffer.push(" ");
 		buffer.push(RedActions.$$mold(ctx, context.values[i]).toJsString());
 		
@@ -139,10 +120,10 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx: Red.Context,
+	ctx:     Red.Context,
 	context: Red.Context,
-	buffer: string[],
-	indent: number,
+	buffer:  string[],
+	indent:  number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	buffer.push("make context! [");
@@ -152,17 +133,17 @@ export function $$mold(
 		const idt = "\t".repeat(indent);
 
 		for(const word of context.words) {
-			const value = context.values[context.words.indexOf(word)];
+			const value = context.getWord(word);
 			
 			buffer.push(idt);
-			buffer.push(word.name + ": "); // pretty-print ws later
-			
-			RedActions.$valueSendAction("$$mold", ctx, value, buffer, indent + 1, _);
+			buffer.push(word + ": "); // pretty-print ws later
+			RedActions.valueSendAction("$$mold", ctx, value, buffer, indent + 1, _);
 			buffer.push("\n");
 		}
 	}
 
 	buffer.push("\t".repeat(indent - 1));
 	buffer.push("]");
+	
 	return context.words.length > 0;
 }

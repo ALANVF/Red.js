@@ -1,5 +1,3 @@
-import {tokenize} from "../tokenizer";
-import {pre} from "./preprocesser";
 import * as Red from "../red-types";
 import RedNatives from "./natives";
 

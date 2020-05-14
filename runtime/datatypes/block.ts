@@ -43,11 +43,11 @@ export function $$form(
 	if(blk.length == 0) {
 		buffer.push("");
 	} else {
-		RedActions.$valueSendAction("$$form", ctx, blk[0], buffer, part);
+		RedActions.valueSendAction("$$form", ctx, blk[0], buffer, part);
 
 		for(const val of blk.slice(1)) {
 			buffer.push(" ");
-			RedActions.$valueSendAction("$$form", ctx, val, buffer, part);
+			RedActions.valueSendAction("$$form", ctx, val, buffer, part);
 		}
 	}
 
@@ -68,11 +68,11 @@ export function $$mold(
 	} else {
 		buffer.push("[");
 		
-		RedActions.$valueSendAction("$$mold", ctx, blk[0], buffer, indent, _);
+		RedActions.valueSendAction("$$mold", ctx, blk[0], buffer, indent, _);
 
 		for(const val of blk.slice(1)) {
 			buffer.push(" ");
-			RedActions.$valueSendAction("$$mold", ctx, val, buffer, indent, _);
+			RedActions.valueSendAction("$$mold", ctx, val, buffer, indent, _);
 		}
 
 		buffer.push("]");

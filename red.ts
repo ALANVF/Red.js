@@ -75,7 +75,7 @@ export function evalTopLevel(
 export function evalFile(
 	filePath:    string,
 	outerState?: FileState,
-	ctx:         RedTypes.Context = RedTypes.Context.$
+	ctx:         RedTypes.Context = RedSystem.system$words
 ) {
 	const src = readFileSync(filePath).toString();
 	let parsed = new RedTypes.RawBlock(RedParser.tokenize(src).made);
@@ -123,7 +123,7 @@ export function evalFile(
 export function evalCode(
 	code:        string,
 	outerState?: FileState,
-	ctx:         RedTypes.Context = RedTypes.Context.$
+	ctx:         RedTypes.Context = RedSystem.system$words
 ): RedTypes.AnyType {
 	let state: FileState;
 	let parsed = new RedTypes.RawBlock(RedParser.tokenize(code).made);
@@ -172,7 +172,7 @@ export function evalCode(
 
 export function evalRed(
 	code: string,
-	ctx:  RedTypes.Context = RedTypes.Context.$
+	ctx:  RedTypes.Context = RedSystem.system$words
 ): RedTypes.AnyType {
 	const parsed = RedPre.pre(ctx, new RedTypes.RawBlock(RedParser.tokenize(code).made));
 	let body = parsed.values;

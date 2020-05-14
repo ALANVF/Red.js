@@ -4,9 +4,10 @@ TL;DR:
 - Finish implementing features.
 
 Finish very soon:
-- Completely redo `context!`s.
-- Fix path stuff for other things supporting path access.
-- Going along with that, try to fix accessing stuff in the global system object.
+- Fix `series!`-related functions because I somehow broke them by accident.
+- `a: [none] a/1` should not return a `none!`.
+- Fix path stuff for other things supporting path access:
+	- Fix path assignments that are longer than 2 values. 
 - Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
 - Fix refinements for natives and actions.
 
@@ -50,9 +51,11 @@ Finish if I'm still bored:
 - Allow compiling to/running on WebAssembly.
 
 Big things already done:
-- Completely redo the tokenizer (might redo it a third time).
+- Completely redo the tokenizer (might also redo it a third time).
 - Use RawDatatype for types instead of type constructors (ew).
 - Fix get/lit word parameters in new natives and actions.
 - Add support for running .red files (make sure to detect the header!).
 - Add support for user-defined functions.
 - Make the API's naming conventions less horrible.
+- Completely redo `context!`s.
+- Fix accessing stuff in the global system object.

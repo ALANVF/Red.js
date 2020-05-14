@@ -1,6 +1,6 @@
 import {tokenize} from "../tokenizer";
 import {pre, pre1} from "./preprocesser";
-import {system, system$, system$words} from "./system";
+import {system, system$words} from "./system";
 import {evalSingle, groupSingle} from "./eval";
 import * as Red from "../red-types";
 import RedActions from "./actions";
@@ -212,10 +212,10 @@ module RedNatives {
 		let status = true;
 		let ret;
 
-		let times = value.value;
+		const times = value.value;
 		if(times < 0) throw Error(`Cannot iterate ${times} times`);
 
-		for(let i = 1; i < times+1 && status; i++) {
+		for(let i = 1; i < times + 1 && status; i++) {
 			$$set(ctx, word, new Red.RawInteger(i));
 
 			try {
@@ -310,7 +310,7 @@ module RedNatives {
 	): Red.AnyType {
 		return RedActions.$$make(
 			ctx,
-			system.getPath(new Red.RawPath([system$words, new Red.RawWord("function!")])), // TODO: provide this automatically in system.ts
+			system$words.getWord<Red.RawDatatype>("function!"), // TODO: provide this automatically in system.ts
 			new Red.RawBlock([spec, body])
 		);
 	}
@@ -349,7 +349,7 @@ module RedNatives {
 
 		return RedActions.$$make(
 			ctx,
-			system.getPath(new Red.RawPath([system$words, new Red.RawWord("function!")])),
+			system$words.getWord<Red.RawDatatype>("function!"),
 			new Red.RawBlock([
 				new Red.RawBlock([
 					...(docSpec == null ? [] : [docSpec]),
@@ -562,51 +562,52 @@ module RedNatives {
 	]
 	*/
 	// this needs some cleaning up
-	// also, accessing system/words needs to be fixed
 	export function $$get(
 		ctx:  Red.Context,
-		name: Red.RawAnyWord|Red.RawRefinement|Red.RawPath|Red.RawObject,
+		value: Red.RawAnyWord|Red.RawRefinement|Red.RawPath|Red.RawObject,
 		_: {
 			any?:  [],
 			case?: []
 		} = {}
 	): Red.AnyType {
-		let word: Red.RawWord;
+		const isCase = _.case !== undefined;
+		const isAny = _.any !== undefined;
+		let name: string;
 
-		if(Red.isAnyWord(name)) {
-			word = name.word;
+		if(Red.isAnyWord(value)) {
+			name = value.name;
 		} else {
 			return Red.todo();
 		}
 
-		const fres = ctx.findWord(word, _.case !== undefined);
-		const fresS = Red.Context.$.findPath(new Red.RawPath([system$, system$words, word]), _.case !== undefined);
-		const fresG = Red.Context.$.findWord(word, _.case !== undefined);
+		const fres = ctx.hasWord(name, isCase, true);
+		const fresSW = system$words.hasWord(name, isCase);
+		const fresG = Red.Context.$.hasWord(name, isCase);
 
-		if(fres != -1) {
-			const res = ctx.getWord(word, _.case !== undefined);
+		if(fres) {
+			const res = ctx.getWord(name, isCase, true);
 
-			if(!(res instanceof Red.RawUnset && _.any === undefined)) {
+			if(!(res instanceof Red.RawUnset && !isAny)) {
 				return res;
-			}
-		} else if(fresS != -1) {
-			const resS = Red.Context.$.getPath(new Red.RawPath([system$, system$words, word]), _.case !== undefined);
+			} 
+		} else if(fresSW) {
+			const resSW = system$words.getWord(name, isCase);
 			
-			if(!(resS instanceof Red.RawUnset && _.any === undefined)) {
-				return resS;
+			if(!(resSW instanceof Red.RawUnset && !isAny)) {
+				return resSW;
 			}
-		} else if(fresG != -1) {
-			const resG = Red.Context.$.getWord(word, _.case !== undefined);
+		} else if(fresG) {
+			const resG = Red.Context.$.getWord(name, isCase);
 			
-			if(!(resG instanceof Red.RawUnset && _.any === undefined)) {
+			if(!(resG instanceof Red.RawUnset && !isAny)) {
 				return resG;
 			}
 		}
 
-		if(_.any === undefined) {
-			throw new Error(`${word.name} has no value!`);
-		} else {
+		if(isAny) {
 			return new Red.RawUnset();
+		} else {
+			throw new Error(`${name} has no value!`);
 		}
 	}
 
@@ -626,9 +627,9 @@ module RedNatives {
 	*/
 	// this probably needs some work as well
 	export function $$set(
-		ctx:   Red.Context,
-		name:  Red.RawAnyWord|Red.RawPath|Red.RawBlock|Red.RawObject,
-		value: Red.AnyType,
+		ctx:      Red.Context,
+		value:    Red.RawAnyWord|Red.RawPath|Red.RawBlock|Red.RawObject,
+		newValue: Red.AnyType,
 		_: {
 			any?:  [],
 			case?: [],
@@ -636,23 +637,17 @@ module RedNatives {
 			some?: []
 		} = {}
 	): Red.AnyType {
-		let word: Red.RawWord;
+		const isCase = _.case !== undefined;
+		let word: string;
 		
-		if(Red.isAnyWord(name)) {
-			word = name.word;
+		if(Red.isAnyWord(value)) {
+			word = value.name;
 		} else {
 			return Red.todo();
 		}
 		
-		if(ctx == Red.Context.$) {
-			return Red.Context.$.setPath(new Red.RawPath([system$, system$words, word]), value);
-		} else {
-			if(ctx.findWord(word) != -1) {
-				return ctx.setWord(word, value);
-			} else {
-				return $$set(ctx.outer!, word, value, _);
-			}
-		}
+		ctx.addWord(word, newValue, isCase, true);
+		return newValue;
 	}
 
 	export function $$equal_q(
@@ -727,8 +722,7 @@ module RedNatives {
 		} = {}
 	): Red.AnyType {
 		if(_.word === undefined) {
-			const words = system.getWord(system$words) as Red.Context;
-			return words.getWord(new Red.RawWord(Red.TYPE_NAME(value)));
+			return system$words.getWord(Red.TYPE_NAME(value));
 		} else {
 			return new Red.RawWord(Red.TYPE_NAME(value));
 		}
@@ -867,7 +861,7 @@ module RedNatives {
 
 	/* ========================================================= */
 
-	system.setPath(new Red.RawPath([system$words, new Red.RawWord("set")]), _SET);
+	system$words.addWord("set", _SET);
 }
 
 export default RedNatives

@@ -1,5 +1,6 @@
 import * as Red from "../../red-types";
 import RedUtil from "../util";
+import RedActions from "../actions";
 
 type RedMoreBlocky = Red.RawBlock | Red.RawParen | Red.RawString | Red.RawVector;
 
@@ -9,8 +10,29 @@ function isMoreBlocky(value: Red.AnyType): value is RedMoreBlocky {
 }
 
 
+/* Native actions */
 
-// Property reading actions
+export function $evalPath(
+	ctx:     Red.Context,
+	series:  Red.RawSeries,
+	value:   Red.AnyType,
+	_isCase: boolean
+): Red.AnyType {
+	return RedActions.$$pick(ctx, series, value as any); // TODO: stop being lazy
+}
+
+export function $setPath(
+	ctx:      Red.Context,
+	series:   Red.RawSeries,
+	value:    Red.AnyType,
+	newValue: Red.AnyType,
+	_isCase:  boolean
+): Red.AnyType {
+	return RedActions.$$poke(ctx, series, value as any, newValue); // TODO: stop being lazy
+}
+
+
+/* Property reading actions */
 
 export function $$head_q(
 	_ctx: Red.Context,

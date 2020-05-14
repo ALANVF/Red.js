@@ -45,13 +45,21 @@ repeat i 100 [
 Red.evalCode(fizzbuzz);
 ```
 
+# Running
+
+## Locally
+In order to run this locally, you'll need Node 12.13.1 or higher installed (I haven't tested it with any older versions yet).
+
+## In a browser
+I have yet to actually test Red.js in a browser, but it should be fine as long as you aren't using IE or Firefox.
+
 
 # Current limitations
 
 - Because I didn't want to try recreating Red/System just yet, TypeScript is being used for development instead.
 - Things that interact with the OS don't exist because web browsers don't do that.
 - I have yet to benchmark anything, but there's a good chance that this is probably many times slower than the default implementation of Red.
-- I'm currently only 1 person, so progress is gonna be kinda slow while it's just me.
+- I'm currently only 1 person, so progress is gonna be kind of slow as long as it's just me.
 
 
 # Notes

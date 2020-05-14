@@ -17,6 +17,7 @@ import * as ACT_native     from "./datatypes/native";
 import * as ACT_action     from "./datatypes/action";
 import * as ACT_op         from "./datatypes/op";
 import * as ACT_function   from "./datatypes/function";
+import * as ACT_object     from "./datatypes/object";
 import * as ACT_typeset    from "./datatypes/typeset";
 import * as ACT_series     from "./datatypes/series";
 
@@ -196,7 +197,7 @@ module RedActions {
 	export interface BasicTypeActions<Sender = any> {
 		$evalPath?:    (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: boolean)                 => Red.AnyType;
 		$setPath?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: Red.AnyType, c: boolean) => Red.AnyType;
-		$add?:         (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: boolean)                 => void;
+		$addPath?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: boolean)                 => void;
 		$compare?:     (ctx: Red.Context, sender: Sender, a: any, b: Red.ComparisonOp)                => Red.CompareResult;
 		
 		$$make?:       (ctx: Red.Context, sender: Red.AnyType, a: any)                                => Red.AnyType;
@@ -301,7 +302,7 @@ module RedActions {
 		"ACT_ROUTINE":    [],
 		"ACT_BITSET":     [],
 		"ACT_POINT":      [],
-		"ACT_OBJECT":     [],
+		"ACT_OBJECT":     [ACT_object, ACT_context],
 		"ACT_TYPESET":    [ACT_typeset],
 		"ACT_ERROR":      [],
 		"ACT_VECTOR":     [ACT_series],
@@ -328,11 +329,11 @@ module RedActions {
 
 	
 	/* Native functions */
-	function $getActionsForValue(value: Red.AnyType): TypeActionsSet {
+	function getActionsForValue(value: Red.AnyType): TypeActionsSet {
 		return Object.values(ACT)[Red.TYPE_OF(value)];
 	}
 
-	function $hasAction(
+	function hasAction(
 		actObj: TypeActionsSet,
 		action: ActionName
 	): boolean {
@@ -349,7 +350,7 @@ module RedActions {
 		}
 	}
 
-	function $sendAction(
+	function sendAction(
 		actObj: TypeActionsSet,
 		action: ActionName,
 		ctx:    Red.Context,
@@ -369,14 +370,75 @@ module RedActions {
 		}
 	}
 
-	export function $valueSendAction(
+	export function valueSendAction(
 		action: ActionName,
 		ctx:    Red.Context,
 		value:  Red.AnyType,
 		...args: any[]
 	): any {
-		return $sendAction($getActionsForValue(value), action, ctx, value, ...args);
+		return sendAction(getActionsForValue(value), action, ctx, value, ...args);
 	}
+
+
+	export function $evalPath(
+		ctx:      Red.Context,
+		value:    Red.AnyType,
+		accessor: Red.AnyType,
+		isCase:   Red.RawLogic
+	): Red.AnyType {
+		return valueSendAction("$evalPath", ctx, value, accessor, isCase.cond);
+	}
+
+	export const EVAL_PATH = new Red.Action(
+		"eval-path*",
+		null,
+		[
+			new Red.RawArgument(new Red.RawWord("value")),
+			new Red.RawArgument(new Red.RawLitWord("accessor")),
+			new Red.RawArgument(new Red.RawWord("case?"))
+		],
+		[],
+		null,
+		$evalPath
+	);
+	
+	system$words.addWord("eval-path*", EVAL_PATH);
+
+	export function $setPath(
+		ctx:      Red.Context,
+		value:    Red.AnyType,
+		accessor: Red.AnyType,
+		newValue: Red.AnyType,
+		isCase:   Red.RawLogic
+	): Red.AnyType {
+		return valueSendAction("$setPath", ctx, value, accessor, newValue, isCase.cond);
+	}
+
+	export const SET_PATH = new Red.Action(
+		"set-path*",
+		null,
+		[
+			new Red.RawArgument(new Red.RawWord("value")),
+			new Red.RawArgument(new Red.RawLitWord("accessor")),
+			new Red.RawArgument(new Red.RawWord("new-value")),
+			new Red.RawArgument(new Red.RawWord("case?"))
+		],
+		[],
+		null,
+		$setPath
+	);
+	
+	system$words.addWord("eval-path*", EVAL_PATH);
+	
+	export function $addPath(
+		ctx:      Red.Context,
+		value:    Red.AnyType,
+		accessor: Red.AnyType,
+		isCase:   Red.RawLogic
+	) {
+		valueSendAction("$addPath", ctx, value, accessor, isCase.cond);
+	}
+	
 
 	export function $compare(
 		ctx:    Red.Context,
@@ -384,11 +446,11 @@ module RedActions {
 		value2: Red.AnyType,
 		op:     Red.ComparisonOp
 	): Red.RawLogic {
-		const actions = $getActionsForValue(value1);
-		var value: Red.CompareResult;
+		const actions = getActionsForValue(value1);
+		let value: Red.CompareResult;
 
-		if($hasAction(actions, "$compare")) {
-			value = $sendAction(actions, "$compare", ctx, value1, value2, op);
+		if(hasAction(actions, "$compare")) {
+			value = sendAction(actions, "$compare", ctx, value1, value2, op);
 		} else {
 			if(value1.constructor === value2.constructor) {
 				switch(value1.constructor) {
@@ -456,14 +518,10 @@ module RedActions {
 		proto: Red.AnyType,
 		spec:  Red.AnyType
 	): Red.AnyType {
-		if(proto instanceof Red.RawObject) {
-			return Red.todo();
+		if(proto instanceof Red.RawDatatype) {
+			return sendAction(Object.values(ACT)[Red.Types.indexOf(proto.repr)], "$$make", ctx, proto, spec);
 		} else {
-			if(proto instanceof Red.RawDatatype) {
-				return $sendAction(Object.values(ACT)[Red.Types.indexOf(proto.repr)], "$$make", ctx, proto, spec);
-			} else {
-				return $sendAction(Object.values(ACT)[Red.TYPE_OF(proto)], "$$make", ctx, proto, spec);
-			}
+			return sendAction(Object.values(ACT)[Red.TYPE_OF(proto)], "$$make", ctx, proto, spec);
 		}
 	}
 
@@ -480,8 +538,8 @@ module RedActions {
 		$$make
 	);
 	
-	system.setPath(new Red.RawPath([system$words, new Red.RawWord("make")]), _MAKE);
-
+	system$words.addWord("make", _MAKE);
+	
 	/*
 	random: make action! [[
 			"Returns a random value of the same datatype; or shuffles series"
@@ -508,7 +566,7 @@ module RedActions {
 		type: Red.AnyType,
 		spec: Red.AnyType
 	) {
-		return $valueSendAction("$$to", ctx, type, spec);
+		return valueSendAction("$$to", ctx, type, spec);
 	}
 
 	export function $$form(
@@ -519,7 +577,7 @@ module RedActions {
 		} = {}
 	): Red.RawString {
 		const str: string[] = [];
-		const ml = $valueSendAction("$$form", ctx, value, str, _.part === undefined ? undefined : _.part[0].value);
+		const ml = valueSendAction("$$form", ctx, value, str, _.part === undefined ? undefined : _.part[0].value);
 		
 		return Red.RawString.fromNormalString(str.join(""), ml);
 	}
@@ -542,7 +600,7 @@ module RedActions {
 		if(_.flat !== undefined) __.flat = true;
 		if(_.part !== undefined) __.part = _.part[0].value;
 
-		const ml = $valueSendAction("$$mold", ctx, value, str, 1, __);
+		const ml = valueSendAction("$$mold", ctx, value, str, 1, __);
 		
 		return Red.RawString.fromJsString(str.join(""), ml);
 	}
@@ -574,7 +632,7 @@ module RedActions {
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/,
 		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/
 	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/ {
-		return $valueSendAction("$$add", ctx, value1, value2);
+		return valueSendAction("$$add", ctx, value1, value2);
 	}
 
 	export function $$divide(
@@ -582,7 +640,7 @@ module RedActions {
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/,
 		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/
 	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/ {
-		return $valueSendAction("$$divide", ctx, value1, value2);
+		return valueSendAction("$$divide", ctx, value1, value2);
 	}
 
 	export function $$multiply(
@@ -590,7 +648,7 @@ module RedActions {
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/,
 		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/
 	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/ {
-		return $valueSendAction("$$multiply", ctx, value1, value2);
+		return valueSendAction("$$multiply", ctx, value1, value2);
 	}
 
 	/*
@@ -616,7 +674,7 @@ module RedActions {
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple,
 		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple
 	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple {
-		return $valueSendAction("$$remainder", ctx, value1, value2);
+		return valueSendAction("$$remainder", ctx, value1, value2);
 	}
 
 	/*round: make action! [[
@@ -640,7 +698,7 @@ module RedActions {
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/,
 		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/
 	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/ {
-		return $valueSendAction("$$subtract", ctx, value1, value2);
+		return valueSendAction("$$subtract", ctx, value1, value2);
 	}
 
 	/*
@@ -670,14 +728,14 @@ module RedActions {
 		value1: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector,
 		value2: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector
 	): Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector {
-		return $valueSendAction("$$and_t", ctx, value1, value2);
+		return valueSendAction("$$and_t", ctx, value1, value2);
 	}
 
 	export function $$complement(
 		ctx:   Red.Context,
 		value: Red.RawLogic|Red.RawInteger|Red.RawBitset|Red.RawTypeset/*|Red.RawBinary*/
 	): Red.RawLogic|Red.RawInteger|Red.RawBitset|Red.RawTypeset/*|Red.RawBinary*/ {
-		return $valueSendAction("$$complement", ctx, value)
+		return valueSendAction("$$complement", ctx, value)
 	}
 
 	export function $$or_t(
@@ -685,7 +743,7 @@ module RedActions {
 		value1: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector,
 		value2: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector
 	): Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector {
-		return $valueSendAction("$$or_t", ctx, value1, value2);
+		return valueSendAction("$$or_t", ctx, value1, value2);
 	}
 
 	export function $$xor_t(
@@ -693,7 +751,7 @@ module RedActions {
 		value1: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector,
 		value2: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector
 	): Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector {
-		return $valueSendAction("$$xor_t", ctx, value1, value2);
+		return valueSendAction("$$xor_t", ctx, value1, value2);
 	}
 
 	/*
@@ -716,7 +774,7 @@ module RedActions {
 		if(_.only !== undefined) __.only = true;
 		if(_.dup !== undefined)  __.dup = _.dup[0].value;
 		
-		return $valueSendAction("$$append", ctx, series, value, __);
+		return valueSendAction("$$append", ctx, series, value, __);
 	}
 
 	export function $$at(
@@ -724,14 +782,14 @@ module RedActions {
 		series: Red.RawSeries,
 		index:  Red.RawInteger|Red.RawPair
 	): Red.RawSeries {
-		return $valueSendAction("$$at", ctx, series, index instanceof Red.RawInteger ? index.value : index.x.value);
+		return valueSendAction("$$at", ctx, series, index instanceof Red.RawInteger ? index.value : index.x.value);
 	}
 
 	export function $$back(
 		ctx:    Red.Context,
 		series: Red.RawSeries
 	): Red.RawSeries {
-		return $valueSendAction("$$back", ctx, series);
+		return valueSendAction("$$back", ctx, series);
 	}
 
 	/*
@@ -786,7 +844,7 @@ module RedActions {
 		if(_.deep !== undefined)  __.deep = true;
 		if(_.types !== undefined) __.types = _.types[0];
 		
-		return $valueSendAction("$$copy", ctx, value, __);
+		return valueSendAction("$$copy", ctx, value, __);
 	}
 
 	/*
@@ -817,21 +875,21 @@ module RedActions {
 		ctx:    Red.Context,
 		series: Red.RawSeries,
 	): Red.RawSeries {
-		return $valueSendAction("$$head", ctx, series);
+		return valueSendAction("$$head", ctx, series);
 	}
 
 	export function $$head_q(
 		ctx:    Red.Context,
 		series: Red.RawSeries,
 	): Red.RawLogic {
-		return $valueSendAction("$$head_q", ctx, series);
+		return valueSendAction("$$head_q", ctx, series);
 	}
 
 	export function $$index_q(
 		ctx:    Red.Context,
 		series: Red.RawSeries|Red.RawAnyWord,
 	): Red.RawInteger {
-		return $valueSendAction("$$index_q", ctx, series);
+		return valueSendAction("$$index_q", ctx, series);
 	}
 
 	/*
@@ -854,7 +912,7 @@ module RedActions {
 		ctx:    Red.Context,
 		series: Red.RawSeries|Red.RawBitset|Red.RawTuple|Red.RawNone|Red.RawMap
 	): Red.RawInteger|Red.RawNone {
-		return $valueSendAction("$$length_q", ctx, series);
+		return valueSendAction("$$length_q", ctx, series);
 	}
 
 	/*
@@ -874,7 +932,7 @@ module RedActions {
 		ctx:    Red.Context,
 		series: Red.RawSeries
 	): Red.RawSeries {
-		return $valueSendAction("$$next", ctx, series);
+		return valueSendAction("$$next", ctx, series);
 	}
 
 	// redo? idk what this is doing
@@ -883,12 +941,12 @@ module RedActions {
 		series: Red.RawSeries|Red.RawTuple|Red.RawPair|Red.RawTime|Red.RawBitset|Red.RawTuple/*|Red.RawDate*/,
 		index:  Red.RawScalar|Red.RawAnyString|Red.RawAnyWord|Red.RawBlock|Red.RawLogic|Red.RawTime
 	): Red.AnyType {
-		/*const acts = $getActionsForValue(series);
+		/*const acts = getActionsForValue(series);
 		if(acts.hasOwnProperty("$$pick")) {
-			return $sendAction(acts, "$$pick", ctx, series, index);
+			return sendAction(acts, "$$pick", ctx, series, index);
 		} else*/
 		if(index instanceof Red.RawInteger && !(series instanceof Red.RawTuple || series instanceof Red.RawPair || series instanceof Red.RawTime)) {
-			return $valueSendAction("$$pick", ctx, series, index);
+			return valueSendAction("$$pick", ctx, series, index);
 		} else {
 			Red.todo();
 		}
@@ -913,13 +971,13 @@ module RedActions {
 		value:  Red.AnyType
 	): Red.AnyType {
 		if(index instanceof Red.RawInteger && !(series instanceof Red.RawTuple || series instanceof Red.RawPair || series instanceof Red.RawTime)) {
-			return $valueSendAction("$$poke", ctx, series, index, value);
+			return valueSendAction("$$poke", ctx, series, index, value);
 		} else {
 			return Red.todo();
 		}
 	}
 
-	export const _POKE = new Red.Action(
+	/*export const _POKE = new Red.Action(
 		"poke",
 		null,
 		[
@@ -935,7 +993,7 @@ module RedActions {
 		$$poke
 	);
 
-	system.setPath(new Red.RawPath([system$words, new Red.RawWord("poke")]), _POKE);
+	system.setPath(new Red.RawPath([system$words, new Red.RawWord("poke")]), _POKE);*/
 
 	/*
 	put: make action! [[
@@ -1016,7 +1074,7 @@ module RedActions {
 		series: Red.RawSeries,
 		offset: Red.RawInteger|Red.RawPair
 	): Red.RawSeries {
-		return $valueSendAction("$$skip", ctx, series, offset instanceof Red.RawInteger ? offset.value : offset.x.value);
+		return valueSendAction("$$skip", ctx, series, offset instanceof Red.RawInteger ? offset.value : offset.x.value);
 	}
 
 	/*
@@ -1034,14 +1092,14 @@ module RedActions {
 		ctx:    Red.Context,
 		series: Red.RawSeries,
 	): Red.RawSeries {
-		return $valueSendAction("$$tail", ctx, series);
+		return valueSendAction("$$tail", ctx, series);
 	}
 
 	export function $$tail_q(
 		ctx:    Red.Context,
 		series: Red.RawSeries,
 	): Red.RawLogic {
-		return $valueSendAction("$$tail_q", ctx, series);
+		return valueSendAction("$$tail_q", ctx, series);
 	}
 
 	/*
