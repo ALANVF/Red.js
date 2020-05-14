@@ -152,7 +152,7 @@ function fnCreateTempCtx(
 		out.addWord(local, new Red.RawUnset());
 	}
 
-	for(const arg of fn.args.map(a => a.name.word)) {
+	for(const arg of fn.args.map(a => a.name)) {
 		out.addWord(arg.name, new Red.RawUnset());
 	}
 
@@ -175,10 +175,9 @@ function fnRunInCtx(
 
 	for(const [ref, args] of refines) {
 		ctx.setWord(ref.word.name, new Red.RawLogic(true));
-
+		
 		for(let i = 0; i < fn.getRefine(ref).addArgs.length; i++) {
-			ctx.words.push(fn.getRefine(ref).addArgs[i].name.name);
-			ctx.values.push(args[i]);
+			ctx.addWord(fn.getRefine(ref).addArgs[i].name.name, args[i]);
 		}
 	}
 
@@ -296,18 +295,18 @@ export function callFunction(
 	} else if(funcArity + refArity == 0) {
 		return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, [], []);
 	} else if(funcArity + refArity == args.length) {
-		let fnArgs = args.slice(0, fn.arity);
+		const funcArgs = args.slice(0, fn.arity);
 		const refArgs = args.slice(fn.arity);
 		
 		// Evaluate regular arguments
 		// TODO: lit-words should evaluate parens and get-words, and get-words shouldn't eval anything
-		fnArgs = fnArgs.map((a, i) => {
+		const fnArgs = funcArgs.map((a, i) => {
 			if(fn.args[i].name instanceof Red.RawWord) {
 				return evalSingle(ctx, a);
 			} else {
 				return a;
 			}
-		});
+		}) as Red.AnyType[];
 
 		if(refArgs.length == 0) {
 			return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, fnArgs, []);
@@ -326,7 +325,7 @@ export function callFunction(
 				};
 
 				for(let i = 0; i < getRef.addArgs.length; i++) {
-					newArgs.push(evalArg(refArgs.unshift(), i));
+					newArgs.push(evalArg(refArgs.unshift() as any, i)); // TODO: fix
 				}
 
 				refOptions.push([ref, newArgs]);

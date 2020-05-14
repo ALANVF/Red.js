@@ -1,7 +1,18 @@
-export class RawValue {}
+interface Series {
+	index: number;
+	length: number;
+}
 
-export class RawDatatype implements RawValue {
-	constructor(public name: string, public repr: Function) {}
+export class RawValue {
+	isTruthy(): boolean {
+		return true;
+	}
+}
+
+export class RawDatatype extends RawValue {
+	constructor(public name: string, public repr: Function) {
+		super();
+	}
 
 	equals(type: RawDatatype): boolean {
 		return this.repr === type.repr;
@@ -10,18 +21,22 @@ export class RawDatatype implements RawValue {
 
 
 /// words
-export class RawWord implements RawValue {
-	constructor(public name: string) {}
+export class RawWord extends RawValue {
+	constructor(public name: string) {
+		super();
+	}
 
 	get word(): RawWord {
 		return this;
 	}
 }
 
-export class RawLitWord implements RawValue {
+export class RawLitWord extends RawValue {
 	name: string;
 	
 	constructor(ident: RawWord|string) {
+		super();
+
 		if(typeof ident == "string") {
 			this.name = ident;
 		} else {
@@ -34,10 +49,12 @@ export class RawLitWord implements RawValue {
 	}
 }
 
-export class RawGetWord implements RawValue {
+export class RawGetWord extends RawValue {
 	name: string;
 	
 	constructor(ident: RawWord|string) {
+		super();
+
 		if(typeof ident == "string") {
 			this.name = ident;
 		} else {
@@ -50,10 +67,12 @@ export class RawGetWord implements RawValue {
 	}
 }
 
-export class RawSetWord implements RawValue {
+export class RawSetWord extends RawValue {
 	name: string;
 	
 	constructor(ident: RawWord|string) {
+		super();
+
 		if(typeof ident == "string") {
 			this.name = ident;
 		} else {
@@ -68,34 +87,60 @@ export class RawSetWord implements RawValue {
 
 
 /// paths
-export class RawPath implements RawValue {
+export class RawPath extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public path: AnyType[]) {}
+	constructor(public path: AnyType[]) {
+		super();
+	}
+
+	get length() {
+		return this.path.length - (this.index - 1);
+	}
 }
 
-export class RawLitPath implements RawValue {
+export class RawLitPath extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public path: AnyType[]) {}
+	constructor(public path: AnyType[]) {
+		super();
+	}
+
+	get length() {
+		return this.path.length - (this.index - 1);
+	}
 }
 
-export class RawGetPath implements RawValue {
+export class RawGetPath extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public path: AnyType[]) {}
+	constructor(public path: AnyType[]) {
+		super();
+	}
+
+	get length() {
+		return this.path.length - (this.index - 1);
+	}
 }
 
-export class RawSetPath implements RawValue {
+export class RawSetPath extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public path: AnyType[]) {}
+	constructor(public path: AnyType[]) {
+		super();
+	}
+
+	get length() {
+		return this.path.length - (this.index - 1);
+	}
 }
 
 
 /// other words
-export class RawRefinement implements RawValue {
-	constructor(public name: RawWord|RawInteger) {}
+export class RawRefinement extends RawValue {
+	constructor(public name: RawWord|RawInteger) {
+		super();
+	}
 
 	get word() {
 		if(this.name instanceof RawWord) {
@@ -106,43 +151,55 @@ export class RawRefinement implements RawValue {
 	}
 }
 
-export class RawIssue implements RawValue {
-	constructor(public value: string) {}
+export class RawIssue extends RawValue {
+	constructor(public value: string) {
+		super();
+	}
 }
 
 
 /// scalars
-export class RawInteger implements RawValue {
+export class RawInteger extends RawValue {
 	#_1 = undefined; // fix for dumb union bug
 	
 	constructor(public value: number) {
+		super();
+
 		if(value % 1 != 0) {
 			throw new TypeError("Internal error: Expected an integer but got a float instead!");
 		}
 	}
 }
 
-export class RawFloat implements RawValue {
+export class RawFloat extends RawValue {
 	#_2 = undefined; // fix for dumb union bug
 	
-	constructor(public value: number) {}
+	constructor(public value: number) {
+		super();
+	}
 }
 
-export class RawMoney implements RawValue {
+export class RawMoney extends RawValue {
 	constructor(
 		public value:  number,
 		public region: string = ""
-	) {}
+	) {
+		super();
+	}
 }
 
-export class RawPercent implements RawValue {
+export class RawPercent extends RawValue {
 	#_3 = undefined; // fix for dumb union bug
 	
-	constructor(public value: number) {}
+	constructor(public value: number) {
+		super();
+	}
 }
 
-export class RawChar implements RawValue {
-	constructor(public char: string) {}
+export class RawChar extends RawValue {
+	constructor(public char: string) {
+		super();
+	}
 
 	static fromNormalChar(char: string) {
 		switch(char) {
@@ -168,7 +225,7 @@ export class RawChar implements RawValue {
 				} else if(char.length == 1) {
 					return new RawChar(char);
 				} else {
-					throw Error(`Invalid char! literal #"${char}"!`);
+					throw new Error(`Invalid char! literal #"${char}"!`);
 				}
 			}
 		}
@@ -198,7 +255,7 @@ export class RawChar implements RawValue {
 					} else if(esc.match(/^\(([A-F\d]+)\)$/)) {
 						return String.fromCharCode(parseInt(RegExp.$1, 16));
 					} else {
-						throw Error(`Invalid char! literal #"^${esc}"!`);
+						throw new Error(`Invalid char! literal #"^${esc}"!`);
 					}
 				}
 			}
@@ -207,21 +264,33 @@ export class RawChar implements RawValue {
 		}
 	}
 }
-export class RawLogic implements RawValue {
-	constructor(public cond: boolean) {}
+export class RawLogic extends RawValue {
+	constructor(public cond: boolean) {
+		super();
+	}
+
+	isTruthy(): boolean {
+		return this.cond;
+	}
 }
 
-export class RawNone implements RawValue {}
+export class RawNone extends RawValue {
+	isTruthy(): boolean {
+		return false;
+	}
+}
 
 
 /// series types
-export class RawString implements RawValue {
+export class RawString extends RawValue implements Series {
 	index: number = 1;
 
 	constructor(
 		public values:    RawChar[],
 		public multiline: boolean = false
-	) {}
+	) {
+		super();
+	}
 
 	static fromJsString(
 		value:     string,
@@ -254,12 +323,26 @@ export class RawString implements RawValue {
 	toJsString() {
 		return this.values.slice(this.index - 1).map(char => char.toNormalChar()).join("");
 	}
+
+	current(): RawString {
+		if(this.index == 1) {
+			return this;
+		} else {
+			return new RawString(this.values.slice(this.index - 1));
+		}
+	}
+
+	get length() {
+		return this.values.length - (this.index - 1);
+	}
 }
 
-export class RawParen implements RawValue {
+export class RawParen extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public values: AnyType[]) {}
+	constructor(public values: AnyType[]) {
+		super();
+	}
 
 	at(i: number) {
 		if(i < 1) throw new Error(`Invalid index: ${i}`);
@@ -273,12 +356,18 @@ export class RawParen implements RawValue {
 			return new RawParen(this.values.slice(this.index - 1));
 		}
 	}
+
+	get length() {
+		return this.values.length - (this.index - 1);
+	}
 }
 
-export class RawBlock implements RawValue {
+export class RawBlock extends RawValue implements Series {
 	index: number = 1;
 
-	constructor(public values: AnyType[]) {}
+	constructor(public values: AnyType[]) {
+		super();
+	}
 
 	at(i: number) {
 		if(i < 1) throw new Error(`Invalid index: ${i}`);
@@ -292,14 +381,20 @@ export class RawBlock implements RawValue {
 			return new RawBlock(this.values.slice(this.index - 1));
 		}
 	}
+
+	get length() {
+		return this.values.length - (this.index - 1);
+	}
 }
 
 
 /// series-like types
-export class RawBinary implements RawValue {
+export class RawBinary extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public bytes: Uint8Array) {}
+	constructor(public bytes: Uint8Array) {
+		super();
+	}
 
 	at(i: number) {
 		if(i < 1) throw new Error(`Invalid index: ${i}`);
@@ -313,16 +408,25 @@ export class RawBinary implements RawValue {
 			return new RawBinary(this.bytes.subarray(this.index - 1));
 		}
 	}
+
+	get length() {
+		return this.bytes.length - (this.index - 1);
+	}
 }
 
-export class RawBitset implements RawValue {
+export class RawBitset extends RawValue {
 	// https://github.com/red/red/blob/master/runtime/datatypes/bitset.reds
 	// https://github.com/rebol/rebol/blob/master/src/core/t-bitset.c#L202
 	
 	bytes:   bigint;
 	negated: boolean;
 	
-	constructor(bytes: number[], negated: boolean) {
+	constructor(
+		bytes:   number[],
+		negated: boolean
+	) {
+		super();
+
 		this.bytes = BigInt(bytes.map(byte => {
 			if(byte % 1 == 0 && byte > -1) {
 				return 1 << (7 - (byte & 7));
@@ -363,10 +467,12 @@ export class RawBitset implements RawValue {
 	}
 }
 
-export class RawHash implements RawValue {
+export class RawHash extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public values: AnyType[]) {}
+	constructor(public values: AnyType[]) {
+		super();
+	}
 
 	at(i: number) {
 		if(i < 1) throw new Error(`Invalid index: ${i}`);
@@ -380,13 +486,19 @@ export class RawHash implements RawValue {
 			return new RawHash(this.values.slice(this.index - 1));
 		}
 	}
+
+	get length() {
+		return this.values.length - (this.index - 1);
+	}
 }
 
-export class RawMap implements RawValue {
+export class RawMap extends RawValue {
 	keys:   AnyType[];
 	values: AnyType[];
 
 	constructor(pairs: [AnyType, AnyType][]) {
+		super();
+
 		this.keys = [];
 		this.values = [];
 
@@ -397,29 +509,49 @@ export class RawMap implements RawValue {
 	}
 }
 
-export class RawFile implements RawValue {
+export class RawFile extends RawValue implements Series {
 	index: number = 1;
 
-	constructor(public name: string) {}
+	constructor(public name: string) {
+		super();
+	}
+
+	get length() {
+		return this.name.length - (this.index - 1);
+	}
 }
 
-export class RawTag implements RawValue {
+export class RawTag extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public tag: string) {}
+	constructor(public tag: string) {
+		super();
+	}
+
+	get length() {
+		return this.tag.length - (this.index - 1);
+	}
 }
 
-export class RawUrl implements RawValue {
+export class RawUrl extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public url: string) {}
+	constructor(public url: string) {
+		super();
+	}
+
+	get length() {
+		return this.url.length - (this.index - 1);
+	}
 }
 
 type Vector = (RawInteger[] | RawFloat[] | RawChar[] | RawPercent[]) & unknown[]; // incomplete hack for dumb union bug
-export class RawVector implements RawValue {
+export class RawVector extends RawValue implements Series {
 	index: number = 1;
 
-	constructor(public values: Vector) {}
+	constructor(public values: Vector) {
+		super();
+	}
 
 	static isInteger(values: Vector): values is RawInteger[] {
 		return values.every((v: any) => v instanceof RawInteger);
@@ -436,32 +568,46 @@ export class RawVector implements RawValue {
 	static isPercent(values: Vector): values is RawPercent[] {
 		return values.every((v: any) => v instanceof RawPercent);
 	}
+
+	get length() {
+		return this.values.length - (this.index - 1);
+	}
 }
 
 
 /// simple compound types
-export class RawEmail implements RawValue {
+export class RawEmail extends RawValue implements Series {
 	index: number = 1;
 	
 	constructor(
 		public user: string,
 		public host: string
-	) {}
+	) {
+		super();
+	}
+
+	get length() {
+		return this.user.length + 1 + this.host.length - (this.index - 1);
+	}
 }
 
-export class RawPair implements RawValue {
+export class RawPair extends RawValue {
 	constructor(
 		public x: RawInteger,
 		public y: RawInteger
-	) {}
+	) {
+		super();
+	}
 }
 
-export class RawTime implements RawValue {
+export class RawTime extends RawValue {
 	constructor(
 		public hours:   RawInteger,
 		public minutes: RawInteger,
 		public seconds: RawInteger|RawFloat
-	) {}
+	) {
+		super();
+	}
 	
 	static fromNumber(totalSeconds: number): RawTime {
 		const hours = Math.floor(totalSeconds / 3600);
@@ -478,25 +624,31 @@ export class RawTime implements RawValue {
 
 
 /// complex compound types
-export class RawDate implements RawValue {
-	constructor(public date: Date) {}
+export class RawDate extends RawValue {
+	constructor(public date: Date) {
+		super();
+	}
 }
 
-export class RawTuple implements RawValue {
+export class RawTuple extends RawValue {
 	constructor(public values: RawInteger[]) {
+		super();
+		
 		if(values.length < 3 || values.length > 12) {
-			throw Error("Invalid number of values for a tuple!");
+			throw new Error("Invalid number of values for a tuple!");
 		}
 	}
 }
 
 
 /// misc
-export class RawTypeset implements RawValue {
-	constructor(public types: RawDatatype[]) {}
+export class RawTypeset extends RawValue {
+	constructor(public types: RawDatatype[]) {
+		super();
+	}
 }
 
-export class RawUnset implements RawValue {}
+export class RawUnset extends RawValue {}
 
 
 /// aliases
@@ -532,7 +684,7 @@ export type AnyType =
 
 
 /// contexts
-export class Context implements RawValue {
+export class Context extends RawValue {
 	static $ = new Context();
 	
 	outer?: Context;
@@ -540,9 +692,11 @@ export class Context implements RawValue {
 	values: AnyType[] = [];
 	
 	constructor(
-		outer?: Context,
+		outer?:  Context,
 		entries: [string, AnyType][] = []
 	) {
+		super();
+
 		this.outer = outer;
 		
 		if(entries.length > 0) {
@@ -582,7 +736,7 @@ export class Context implements RawValue {
 			if(recursive && this.outer) {
 				return this.outer.getWord<T>(word, caseSensitive, true);
 			} else {
-				throw Error(`Error: Undefined word "${word}" in context!`);
+				throw new Error(`Error: Undefined word "${word}" in context!`);
 			}
 		} else {
 			return this.values[index] as T;
@@ -603,7 +757,7 @@ export class Context implements RawValue {
 			if(recursive && this.outer) {
 				this.outer.setWord(word, value, caseSensitive, true);
 			} else {
-				throw Error(`Error: Undefined word "${word}" in in context!`);
+				throw new Error(`Error: Undefined word "${word}" in in context!`);
 			}
 		} else {
 			this.values[index] = value;
@@ -621,7 +775,7 @@ export class Context implements RawValue {
 			: this.words.findIndex(w => w.toLowerCase() == word.toLowerCase());
 		
 		if(index == -1) {
-			if(recursive && this.outer && !this.outer.hasWord(word, caseSensitive)) {
+			if(recursive && this.outer && this.outer.hasWord(word, caseSensitive, true)) {
 				this.outer.addWord(word, value, caseSensitive, true);
 			} else {
 				this.words.push(word);
@@ -679,8 +833,7 @@ export class RawFuncRefine {
 	) {}
 }
 
-export class RawFunction implements RawValue {
-	locals: string[];
+export class RawFunction extends RawValue {
 	arity:  number;
 
 	constructor(
@@ -689,10 +842,12 @@ export class RawFunction implements RawValue {
 		public args:    RawArgument[],
 		public refines: RawFuncRefine[],
 		public retSpec: RawBlock|null,
-		public body:    RawBlock
+		public body:    RawBlock,
+		public locals:  string[] = []
 	) {
+		super();
+
 		this.arity = args.length;
-		this.locals = [];
 
 		const localsIndex = refines.findIndex(ref => ref.ref.word.name.toLowerCase() == "local");
 		if(localsIndex != -1) {
@@ -704,7 +859,7 @@ export class RawFunction implements RawValue {
 				}
 			}
 
-			this.refines.splice(localsIndex, 1);
+			//this.refines.splice(localsIndex, 1);
 		}
 	}
 
@@ -713,7 +868,7 @@ export class RawFunction implements RawValue {
 	}
 }
 
-export class Native implements RawValue {
+export class Native extends RawValue {
 	arity: number;
 
 	constructor(
@@ -724,6 +879,8 @@ export class Native implements RawValue {
 		public retSpec: RawBlock|null,
 		public func:    Function
 	) {
+		super();
+
 		this.arity = args.length;
 	}
 
@@ -732,7 +889,7 @@ export class Native implements RawValue {
 	}
 }
 
-export class Action implements RawValue {
+export class Action extends RawValue {
 	arity: number;
 
 	constructor(
@@ -743,6 +900,8 @@ export class Action implements RawValue {
 		public retSpec: RawBlock|null,
 		public func:    Function
 	) {
+		super();
+
 		this.arity = args.length
 	}
 
@@ -751,7 +910,7 @@ export class Action implements RawValue {
 	}
 }
 
-export class Op implements RawValue {
+export class Op extends RawValue {
 	name: string;
 	func: Native|Action|RawFunction;
 
@@ -759,11 +918,13 @@ export class Op implements RawValue {
 		name: string,
 		func: Native|Action|RawFunction
 	) {
+		super();
+		
 		if(func.refines.length == 0 && func.arity == 2) {
 			this.name = name;
 			this.func = func;
 		} else {
-			throw Error("Red Error: an op! must take 2 arguments with no refinements!");
+			throw new Error("Red Error: an op! must take 2 arguments with no refinements!");
 		}
 	}
 
@@ -776,7 +937,7 @@ export class Op implements RawValue {
 	}
 }
 
-export const Types: AnyType[] = [
+export const Types: Function[] = [
 	RawValue,
 	RawDatatype,
 	RawUnset,
@@ -936,9 +1097,9 @@ export function wrap(value: any): AnyType {
 	} else if(value instanceof Map) {
 		return new RawMap(Array.from(value.entries()).map(([k, v]) => [wrap(k), wrap(v)]));
 	} else if(value instanceof Date) {
-		throw Error("unimplemented!");
+		throw new Error("unimplemented!");
 	} else if(value instanceof DataView) {
-		throw Error("unimplemented!");
+		throw new Error("unimplemented!");
 	} else if(typeof value == "object") {
 		const obj = new RawObject();
 

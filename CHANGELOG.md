@@ -1,3 +1,12 @@
+# Version 0.0.3
+- Restructured the main Red.js module.
+- Switched to polymorphism for the type system.
+- Fixed `foreach`, `repeat`, and several `series!`-related actions.
+- (Mostly) unified `series!` types interally.
+- Optimized a bit more code.
+- Fixed bug where existing variables that were re-assigned in a new scope were accidently shadowed.
+
+
 # Version 0.0.2
 - Completely rewrote `context!`s.
 - Fixed lots of scoping issues.

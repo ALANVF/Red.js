@@ -4,21 +4,24 @@ TL;DR:
 - Finish implementing features.
 
 Finish very soon:
-- Fix `series!`-related functions because I somehow broke them by accident.
+- `series!` actions such as `at` and `skip` should not copy the original `series!`.
 - `a: [none] a/1` should not return a `none!`.
 - Fix path stuff for other things supporting path access:
 	- Fix path assignments that are longer than 2 values. 
-- Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
 - Fix refinements for natives and actions.
 
 Finish somewhat soon:
-- Add support for map! literals.
+- Stop boxing compound natives such as `pair!` or `time!`.
+- Redo the implementation for `money!`.
+- Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
+- Add support for `map!` literals.
 - Implement (more) math natives.
 - Implement the `make` action for more datatypes.
 - Allow including files (kinda already done?).
 - Add newline markers in blocks (will require rewriting many things).
 - Redo literally everything related to vectors.
 - Give functions custom contexts so that `self` can be used in a function inside an object/context.
+- Switch from using unions to interfaces for the type system.
 
 Finish sometime:
 - Finish all natives.
@@ -28,20 +31,21 @@ Finish sometime:
 - Add more rules to the parser (mostly done).
 - Make error messages way more helpful/descriptive.
 - Add the Parse dialect.
-- Figure out what to do with the routine! type.
-- Add the reactor!/deep-reactor! type (I don't even know where to start with that one).
-- Add the port! type (and actors and stuff).
+- Figure out what to do with the `routine!` type.
+- Add the `reactor!`/`deep-reactor!` type (I don't even know where to start with that one).
+- Add the `port!` type (and actors and stuff).
 - Add extra stuff the the global system object.
+- Add Red's newly proposed `ref!` type.
 - Finish implementing macros.
 
 Finish if I'm still bored:
 - Add support for interacting with the DOM (and maybe have it act like Red/View).
-- Make a JS ffi (and maybe use Rebol's library! type for it).
+- Make a JS ffi (and maybe use Rebol's `library!` type for it).
 - Make a variant of Red/System but for js (kinda like the previous thing).
 - Add a binary language mode like what Red has.
 - Add the DELECT native from Rebol.
 - Add the utype! type from Rebol (although it's not completely finished).
-- Implement Rebol's module system (along with the module! type).
+- Implement Rebol's module system (along with the `module!` type).
 - Optimize the runtime a ton.
 - Optimize the runtime even more.
 - Optimize the parser as well.
@@ -50,7 +54,7 @@ Finish if I'm still bored:
 - Make a C ffi (and maybe use Rebol's library! type for it).
 - Allow compiling to/running on WebAssembly.
 
-Big things already done:
+Things already done:
 - Completely redo the tokenizer (might also redo it a third time).
 - Use RawDatatype for types instead of type constructors (ew).
 - Fix get/lit word parameters in new natives and actions.
@@ -59,3 +63,4 @@ Big things already done:
 - Make the API's naming conventions less horrible.
 - Completely redo `context!`s.
 - Fix accessing stuff in the global system object.
+- Fix `series!`-related functions because I somehow broke them by accident.

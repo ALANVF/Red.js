@@ -1,6 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
-import {evalSingle, groupSingle} from "../eval";
+import {evalSingle, groupSingle, ExprType} from "../eval";
 
 /* Native actions */
 export function $evalPath(
@@ -74,7 +74,7 @@ export function $$make(
 	_proto: Red.AnyType,
 	spec:   Red.RawBlock
 ): Red.Context {
-	let blk = [...spec.values];
+	let blk: ExprType[] = [...spec.values];
 	const out = new Red.Context(ctx);
 
 	// this doesn't work quite like it does normally in Red, but it works for now

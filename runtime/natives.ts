@@ -1,7 +1,7 @@
 import {tokenize} from "../tokenizer";
 import {pre, pre1} from "./preprocesser";
-import {system, system$words} from "./system";
-import {evalSingle, groupSingle} from "./eval";
+import {system$words} from "./system";
+import {evalSingle, groupSingle, ExprType} from "./eval";
 import * as Red from "../red-types";
 import RedActions from "./actions";
 
@@ -26,7 +26,7 @@ module RedNatives {
 		val: Red.AnyType
 	) {
 		if(process == null) {
-			throw Error('Red.js native! "system/words/prin" may only be used in node.js supported environments!');
+			throw new Error('Red.js native! "system/words/prin" may only be used in node.js supported environments!');
 		} else {
 			process.stdout.write(RedActions.$$form(ctx, val).toJsString());
 			return new Red.RawUnset();
@@ -38,10 +38,10 @@ module RedNatives {
 		cond:    Red.AnyType,
 		thenBlk: Red.RawBlock
 	): Red.AnyType {
-		if(cond instanceof Red.RawNone || (cond instanceof Red.RawLogic && !cond.cond)) {
-			return new Red.RawNone();
-		} else {
+		if(cond.isTruthy()) {
 			return $$do(ctx, thenBlk);
+		} else {
+			return new Red.RawNone();
 		}
 	}
 
@@ -50,7 +50,7 @@ module RedNatives {
 		cond:    Red.AnyType,
 		thenBlk: Red.RawBlock
 	): Red.AnyType {
-		if(cond instanceof Red.RawNone || (cond instanceof Red.RawLogic && !cond.cond)) {
+		if(!cond.isTruthy()) {
 			return $$do(ctx, thenBlk);
 		} else {
 			return new Red.RawNone();
@@ -63,10 +63,10 @@ module RedNatives {
 		thenBlk: Red.RawBlock,
 		elseBlk: Red.RawBlock
 	): Red.AnyType {
-		if(cond instanceof Red.RawNone || (cond instanceof Red.RawLogic && !cond.cond)) {
-			return $$do(ctx, elseBlk);
-		} else {
+		if(cond.isTruthy()) {
 			return $$do(ctx, thenBlk);
+		} else {
+			return $$do(ctx, elseBlk);
 		}
 	}
 
@@ -74,19 +74,19 @@ module RedNatives {
 		ctx:  Red.Context,
 		cond: Red.RawBlock
 	): Red.AnyType {
-		let blk = [...cond.values.slice(cond.index-1)];
+		let blk: ExprType[] = cond.values.slice(cond.index - 1);
 		let res;
 
 		do {
 			const made = groupSingle(ctx, blk);
 			res = evalSingle(ctx, made.made);
 			blk = made.restNodes;
-		} while((res instanceof Red.RawNone || (res instanceof Red.RawLogic && !res.cond)) && blk.length > 0);
+		} while(!res.isTruthy() && blk.length > 0);
 		
-		if(res instanceof Red.RawNone || (res instanceof Red.RawLogic && !res.cond)) {
-			return new Red.RawNone();
-		} else {
+		if(res.isTruthy()) {
 			return res;
+		} else {
+			return new Red.RawNone();
 		}
 	}
 	
@@ -94,19 +94,19 @@ module RedNatives {
 		ctx:  Red.Context,
 		cond: Red.RawBlock
 	): Red.AnyType {
-		let blk = [...cond.values.slice(cond.index-1)];
+		let blk: ExprType[] = cond.values.slice(cond.index - 1);
 		let res;
 
 		do {
 			const made = groupSingle(ctx, blk);
 			res = evalSingle(ctx, made.made);
 			blk = made.restNodes;
-		} while(!(res instanceof Red.RawNone || (res instanceof Red.RawLogic && !res.cond)) && blk.length > 0);
+		} while(res.isTruthy() && blk.length > 0);
 
-		if(res instanceof Red.RawNone || (res instanceof Red.RawLogic && !res.cond)) {
-			return new Red.RawNone();
-		} else {
+		if(res.isTruthy()) {
 			return res;
+		} else {
+			return new Red.RawNone();
 		}
 	}
 
@@ -119,9 +119,7 @@ module RedNatives {
 		let ret;
 
 		while(status) {
-			const c = $$do(ctx, cond);
-
-			if(c instanceof Red.RawNone || (c instanceof Red.RawLogic && !c.cond)) {
+			if(!$$do(ctx, cond).isTruthy()) {
 				break;
 			}
 
@@ -153,9 +151,7 @@ module RedNatives {
 
 		while(status) {
 			try {
-				const c = $$do(ctx, body);
-				
-				if(c instanceof Red.RawNone || (c instanceof Red.RawLogic && !c.cond)) {
+				if(!$$do(ctx, body).isTruthy()) {
 					break;
 				}
 			} catch(e) {
@@ -213,13 +209,15 @@ module RedNatives {
 		let ret;
 
 		const times = value.value;
-		if(times < 0) throw Error(`Cannot iterate ${times} times`);
+		if(times < 0) throw new Error(`Cannot iterate ${times} times`);
 
-		for(let i = 1; i < times + 1 && status; i++) {
-			$$set(ctx, word, new Red.RawInteger(i));
-
+		for(let i = 1; i <= times && status; i++) {
+			const newCtx = new Red.Context(ctx, [
+				[word.name, new Red.RawInteger(i)]
+			]);
+			
 			try {
-				ret = $$do(ctx, body);
+				ret = $$do(newCtx, body);
 			} catch(e) {
 				switch(e.constructor) {
 					case Red.CFBreak:
@@ -229,7 +227,7 @@ module RedNatives {
 					case Red.CFContinue:
 						break;
 					default:
-						throw(e);
+						throw e;
 				}
 			}
 		}
@@ -256,7 +254,7 @@ module RedNatives {
 					case Red.CFContinue:
 						break;
 					default:
-						throw(e);
+						throw e;
 				}
 			}
 		}
@@ -274,11 +272,13 @@ module RedNatives {
 		let ret;
 
 		if(word instanceof Red.RawWord) {
-			for(let i = 1; i < series.index+1 && status; i++) {
-				$$set(ctx, word, RedActions.$$pick(ctx, series, new Red.RawInteger(i)));
+			for(let i = series.index; i <= series.length && status; i++) {
+				const newCtx = new Red.Context(ctx, [
+					[word.name, RedActions.$$pick(ctx, series, new Red.RawInteger(i))]
+				]);
 
 				try {
-					$$do(ctx, body);
+					ret = $$do(newCtx, body);
 				} catch(e) {
 					switch(e.constructor) {
 						case Red.CFBreak:
@@ -288,7 +288,7 @@ module RedNatives {
 						case Red.CFContinue:
 							break;
 						default:
-							throw(e);
+							throw e;
 					}
 				}
 			}
@@ -372,7 +372,7 @@ module RedNatives {
 		} = {}
 	): Red.AnyType {
 		let ret;
-		let _cases = cases.values.slice(cases.index-1);
+		let _cases: ExprType[] = cases.values.slice(cases.index-1);
 		const comp = _.strict !== undefined ? $$strict_equal_q : $$equal_q;
 		
 		while(_cases.length != 0) {
@@ -442,7 +442,7 @@ module RedNatives {
 				}
 				
 				let last: Red.AnyType = new Red.RawUnset();
-				let blk = val.values;
+				let blk: ExprType[] = val.values;
 
 				while(blk.length > 0) {
 					const grouped = groupSingle(ctx, blk);
@@ -454,8 +454,8 @@ module RedNatives {
 			}
 		} else if(value instanceof Red.RawFile) {
 			return Red.todo();
-		} else if(value instanceof Red.RawString) { // I don't remember what was happening here...
-			let out = new Red.RawBlock(tokenize(value.values.map(c=>c.char).join().slice(value.index-1)).made);
+		} else if(value instanceof Red.RawString) {
+			let out = new Red.RawBlock(tokenize(value.current().toJsString()).made);
 			//if(doExpand) out = pre(ctx, out);
 
 			return $$do(ctx, out, _);
@@ -478,7 +478,7 @@ module RedNatives {
 		const made = [];
 
 		if(value instanceof Red.RawBlock) {
-			let blk = value.values.slice(value.index-1);
+			let blk: ExprType[] = value.values.slice(value.index-1);
 
 			while(blk.length > 0) {
 				const res = groupSingle(ctx, blk);
@@ -527,7 +527,7 @@ module RedNatives {
 			into?: [Red.RawAnyBlock]
 		} = {}
 	): Red.RawBlock {
-		const blk = [...value.values.slice(value.index-1)];
+		const blk = value.values.slice(value.index - 1);
 		
 		if(_.into !== undefined) {
 			Red.todo();
@@ -647,6 +647,7 @@ module RedNatives {
 		}
 		
 		ctx.addWord(word, newValue, isCase, true);
+		
 		return newValue;
 	}
 
@@ -711,7 +712,8 @@ module RedNatives {
 		_ctx:  Red.Context,
 		value: Red.AnyType
 	): Red.RawLogic {
-		return new Red.RawLogic(value instanceof Red.RawNone || (value instanceof Red.RawLogic && !value.cond));
+		//return new Red.RawLogic(value instanceof Red.RawNone || (value instanceof Red.RawLogic && !value.cond));
+		return new Red.RawLogic(!value.isTruthy());
 	}
 	
 	export function $$type_q(
@@ -758,7 +760,7 @@ module RedNatives {
 			return?: [Red.AnyType]
 		} = {}
 	): never {
-		throw new Red.CFBreak(_.return);
+		throw new Red.CFBreak(_.return ?  _.return[0] : undefined);
 	}
 	export function $$continue(
 		_ctx: Red.Context
@@ -815,7 +817,7 @@ module RedNatives {
 
 	export const _SET = new Red.Native(
 		"set",
-		Red.RawString.fromNormalString("Sets the value(s) one or more words refer to"),
+		Red.RawString.fromJsString("Sets the value(s) one or more words refer to"),
 		[
 			new Red.RawArgument(
 				new Red.RawWord("word"),
@@ -825,33 +827,33 @@ module RedNatives {
 					new Red.RawWord("object!"),
 					new Red.RawWord("path!")
 				]),
-				Red.RawString.fromNormalString("Word, object, map path or block of words to set")
+				Red.RawString.fromJsString("Word, object, map path or block of words to set")
 			),
 			new Red.RawArgument(
 				new Red.RawWord("value"),
 				new Red.RawBlock([new Red.RawWord("any-type!")]),
-				Red.RawString.fromNormalString("Value or block of values to assign to words")
+				Red.RawString.fromJsString("Value or block of values to assign to words")
 			)
 		],
 		[
 			new Red.RawFuncRefine(
 				new Red.RawRefinement(new Red.RawWord("any")),
-				Red.RawString.fromNormalString("Allow UNSET as a value rather than causing an error"),
+				Red.RawString.fromJsString("Allow UNSET as a value rather than causing an error"),
 				[]
 			),
 			new Red.RawFuncRefine(
 				new Red.RawRefinement(new Red.RawWord("case")),
-				Red.RawString.fromNormalString("Use case-sensitive comparison (path only)"),
+				Red.RawString.fromJsString("Use case-sensitive comparison (path only)"),
 				[]
 			),
 			new Red.RawFuncRefine(
 				new Red.RawRefinement(new Red.RawWord("only")),
-				Red.RawString.fromNormalString("Block or object value argument is set as a single value"),
+				Red.RawString.fromJsString("Block or object value argument is set as a single value"),
 				[]
 			),
 			new Red.RawFuncRefine(
 				new Red.RawRefinement(new Red.RawWord("some")),
-				Red.RawString.fromNormalString("None values in a block or object value argument, are not set"),
+				Red.RawString.fromJsString("None values in a block or object value argument, are not set"),
 				[]
 			),
 		],

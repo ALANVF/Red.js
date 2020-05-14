@@ -1,11 +1,8 @@
-import * as Red from "../red-types";
-import RedNatives from "./natives";
-
 module RedUtil {
-	export function IN_TYPESET(
-		ctx: Red.Context,
+	/*export function IN_TYPESET(
+		ctx:   Red.Context,
 		value: Red.AnyType,
-		ts: Red.RawTypeset
+		ts:    Red.RawTypeset
 	): boolean {
 		for(const t of ts.types) {
 			if(t instanceof Red.RawWord) {
@@ -21,7 +18,7 @@ module RedUtil {
 			}
 		}
 		return false;
-	}
+	}*/
 	
 	export function make<T>(t: new(...args: any[]) => T, v: {[k in keyof T]?: k extends undefined ? any : T[k]}): T {
 		let inst = new t;

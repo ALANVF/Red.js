@@ -45,7 +45,7 @@ export function $$tail_q(
 	ctx: Red.Context,
 	series: Red.RawSeries
 ): Red.RawLogic {
-	return new Red.RawLogic(series.index == $$length_q(ctx, $$head(ctx, series)).value);
+	return new Red.RawLogic(series.index == $$head(ctx, series).length);
 }
 
 export function $$index_q(
@@ -59,11 +59,7 @@ export function $$length_q(
 	_ctx: Red.Context,
 	series: Red.RawSeries
 ): Red.RawInteger {
-	if(isMoreBlocky(series)) {
-		return new Red.RawInteger(series.values.length - series.index);
-	} else {
-		Red.todo();
-	}
+	return new Red.RawInteger(series.length);
 }
 
 // Navigation
@@ -74,7 +70,7 @@ export function $$at(
 	index: number
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series);
-	_.index = index;
+	_.index = index < 1 ? 1 : index;
 	return _;
 }
 
@@ -92,7 +88,7 @@ export function $$next(
 	series: Red.RawSeries
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series);
-	if(_.index-1 <= $$length_q(ctx, $$head(ctx, _)).value) _.index++;
+	if(_.index-1 <= $$head(ctx, _).length) _.index++;
 	return _;
 }
 
@@ -120,7 +116,7 @@ export function $$tail(
 	series: Red.RawSeries
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series);
-	_.index = $$length_q(ctx, $$head(ctx, _)).value;
+	_.index = $$head(ctx, _).length + 1;
 	return _;
 }
 
@@ -132,7 +128,7 @@ export function $$pick(
 	index: Red.AnyType,
 ): Red.AnyType {
 	if(!(index instanceof Red.RawInteger)) {
-		throw TypeError("error!");
+		throw new TypeError("error!");
 	}
 
 	if(ser instanceof Red.RawBitset) {
@@ -169,7 +165,7 @@ export function $$poke(
 	value: Red.AnyType
 ): Red.AnyType|Red.RawBitset {
 	if(!(index instanceof Red.RawInteger)) {
-		throw TypeError("error!");
+		throw new TypeError("error!");
 	}
 	
 	if(ser instanceof Red.RawBitset) {
@@ -184,7 +180,7 @@ export function $$poke(
 					ser.values[(ser.index - 1) + (index.value - 1)] = value;
 					return ser; // no?
 				} else {
-					throw RangeError("Value out of range!");
+					throw new RangeError("Value out of range!");
 				}
 			} else {
 				return Red.todo();

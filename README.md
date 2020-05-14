@@ -6,7 +6,7 @@ Red.js is a web runtime for the [Red programming language](https://www.red-lang.
 # Example usage
 
 ```typescript
-import * as Red from "./red";
+import Red from "./red";
 
 
 /* this stuff is temporary */
@@ -48,7 +48,7 @@ Red.evalCode(fizzbuzz);
 # Running
 
 ## Locally
-In order to run this locally, you'll need Node 12.13.1 or higher installed (I haven't tested it with any older versions yet).
+In order to run this locally, you'll need Node 12.13.1 or higher installed (I haven't tested it with any older versions yet) and TypeScript 3.9.2.
 
 ## In a browser
 I have yet to actually test Red.js in a browser, but it should be fine as long as you aren't using IE or Firefox.

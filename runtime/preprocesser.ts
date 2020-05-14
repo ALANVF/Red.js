@@ -1,4 +1,3 @@
-import {tokenize} from "../tokenizer";
 import * as Red from "../red-types";
 
 // system/words/preprocessor from compiled Red is a nice thing to look at for reference.
@@ -44,20 +43,20 @@ export function pre1(ctx: Red.Context, body: Red.RawBlock) {
 	
 	for(let i = body.values.length-1; i >= 0; i--) {
 		const value = values[i];
-        
-        if(value instanceof Red.RawIssue) {
-            values[i] = value;
+		
+		if(value instanceof Red.RawIssue) {
+			values[i] = value;
 
 			// why does this exist
-            if(value.value == "macro") {
-                values[i + 1] = values[i + 1];
-                values[i + 2] = values[i + 2];
-                values[i + 3] = values[i + 3];
-                values[i + 4] = values[i + 4];
-            }
+			/*if(value.value == "macro") {
+				values[i + 1] = values[i + 1];
+				values[i + 2] = values[i + 2];
+				values[i + 3] = values[i + 3];
+				values[i + 4] = values[i + 4];
+			}*/
 
-            continue;
-        }
+			continue;
+		}
 
 		if(value instanceof Red.RawWord) {
 			switch(value.name) {
@@ -98,15 +97,15 @@ function pre2(mc: MacroCtx) {
 			mc.defines.values.push(stack[1]);
 			stack.splice(0, 2);
 		} else if(value instanceof Red.RawIssue && value.value == "macro" && stack0 instanceof Red.RawSetWord) {
-            mc.macros.names.push(stack0.word.name);
-            const mfunc = new MacroFunction(stack0.name, stack[2] as Red.RawBlock, stack[3] as Red.RawBlock);
-            stack.splice(0, 4);
-            mc.macros.funcs.push(mfunc);
-        } else if(value instanceof Red.RawIssue && value.value == "include" && stack[0] instanceof Red.RawFile) {
+			mc.macros.names.push(stack0.word.name);
+			const mfunc = new MacroFunction(stack0.name, stack[2] as Red.RawBlock, stack[3] as Red.RawBlock);
+			stack.splice(0, 4);
+			mc.macros.funcs.push(mfunc);
+		} else if(value instanceof Red.RawIssue && value.value == "include" && stack[0] instanceof Red.RawFile) {
 			stack.splice(0, 1, new Red.RawWord("do"));
 		} else {
-            stack.unshift(values[i]);
-        }
+			stack.unshift(values[i]);
+		}
 	}
 
 	mc.body = new Red.RawBlock(stack);
@@ -124,7 +123,7 @@ function pre3(mc: MacroCtx) {
 		if(value instanceof Red.RawWord) {
 			if(mc.defines.names.includes(value.name)) {
 				const v = mc.defines.values[mc.defines.names.indexOf(value.name)];
-                
+				
 				if(v instanceof Red.RawBlock) {
 					values.splice(i, 1, ...pre(mc.ctx, v).values);
 				} else {
@@ -134,9 +133,9 @@ function pre3(mc: MacroCtx) {
 		}
 	}
 
-    for(const macro of mc.macros.funcs) {
-        values.push(macro);
-    }
+	/*for(const macro of mc.macros.funcs) {
+		values.push(macro);
+	}*/
 	
 	return new Red.RawBlock(values);
 }

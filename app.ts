@@ -1,4 +1,4 @@
-﻿import * as Red from "./red";
+﻿import Red from "./red";
 
 // temporary
 Red.evalRed(`
