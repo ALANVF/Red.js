@@ -18,34 +18,6 @@ Red.evalFile("./core/natives.red");
 Red.evalFile("./core/actions.red");
 Red.evalFile("./core/operators.red");
 
-/*
-import {performance} from "perf_hooks";
-
-const tb = performance.now();
-Red.evalRed(`
-hanoi: func [
-	{Begin moving the golden disks from one pole to the next.
-	 Note: when last disk moved, the world will end.}
-	disks [integer!] "Number of discs on starting pole."
-	/poles "Name poles."
-		from
-		to_
-		via
-][
-	if disks = 0 [return]
-	if not poles [from: 'left  to_: 'middle  via: 'right]
-	
-	hanoi/poles disks - 1 from via to_
-	print form reduce [from "->" to_]
-	hanoi/poles disks - 1 via to_ from
-]
-
-hanoi 4
-`);
-const te = performance.now();
-
-console.log("Time taken: ", te - tb, "ms");*/
-
 
 
 // REPL
