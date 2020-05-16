@@ -2,9 +2,9 @@ import * as Red from "../../red-types";
 import RedActions from "../actions";
 
 export function $$make(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_proto: Red.AnyType,
-	spec: Red.AnyType
+	spec:   Red.AnyType
 ): Red.RawBlock {
 	if(spec instanceof Red.RawInteger || spec instanceof Red.RawFloat) {
 		return new Red.RawBlock([]);
@@ -26,17 +26,17 @@ export function $$make(
 	} */ else if(spec instanceof Red.RawVector) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else {
-		throw TypeError("Cannot create a block! from an instance of " + Red.TYPE_NAME(spec));
+		throw new TypeError("Cannot create a block! from an instance of " + Red.TYPE_NAME(spec));
 	}
 }
 
 // $$to
 
 export function $$form(
-	ctx: Red.Context,
-	block: Red.RawBlock,
+	ctx:    Red.Context,
+	block:  Red.RawBlock,
 	buffer: string[],
-	part?: number
+	part?:  number
 ): boolean {
 	const blk = block.values.slice(block.index-1);
 
@@ -55,8 +55,8 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx: Red.Context,
-	block: Red.RawBlock,
+	ctx:    Red.Context,
+	block:  Red.RawBlock,
 	buffer: string[],
 	indent: number,
 	_: RedActions.MoldOptions = {}
@@ -86,7 +86,7 @@ export function $$mold(
 // $evalPath
 
 export function $$copy(
-	ctx: Red.Context,
+	ctx:   Red.Context,
 	block: Red.RawBlock,
 	_: RedActions.CopyOptions = {}
 ): Red.RawBlock {
@@ -96,7 +96,7 @@ export function $$copy(
 
 	const blk = block.values.slice(block.index-1);
 	
-	if(_.deep !== undefined) {
+	if(_.deep === undefined) {
 		return new Red.RawBlock(blk);
 	} else {
 		return new Red.RawBlock(

@@ -4,9 +4,9 @@ import RedActions from "../actions";
 // $$make
 
 export function $$mold(
-	_ctx: Red.Context,
-	value: Red.RawRefinement,
-	buffer: string[],
+	_ctx:    Red.Context,
+	value:   Red.RawRefinement,
+	buffer:  string[],
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {

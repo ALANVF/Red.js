@@ -92,7 +92,7 @@ export function $$make(
 }
 
 export function $$form(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_value: Red.Action,
 	buffer: string[],
 	_part?: number

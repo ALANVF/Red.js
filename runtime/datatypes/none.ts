@@ -3,10 +3,10 @@ import RedActions from "../actions";
 
 /* Native functions */
 export function $compare(
-	_ctx: Red.Context,
+	_ctx:    Red.Context,
 	_value1: Red.RawNone,
-	value2: Red.AnyType,
-	op: Red.ComparisonOp
+	value2:  Red.AnyType,
+	op:      Red.ComparisonOp
 ): Red.CompareResult {
 	if(value2 instanceof Red.RawNone) {
 		switch(op) {
@@ -26,23 +26,23 @@ export function $compare(
 
 /* Actions */
 export function $$make(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_proto: Red.AnyType,
-	_spec: Red.AnyType
+	_spec:  Red.AnyType
 ): Red.RawNone {
-	return new Red.RawNone();
+	return Red.RawNone.none;
 }
 
 export function $$to(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_proto: Red.AnyType,
-	_spec: Red.AnyType
+	_spec:  Red.AnyType
 ): Red.RawNone {
-	return new Red.RawNone();
+	return Red.RawNone.none;
 }
 
 export function $$form(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_value: Red.RawNone,
 	buffer: string[],
 	_part?: number
@@ -52,9 +52,9 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx: Red.Context,
-	value: Red.RawNone,
-	buffer: string[],
+	ctx:     Red.Context,
+	value:   Red.RawNone,
+	buffer:  string[],
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {

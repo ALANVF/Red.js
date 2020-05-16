@@ -1,9 +1,10 @@
 import * as Red from "../../red-types";
+import RedActions from "../actions";
 
 export function $$make(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_proto: Red.AnyType,
-	spec: Red.RawBlock
+	spec:   Red.RawBlock
 ): Red.RawFunction {
 	let docSpec = null, retSpec = null;
 	const args = [], refines = [], fspec = spec.values[0] as Red.RawBlock;
@@ -34,8 +35,7 @@ export function $$make(
 			fspec.values.splice(0, 1 + +hasSpec);
 		}
 	}
-
-	// also fix type annotations for this as well
+	
 	while(fspec.values[0] instanceof Red.RawRefinement) {
 		const a = [];
 		let s = null;
@@ -89,4 +89,87 @@ export function $$make(
 		retSpec as any,
 		spec.values[1] as Red.RawBlock
 	);
+}
+
+export function $$form(
+	ctx:    Red.Context,
+	value:  Red.RawFunction,
+	buffer: string[],
+	part?:  number
+): boolean {
+	$$mold(ctx, value, buffer, 1, {part});
+	return true;
+}
+
+export function $$mold(
+	ctx:    Red.Context,
+	value:  Red.RawFunction,
+	buffer: string[],
+	indent: number,
+	_: RedActions.MoldOptions = {}
+): boolean {
+	const lastIndent = " ".repeat((indent-1)*4);
+	const thisIndent = " ".repeat(indent*4);
+	const nextIndent = " ".repeat((indent+1)*4);
+	
+	buffer.push(lastIndent + "make function! [[");
+	
+	if(value.docSpec != null) {
+		buffer.push(RedActions.$$mold(ctx, value.docSpec).toJsString());
+	}
+
+	for(const arg of value.args) {
+		buffer.push("\n" + thisIndent);
+		buffer.push(RedActions.$$mold(ctx, arg.name).toJsString());
+		
+		if(arg.typeSpec != null) {
+			buffer.push(" ");
+			buffer.push(RedActions.$$mold(ctx, arg.typeSpec).toJsString());
+		}
+
+		if(arg.docSpec != null) {
+			buffer.push(" ");
+			buffer.push(RedActions.$$mold(ctx, arg.docSpec).toJsString());
+		}
+	}
+
+	for(const ref of value.refines) {
+		buffer.push("\n" + thisIndent);
+		buffer.push(RedActions.$$mold(ctx, ref.ref).toJsString());
+
+		if(ref.docSpec != null) {
+			buffer.push(" ");
+			buffer.push(RedActions.$$mold(ctx, ref.docSpec).toJsString());
+		}
+
+		for(const arg of ref.addArgs) {
+			buffer.push("\n" + nextIndent);
+			buffer.push(RedActions.$$mold(ctx, arg.name).toJsString());
+			
+			if(arg.typeSpec != null) {
+				buffer.push(" ");
+				buffer.push(RedActions.$$mold(ctx, arg.typeSpec).toJsString());
+			}
+
+			if(arg.docSpec != null) {
+				buffer.push(" ");
+				buffer.push(RedActions.$$mold(ctx, arg.docSpec).toJsString());
+			}
+		}
+	}
+
+	if(value.retSpec != null) {
+		buffer.push("\n" + thisIndent + "return: ");
+		buffer.push(RedActions.$$mold(ctx, value.retSpec).toJsString());
+	}
+
+	if(value.arity != 0) {
+		buffer.push("\n" + lastIndent);
+	}
+
+	buffer.push("]");
+	buffer.push(RedActions.$$mold(ctx, value.body).toJsString());
+	buffer.push("]");
+
+	return true;
 }

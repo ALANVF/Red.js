@@ -1,4 +1,11 @@
-# Version 0.0.3
+# Version 0.0.4
+- Fixed `set-path!`s (so now `a/1/2: 3` works).
+- Fixed an issue where `path!`s were evaluated twice.
+- Fixed various `paren!` bugs.
+- `unset!`, `none!`, and `logic!` values are now treated as singletons to speed things up.
+
+
+# Version 0.0.3	
 - Restructured the main Red.js module.
 - Switched to polymorphism for the type system.
 - Fixed `foreach`, `repeat`, and several `series!`-related actions.

@@ -4,22 +4,20 @@ import RedActions from "../actions";
 // $$make
 
 export function $$form(
-	_ctx: Red.Context,
-	str: Red.RawString,
+	_ctx:   Red.Context,
+	str:    Red.RawString,
 	buffer: string[],
 	_part?: number
 ): boolean {
-	buffer.push('"');
 	buffer.push(str.toJsString());
-	buffer.push('"');
 
 	return false;
 }
 
 export function $$mold(
-	_ctx: Red.Context,
-	str: Red.RawString,
-	buffer: string[],
+	_ctx:    Red.Context,
+	str:     Red.RawString,
+	buffer:  string[],
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {

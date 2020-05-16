@@ -264,9 +264,17 @@ export class RawChar extends RawValue {
 		}
 	}
 }
+
 export class RawLogic extends RawValue {
+	static readonly true = new RawLogic(true);
+	static readonly false = new RawLogic(false);
+
 	constructor(public cond: boolean) {
 		super();
+	}
+
+	static from(cond: boolean): RawLogic {
+		return cond ? RawLogic.true : RawLogic.false;
 	}
 
 	isTruthy(): boolean {
@@ -275,6 +283,8 @@ export class RawLogic extends RawValue {
 }
 
 export class RawNone extends RawValue {
+	static readonly none = new RawNone();
+
 	isTruthy(): boolean {
 		return false;
 	}
@@ -648,7 +658,9 @@ export class RawTypeset extends RawValue {
 	}
 }
 
-export class RawUnset extends RawValue {}
+export class RawUnset extends RawValue {
+	static readonly unset = new RawUnset();
+}
 
 
 /// aliases
@@ -716,8 +728,7 @@ export class Context extends RawValue {
 				recursive && this.outer !== undefined && this.outer.hasWord(word, true, true)
 			);
 		} else {
-			word = word.toLowerCase();
-			return this.words.find(w => w.toLowerCase() == word) !== undefined || (
+			return this.words.find(w => w.toLowerCase() == word.toLowerCase()) !== undefined || (
 				recursive && this.outer !== undefined && this.outer.hasWord(word, false, true)
 			);
 		}
@@ -1087,11 +1098,11 @@ export function wrap(value: any): AnyType {
 	} else if(typeof value == "string") {
 		return RawString.fromJsString(value);
 	} else if(typeof value == "boolean") {
-		return new RawLogic(value);
+		return RawLogic.from(value);
 	} else if(value === null) {
-		return new RawNone();
+		return RawNone.none;
 	} else if(value === undefined) {
-		return new RawUnset();
+		return RawUnset.unset;
 	} else if(value instanceof Array) {
 		return new RawBlock(value.map(v => wrap(v)));
 	} else if(value instanceof Map) {

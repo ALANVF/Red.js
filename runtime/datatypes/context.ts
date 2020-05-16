@@ -14,7 +14,7 @@ export function $evalPath(
 	if(value instanceof Red.RawWord) {
 		getVal = value;
 	} else {
-		getVal = evalSingle(ctx, value);
+		getVal = evalSingle(ctx, value, false);
 	}
 
 	if(getVal instanceof Red.RawWord) {
@@ -36,7 +36,7 @@ export function $setPath(
 	if(value instanceof Red.RawWord) {
 		getVal = value;
 	} else {
-		getVal = evalSingle(ctx, value);
+		getVal = evalSingle(ctx, value, false);
 	}
 
 	if(getVal instanceof Red.RawWord) {
@@ -58,11 +58,11 @@ export function $add(
 	if(value instanceof Red.RawWord) {
 		getVal = value;
 	} else {
-		getVal = evalSingle(ctx, value);
+		getVal = evalSingle(ctx, value, false);
 	}
 
 	if(getVal instanceof Red.RawWord) {
-		context.addWord(getVal.name, new Red.RawNone(), isCase);
+		context.addWord(getVal.name, Red.RawNone.none, isCase);
 	} else {
 		throw new Error(`Invalid accessor ${value}`);
 	}
@@ -85,12 +85,11 @@ export function $$make(
 			blk.shift();
 
 			const grouped = groupSingle(out, blk);
-			
-			out.addWord(head.name, evalSingle(out, grouped.made));
+			out.addWord(head.name, evalSingle(out, grouped.made, grouped.noEval));
 			blk = grouped.restNodes;
 		} else {
 			const grouped = groupSingle(out, blk);
-			evalSingle(out, grouped.made);
+			evalSingle(out, grouped.made, grouped.noEval);
 			blk = grouped.restNodes;
 		}
 	}

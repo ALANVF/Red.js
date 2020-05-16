@@ -35,28 +35,28 @@ export function $setPath(
 /* Property reading actions */
 
 export function $$head_q(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	series: Red.RawSeries
 ): Red.RawLogic {
-	return new Red.RawLogic(series.index == 1);
+	return Red.RawLogic.from(series.index == 1);
 }
 
 export function $$tail_q(
-	ctx: Red.Context,
+	ctx:    Red.Context,
 	series: Red.RawSeries
 ): Red.RawLogic {
-	return new Red.RawLogic(series.index == $$head(ctx, series).length);
+	return Red.RawLogic.from(series.index == $$head(ctx, series).length);
 }
 
 export function $$index_q(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	series: Red.RawSeries
 ): Red.RawInteger {
 	return new Red.RawInteger(series.index);
 }
 
 export function $$length_q(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	series: Red.RawSeries
 ): Red.RawInteger {
 	return new Red.RawInteger(series.length);
@@ -65,9 +65,9 @@ export function $$length_q(
 // Navigation
 
 export function $$at(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	series: Red.RawSeries,
-	index: number
+	index:  number
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series);
 	_.index = index < 1 ? 1 : index;
@@ -75,7 +75,7 @@ export function $$at(
 }
 
 export function $$back(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	series: Red.RawSeries
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series);
@@ -84,7 +84,7 @@ export function $$back(
 }
 
 export function $$next(
-	ctx: Red.Context,
+	ctx:    Red.Context,
 	series: Red.RawSeries
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series);
@@ -93,9 +93,9 @@ export function $$next(
 }
 
 export function $$skip(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	series: Red.RawSeries,
-	index: number
+	index:  number
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series);
 	_.index += index - 1;
@@ -103,7 +103,7 @@ export function $$skip(
 }
 
 export function $$head(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	series: Red.RawSeries
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series);
@@ -112,7 +112,7 @@ export function $$head(
 }
 
 export function $$tail(
-	ctx: Red.Context,
+	ctx:    Red.Context,
 	series: Red.RawSeries
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series);
@@ -123,8 +123,8 @@ export function $$tail(
 // Reading
 
 export function $$pick(
-	_ctx: Red.Context,
-	ser: Red.RawSeries|Red.RawBitset,
+	_ctx:  Red.Context,
+	ser:   Red.RawSeries|Red.RawBitset,
 	index: Red.AnyType,
 ): Red.AnyType {
 	if(!(index instanceof Red.RawInteger)) {
@@ -132,15 +132,15 @@ export function $$pick(
 	}
 
 	if(ser instanceof Red.RawBitset) {
-		return Red.todo();
+		Red.todo();
 	} else {
 		if(index.value < 1) {
-			return new Red.RawNone();
+			return Red.RawNone.none;
 		} else {
 			if(isMoreBlocky(ser)) {
-				return ser.values[(ser.index - 1) + (index.value - 1)] || new Red.RawNone();
+				return ser.values[(ser.index - 1) + (index.value - 1)] || Red.RawNone.none;
 			} else {
-				return Red.todo();
+				Red.todo();
 			}
 		}
 	}
@@ -159,8 +159,8 @@ poke: make action! [[
 */
 // wtf is this doing
 export function $$poke(
-	_ctx: Red.Context,
-	ser: Red.RawSeries|Red.RawBitset,
+	_ctx:  Red.Context,
+	ser:   Red.RawSeries|Red.RawBitset,
 	index: Red.AnyType,
 	value: Red.AnyType
 ): Red.AnyType|Red.RawBitset {
@@ -169,10 +169,10 @@ export function $$poke(
 	}
 	
 	if(ser instanceof Red.RawBitset) {
-		return Red.todo();
+		Red.todo();
 	} else {
 		if(index.value < 1) {
-			return new Red.RawNone();
+			return Red.RawNone.none;
 		} else {
 			// change this lol
 			if(ser instanceof Red.RawBlock || ser instanceof Red.RawParen) {
@@ -183,7 +183,7 @@ export function $$poke(
 					throw new RangeError("Value out of range!");
 				}
 			} else {
-				return Red.todo();
+				Red.todo();
 			}
 		}
 	}

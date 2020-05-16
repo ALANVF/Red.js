@@ -51,16 +51,16 @@ export function $compare(
 				res: string/equal? str1 str2 op no
 			]
 			*/
-			return Red.todo();
+			Red.todo();
 	}
 }
 
 // $$make
 
 export function $$to(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_proto: Red.AnyType,
-	spec: Red.AnyType
+	spec:   Red.AnyType
 ): Red.RawWord {
 	if(spec instanceof Red.RawDatatype) {
 		return new Red.RawWord(spec.name);
@@ -70,20 +70,20 @@ export function $$to(
 		return spec.word;
 	} else if(spec instanceof Red.RawRefinement) {
 		if(spec.name instanceof Red.RawInteger) {
-			throw Error("error");
+			throw new Error("error");
 		} else {
 			return spec.name;
 		}
 	} else if(spec instanceof Red.RawIssue) {
 		if(spec.value.match(/^['\d]|[,]/)) {
-			throw Error("error");
+			throw new Error("error");
 		} else {
 			return new Red.RawWord(spec.value);
 		}
 	} else if(spec instanceof Red.RawString) {
 		const str = spec.toJsString();
 		if(str.match(/[\s$%,\/\\()\[\]{}@<>]|^['\d]/)) {
-			throw Error("error");
+			throw new Error("error");
 		} else {
 			return new Red.RawWord(str);
 		}
@@ -91,18 +91,18 @@ export function $$to(
 		if(spec.char.match(/^[a-zA-Z_+\-*\/\.~`?!^&|=]$/)) {
 			return new Red.RawWord(spec.char);
 		} else {
-			throw Error("error");
+			throw new Error("error");
 		}
 	} else if(spec instanceof Red.RawLogic) {
 		return new Red.RawWord(spec.cond ? "true" : "false");
 	} else {
-		throw Error("error");
+		throw new Error("error");
 	}
 }
 
 export function $$form(
-	_ctx: Red.Context,
-	value: Red.RawWord,
+	_ctx:   Red.Context,
+	value:  Red.RawWord,
 	buffer: string[],
 	_part?: number
 ): boolean {
@@ -111,9 +111,9 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx: Red.Context,
-	value: Red.RawWord,
-	buffer: string[],
+	ctx:     Red.Context,
+	value:   Red.RawWord,
+	buffer:  string[],
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {

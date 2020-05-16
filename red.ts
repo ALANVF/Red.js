@@ -51,27 +51,27 @@ module Red {
 		input: string,
 		ctx:   RedTypes.Context = RedTypes.Context.$
 	): RedTypes.AnyType {
-		const parsed = RedPre.pre(ctx, new RedTypes.RawBlock(RedParser.tokenize(input).made));
-		let ret: RedTypes.AnyType = new RedTypes.RawNone();
-		let res: RedEval.GroupSingleResult = {made: new RedTypes.RawUnset(), restNodes: []};
+		const parsed = RedPre.pre(ctx, new RedTypes.RawBlock(RedParser.tokenize(input)));
+		let ret: RedTypes.AnyType = RedTypes.RawNone.none;
+		let res: RedEval.GroupSingleResult = {made: RedTypes.RawUnset.unset, restNodes: [], noEval: false};
 		let body: RedEval.ExprType[] = parsed.values;
 		
 		try {
 			while(body.length > 0) {
 				res = RedEval.groupSingle(ctx, body);
 				body = res.restNodes;
-				ret = RedEval.evalSingle(ctx, res.made);
+				ret = RedEval.evalSingle(ctx, res.made, res.noEval);
 			}
 		} catch(e) {
 			switch(e.constructor) {
 				case RedTypes.CFBreak:
-					throw Error("Throw Error: Nothing to break (in Red file <anon>)");
+					throw new Error("Throw error: Nothing to break (in Red file <anon>)");
 
 				case RedTypes.CFContinue:
-					throw Error("Throw Error: Nothing to continue (in Red file <anon>)");
+					throw new Error("Throw error: Nothing to continue (in Red file <anon>)");
 
 				case RedTypes.CFReturn:
-					throw Error("Throw Error: Nothing to return (in Red file <anon>)");
+					throw new Error("Throw error: Nothing to return (in Red file <anon>)");
 
 				default:
 					console.error("Error in Red file <anon> near: ", RedEval.stringifyRed(ctx, res ? res.made : body[0]));
@@ -88,7 +88,7 @@ module Red {
 		ctx:         RedTypes.Context = RedSystem.system$words
 	) {
 		const src = readFileSync(filePath).toString();
-		let parsed = new RedTypes.RawBlock(RedParser.tokenize(src).made);
+		let parsed = new RedTypes.RawBlock(RedParser.tokenize(src));
 		let state: FileState;
 
 		while(true) {
@@ -104,24 +104,24 @@ module Red {
 		parsed = RedPre.pre(ctx, parsed);
 
 		let body: RedEval.ExprType[] = parsed.values;
-		let res: RedEval.GroupSingleResult = {made: new RedTypes.RawUnset(), restNodes: []};
+		let res: RedEval.GroupSingleResult = {made: RedTypes.RawUnset.unset, restNodes: [], noEval: false};
 		
 		try {
 			while(body.length > 0) {
 				res = RedEval.groupSingle(ctx, body);
 				body = res.restNodes;
-				RedEval.evalSingle(ctx, res.made);
+				RedEval.evalSingle(ctx, res.made, res.noEval);
 			}
 		} catch(e) {
 			switch(e.constructor) {
 				case RedTypes.CFBreak:
-					throw Error(`Throw Error: Nothing to break (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to break (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
 
 				case RedTypes.CFContinue:
-					throw Error(`Throw Error: Nothing to continue (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to continue (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
 
 				case RedTypes.CFReturn:
-					throw Error(`Throw Error: Nothing to return (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to return (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
 
 				default:
 					console.error(`Error in Red file ${state.file ? "%"+state.file.name : "<anon>"} near: `, RedEval.stringifyRed(ctx, res ? res.made : body[0]));
@@ -136,7 +136,7 @@ module Red {
 		ctx:         RedTypes.Context = RedSystem.system$words
 	): RedTypes.AnyType {
 		let state: FileState;
-		let parsed = new RedTypes.RawBlock(RedParser.tokenize(code).made);
+		let parsed = new RedTypes.RawBlock(RedParser.tokenize(code));
 
 		while(true) {
 			const n1 = parsed.values.shift();
@@ -151,25 +151,25 @@ module Red {
 		parsed = RedPre.pre(ctx, parsed);
 
 		let body: RedEval.ExprType[] = parsed.values;
-		let res: RedEval.GroupSingleResult = {made: new RedTypes.RawUnset(), restNodes: []};
-		let value: RedTypes.AnyType = new RedTypes.RawUnset();
+		let res: RedEval.GroupSingleResult = {made: RedTypes.RawUnset.unset, restNodes: [], noEval: false};
+		let value: RedTypes.AnyType = RedTypes.RawUnset.unset;
 		
 		try {
 			while(body.length > 0) {
 				res = RedEval.groupSingle(ctx, body);
 				body = res.restNodes;
-				value = RedEval.evalSingle(ctx, res.made);
+				value = RedEval.evalSingle(ctx, res.made, res.noEval);
 			}
 		} catch(e) {
 			switch(e.constructor) {
 				case RedTypes.CFBreak:
-					throw Error(`Throw Error: Nothing to break (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to break (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
 
 				case RedTypes.CFContinue:
-					throw Error(`Throw Error: Nothing to continue (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to continue (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
 
 				case RedTypes.CFReturn:
-					throw Error(`Throw Error: Nothing to return (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to return (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
 
 				default:
 					console.error(`Error in Red file ${state.file ? "%"+state.file.name : "<anon>"} near: `, RedEval.stringifyRed(ctx, res ? res.made : body[0]));
@@ -184,27 +184,27 @@ module Red {
 		code: string,
 		ctx:  RedTypes.Context = RedSystem.system$words
 	): RedTypes.AnyType {
-		const parsed = RedPre.pre(ctx, new RedTypes.RawBlock(RedParser.tokenize(code).made));
+		const parsed = RedPre.pre(ctx, new RedTypes.RawBlock(RedParser.tokenize(code)));
 		let body: RedEval.ExprType[] = parsed.values;
-		let res: RedEval.GroupSingleResult = {made: new RedTypes.RawUnset(), restNodes: []};
-		let value: RedTypes.AnyType = new RedTypes.RawUnset();
+		let res: RedEval.GroupSingleResult = {made: RedTypes.RawUnset.unset, restNodes: [], noEval: false};
+		let value: RedTypes.AnyType = RedTypes.RawUnset.unset;
 		
 		try {
 			while(body.length > 0) {
 				res = RedEval.groupSingle(ctx, body);
 				body = res.restNodes;
-				value = RedEval.evalSingle(ctx, res.made);
+				value = RedEval.evalSingle(ctx, res.made, res.noEval);
 			}
 		} catch(e) {
 			switch(e.constructor) {
 				case RedTypes.CFBreak:
-					throw Error("Throw Error: Nothing to break (in Red file <anon>)");
+					throw new Error("Throw error: Nothing to break (in Red file <anon>)");
 
 				case RedTypes.CFContinue:
-					throw Error("Throw Error: Nothing to continue (in Red file <anon>)");
+					throw new Error("Throw error: Nothing to continue (in Red file <anon>)");
 
 				case RedTypes.CFReturn:
-					throw Error("Throw Error: Nothing to return (in Red file <anon>)");
+					throw new Error("Throw error: Nothing to return (in Red file <anon>)");
 
 				default:
 					console.error("Error in Red file <anon> near: ", RedEval.stringifyRed(ctx, res ? res.made : body[0]));

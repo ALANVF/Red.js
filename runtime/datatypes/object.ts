@@ -19,11 +19,11 @@ export function $$make(
 
 			const grouped = groupSingle(out, blk);
 			
-			out.addWord(head.name, evalSingle(out, grouped.made));
+			out.addWord(head.name, evalSingle(out, grouped.made, grouped.noEval));
 			blk = grouped.restNodes;
 		} else {
 			const grouped = groupSingle(out, blk);
-			evalSingle(out, grouped.made);
+			evalSingle(out, grouped.made, grouped.noEval);
 			blk = grouped.restNodes;
 		}
 	}

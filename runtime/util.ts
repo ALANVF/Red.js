@@ -14,7 +14,7 @@ module RedUtil {
 					return value.constructor === ty;
 				}
 			} else {
-				throw Error("error!");
+				throw new Error("error!");
 			}
 		}
 		return false;

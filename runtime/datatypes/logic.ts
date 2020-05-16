@@ -2,10 +2,10 @@
 import RedActions from "../actions";
 
 export function $compare(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	value1: Red.RawLogic,
 	value2: Red.AnyType,
-	op: Red.ComparisonOp
+	op:     Red.ComparisonOp
 ): Red.CompareResult {
 	if((op == Red.ComparisonOp.FIND || op == Red.ComparisonOp.STRICT_EQUAL) && !(value2 instanceof Red.RawLogic)) {
 		return 1;
@@ -15,15 +15,15 @@ export function $compare(
 		return +value1.cond - +value2.cond as Red.CompareResult;
 	} else {
 		// supposed to do something else but this works for now I guess
-		throw TypeError("Can't compare integer! to " + Red.TYPE_NAME(value2));
+		throw new TypeError("Can't compare integer! to " + Red.TYPE_NAME(value2));
 	}
 }
 
 // $$make
 
 export function $$form(
-	_ctx: Red.Context,
-	value: Red.RawLogic,
+	_ctx:   Red.Context,
+	value:  Red.RawLogic,
 	buffer: string[],
 	_part?: number
 ): boolean {
@@ -32,9 +32,9 @@ export function $$form(
 }
 
 export function $$mold(
-	_ctx: Red.Context,
-	value: Red.RawLogic,
-	buffer: string[],
+	_ctx:    Red.Context,
+	value:   Red.RawLogic,
+	buffer:  string[],
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
@@ -43,44 +43,44 @@ export function $$mold(
 }
 
 export function $$and_t(
-	_ctx: Red.Context,
-	left: Red.RawLogic,
+	_ctx:  Red.Context,
+	left:  Red.RawLogic,
 	right: Red.RawLogic
 ): Red.RawLogic {
 	if(right instanceof Red.RawLogic) {
-		return new Red.RawLogic(left.cond && right.cond);
+		return Red.RawLogic.from(left.cond && right.cond);
 	} else {
-		throw TypeError("error!");
+		throw new TypeError("error!");
 	}
 }
 
 export function $$complement(
-	_ctx: Red.Context,
+	_ctx:  Red.Context,
 	value: Red.RawLogic
 ): Red.RawLogic {
-	return new Red.RawLogic(!value.cond);
+	return Red.RawLogic.from(!value.cond);
 }
 
 export function $$or_t(
-	_ctx: Red.Context,
-	left: Red.RawLogic,
+	_ctx:  Red.Context,
+	left:  Red.RawLogic,
 	right: Red.RawLogic
 ): Red.RawLogic {
 	if(right instanceof Red.RawLogic) {
-		return new Red.RawLogic(left.cond || right.cond);
+		return Red.RawLogic.from(left.cond || right.cond);
 	} else {
-		throw TypeError("error!");
+		throw new TypeError("error!");
 	}
 }
 
 export function $$xor_t(
-	_ctx: Red.Context,
-	left: Red.RawLogic,
+	_ctx:  Red.Context,
+	left:  Red.RawLogic,
 	right: Red.RawLogic
 ): Red.RawLogic {
 	if(right instanceof Red.RawLogic) {
-		return new Red.RawLogic(!!(+left.cond ^ +right.cond));
+		return Red.RawLogic.from(left.cond != right.cond);
 	} else {
-		throw TypeError("error!");
+		throw new TypeError("error!");
 	}
 }

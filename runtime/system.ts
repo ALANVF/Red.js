@@ -13,7 +13,7 @@ system.addWord("standard", system$std);
 
 /* system/options */
 system$options.addWord("path", new Red.RawFile("./"));
-system$options.addWord("args", new Red.RawNone());
+system$options.addWord("args", Red.RawNone.none);
 
 /* system/words */
 function addDatatype(name: string, datatype: Function) {

@@ -1,4 +1,4 @@
-import {system, system$words} from "./system";
+import {system$words} from "./system";
 import * as Red from "../red-types";
 
 import * as ACT_none       from "./datatypes/none";
@@ -337,24 +337,22 @@ module RedActions {
 		actObj: TypeActionsSet,
 		action: ActionName
 	): boolean {
-		if(actObj.length == 0) {
-			return false
-		} else {
+		if(actObj.length != 0) {
 			for(const obj of actObj) {
 				if(action in obj) {
 					return true;
 				}
 			}
-
-			return false;
 		}
+		
+		return false;
 	}
 
 	function sendAction(
-		actObj: TypeActionsSet,
-		action: ActionName,
-		ctx:    Red.Context,
-		value:  Red.AnyType,
+		actObj:  TypeActionsSet,
+		action:  ActionName,
+		ctx:     Red.Context,
+		value:   Red.AnyType,
 		...args: any[]
 	): any {
 		if(actObj.length == 0) {
@@ -371,9 +369,9 @@ module RedActions {
 	}
 
 	export function valueSendAction(
-		action: ActionName,
-		ctx:    Red.Context,
-		value:  Red.AnyType,
+		action:  ActionName,
+		ctx:     Red.Context,
+		value:   Red.AnyType,
 		...args: any[]
 	): any {
 		return sendAction(getActionsForValue(value), action, ctx, value, ...args);
@@ -389,7 +387,7 @@ module RedActions {
 		return valueSendAction("$evalPath", ctx, value, accessor, isCase.cond);
 	}
 
-	export const EVAL_PATH = new Red.Action(
+	export const 	EVAL_PATH = new Red.Action(
 		"eval-path*",
 		null,
 		[
@@ -496,17 +494,17 @@ module RedActions {
 			case Red.ComparisonOp.SAME:
 			case Red.ComparisonOp.STRICT_EQUAL:
 			case Red.ComparisonOp.STRICT_EQUAL_WORD:
-				return new Red.RawLogic(value == 0);
+				return Red.RawLogic.from(value == 0);
 			case Red.ComparisonOp.NOT_EQUAL:
-				return new Red.RawLogic(value != 0);
+				return Red.RawLogic.from(value != 0);
 			case Red.ComparisonOp.LESSER:
-				return new Red.RawLogic(value < 0);
+				return Red.RawLogic.from(value < 0);
 			case Red.ComparisonOp.LESSER_EQUAL:
-				return new Red.RawLogic(value <= 0);
+				return Red.RawLogic.from(value <= 0);
 			case Red.ComparisonOp.GREATER:
-				return new Red.RawLogic(value > 0);
+				return Red.RawLogic.from(value > 0);
 			case Red.ComparisonOp.GREATER_EQUAL:
-				return new Red.RawLogic(value >= 0);
+				return Red.RawLogic.from(value >= 0);
 			default:
 				throw new Error("error!");
 		}
@@ -577,7 +575,7 @@ module RedActions {
 		} = {}
 	): Red.RawString {
 		const str: string[] = [];
-		const ml = valueSendAction("$$form", ctx, value, str, _.part === undefined ? undefined : _.part[0].value);
+		const ml = valueSendAction("$$form", ctx, value, str, _.part && _.part[0].value);
 		
 		return Red.RawString.fromNormalString(str.join(""), ml);
 	}
@@ -629,25 +627,25 @@ module RedActions {
 
 	export function $$add(
 		ctx:    Red.Context,
-		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/,
-		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/
-	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/ {
+		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate,
+		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate
+	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate {
 		return valueSendAction("$$add", ctx, value1, value2);
 	}
 
 	export function $$divide(
 		ctx:    Red.Context,
-		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/,
-		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/
-	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/ {
+		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate,
+		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate
+	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate {
 		return valueSendAction("$$divide", ctx, value1, value2);
 	}
 
 	export function $$multiply(
 		ctx:    Red.Context,
-		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/,
-		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/
-	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/ {
+		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate,
+		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate
+	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate {
 		return valueSendAction("$$multiply", ctx, value1, value2);
 	}
 
@@ -695,9 +693,9 @@ module RedActions {
 	
 	export function $$subtract(
 		ctx:    Red.Context,
-		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/,
-		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/
-	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple/*|Red.RawDate*/ {
+		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate,
+		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate
+	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate {
 		return valueSendAction("$$subtract", ctx, value1, value2);
 	}
 
@@ -733,8 +731,8 @@ module RedActions {
 
 	export function $$complement(
 		ctx:   Red.Context,
-		value: Red.RawLogic|Red.RawInteger|Red.RawBitset|Red.RawTypeset/*|Red.RawBinary*/
-	): Red.RawLogic|Red.RawInteger|Red.RawBitset|Red.RawTypeset/*|Red.RawBinary*/ {
+		value: Red.RawLogic|Red.RawInteger|Red.RawBitset|Red.RawTypeset|Red.RawBinary
+	): Red.RawLogic|Red.RawInteger|Red.RawBitset|Red.RawTypeset|Red.RawBinary {
 		return valueSendAction("$$complement", ctx, value)
 	}
 
@@ -938,7 +936,7 @@ module RedActions {
 	// redo? idk what this is doing
 	export function $$pick(
 		ctx:    Red.Context,
-		series: Red.RawSeries|Red.RawTuple|Red.RawPair|Red.RawTime|Red.RawBitset|Red.RawTuple/*|Red.RawDate*/,
+		series: Red.RawSeries|Red.RawTuple|Red.RawPair|Red.RawTime|Red.RawBitset|Red.RawTuple|Red.RawDate,
 		index:  Red.RawScalar|Red.RawAnyString|Red.RawAnyWord|Red.RawBlock|Red.RawLogic|Red.RawTime
 	): Red.AnyType {
 		/*const acts = getActionsForValue(series);
@@ -973,27 +971,9 @@ module RedActions {
 		if(index instanceof Red.RawInteger && !(series instanceof Red.RawTuple || series instanceof Red.RawPair || series instanceof Red.RawTime)) {
 			return valueSendAction("$$poke", ctx, series, index, value);
 		} else {
-			return Red.todo();
+			Red.todo();
 		}
 	}
-
-	/*export const _POKE = new Red.Action(
-		"poke",
-		null,
-		[
-			new Red.RawArgument(new Red.RawWord("series")),
-			new Red.RawArgument(new Red.RawWord("index")),
-			new Red.RawArgument(
-				new Red.RawWord("value"),
-				new Red.RawBlock([new Red.RawWord("any-type!")])
-			)
-		],
-		[],
-		new Red.RawBlock([new Red.RawWord("any-type!")]),
-		$$poke
-	);
-
-	system.setPath(new Red.RawPath([system$words, new Red.RawWord("poke")]), _POKE);*/
 
 	/*
 	put: make action! [[

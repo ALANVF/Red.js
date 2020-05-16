@@ -5,18 +5,17 @@ TL;DR:
 
 Finish very soon:
 - `series!` actions such as `at` and `skip` should not copy the original `series!`.
-- `a: [none] a/1` should not return a `none!`.
-- Fix path stuff for other things supporting path access:
-	- Fix path assignments that are longer than 2 values. 
 - Fix refinements for natives and actions.
+- Add support for `map!`, `binary!`, and `date!` literals.
+- Stop boxing compound natives such as `pair!` and `time!`.
+- Fix stringy types like `file!` and `tag!`.
 
 Finish somewhat soon:
-- Stop boxing compound natives such as `pair!` or `time!`.
 - Redo the implementation for `money!`.
 - Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
-- Add support for `map!` literals.
+	- Quoting specs: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#741-function-type
 - Implement (more) math natives.
-- Implement the `make` action for more datatypes.
+- Implement actions for more datatypes.
 - Allow including files (kinda already done?).
 - Add newline markers in blocks (will require rewriting many things).
 - Redo literally everything related to vectors.
@@ -64,3 +63,6 @@ Things already done:
 - Completely redo `context!`s.
 - Fix accessing stuff in the global system object.
 - Fix `series!`-related functions because I somehow broke them by accident.
+- `a: [none] a/1` should not return a `none!`.
+- Fix path stuff for other things supporting path access:
+	- Fix path assignments that are longer than 2 values.

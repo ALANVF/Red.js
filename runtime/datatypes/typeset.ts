@@ -5,9 +5,9 @@ import RedActions from "../actions";
 // $compare
 
 export function $$make(
-	ctx: Red.Context,
+	ctx:    Red.Context,
 	_proto: Red.AnyType,
-	spec: Red.RawBlock|Red.RawTypeset
+	spec:   Red.RawBlock|Red.RawTypeset
 ): Red.RawTypeset {
 	if(spec instanceof Red.RawTypeset) {
 		return spec;
@@ -33,8 +33,8 @@ export function $$make(
 }
 
 export function $$form(
-	_ctx: Red.Context,
-	value: Red.RawTypeset,
+	_ctx:   Red.Context,
+	value:  Red.RawTypeset,
 	buffer: string[],
 	_part?: number
 ): boolean {
@@ -46,9 +46,9 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx: Red.Context,
-	value: Red.RawTypeset,
-	buffer: string[],
+	ctx:     Red.Context,
+	value:   Red.RawTypeset,
+	buffer:  string[],
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {

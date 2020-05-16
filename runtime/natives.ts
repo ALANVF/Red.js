@@ -1,7 +1,7 @@
 import {tokenize} from "../tokenizer";
 import {pre, pre1} from "./preprocesser";
 import {system$words} from "./system";
-import {evalSingle, groupSingle, ExprType} from "./eval";
+import {transformPath, evalSingle, groupSingle, ExprType} from "./eval";
 import * as Red from "../red-types";
 import RedActions from "./actions";
 
@@ -17,7 +17,7 @@ module RedNatives {
 			console.log(val);
 		}
 
-		return new Red.RawUnset();
+		return Red.RawUnset.unset;
 	}
 
 	// also debugging
@@ -29,7 +29,7 @@ module RedNatives {
 			throw new Error('Red.js native! "system/words/prin" may only be used in node.js supported environments!');
 		} else {
 			process.stdout.write(RedActions.$$form(ctx, val).toJsString());
-			return new Red.RawUnset();
+			return Red.RawUnset.unset;
 		}
 	};
 
@@ -41,7 +41,7 @@ module RedNatives {
 		if(cond.isTruthy()) {
 			return $$do(ctx, thenBlk);
 		} else {
-			return new Red.RawNone();
+			return Red.RawNone.none;
 		}
 	}
 
@@ -53,7 +53,7 @@ module RedNatives {
 		if(!cond.isTruthy()) {
 			return $$do(ctx, thenBlk);
 		} else {
-			return new Red.RawNone();
+			return Red.RawNone.none;
 		}
 	}
 
@@ -79,14 +79,14 @@ module RedNatives {
 
 		do {
 			const made = groupSingle(ctx, blk);
-			res = evalSingle(ctx, made.made);
+			res = evalSingle(ctx, made.made, made.noEval);
 			blk = made.restNodes;
 		} while(!res.isTruthy() && blk.length > 0);
 		
 		if(res.isTruthy()) {
 			return res;
 		} else {
-			return new Red.RawNone();
+			return Red.RawNone.none;
 		}
 	}
 	
@@ -99,14 +99,14 @@ module RedNatives {
 
 		do {
 			const made = groupSingle(ctx, blk);
-			res = evalSingle(ctx, made.made);
+			res = evalSingle(ctx, made.made, made.noEval);
 			blk = made.restNodes;
 		} while(res.isTruthy() && blk.length > 0);
 
 		if(res.isTruthy()) {
 			return res;
 		} else {
-			return new Red.RawNone();
+			return Red.RawNone.none;
 		}
 	}
 
@@ -139,7 +139,7 @@ module RedNatives {
 			}
 		}
 
-		return ret || new Red.RawUnset();
+		return ret || Red.RawUnset.unset;
 	}
 
 	export function $$until(
@@ -168,7 +168,7 @@ module RedNatives {
 			}
 		}
 
-		return ret || new Red.RawUnset();
+		return ret || Red.RawUnset.unset;
 	}
 
 	export function $$loop(
@@ -196,7 +196,7 @@ module RedNatives {
 			}
 		}
 
-		return ret || new Red.RawUnset();
+		return ret || Red.RawUnset.unset;
 	}
 
 	export function $$repeat(
@@ -232,7 +232,7 @@ module RedNatives {
 			}
 		}
 
-		return ret || new Red.RawUnset();
+		return ret || Red.RawUnset.unset;
 	}
 
 	export function $$forever(
@@ -259,7 +259,7 @@ module RedNatives {
 			}
 		}
 
-		return ret || new Red.RawUnset();
+		return ret || Red.RawUnset.unset;
 	}
 
 	export function $$foreach(
@@ -296,7 +296,7 @@ module RedNatives {
 			Red.todo();
 		}
 
-		return ret || new Red.RawUnset();
+		return ret || Red.RawUnset.unset;
 	}
 
 	// forall
@@ -377,16 +377,16 @@ module RedNatives {
 		
 		while(_cases.length != 0) {
 			let next = groupSingle(ctx, _cases);
-			const matchExpr = evalSingle(ctx, next.made);
+			const matchExpr = evalSingle(ctx, next.made, next.noEval);
 			
 			_cases = next.restNodes;
 			next = groupSingle(ctx, _cases);
 			_cases = next.restNodes;
 
-			const matchBlock = evalSingle(ctx, next.made);
+			const matchBlock = evalSingle(ctx, next.made, next.noEval);
 
 			if(!(matchBlock instanceof Red.RawBlock)) {
-				throw TypeError("Expected block! but got " + Red.TYPE_NAME(matchBlock));
+				throw new TypeError("Expected block! but got " + Red.TYPE_NAME(matchBlock));
 			}
 
 			if(comp(ctx, value, matchExpr).cond) {
@@ -399,7 +399,7 @@ module RedNatives {
 			ret = $$do(ctx, _.default[0]);
 		}
 
-		return ret || new Red.RawNone();
+		return ret || Red.RawNone.none;
 	}
 
 	/*
@@ -424,10 +424,12 @@ module RedNatives {
 			next?:   [Red.RawLitWord]
 		} = {}
 	): Red.AnyType {
-		if(Red.isAnyWord(value) || Red.isAnyPath(value)) {
-			return $$get(ctx, value as Red.RawAnyWord|Red.RawAnyPath);
-		} else if(value instanceof Red.RawParen || value instanceof Red.RawBlock) {
-			let val = new Red.RawBlock(value.values.slice(value.index-1));
+		if(Red.isAnyWord(value)) {
+			return $$get(ctx, value);
+		} else if(Red.isAnyPath(value)) {
+			return evalSingle(ctx, transformPath(ctx, value, value instanceof Red.RawGetPath), true);
+		} else if(value instanceof Red.RawBlock) {
+			let val = value.current();
 
 			if(_.expand !== undefined)
 				val = pre(ctx, val);
@@ -435,27 +437,48 @@ module RedNatives {
 				val = pre1(ctx, val).body
 			
 			if(_.next !== undefined) {
-				return Red.todo();
+				Red.todo();
 			} else {
 				if(val.values.length == 0) {
-					return new Red.RawUnset();
+					return Red.RawUnset.unset;
 				}
 				
-				let last: Red.AnyType = new Red.RawUnset();
+				let last: Red.AnyType = Red.RawUnset.unset;
 				let blk: ExprType[] = val.values;
 
 				while(blk.length > 0) {
 					const grouped = groupSingle(ctx, blk);
-					last = evalSingle(ctx, grouped.made);
+					last = evalSingle(ctx, grouped.made, grouped.noEval);
+					blk = grouped.restNodes;
+				}
+				
+				return last;
+			}
+		} else if(value instanceof Red.RawParen) {
+			let val = pre1(ctx, value.current()).body;
+			
+			if(_.next !== undefined) {
+				Red.todo();
+			} else {
+				if(val.values.length == 0) {
+					return Red.RawUnset.unset;
+				}
+				
+				let last: Red.AnyType = Red.RawUnset.unset;
+				let blk: ExprType[] = val.values;
+
+				while(blk.length > 0) {
+					const grouped = groupSingle(ctx, blk);
+					last = evalSingle(ctx, grouped.made, grouped.noEval);
 					blk = grouped.restNodes;
 				}
 				
 				return last;
 			}
 		} else if(value instanceof Red.RawFile) {
-			return Red.todo();
+			Red.todo();
 		} else if(value instanceof Red.RawString) {
-			let out = new Red.RawBlock(tokenize(value.current().toJsString()).made);
+			let out = new Red.RawBlock(tokenize(value.current().toJsString()));
 			//if(doExpand) out = pre(ctx, out);
 
 			return $$do(ctx, out, _);
@@ -482,7 +505,7 @@ module RedNatives {
 
 			while(blk.length > 0) {
 				const res = groupSingle(ctx, blk);
-				made.push(evalSingle(ctx, res.made));
+				made.push(evalSingle(ctx, res.made, res.noEval));
 				blk = res.restNodes;
 			}
 		} else {
@@ -535,7 +558,7 @@ module RedNatives {
 
 		blk.forEach((e, i) => {
 			if(e instanceof Red.RawParen) {
-				const res = evalSingle(ctx, e);
+				const res = evalSingle(ctx, e, false);
 
 				if(res instanceof Red.RawBlock && _.only !== undefined) {
 					blk.splice(i, 1, ...res.values.slice(res.index-1));
@@ -605,7 +628,7 @@ module RedNatives {
 		}
 
 		if(isAny) {
-			return new Red.RawUnset();
+			return Red.RawUnset.unset;
 		} else {
 			throw new Error(`${name} has no value!`);
 		}
@@ -712,8 +735,7 @@ module RedNatives {
 		_ctx:  Red.Context,
 		value: Red.AnyType
 	): Red.RawLogic {
-		//return new Red.RawLogic(value instanceof Red.RawNone || (value instanceof Red.RawLogic && !value.cond));
-		return new Red.RawLogic(!value.isTruthy());
+		return Red.RawLogic.from(!value.isTruthy());
 	}
 	
 	export function $$type_q(

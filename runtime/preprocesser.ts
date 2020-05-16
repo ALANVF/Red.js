@@ -45,7 +45,7 @@ export function pre1(ctx: Red.Context, body: Red.RawBlock) {
 		const value = values[i];
 		
 		if(value instanceof Red.RawIssue) {
-			values[i] = value;
+			//values[i] = value;
 
 			// why does this exist
 			/*if(value.value == "macro") {
@@ -61,23 +61,16 @@ export function pre1(ctx: Red.Context, body: Red.RawBlock) {
 		if(value instanceof Red.RawWord) {
 			switch(value.name) {
 				case "true":
-					values[i] = new Red.RawLogic(true);
+					values[i] = Red.RawLogic.true;
 					break;
 				case "false":
-					values[i] = new Red.RawLogic(false);
+					values[i] = Red.RawLogic.false;
 					break;
 				case "none":
-					values[i] = new Red.RawNone();
+					values[i] = Red.RawNone.none;
 					break;
-				/*case "self":
-					values[i] = ctx;
-					break;*/
 			}
-		} /*else if(value instanceof Red.RawPath) {
-			if(value.path[0] instanceof Red.RawWord && (value.path[0] as Red.RawWord).name == "self") {
-				value.path[0] = ctx;
-			}
-		}*/
+		}
 	}
 
 	body.values = values;
@@ -101,7 +94,7 @@ function pre2(mc: MacroCtx) {
 			const mfunc = new MacroFunction(stack0.name, stack[2] as Red.RawBlock, stack[3] as Red.RawBlock);
 			stack.splice(0, 4);
 			mc.macros.funcs.push(mfunc);
-		} else if(value instanceof Red.RawIssue && value.value == "include" && stack[0] instanceof Red.RawFile) {
+		} else if(value instanceof Red.RawIssue && value.value == "include" && stack0 instanceof Red.RawFile) {
 			stack.splice(0, 1, new Red.RawWord("do"));
 		} else {
 			stack.unshift(values[i]);
