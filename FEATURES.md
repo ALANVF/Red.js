@@ -59,6 +59,7 @@
 | `port!`                  | N        | NA     | N           | N             | N             |
 | `image!`                 | N        | NA     | N           | N             | BI            |
 | `money!`                 | P        | B****  | N           | N             | N             |
+
 \* Construction syntax is currently not supported.
 
 \*\* Newlines are currently not preserved.
@@ -171,6 +172,7 @@
 | `compress`          | N      |
 | `decompress`        | N      |
 | `recycle`           | N      |
+
 \* This currently only prints out `string!`s as regular text (mainly for debugging).
 
 \*\* This can't be used in browsers.
