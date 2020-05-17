@@ -1,6 +1,7 @@
 import {system$words} from "./system";
 import * as Red from "../red-types";
 
+import * as ACT_datatype   from "./datatypes/datatype";
 import * as ACT_none       from "./datatypes/none";
 import * as ACT_logic      from "./datatypes/logic";
 import * as ACT_block      from "./datatypes/block";
@@ -17,6 +18,10 @@ import * as ACT_native     from "./datatypes/native";
 import * as ACT_action     from "./datatypes/action";
 import * as ACT_op         from "./datatypes/op";
 import * as ACT_function   from "./datatypes/function";
+import * as ACT_path       from "./datatypes/path";
+import * as ACT_litPath    from "./datatypes/lit-path";
+import * as ACT_setPath    from "./datatypes/set-path";
+import * as ACT_getPath    from "./datatypes/get-path";
 import * as ACT_object     from "./datatypes/object";
 import * as ACT_typeset    from "./datatypes/typeset";
 import * as ACT_series     from "./datatypes/series";
@@ -271,7 +276,7 @@ module RedActions {
 
 	export const ACT: Record<string, TypeActionsSet> = {
 		"ACT_VALUE":      [],
-		"ACT_DATATYPE":   [],
+		"ACT_DATATYPE":   [ACT_datatype],
 		"ACT_UNSET":      [],
 		"ACT_NONE":       [ACT_none],
 		"ACT_LOGIC":      [ACT_logic],
@@ -295,10 +300,10 @@ module RedActions {
 		"ACT_ACTION":     [ACT_action],
 		"ACT_OP":         [ACT_op],
 		"ACT_FUNCTION":   [ACT_function],
-		"ACT_PATH":       [ACT_series],
-		"ACT_LIT_PATH":   [ACT_series],
-		"ACT_SET_PATH":   [ACT_series],
-		"ACT_GET_PATH":   [ACT_series],
+		"ACT_PATH":       [ACT_path, ACT_block, ACT_series],
+		"ACT_LIT_PATH":   [ACT_litPath, ACT_path, ACT_block, ACT_series],
+		"ACT_SET_PATH":   [ACT_setPath, ACT_path, ACT_block, ACT_series],
+		"ACT_GET_PATH":   [ACT_getPath, ACT_path, ACT_block, ACT_series],
 		"ACT_ROUTINE":    [],
 		"ACT_BITSET":     [],
 		"ACT_POINT":      [],
@@ -356,7 +361,7 @@ module RedActions {
 		...args: any[]
 	): any {
 		if(actObj.length == 0) {
-			throw new Error(`This type has no actions! (${Red.TYPE_NAME(args[1])})`);
+			throw new Error(`This type has no actions! (${Red.TYPE_NAME(value)})`);
 		} else {
 			for(const obj of actObj) {
 				if(action in obj) {
@@ -364,7 +369,7 @@ module RedActions {
 				}
 			}
 
-			throw new Error(`Action ${action} doesn't exist for type of ${Red.TYPE_NAME(args[1])}`);
+			throw new Error(`Action ${action} doesn't exist for type of ${Red.TYPE_NAME(value)}`);
 		}
 	}
 
@@ -466,10 +471,10 @@ module RedActions {
 						value = 0;
 						break;
 					default:
-						throw new Error("error!");
+						throw new Error(`Action $compare doesn't exist for type of ${Red.TYPE_NAME(value1)}`);
 				}
 			} else {
-				throw new Error("error!");
+				throw new Error(`Action $compare doesn't exist for type of ${Red.TYPE_NAME(value1)}`);
 			}
 		}
 		

@@ -11,12 +11,12 @@
 # Datatypes
 |                          | datatype | syntax | `make`/`to` | `form`/`mold` | other actions |
 |--------------------------|----------|--------|-------------|---------------|---------------|
-| `datatype!`              | Y        | NA     | NA          | N             | N             |
+| `datatype!`              | Y        | NA     | NA          | Y             | N             |
 | `unset!`                 | Y        | NA     | N           | N             | N             |
 | `none!`                  | Y        | P*     | Y           | Y             | P             |
 | `logic!`                 | Y        | P*     | N           | Y             | P             |
 | `block!`                 | Y        | Y      | P           | P**           | P             |
-| `paren!`                 | Y        | Y      | B           | B             | PI            |
+| `paren!`                 | Y        | Y      | B           | PB            | PI            |
 | `string!`                | Y        | Y      | N           | Y             | P             |
 | `file!`                  | Y        | P      | N           | N             | BI            |
 | `url!`                   | Y        | PB     | N           | N             | BI            |
@@ -34,10 +34,10 @@
 | `action!`                | Y        | NA     | P           | Y             | N             |
 | `op!`                    | Y        | NA     | P           | P             | N             |
 | `function!`              | Y        | NA     | P           | Y             | N             |
-| `path!`                  | Y        | Y      | N           | N             | PI            |
-| `lit-path!`              | Y        | Y      | N           | N             | PI            |
-| `set-path!`              | Y        | Y      | N           | N             | PI            |
-| `get-path!`              | Y        | Y      | N           | N             | PI            |
+| `path!`                  | Y        | Y      | N           | Y             | PI            |
+| `lit-path!`              | Y        | Y      | N           | Y             | PI            |
+| `set-path!`              | Y        | Y      | N           | Y             | PI            |
+| `get-path!`              | Y        | Y      | N           | Y             | PI            |
 | `routine!`               | N        | NA     | N           | N             | N             |
 | `bitset!`                | Y        | NA     | N           | N             | N             |
 | `point!`                 | N        | NA     | N           | N             | N             |
@@ -89,7 +89,7 @@
 | `does`              | Y      |
 | `has`               | Y      |
 | `switch`            | PB     |
-| `case`              | N      |
+| `case`              | Y      |
 | `do`                | P      |
 | `reduce`            | P      |
 | `compose`           | P      |

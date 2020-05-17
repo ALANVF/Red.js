@@ -1,3 +1,13 @@
+# Version 0.0.5
+- Added `case` native.
+- Added basic actions for `datatype!`.
+- Fixed bug where `tail? []` would return false.
+- Added basic actions for `path!`, `lit-path!`, `set-path!`, and `get-path!`.
+- Added an interactive help function (although it's fairly incomplete).
+- Added some of the built-in helper functions.
+- Error messages related to missing type actions are now more descriptive.
+
+
 # Version 0.0.4
 - Fixed `set-path!`s (so now `a/1/2: 3` works).
 - Fixed an issue where `path!`s were evaluated twice.

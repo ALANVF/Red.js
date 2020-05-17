@@ -371,6 +371,7 @@ module RedNatives {
 			default?: [Red.RawBlock]
 		} = {}
 	): Red.AnyType {
+		const isAll = _.all !== undefined;
 		let ret;
 		let _cases: ExprType[] = cases.values.slice(cases.index-1);
 		const comp = _.strict !== undefined ? $$strict_equal_q : $$equal_q;
@@ -391,12 +392,46 @@ module RedNatives {
 
 			if(comp(ctx, value, matchExpr).cond) {
 				ret = $$do(ctx, matchBlock);
-				if(_.all === undefined) break;
+				if(!isAll) break;
 			}
 		}
 
 		if(ret == null && _.default !== undefined && _.default[0] != null) {
 			ret = $$do(ctx, _.default[0]);
+		}
+
+		return ret || Red.RawNone.none;
+	}
+	
+	export function $$case(
+		ctx:   Red.Context,
+		cases: Red.RawBlock,
+		_: {
+			all?: []
+		} = {}
+	): Red.AnyType {
+		const isAll = _.all !== undefined;
+		let ret;
+		let _cases: ExprType[] = cases.values.slice(cases.index-1);
+		
+		while(_cases.length != 0) {
+			let next = groupSingle(ctx, _cases);
+			const matchExpr = evalSingle(ctx, next.made, next.noEval);
+			
+			_cases = next.restNodes;
+			next = groupSingle(ctx, _cases);
+			_cases = next.restNodes;
+
+			const matchBlock = evalSingle(ctx, next.made, next.noEval);
+
+			if(!(matchBlock instanceof Red.RawBlock)) {
+				throw new TypeError("Expected block! but got " + Red.TYPE_NAME(matchBlock));
+			}
+
+			if(matchExpr.isTruthy()) {
+				ret = $$do(ctx, matchBlock);
+				if(!isAll) break;
+			}
 		}
 
 		return ret || Red.RawNone.none;

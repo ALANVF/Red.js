@@ -796,6 +796,25 @@ export class Context extends RawValue {
 			this.values[index] = value;
 		}
 	}
+
+	removeWord(
+		word:          string,
+		caseSensitive: boolean = false,
+		recursive:     boolean = false
+	) {
+		const index = caseSensitive
+			? this.words.indexOf(word)
+			: this.words.findIndex(w => w.toLowerCase() == word.toLowerCase());
+		
+		if(index == -1) {
+			if(recursive && this.outer && this.outer.hasWord(word, caseSensitive, true)) {
+				this.outer.removeWord(word, caseSensitive, true);
+			}
+		} else {
+			this.words.splice(index, 1);
+			this.values.splice(index, 1);
+		}
+	}
 }
 
 export class RawObject extends Context {
@@ -1077,17 +1096,16 @@ export function TYPE_NAME(val: AnyType): string {
 	return TypeNames[TYPE_OF(val)];
 }
 
-export function wrap(value: number): RawInteger|RawFloat
-export function wrap(value: string): RawString
-export function wrap(value: boolean): RawLogic
-export function wrap(value: any[]): RawBlock
+export function wrap(value: number): RawInteger|RawFloat;
+export function wrap(value: string): RawString;
+export function wrap(value: boolean): RawLogic;
+export function wrap(value: any[]): RawBlock;
 export function wrap(value: Map<any, any>): RawMap;
-export function wrap(value: null): RawNone
-export function wrap(value: undefined): RawUnset // maybe change that idk
-//export function wrap(value: Date): RawDate
+export function wrap(value: null): RawNone;
+export function wrap(value: undefined): RawUnset; // maybe change that idk
+export function wrap(value: Date): RawDate;
 //export function wrap(value: DataView): RawBinary
-//export function wrap(value: File): RawFile
-export function wrap(value: object): RawObject
+export function wrap(value: object): RawObject;
 export function wrap(value: any): AnyType {
 	if(typeof value == "number") {
 		if(value % 1 == 0) {
@@ -1108,7 +1126,7 @@ export function wrap(value: any): AnyType {
 	} else if(value instanceof Map) {
 		return new RawMap(Array.from(value.entries()).map(([k, v]) => [wrap(k), wrap(v)]));
 	} else if(value instanceof Date) {
-		throw new Error("unimplemented!");
+		return new RawDate(value);
 	} else if(value instanceof DataView) {
 		throw new Error("unimplemented!");
 	} else if(typeof value == "object") {

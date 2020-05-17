@@ -4,7 +4,8 @@ TL;DR:
 - Finish implementing features.
 
 Finish very soon:
-- `series!` actions such as `at` and `skip` should not copy the original `series!`.
+- Fix `to` (internal issue).
+- Add (at least basic) support for construction syntax.
 - Fix refinements for natives and actions.
 - Add support for `map!`, `binary!`, and `date!` literals.
 - Stop boxing compound natives such as `pair!` and `time!`.
@@ -51,7 +52,7 @@ Finish if I'm still bored:
 - Optimize the parser as well.
 
 Finish if I'm still bored:
-- Make a C ffi (and maybe use Rebol's library! type for it).
+- Make a C ffi (and maybe use Rebol's `library!` type for it).
 - Allow compiling to/running on WebAssembly.
 
 Things already done:
@@ -67,3 +68,4 @@ Things already done:
 - `a: [none] a/1` should not return a `none!`.
 - Fix path stuff for other things supporting path access:
 	- Fix path assignments that are longer than 2 values.
+- ~~`series!` actions such as `at` and `skip` should not copy the original `series!`.~~
