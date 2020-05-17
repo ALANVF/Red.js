@@ -55,7 +55,7 @@ In order to run this locally, you'll need Node 12.13.1 or higher installed (I ha
 ## In a browser
 I have yet to actually test Red.js using browser js, but it should be fine as long as you aren't using IE or Firefox.
 
-You can also run the Red.js REPL (currently version 0.0.4) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
+You can also run the Red.js REPL (currently version 0.0.5) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
 
 
 # Current limitations
