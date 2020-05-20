@@ -13,7 +13,7 @@
 |--------------------------|----------|--------|-------------|---------------|---------------|
 | `datatype!`              | Y        | NA     | NA          | Y             | N             |
 | `unset!`                 | Y        | NA     | N           | N             | N             |
-| `none!`                  | Y        | P*     | Y           | Y             | P             |
+| `none!`                  | Y        | P      | Y           | Y             | P             |
 | `logic!`                 | Y        | P*     | N           | Y             | P             |
 | `block!`                 | Y        | Y      | P           | P**           | P             |
 | `paren!`                 | Y        | Y      | B           | PB            | PI            |
@@ -42,7 +42,7 @@
 | `bitset!`                | Y        | NA     | N           | N             | N             |
 | `point!`                 | N        | NA     | N           | N             | N             |
 | `object!`                | Y        | NA     | P           | Y             | N             |
-| `typeset!`               | Y        | NA     | P           | Y             | N             |
+| `typeset!`               | Y        | NA     | P           | Y             | P             |
 | `error!`                 | N        | NA     | N           | N             | N             |
 | `vector!`                | P        | NA     | N           | N             | PI            |
 | `hash!`                  | P        | NA     | N           | N             | PI            |
@@ -60,7 +60,7 @@
 | `image!`                 | N        | NA     | N           | N             | BI            |
 | `money!`                 | P        | B****  | N           | N             | N             |
 
-\* Construction syntax is currently not supported.
+\* Only basic construction syntax is currently supported.
 
 \*\* Newlines are currently not preserved.
 
@@ -139,7 +139,7 @@
 | `exp`               | N      |
 | `square-root`       | N      |
 | `construct`         | N      |
-| `value?`            | N      |
+| `value?`            | Y      |
 | `try`               | N      |
 | `uppercase`         | N      |
 | `lowercase`         | N      |

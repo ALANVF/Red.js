@@ -130,12 +130,16 @@ export function $$pick(
 	if(!(index instanceof Red.RawInteger)) {
 		throw new TypeError("error!");
 	}
-
+	
 	if(index.value < 1) {
 		return Red.RawNone.none;
 	} else {
-		if(isMoreBlocky(ser)) {
-			return ser.values[(ser.index - 1) + (index.value - 1)] || Red.RawNone.none;
+		if("pick" in ser) {
+			if(ser instanceof Red.RawBinary) {
+				return new Red.RawInteger(ser.pick(index.value));
+			} else {
+				return ser.pick(index.value);
+			}
 		} else {
 			Red.todo();
 		}

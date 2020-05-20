@@ -26,7 +26,7 @@ export function $$make(
 	} */ else if(spec instanceof Red.RawVector) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else {
-		throw new TypeError("Cannot create a block! from an instance of " + Red.TYPE_NAME(spec));
+		throw new TypeError("Cannot create a block! from an instance of " + Red.typeName(spec));
 	}
 }
 

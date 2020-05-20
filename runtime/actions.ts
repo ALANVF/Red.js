@@ -335,7 +335,7 @@ module RedActions {
 	
 	/* Native functions */
 	function getActionsForValue(value: Red.AnyType): TypeActionsSet {
-		return Object.values(ACT)[Red.TYPE_OF(value)];
+		return Object.values(ACT)[Red.typeOf(value)];
 	}
 
 	function hasAction(
@@ -361,7 +361,7 @@ module RedActions {
 		...args: any[]
 	): any {
 		if(actObj.length == 0) {
-			throw new Error(`This type has no actions! (${Red.TYPE_NAME(value)})`);
+			throw new Error(`This type has no actions! (${Red.typeName(value)})`);
 		} else {
 			for(const obj of actObj) {
 				if(action in obj) {
@@ -369,7 +369,7 @@ module RedActions {
 				}
 			}
 
-			throw new Error(`Action ${action} doesn't exist for type of ${Red.TYPE_NAME(value)}`);
+			throw new Error(`Action ${action} doesn't exist for type of ${Red.typeName(value)}`);
 		}
 	}
 
@@ -392,7 +392,7 @@ module RedActions {
 		return valueSendAction("$evalPath", ctx, value, accessor, isCase.cond);
 	}
 
-	export const 	EVAL_PATH = new Red.Action(
+	export const EVAL_PATH = new Red.Action(
 		"eval-path*",
 		null,
 		[
@@ -471,10 +471,10 @@ module RedActions {
 						value = 0;
 						break;
 					default:
-						throw new Error(`Action $compare doesn't exist for type of ${Red.TYPE_NAME(value1)}`);
+						throw new Error(`Action $compare doesn't exist for type of ${Red.typeName(value1)}`);
 				}
 			} else {
-				throw new Error(`Action $compare doesn't exist for type of ${Red.TYPE_NAME(value1)}`);
+				throw new Error(`Action $compare doesn't exist for type of ${Red.typeName(value1)}`);
 			}
 		}
 		
@@ -524,7 +524,7 @@ module RedActions {
 		if(proto instanceof Red.RawDatatype) {
 			return sendAction(Object.values(ACT)[Red.Types.indexOf(proto.repr)], "$$make", ctx, proto, spec);
 		} else {
-			return sendAction(Object.values(ACT)[Red.TYPE_OF(proto)], "$$make", ctx, proto, spec);
+			return sendAction(Object.values(ACT)[Red.typeOf(proto)], "$$make", ctx, proto, spec);
 		}
 	}
 
@@ -785,7 +785,7 @@ module RedActions {
 		series: Red.RawSeries,
 		index:  Red.RawInteger|Red.RawPair
 	): Red.RawSeries {
-		return valueSendAction("$$at", ctx, series, index instanceof Red.RawInteger ? index.value : index.x.value);
+		return valueSendAction("$$at", ctx, series, index instanceof Red.RawInteger ? index.value : index.x);
 	}
 
 	export function $$back(
@@ -944,10 +944,6 @@ module RedActions {
 		series: Red.RawSeries|Red.RawTuple|Red.RawPair|Red.RawTime|Red.RawBitset|Red.RawTuple|Red.RawDate,
 		index:  Red.RawScalar|Red.RawAnyString|Red.RawAnyWord|Red.RawBlock|Red.RawLogic|Red.RawTime
 	): Red.AnyType {
-		/*const acts = getActionsForValue(series);
-		if(acts.hasOwnProperty("$$pick")) {
-			return sendAction(acts, "$$pick", ctx, series, index);
-		} else*/
 		if(index instanceof Red.RawInteger && !(series instanceof Red.RawTuple || series instanceof Red.RawPair || series instanceof Red.RawTime)) {
 			return valueSendAction("$$pick", ctx, series, index);
 		} else {
@@ -1059,7 +1055,7 @@ module RedActions {
 		series: Red.RawSeries,
 		offset: Red.RawInteger|Red.RawPair
 	): Red.RawSeries {
-		return valueSendAction("$$skip", ctx, series, offset instanceof Red.RawInteger ? offset.value : offset.x.value);
+		return valueSendAction("$$skip", ctx, series, offset instanceof Red.RawInteger ? offset.value : offset.x);
 	}
 
 	/*

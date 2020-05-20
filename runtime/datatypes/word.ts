@@ -34,8 +34,7 @@ export function $compare(
 			return value1.constructor !== value2.constructor || symbol(value1) != symbol(value2);
 
 		case Red.ComparisonOp.STRICT_EQUAL_WORD:
-			if((value1 instanceof Red.RawWord && value2 instanceof Red.RawLitWord)
-			|| (value1 instanceof Red.RawLitWord && value2 instanceof Red.RawWord)) {
+			if((value1 instanceof Red.RawWord && value2 instanceof Red.RawLitWord) || (value1 instanceof Red.RawLitWord && value2 instanceof Red.RawWord)) {
 				return symbol(value1) != symbol(value2);
 			} else {
 				return value1.constructor !== value2.constructor || symbol(value1) != symbol(value2);
@@ -66,14 +65,8 @@ export function $$to(
 		return new Red.RawWord(spec.name);
 	} else if(spec instanceof Red.RawWord) {
 		return spec
-	} else if(spec instanceof Red.RawGetWord || spec instanceof Red.RawSetWord || spec instanceof Red.RawLitWord) {
+	} else if(spec instanceof Red.RawGetWord || spec instanceof Red.RawSetWord || spec instanceof Red.RawLitWord || spec instanceof Red.RawRefinement) {
 		return spec.word;
-	} else if(spec instanceof Red.RawRefinement) {
-		if(spec.name instanceof Red.RawInteger) {
-			throw new Error("error");
-		} else {
-			return spec.name;
-		}
 	} else if(spec instanceof Red.RawIssue) {
 		if(spec.value.match(/^['\d]|[,]/)) {
 			throw new Error("error");

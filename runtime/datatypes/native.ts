@@ -3,9 +3,9 @@ import RedNatives from "../natives";
 import RedActions from "../actions";
 
 export function $$make(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_proto: Red.AnyType,
-	spec: Red.RawBlock
+	spec:   Red.RawBlock
 ): Red.Native {
 	let docSpec = null, retSpec = null;
 	const args = [], refines = [], nspec = spec.values[0] as Red.RawBlock;
@@ -94,7 +94,7 @@ export function $$make(
 }
 
 export function $$form(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_value: Red.Native,
 	buffer: string[],
 	_part?: number
@@ -104,8 +104,8 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx: Red.Context,
-	value: Red.Native,
+	ctx:    Red.Context,
+	value:  Red.Native,
 	buffer: string[],
 	indent: number,
 	_: RedActions.MoldOptions = {}

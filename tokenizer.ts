@@ -33,7 +33,9 @@ type RedToken =
 	| {pair: {x: number, y: number}}
 
 	| {date: Date}
-	| {time: {hour: number, minute: number, second: number}};
+	| {time: {hour: number, minute: number, second: number}}
+	
+	| {construct: RedToken[]};
 
 class Reader {
 	stream: string;
@@ -208,10 +210,8 @@ const checks = {
 		switch(rdr.peekCharAt()) {
 			case chars.lt: {
 				const next = rdr.peekCharAt(1);
-				
 				if(next == chars.lt || next == chars.equal || next == chars.gt) {
 					const next2 = rdr.peekCharAt(2);
-					
 					return (
 						next2 == chars.gt
 						|| next2 == chars.space
@@ -361,8 +361,20 @@ const checks = {
 		return this.integer(rdr) || this.float(rdr);
 	},
 
+	block(rdr: Reader): boolean {
+		return rdr.peek() == "[";
+	},
+
 	paren(rdr: Reader): boolean {
 		return rdr.peek() == "(";
+	},
+
+	map(rdr: Reader): boolean {
+		return rdr.peek(2) == "#(";
+	},
+
+	construct(rdr: Reader): boolean {
+		return rdr.peek(2) == "#[";
 	}
 };
 
@@ -372,7 +384,7 @@ const actions = {
 		if(res) {
 			return res[0];
 		} else {
-			throw new Error("error while parsing name!");
+			throw new Error("error while parsing name! (debug: 1)");
 		}
 	},
 
@@ -381,7 +393,7 @@ const actions = {
 		if(res) {
 			return res[0];
 		} else {
-			throw new Error("error while parsing special word!");
+			throw new Error("Error while parsing word! (debug: 2)");
 		}
 	},
 
@@ -390,7 +402,7 @@ const actions = {
 		if(res) {
 			return res[0];
 		} else {
-			throw new Error("error while parsing any name!");
+			throw new Error("Error while parsing word! (debug: 3)");
 		}
 	},
 
@@ -414,7 +426,7 @@ const actions = {
 				if(checks.anyName(rdr)) {
 					out.push({word: actions.anyName(rdr)});
 				} else {
-					throw new Error("error while parsing path (1)!");
+					throw new Error("Error while parsing path! (debug: 1)");
 				}
 			} else if(rdr.peek() == ":") {
 				rdr.next();
@@ -422,10 +434,10 @@ const actions = {
 				if(checks.anyName(rdr)) {
 					out.push({getWord: actions.anyName(rdr)});
 				} else {
-					throw new Error("error while parsing path (2)!");
+					throw new Error("Error while parsing path! (debug: 2)");
 				}
 			} else {
-				throw new Error("error while parsing (3)!");
+				throw new Error("Error while parsing path! (debug: 3)");
 			}
 		}
 
@@ -437,7 +449,7 @@ const actions = {
 		if(res) {
 			return +res[0];
 		} else {
-			throw new Error("error while parsing integer!");
+			throw new Error("Error while parsing integer!");
 		}
 	},
 
@@ -446,26 +458,42 @@ const actions = {
 		if(res) {
 			return +res[0];
 		} else {
-			throw new Error("error while parsing float!");
+			throw new Error("Error while parsing float!");
 		}
 	},
 
-	paren(rdr: Reader): RedToken[] {
-		rdr.next();
+	delim(rdr: Reader, name: string, start: string, stop: string): RedToken[] {
+		rdr.next(start.length);
 
 		const out: RedToken[] = [];
 
-		while(rdr.peek() != ")") {
+		while(rdr.peek() != stop) {
 			if(rdr.eof) {
-				throw new Error("error while parsing paren!");
+				throw new Error(`Error while parsing ${name}`);
 			}
 
 			makeNext(rdr, out);
 		}
 		
-		rdr.next();
+		rdr.next(stop.length);
 
 		return out;
+	},
+
+	block(rdr: Reader) {
+		return this.delim(rdr, "paren!", "[", "]");
+	},
+	
+	paren(rdr: Reader) {
+		return this.delim(rdr, "block!", "(", ")");
+	},
+
+	map(rdr: Reader) {
+		return this.delim(rdr, "map!", "#(", ")");
+	},
+
+	construct(rdr: Reader) {
+		return this.delim(rdr, "constructor!", "#[", "]");
 	}
 };
 
@@ -497,13 +525,13 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 		}
 
 		else {
-			throw new Error("error while parsing refinement!");
+			throw new Error("Error while parsing refinement!");
 		}
 	}
 
 	else if(res = rdr.matchRx(regexRules.hexa)) {
 		if(!rdr.eof && rdr.matchRx(/[^\s()\[\]{"]/, false)) {
-			throw new Error("error while parsing hexa!");
+			throw new Error("Error while parsing hexa!");
 		}
 
 		made.push({integer: parseInt(res[1], 16)});
@@ -561,7 +589,6 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 
 		if(rdr.peek() == ":") {
 			rdr.next();
-
 			made.push({setWord: word});
 		} else {
 			made.push({word});
@@ -574,12 +601,12 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 			const word = actions.name(rdr);
 
 			if(rdr.peek() == ":") {
-				throw new Error("error while parsing get word/path (1)!");
+				throw new Error("Error while parsing get-word!/get-path! (debug: 1)");
 			} else if(rdr.peek() == "/") {
 				const path: RedToken[] = actions.path(rdr, {word});
 
 				if(rdr.peek() == ":") {
-					throw new Error("error while parsing get word/path (2)!");
+					throw new Error("Error while parsing get-word!/get-path! (debug: 2)");
 				} else {
 					made.push({getPath: path});
 				}
@@ -593,7 +620,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 		}
 
 		else {
-			throw new Error("error while parsing get word/path (3)!");
+			throw new Error("Error while parsing get-word!/get-path! (debug: 3)");
 		}
 	}
 
@@ -603,12 +630,12 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 			const word = actions.name(rdr);
 
 			if(rdr.peek() == ":") {
-				throw new Error("error while parsing lit word/path (1)!");
+				throw new Error("Error while parsing lit-word!/lit-path! (debug: 1)");
 			} else if(rdr.peek() == "/") {
 				const path: RedToken[] = actions.path(rdr, {word});
 
 				if(rdr.peek() == ":") {
-					throw new Error("error while parsing lit word/path (2)!");
+					throw new Error("Error while parsing lit-word!/lit-path! (debug: 2)");
 				} else {
 					made.push({litPath: path});
 				}
@@ -622,7 +649,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 		}
 
 		else {
-			throw new Error("error while parsing lit word/path (3)!");
+			throw new Error("Error while parsing lit-word!/lit-path! (debug: 3)");
 		}
 	}
 
@@ -693,7 +720,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 
 		while(level > 0) {
 			if(rdr.eof) {
-				throw new Error(`Syntax error: invalid string! at "${out}"`);
+				throw new Error(`Syntax error: Invalid string! at "${out}"`);
 			}
 
 			switch(next = rdr.next()) {
@@ -735,7 +762,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 	else if(rdr.match("2#{")) {
 		let out = "";
 		
-		for(let _ = 0; _ < 8; _++) {
+		for(let _ = 0; _ < 8; _++) { // TODO: this should allow multiples of 8, not just 8
 			while(rdr.matchRx(regexRules.comment) || rdr.matchRx(/\s+/m)) {}
 
 			const next = rdr.next();
@@ -743,14 +770,14 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 			if(next == "0" || next == "1") {
 				out += next;
 			} else {
-				throw new Error(`Syntax error: invalid binary! 2#{${out}}`);
+				throw new Error(`Syntax error: Invalid binary! 2#{${out}}`);
 			}
 		}
 
 		while(rdr.matchRx(regexRules.comment) || rdr.matchRx(/\s+/m)) {}
 
 		if(rdr.next() != "}") {
-			throw new Error("error while parsing binary2!");
+			throw new Error("Error while parsing binary2!");
 		}
 
 		made.push({binary: out, base: 2});
@@ -762,7 +789,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 		
 		while(rdr.peek() != "}") {
 			if(rdr.eof) {
-				throw new Error("error while parsing binary16!");
+				throw new Error("Error while parsing binary16!");
 			}
 
 			while(rdr.matchRx(regexRules.comment) || rdr.matchRx(/\s+/m)) {}
@@ -772,14 +799,14 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 			if(next.match(/[a-fA-F\d]{2}/)) {
 				out += next;
 			} else {
-				throw new Error(`Syntax error: invalid binary! 16#{${out}}`);
+				throw new Error(`Syntax error: Invalid binary! 16#{${out}}`);
 			}
 		}
 
 		while(rdr.matchRx(regexRules.comment) || rdr.matchRx(/\s+/m)) {}
 		
 		if(rdr.next() != "}") {
-			throw new Error("error while parsing binary16!");
+			throw new Error("Error while parsing binary16!");
 		}
 
 		made.push({binary: out, base: 16});
@@ -791,7 +818,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 		
 		while(rdr.peek() != "}") {
 			if(rdr.eof) {
-				throw new Error("error while parsing binary64!");
+				throw new Error("Error while parsing binary64!");
 			}
 
 			while(rdr.matchRx(regexRules.comment) || rdr.matchRx(/\s+/m)) {}
@@ -801,33 +828,22 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 			if(next.match(/[a-zA-Z\d=/+]/)) {
 				out += next;
 			} else {
-				throw new Error(`Syntax error: invalid binary! 64#{${out}}`);
+				throw new Error(`Syntax error: Invalid binary! 64#{${out}}`);
 			}
 		}
 
 		while(rdr.matchRx(regexRules.comment) || rdr.matchRx(/\s+/m)) {}
 		
 		if(rdr.next() != "}") {
-			throw new Error("error while parsing binary64!");
+			throw new Error("Error while parsing binary64!");
 		}
 
 		made.push({binary: out, base: 64});
 	}
 
-	else if(rdr.match("[")) {
-		const out: RedToken[] = [];
-
-		while(rdr.peek() != "]") {
-			if(rdr.eof) {
-				throw new Error("error while parsing block!");
-			}
-
-			makeNext(rdr, out);
-		}
-		
-		rdr.next();
-
-		made.push({block: out});
+	// block!
+	else if(checks.block(rdr)) {
+		made.push({block: actions.block(rdr)});
 	}
 
 	// paren!
@@ -836,20 +852,13 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 	}
 
 	// map!
-	else if(rdr.match("#(")) {
-		const out: RedToken[] = [];
+	else if(checks.map(rdr)) {
+		made.push({map: actions.map(rdr)});
+	}
 
-		while(rdr.peek() != ")") {
-			if(rdr.eof) {
-				throw new Error("error while parsing map!");
-			}
-
-			makeNext(rdr, out);
-		}
-		
-		rdr.next();
-
-		made.push({map: out});
+	// construction syntax
+	else if(checks.construct(rdr)) {
+		made.push({construct: actions.construct(rdr)});
 	}
 	
 	// whitespace
@@ -858,7 +867,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 	}
 	
 	else {
-		throw new Error(`Syntax error: invalid token ${rdr.peek()} near ${rdr.stream.slice(rdr.pos, rdr.pos+5)}`);
+		throw new Error(`Syntax error: Invalid token ${rdr.peek()} near ${rdr.stream.slice(rdr.pos, rdr.pos+5)}`);
 	}
 
 	rdr.matchRx(regexRules.comment);
@@ -947,23 +956,38 @@ function tokenToRed(token: RedToken): Red.AnyType {
 		throw new Error("unimplemented!");
 	}
 	else if("tuple" in token) {
-		return new Red.RawTuple(token.tuple.map(num => new Red.RawInteger(num)));
+		return new Red.RawTuple(token.tuple);
 	}
 	else if("pair" in token) {
-		return new Red.RawPair(new Red.RawInteger(token.pair.x), new Red.RawInteger(token.pair.y));
+		return new Red.RawPair(token.pair.x, token.pair.y);
 	}
 
 	else if("date" in token) { // TODO: implement
 		throw new Error("unimplemented!");
 	}
 	else if("time" in token) {
-		return new Red.RawTime(
-			new Red.RawInteger(token.time.hour),
-			new Red.RawInteger(token.time.minute),
-			token.time.second % 1 == 0
-				? new Red.RawInteger(token.time.second)
-				: new Red.RawFloat(token.time.second)
-		);
+		return new Red.RawTime(token.time.hour, token.time.minute, token.time.second);
+	}
+
+	else if("construct" in token) {
+		if(token.construct.length == 1) {
+			const [val] = token.construct;
+
+			if("word" in val) {
+				switch(val.word.toLowerCase()) {
+					case "true":   return Red.RawLogic.true;
+					case "false":  return Red.RawLogic.false;
+					case "none":
+					case "none!":  return Red.RawNone.none;
+					case "unset!": return Red.RawUnset.unset;
+					default:       Red.todo();
+				}
+			} else {
+				Red.todo();
+			}
+		} else {
+			Red.todo();
+		}
 	}
 	
 	else {

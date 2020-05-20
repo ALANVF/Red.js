@@ -15,7 +15,7 @@ export function $compare(
 		return +value1.cond - +value2.cond as Red.CompareResult;
 	} else {
 		// supposed to do something else but this works for now I guess
-		throw new TypeError("Can't compare integer! to " + Red.TYPE_NAME(value2));
+		throw new TypeError("Can't compare integer! to " + Red.typeName(value2));
 	}
 }
 

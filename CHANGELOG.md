@@ -1,3 +1,12 @@
+# Version 0.0.6
+- Added basic construction syntax support.
+- Added `value?` native.
+- Improved some code formatting.
+- `number!` and `any-word!` are now located in `system/words`.
+- Added `and`, `or`, and `xor` operations for `typeset!`s.
+- `pair!`, `tuple!`, and `time!` no longer box their values (internal).
+
+
 # Version 0.0.5
 - Added `case` native.
 - Added basic actions for `datatype!`.

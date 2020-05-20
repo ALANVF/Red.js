@@ -1,8 +1,8 @@
 Red []
 
-yes: on: true
-no: off: false
-none: none
+true:  yes: on:  #[true]
+false: no:  off: #[false]
+none: #[none]
 
 tab:		 #"^-"
 cr: 		 #"^M"

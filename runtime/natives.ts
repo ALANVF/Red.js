@@ -387,7 +387,7 @@ module RedNatives {
 			const matchBlock = evalSingle(ctx, next.made, next.noEval);
 
 			if(!(matchBlock instanceof Red.RawBlock)) {
-				throw new TypeError("Expected block! but got " + Red.TYPE_NAME(matchBlock));
+				throw new TypeError("Expected block! but got " + Red.typeName(matchBlock));
 			}
 
 			if(comp(ctx, value, matchExpr).cond) {
@@ -425,7 +425,7 @@ module RedNatives {
 			const matchBlock = evalSingle(ctx, next.made, next.noEval);
 
 			if(!(matchBlock instanceof Red.RawBlock)) {
-				throw new TypeError("Expected block! but got " + Red.TYPE_NAME(matchBlock));
+				throw new TypeError("Expected block! but got " + Red.typeName(matchBlock));
 			}
 
 			if(matchExpr.isTruthy()) {
@@ -781,9 +781,9 @@ module RedNatives {
 		} = {}
 	): Red.AnyType {
 		if(_.word === undefined) {
-			return system$words.getWord(Red.TYPE_NAME(value));
+			return system$words.getWord(Red.typeName(value));
 		} else {
-			return new Red.RawWord(Red.TYPE_NAME(value));
+			return new Red.RawWord(Red.typeName(value));
 		}
 	}
 
@@ -810,6 +810,17 @@ module RedNatives {
 	*/
 
 	// ...
+
+	export function $$value_q(
+		ctx:   Red.Context,
+		value: Red.AnyType
+	): Red.RawLogic {
+		if(Red.isAnyWord(value)) {
+			value = $$get(ctx, value, {any: []});
+		}
+
+		return Red.RawLogic.from(value != Red.RawUnset.unset);
+	}
 	
 	export function $$break(
 		_ctx: Red.Context,

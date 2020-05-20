@@ -20,18 +20,21 @@ module RedUtil {
 		return false;
 	}*/
 	
-	export function make<T>(t: new(...args: any[]) => T, v: {[k in keyof T]?: k extends undefined ? any : T[k]}): T {
-		let inst = new t;
+	export function make<T>(
+		typeFn:  new(...args: any[]) => T,
+		initObj: {[k in keyof T]?: k extends undefined ? any : T[k]}
+	): T {
+		let inst = new typeFn;
 		
-		for(const key in v) {
-			inst[key] = v[key] as T[typeof key];
+		for(const key in initObj) {
+			inst[key] = initObj[key] as T[typeof key];
 		}
 		
 		return inst;
 	}
 
 	export function clone<T extends object>(obj: T): T {
-		let copy = Object.create(obj); //obj.constructor(); <-- doesn't work?
+		const copy = Object.create(obj); //obj.constructor(); <-- doesn't work?
 		
 		for(const key in obj) {
 			if(key in obj) {

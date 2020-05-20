@@ -78,7 +78,7 @@ addDatatype("native!", Red.Native);
 addDatatype("action!", Red.Action);
 
 // typesets
-system.addWord(
+system$words.addWord(
 	"number!",
 	new Red.RawTypeset(
 		"integer! float! percent! money!"
@@ -87,7 +87,7 @@ system.addWord(
 	)
 );
 
-system.addWord(
+system$words.addWord(
 	"any-word!",
 	new Red.RawTypeset(
 		"word! set-word! lit-word! get-word!"

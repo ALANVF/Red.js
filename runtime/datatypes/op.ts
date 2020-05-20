@@ -1,9 +1,9 @@
 import * as Red from "../../red-types";
 
 export function $$make(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_proto: Red.AnyType,
-	spec: Red.RawAnyFunc
+	spec:   Red.RawAnyFunc
 ): Red.Op {
 	if(spec instanceof Red.Op) {
 		return spec;
@@ -13,7 +13,7 @@ export function $$make(
 }
 
 export function $$form(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_value: Red.Op,
 	buffer: string[],
 	_part?: number

@@ -55,12 +55,74 @@ export function $$mold(
 	return $$form(ctx, value, buffer, _.part);
 }
 
-// $$and_t
+export function $$and_t(
+	_ctx:  Red.Context,
+	left:  Red.RawTypeset,
+	right: Red.AnyType
+): Red.RawTypeset {
+	if(right instanceof Red.RawTypeset) {
+		return new Red.RawTypeset(
+			left.types.filter(type1 =>
+				right.types.find(type2 => type1.equals(type2)) !== undefined
+			)
+		);
+	} else if(right instanceof Red.RawDatatype) {
+		return new Red.RawTypeset(left.types.filter(type => type.equals(right)));
+	} else {
+		throw new TypeError("error!");
+	}
+}
 
 // $$complement
 
-// $$or_t
+// TODO: FINISH
+export function $$or_t(
+	_ctx:  Red.Context,
+	left:  Red.RawTypeset,
+	right: Red.AnyType
+): Red.RawTypeset {
+	if(right instanceof Red.RawTypeset) {
+		return new Red.RawTypeset([
+			...left.types,
+			...right.types.filter(type1 =>
+				left.types.find(type2 => type1.equals(type2)) === undefined
+			)
+		]);
+	} else if(right instanceof Red.RawDatatype) {
+		if(left.types.find(type => type.equals(right)) === undefined) {
+			return new Red.RawTypeset([...left.types, right]);
+		} else {
+			return left;
+		}
+	} else {
+		throw new TypeError("error!");
+	}
+}
 
-// $$xor_t
+export function $$xor_t(
+	_ctx:  Red.Context,
+	left:  Red.RawTypeset,
+	right: Red.AnyType
+): Red.RawTypeset {
+	if(right instanceof Red.RawTypeset) {
+		return new Red.RawTypeset([
+			...left.types.filter(type1 =>
+				right.types.find(type2 => type1.equals(type2)) === undefined
+			),
+			...right.types.filter(type1 =>
+				left.types.find(type2 => type1.equals(type2)) === undefined
+			)
+		]);
+	} else if(right instanceof Red.RawDatatype) {
+		const index = left.types.findIndex(type => type.equals(right));
+		if(index == -1) {
+			return left;
+		} else {
+			return new Red.RawTypeset(left.types.filter((_, i) => i != index));
+		}
+	} else {
+		throw new TypeError("error!");
+	}
+}
 
 // $$find

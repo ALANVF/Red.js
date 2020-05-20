@@ -13,6 +13,15 @@ also: func [
 
 comment: func ["Consume but don't evaluate the next value" 'value][]
 
+??: func [
+	"Prints a word and the value it refers to (molded)"
+	'value [word! path!]
+][
+	prin mold :value
+	prin ": "
+	print either value? :value [mold get/any :value]["unset!"]
+]
+
 probe: func [
 	"Returns a value after printing its molded form"
 	value [any-type!]

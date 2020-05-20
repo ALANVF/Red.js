@@ -6,20 +6,12 @@ export function $$to(
 	_proto: Red.AnyType,
 	spec:   Red.AnyType
 ): Red.RawLitWord {
-	if(spec instanceof Red.RawDatatype) {
+	if(spec instanceof Red.RawDatatype || spec instanceof Red.RawWord || spec instanceof Red.RawGetWord || spec instanceof Red.RawSetWord) {
 		return new Red.RawLitWord(spec.name);
-	} else if(spec instanceof Red.RawWord) {
-		return new Red.RawLitWord(spec);
 	} else if(spec instanceof Red.RawLitWord) {
 		return spec;
-	} else if(spec instanceof Red.RawGetWord || spec instanceof Red.RawSetWord) {
-		return new Red.RawLitWord(spec.name);
 	} else if(spec instanceof Red.RawRefinement) {
-		if(spec.name instanceof Red.RawInteger) {
-			throw new Error("error");
-		} else {
-			return new Red.RawLitWord(spec.name);
-		}
+		return new Red.RawLitWord(spec.word.name);
 	} else if(spec instanceof Red.RawIssue) {
 		if(spec.value.match(/^['\d]|[,]/)) {
 			throw new Error("error");

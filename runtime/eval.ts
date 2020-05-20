@@ -424,7 +424,7 @@ export function groupSingle(
 
 	checkForOp:
 	if(b.length > 1 && b[1] instanceof Red.RawWord) {
-		const b0 = b[0]; // TODO: this needs to be evaluated at some point
+		const b0 = b[0]; // TODO: this needs to be correctly evaluated at some point
 
 		if(b0 instanceof Red.RawWord) {
 			const maybeFn = RedNatives.$$get(ctx, b0, {any: []});
@@ -465,7 +465,7 @@ export function groupSingle(
 				};
 			} else {
 				return {
-					made: fixOps(new RedFunctionCall(op, [], [argument(made, noEval), argument(right, noEval)])),
+					made: fixOps(new RedFunctionCall(op, [], [argument(made, noEval), argument(right, noEval2)])),
 					restNodes: b,
 					noEval: false
 				};

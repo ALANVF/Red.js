@@ -5,10 +5,8 @@ TL;DR:
 
 Finish very soon:
 - Fix `to` (internal issue).
-- Add (at least basic) support for construction syntax.
 - Fix refinements for natives and actions.
 - Add support for `map!`, `binary!`, and `date!` literals.
-- Stop boxing compound natives such as `pair!` and `time!`.
 - Fix stringy types like `file!` and `tag!`.
 
 Finish somewhat soon:
@@ -19,7 +17,7 @@ Finish somewhat soon:
 - Implement actions for more datatypes.
 - Allow including files (kinda already done?).
 - Add newline markers in blocks (will require rewriting many things).
-- Redo literally everything related to vectors.
+- Redo/reimplement literally everything related to vectors.
 	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector)
 - Give functions custom contexts so that `self` can be used in a function inside an object/context.
 - Switch from using unions to interfaces for the type system.
@@ -69,3 +67,5 @@ Things already done:
 - Fix path stuff for other things supporting path access:
 	- Fix path assignments that are longer than 2 values.
 - ~~`series!` actions such as `at` and `skip` should not copy the original `series!`.~~
+- Add (at least basic) support for construction syntax.
+- Stop boxing compound natives such as `pair!` and `time!`.

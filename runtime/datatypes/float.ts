@@ -25,7 +25,7 @@ export function $compare(
 		return cmp(value1.value, value2.toNumber());
 	} else {
 		// supposed to do something else but this works for now I guess
-		throw new TypeError("Can't compare float! to " + Red.TYPE_NAME(value2));
+		throw new TypeError("Can't compare float! to " + Red.typeName(value2));
 	}
 }
 
@@ -89,7 +89,7 @@ export function $$add(
 			);
 		}
 	} else {
-		throw new TypeError("Can't add float! with type " + Red.TYPE_NAME(right));
+		throw new TypeError("Can't add float! with type " + Red.typeName(right));
 	}
 }
 
@@ -131,7 +131,7 @@ export function $$subtract(
 			);
 		}
 	} else {
-		throw new TypeError("Can't subtract float! with type " + Red.TYPE_NAME(right));
+		throw new TypeError("Can't subtract float! with type " + Red.typeName(right));
 	}
 }
 
@@ -173,7 +173,7 @@ export function $$multiply(
 			);
 		}
 	} else {
-		throw new TypeError("Can't multiply float! with type " + Red.TYPE_NAME(right));
+		throw new TypeError("Can't multiply float! with type " + Red.typeName(right));
 	}
 }
 
@@ -215,7 +215,7 @@ export function $$divide(
 			);
 		}
 	} else {
-		throw new TypeError("Can't divide float! with type " + Red.TYPE_NAME(right));
+		throw new TypeError("Can't divide float! with type " + Red.typeName(right));
 	}
 }
 

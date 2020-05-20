@@ -2,9 +2,9 @@ import * as Red from "../../red-types";
 import RedActions from "../actions";
 
 export function $$make(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	_proto: Red.AnyType,
-	spec: Red.RawBlock
+	spec:   Red.RawBlock
 ): Red.Action {
 	let docSpec = null, retSpec = null;
 	const args = [], refines = [], aspec = spec.values[0] as Red.RawBlock;
@@ -102,8 +102,8 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx: Red.Context,
-	value: Red.Action,
+	ctx:    Red.Context,
+	value:  Red.Action,
 	buffer: string[],
 	indent: number,
 	_: RedActions.MoldOptions = {}

@@ -2,10 +2,10 @@ import * as Red from "../../red-types";
 import RedActions from "../actions";
 
 export function $compare(
-	_ctx: Red.Context,
+	_ctx:   Red.Context,
 	value1: Red.RawInteger,
 	value2: Red.AnyType,
-	op: Red.ComparisonOp
+	op:     Red.ComparisonOp
 ): Red.CompareResult {
 	if((op == Red.ComparisonOp.FIND || op == Red.ComparisonOp.STRICT_EQUAL) && !(value2 instanceof Red.RawInteger)) {
 		return 1;
@@ -23,15 +23,15 @@ export function $compare(
 		return cmp(value1.value, value2.toNumber());
 	} else {
 		// supposed to do something else but this works for now I guess
-		throw new TypeError("Can't compare integer! to " + Red.TYPE_NAME(value2));
+		throw new TypeError("Can't compare integer! to " + Red.typeName(value2));
 	}
 }
 
 // $$make
 
 export function $$form(
-	_ctx: Red.Context,
-	value: Red.RawInteger,
+	_ctx:   Red.Context,
+	value:  Red.RawInteger,
 	buffer: string[],
 	_part?: number
 ): boolean {
@@ -65,13 +65,13 @@ export function $$add(
 	} else if(right instanceof Red.RawMoney) {
 		return new Red.RawMoney(+(left.value + right.value).toFixed(2));
 	} else if(right instanceof Red.RawPair) {
-		return new Red.RawPair(new Red.RawInteger(left.value + right.x.value), new Red.RawInteger(left.value + right.y.value));
+		return new Red.RawPair(left.value + right.x, left.value + right.y);
 	} else if(right instanceof Red.RawTime) {
 		return Red.RawTime.fromNumber(left.value + right.toNumber());
 	} else if(right instanceof Red.RawDate) {
 		Red.todo();
 	} else if(right instanceof Red.RawTuple) {
-		return new Red.RawTuple(right.values.map((v: any) => new Red.RawInteger(left.value + v.value)));
+		return new Red.RawTuple(right.values.map(v => left.value + v));
 	} else if(right instanceof Red.RawVector) {
 		const values = right.values.slice(right.index-1);
 		
@@ -95,7 +95,7 @@ export function $$add(
 			);
 		}
 	} else {
-		throw new TypeError("Can't add integer! with type " + Red.TYPE_NAME(right));
+		throw new TypeError("Can't add integer! with type " + Red.typeName(right));
 	}
 }
 
@@ -115,13 +115,13 @@ export function $$subtract(
 	} else if(right instanceof Red.RawMoney) {
 		return new Red.RawMoney(+(left.value - right.value).toFixed(2));
 	} else if(right instanceof Red.RawPair) {
-		return new Red.RawPair(new Red.RawInteger(left.value - right.x.value), new Red.RawInteger(left.value - right.y.value));
+		return new Red.RawPair(left.value - right.x, left.value - right.y);
 	} else if(right instanceof Red.RawTime) {
 		return Red.RawTime.fromNumber(left.value - right.toNumber());
 	} else if(right instanceof Red.RawDate) {
 		Red.todo();
 	} else if(right instanceof Red.RawTuple) {
-		return new Red.RawTuple(right.values.map((v: any) => new Red.RawInteger(left.value - v.value)));
+		return new Red.RawTuple(right.values.map(v => left.value - v));
 	} else if(right instanceof Red.RawVector) {
 		const values = right.values.slice(right.index-1);
 		
@@ -145,7 +145,7 @@ export function $$subtract(
 			);
 		}
 	} else {
-		throw new TypeError("Can't subtract integer! with type " + Red.TYPE_NAME(right));
+		throw new TypeError("Can't subtract integer! with type " + Red.typeName(right));
 	}
 }
 
@@ -165,13 +165,13 @@ export function $$multiply(
 	} else if(right instanceof Red.RawMoney) {
 		return new Red.RawMoney(+(left.value * right.value).toFixed(2));
 	} else if(right instanceof Red.RawPair) {
-		return new Red.RawPair(new Red.RawInteger(left.value * right.x.value), new Red.RawInteger(left.value * right.y.value));
+		return new Red.RawPair(left.value * right.x, left.value * right.y);
 	} else if(right instanceof Red.RawTime) {
 		return Red.RawTime.fromNumber(left.value * right.toNumber());
 	} else if(right instanceof Red.RawDate) {
 		Red.todo();
 	} else if(right instanceof Red.RawTuple) {
-		return new Red.RawTuple(right.values.map((v: any) => new Red.RawInteger(left.value * v.value)));
+		return new Red.RawTuple(right.values.map(v => left.value * v));
 	} else if(right instanceof Red.RawVector) {
 		const values = right.values.slice(right.index-1);
 		
@@ -195,7 +195,7 @@ export function $$multiply(
 			);
 		}
 	} else {
-		throw new TypeError("Can't multiply integer! with type " + Red.TYPE_NAME(right));
+		throw new TypeError("Can't multiply integer! with type " + Red.typeName(right));
 	}
 }
 
@@ -215,13 +215,13 @@ export function $$divide(
 	} else if(right instanceof Red.RawMoney) {
 		return new Red.RawMoney(+(left.value / right.value).toFixed(2));
 	} else if(right instanceof Red.RawPair) {
-		return new Red.RawPair(new Red.RawInteger(Math.floor(left.value / right.x.value)), new Red.RawInteger(Math.floor(left.value / right.y.value)));
+		return new Red.RawPair(Math.floor(left.value / right.x), Math.floor(left.value / right.y));
 	} else if(right instanceof Red.RawTime) {
 		return Red.RawTime.fromNumber(Math.floor(left.value / right.toNumber()));
 	} else if(right instanceof Red.RawDate) {
 		Red.todo();
 	} else if(right instanceof Red.RawTuple) {
-		return new Red.RawTuple(right.values.map((v: any) => new Red.RawInteger(Math.floor(left.value / v.value))));
+		return new Red.RawTuple(right.values.map(v => Math.floor(left.value / v)));
 	} else if(right instanceof Red.RawVector) {
 		const values = right.values.slice(right.index-1);
 		
@@ -245,7 +245,7 @@ export function $$divide(
 			);
 		}
 	} else {
-		throw new TypeError("Can't divide integer! with type " + Red.TYPE_NAME(right));
+		throw new TypeError("Can't divide integer! with type " + Red.typeName(right));
 	}
 }
 
@@ -265,11 +265,11 @@ export function $$remainder(
 	} else if(right instanceof Red.RawMoney) {
 		return new Red.RawMoney(+(left.value % right.value).toFixed(2));
 	} else if(right instanceof Red.RawPair) {
-		return new Red.RawPair(new Red.RawInteger(left.value % right.x.value), new Red.RawInteger(left.value % right.y.value));
+		return new Red.RawPair(left.value % right.x, left.value % right.y);
 	} else if(right instanceof Red.RawTime) {
 		return Red.RawTime.fromNumber(left.value % right.toNumber());
 	} else if(right instanceof Red.RawTuple) {
-		return new Red.RawTuple(right.values.map((v: any) => new Red.RawInteger(left.value % v.value)));
+		return new Red.RawTuple(right.values.map(v => left.value % v));
 	} else if(right instanceof Red.RawVector) {
 		const values = right.values.slice(right.index-1);
 		
@@ -293,7 +293,7 @@ export function $$remainder(
 			);
 		}
 	} else {
-		throw new TypeError("Can't get the remainder of integer! with type " + Red.TYPE_NAME(right));
+		throw new TypeError("Can't get the remainder of integer! with type " + Red.typeName(right));
 	}
 }
 
@@ -309,7 +309,7 @@ export function $$and_t(
 	} else if(right instanceof Red.RawChar) {
 		return new Red.RawInteger(left.value & right.toNormalChar().charCodeAt(0));
 	} else if(right instanceof Red.RawPair) {
-		return new Red.RawPair(new Red.RawInteger(left.value & right.x.value), new Red.RawInteger(left.value & right.y.value));
+		return new Red.RawPair(left.value & right.x, left.value & right.y);
 	} else if(right instanceof Red.RawVector) {
 		const values = right.values.slice(right.index-1);
 
@@ -321,7 +321,7 @@ export function $$and_t(
 			throw new Error("error!");
 		}
 	} else {
-		return new Red.RawTuple(right.values.map(int => new Red.RawInteger(left.value & int.value)));
+		return new Red.RawTuple(right.values.map(int => left.value & int));
 	}
 }
 
@@ -333,8 +333,8 @@ export function $$complement(
 }
 
 export function $$or_t(
-	_ctx: Red.Context,
-	left: Red.RawInteger,
+	_ctx:  Red.Context,
+	left:  Red.RawInteger,
 	right: Red.RawInteger|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTuple
 ): Red.RawInteger|Red.RawPair|Red.RawVector|Red.RawTuple {
 	if(right instanceof Red.RawInteger) {
@@ -342,7 +342,7 @@ export function $$or_t(
 	} else if(right instanceof Red.RawChar) {
 		return new Red.RawInteger(left.value | right.toNormalChar().charCodeAt(0));
 	} else if(right instanceof Red.RawPair) {
-		return new Red.RawPair(new Red.RawInteger(left.value | right.x.value), new Red.RawInteger(left.value | right.y.value));
+		return new Red.RawPair(left.value | right.x, left.value | right.y);
 	} else if(right instanceof Red.RawVector) {
 		const values = right.values.slice(right.index-1);
 
@@ -354,7 +354,7 @@ export function $$or_t(
 			throw new Error("error!");
 		}
 	} else {
-		return new Red.RawTuple(right.values.map(int => new Red.RawInteger(left.value | int.value)));
+		return new Red.RawTuple(right.values.map(int => left.value | int));
 	}
 }
 
@@ -368,7 +368,7 @@ export function $$xor_t(
 	} else if(right instanceof Red.RawChar) {
 		return new Red.RawInteger(left.value ^ right.toNormalChar().charCodeAt(0));
 	} else if(right instanceof Red.RawPair) {
-		return new Red.RawPair(new Red.RawInteger(left.value ^ right.x.value), new Red.RawInteger(left.value ^ right.y.value));
+		return new Red.RawPair(left.value ^ right.x, left.value ^ right.y);
 	} else if(right instanceof Red.RawVector) {
 		const values = right.values.slice(right.index-1);
 
@@ -380,6 +380,6 @@ export function $$xor_t(
 			throw new Error("error!");
 		}
 	} else {
-		return new Red.RawTuple(right.values.map(int => new Red.RawInteger(left.value ^ int.value)));
+		return new Red.RawTuple(right.values.map(int => left.value ^ int));
 	}
 }

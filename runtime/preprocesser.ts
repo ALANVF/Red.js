@@ -16,29 +16,26 @@ interface MacroPattern {
 }
 
 class MacroCtx {
-	defines: {
-		names: string[];
-		values: Red.AnyType[];
-	};
-	macros: {
-		names: string[];
-		funcs: MacroFunction[];
-	};
+	// TODO: maybe change these 2 properties to Maps
+	defines:  {names: string[], values: Red.AnyType[]};
+	macros:   {names: string[], funcs:  MacroFunction[]};
 	patterns: MacroPattern[];
-	ctx: Red.Context;
-	body: Red.RawBlock;
 
-	constructor(ctx: Red.Context, body: Red.RawBlock) {
-		this.ctx = ctx;
-		this.body = body;
+	constructor(
+		public ctx:  Red.Context,
+		public body: Red.RawBlock
+	) {
 		this.defines = {names: [], values: []};
 		this.macros = {names: [], funcs: []};
 		this.patterns = [];
 	}
 }
 
-// TODO: figure out why this doesn't actually replace true/false/none
-export function pre1(ctx: Red.Context, body: Red.RawBlock) {
+// TODO: remove this function because it doesn't seem to be necessary
+export function pre1(
+	ctx:  Red.Context,
+	body: Red.RawBlock
+) {
 	const values = body.values;
 	
 	for(let i = body.values.length-1; i >= 0; i--) {
@@ -56,20 +53,6 @@ export function pre1(ctx: Red.Context, body: Red.RawBlock) {
 			}*/
 
 			continue;
-		}
-
-		if(value instanceof Red.RawWord) {
-			switch(value.name) {
-				case "true":
-					values[i] = Red.RawLogic.true;
-					break;
-				case "false":
-					values[i] = Red.RawLogic.false;
-					break;
-				case "none":
-					values[i] = Red.RawNone.none;
-					break;
-			}
 		}
 	}
 

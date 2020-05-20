@@ -615,6 +615,7 @@ construct: make native! [[
 	]
 	construct
 ]
+]
 
 value?: make native! [[
 		"Returns TRUE if the word has a value"
@@ -624,6 +625,7 @@ value?: make native! [[
 	value_q
 ]
 
+TODO [
 try: make native! [[
 		"Tries to DO a block and returns its value or an error"
 		block	[block!]
