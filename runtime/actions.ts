@@ -25,6 +25,7 @@ import * as ACT_getPath    from "./datatypes/get-path";
 import * as ACT_object     from "./datatypes/object";
 import * as ACT_typeset    from "./datatypes/typeset";
 import * as ACT_series     from "./datatypes/series";
+import {send} from "process";
 
 module RedActions {
 	export interface RandomOptions {
@@ -524,7 +525,7 @@ module RedActions {
 		if(proto instanceof Red.RawDatatype) {
 			return sendAction(Object.values(ACT)[Red.Types.indexOf(proto.repr)], "$$make", ctx, proto, spec);
 		} else {
-			return sendAction(Object.values(ACT)[Red.typeOf(proto)], "$$make", ctx, proto, spec);
+			return valueSendAction("$$make", ctx, proto, spec);
 		}
 	}
 
@@ -565,11 +566,15 @@ module RedActions {
 	*/
 
 	export function $$to(
-		ctx:  Red.Context,
-		type: Red.AnyType,
-		spec: Red.AnyType
+		ctx:   Red.Context,
+		proto: Red.AnyType,
+		spec:  Red.AnyType
 	) {
-		return valueSendAction("$$to", ctx, type, spec);
+		if(proto instanceof Red.RawDatatype) {
+			return sendAction(Object.values(ACT)[Red.Types.indexOf(proto.repr)], "$$to", ctx, proto, spec);
+		} else {
+			return valueSendAction("$$to", ctx, proto, spec);
+		}
 	}
 
 	export function $$form(

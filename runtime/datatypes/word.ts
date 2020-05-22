@@ -64,7 +64,7 @@ export function $$to(
 	if(spec instanceof Red.RawDatatype) {
 		return new Red.RawWord(spec.name);
 	} else if(spec instanceof Red.RawWord) {
-		return spec
+		return spec;
 	} else if(spec instanceof Red.RawGetWord || spec instanceof Red.RawSetWord || spec instanceof Red.RawLitWord || spec instanceof Red.RawRefinement) {
 		return spec.word;
 	} else if(spec instanceof Red.RawIssue) {

@@ -4,10 +4,10 @@ TL;DR:
 - Finish implementing features.
 
 Finish very soon:
-- Fix `to` (internal issue).
-- Fix refinements for natives and actions.
+- Reimplement `char!` and `string!`.
 - Add support for `map!`, `binary!`, and `date!` literals.
 - Fix stringy types like `file!` and `tag!`.
+- Fix refinements for natives and actions.
 
 Finish somewhat soon:
 - Redo the implementation for `money!`.
@@ -69,3 +69,4 @@ Things already done:
 - ~~`series!` actions such as `at` and `skip` should not copy the original `series!`.~~
 - Add (at least basic) support for construction syntax.
 - Stop boxing compound natives such as `pair!` and `time!`.
+- Fix `to` (internal issue).

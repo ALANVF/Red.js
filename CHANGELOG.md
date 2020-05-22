@@ -1,3 +1,7 @@
+# Version 0.0.7 (currently in development)
+- Fixed `to` action.
+
+
 # Version 0.0.6
 - Added basic construction syntax support.
 - Added `value?` native.

@@ -24,10 +24,10 @@
 | `integer!`               | Y        | P      | N           | Y             | P             |
 | `float!`                 | Y        | P***   | N           | Y             | P             |
 | `context!`               | Y        | NA     | P           | P             | N             |
-| `word!`                  | Y        | Y      | p           | Y             | N             |
-| `set-word!`              | Y        | Y      | P           | Y             | N             |
-| `lit-word!`              | Y        | Y      | P           | Y             | N             |
-| `get-word!`              | Y        | Y      | P           | Y             | N             |
+| `word!`                  | Y        | Y      | Y           | Y             | N             |
+| `set-word!`              | Y        | Y      | Y           | Y             | N             |
+| `lit-word!`              | Y        | Y      | Y           | Y             | N             |
+| `get-word!`              | Y        | Y      | Y           | Y             | N             |
 | `refinement!`            | Y        | Y      | N           | P             | N             |
 | `issue!`                 | Y        | Y      | B           | B             | N             |
 | `native!`                | Y        | NA     | P           | Y             | N             |
