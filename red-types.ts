@@ -181,75 +181,6 @@ export class RawPercent extends RawValue {
 	}
 }
 
-/*export class RawChar extends RawValue {
-	constructor(public char: string) {
-		super();
-	}
-
-	static fromNormalChar(char: string) {
-		switch(char) {
-			case "\"":   return new RawChar("^\"");
-			case "^":    return new RawChar("^^");
-			case "\x1c": return new RawChar("^\\");
-			case "\x1d": return new RawChar("^]");
-			case "\x1f": return new RawChar("^_");
-
-			case "\0":   return new RawChar("^@");
-			case "\x08": return new RawChar("^(back)");
-			case "\t":   return new RawChar("^-");
-			case "\n":   return new RawChar("^/");
-			case "\x0c": return new RawChar("^(page)");
-			case "\x1b": return new RawChar("^[");
-			case "\x7f": return new RawChar("^~");
-
-			default: {
-				if(char.match(/^[\x01-\x1a]$/)) {
-					return new RawChar("^" + String.fromCharCode(char.charCodeAt(0) + 64));
-				} else if(char == "\x1e") {
-					return new RawChar("^(1E)");
-				} else if(char.length == 1) {
-					return new RawChar(char);
-				} else {
-					throw new Error(`Invalid char! literal #"${char}"!`);
-				}
-			}
-		}
-	}
-
-	toNormalChar() {
-		if(this.char[0] == "^") {
-			const esc = this.char.slice(1).toUpperCase();
-			switch(esc) {
-				case "\"": return "\"";
-				case "^":  return "^";
-				case "\\": return "\x1c";
-				case "]":  return "\x1d";
-				case "_":  return "\x1f";
-
-				case "@": case "(NULL)": return "\0";
-				          case "(BACK)": return "\x08";
-				case "-": case "(TAB)":  return "\t";
-				case "/": case "(LINE)": return "\n";
-				          case "(PAGE)": return "\x0c";
-				case "[": case "(ESC)":  return "\x1b";
-				case "~": case "(DEL)":  return "\x7f";
-
-				default: {
-					if(esc.match(/^[A-Z]$/)) {
-						return String.fromCharCode(esc.charCodeAt(0) - 64);
-					} else if(esc.match(/^\(([A-F\d]+)\)$/)) {
-						return String.fromCharCode(parseInt(RegExp.$1, 16));
-					} else {
-						throw new Error(`Invalid char! literal #"^${esc}"!`);
-					}
-				}
-			}
-		} else {
-			return this.char;
-		}
-	}
-}*/
-
 export class RawChar extends RawValue {
 	constructor(public char: number) {
 		super();
@@ -305,7 +236,7 @@ export class RawChar extends RawValue {
 	toRedChar() {
 		switch(this.char) {
 			case 34:  return "^\"";
-			case 64:  return "^^";
+			case 94:  return "^^";
 			case 28:  return "^\\";
 			case 29:  return "^]";
 			case 31:  return "^_";
@@ -327,6 +258,14 @@ export class RawChar extends RawValue {
 					return String.fromCharCode(this.char);
 				}
 			}
+		}
+	}
+
+	get lowerChar() {
+		if(97 <= this.char && this.char <= 122) {
+			return this.char - 32;
+		} else {
+			return this.char;
 		}
 	}
 }
@@ -405,7 +344,7 @@ export class RawString extends RawValue implements Series, SeriesOf<RawChar> {
 	}
 
 	pick(i: number) {
-		if(i < 1 || i >= this.length) {
+		if(i < 1 || i > this.length) {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
@@ -433,7 +372,7 @@ export class RawParen extends RawValue implements Series {
 	}
 
 	pick(i: number) {
-		if(i < 1 || i >= this.length) {
+		if(i < 1 || i > this.length) {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
@@ -461,7 +400,7 @@ export class RawBlock extends RawValue implements Series, SeriesOf<AnyType> {
 	}
 
 	pick(i: number) {
-		if(i < 1 || i >= this.length) {
+		if(i < 1 || i > this.length) {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
@@ -491,7 +430,7 @@ export class RawBinary extends RawValue implements Series, SeriesOf<number> {
 	}
 
 	pick(i: number) {
-		if(i < 1 || i >= this.length) {
+		if(i < 1 || i > this.length) {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
@@ -572,7 +511,7 @@ export class RawHash extends RawValue implements Series, SeriesOf<AnyType> {
 	}
 
 	pick(i: number) {
-		if(i < 1 || i >= this.length) {
+		if(i < 1 || i > this.length) {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
@@ -670,7 +609,7 @@ export class RawVector extends RawValue implements Series, SeriesOf<RawInteger|R
 	}
 
 	pick(i: number) {
-		if(i < 1 || i >= this.length) {
+		if(i < 1 || i > this.length) {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
@@ -1384,6 +1323,18 @@ export enum ComparisonOp {
 	SAME,
 	STRICT_EQUAL_WORD,
 	FIND
+}
+
+export namespace ComparisonOp {
+	export function flip(op: ComparisonOp) {
+		switch(op) {
+			case ComparisonOp.LESSER:        return ComparisonOp.GREATER;
+			case ComparisonOp.LESSER_EQUAL:  return ComparisonOp.GREATER_EQUAL;
+			case ComparisonOp.GREATER:       return ComparisonOp.LESSER;
+			case ComparisonOp.GREATER_EQUAL: return ComparisonOp.LESSER_EQUAL;
+			default:                         return op;
+		}
+	}
 }
 
 export type CompareResult =

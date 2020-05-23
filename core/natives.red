@@ -764,6 +764,7 @@ checksum: make native! [[
 	]
 	checksum
 ]
+]
 
 unset: make native! [[
 		"Unsets the value of a word in its current context"
@@ -772,6 +773,7 @@ unset: make native! [[
 	unset
 ]
 
+TODO [
 new-line: make native! [[
 		"Sets or clears the new-line marker within a list series"
 		position [any-list!] "Position to change marker (modified)"

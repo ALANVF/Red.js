@@ -6,6 +6,7 @@ import * as ACT_none       from "./datatypes/none";
 import * as ACT_logic      from "./datatypes/logic";
 import * as ACT_block      from "./datatypes/block";
 import * as ACT_string     from "./datatypes/string";
+import * as ACT_char       from "./datatypes/char";
 import * as ACT_integer    from "./datatypes/integer";
 import * as ACT_float      from "./datatypes/float";
 import * as ACT_context    from "./datatypes/context";
@@ -286,7 +287,7 @@ module RedActions {
 		"ACT_STRING":     [ACT_string, ACT_series],
 		"ACT_FILE":       [ACT_string, ACT_series],
 		"ACT_URL":        [ACT_string, ACT_series],
-		"ACT_CHAR":       [],
+		"ACT_CHAR":       [ACT_char],
 		"ACT_INTEGER":    [ACT_integer],
 		"ACT_FLOAT":      [ACT_float],
 		"ACT_SYMBOL":     [],

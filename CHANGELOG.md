@@ -1,6 +1,10 @@
 # Version 0.0.7 (currently in development)
 - Fixed `to` action.
 - Reimplemented `char!` and `string!`.
+- Added basic actions for `char!`.
+- Fixed inconsistent `mold` behavior for `string!` and `char!`.
+- Fixed `pick` bug.
+- Added `unset` native.
 
 
 # Version 0.0.6

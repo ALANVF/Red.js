@@ -847,6 +847,27 @@ module RedNatives {
 		throw new Red.CFReturn(value);
 	}
 
+	// ...
+
+	export function $$unset(
+		ctx:  Red.Context,
+		word: Red.RawAnyWord|Red.RawBlock
+	): Red.RawUnset {
+		if(Red.isAnyWord(word)) {
+			if(ctx.hasWord(word.name, false, true)) {
+				ctx.setWord(word.name, Red.RawUnset.unset, false, true);
+			}
+		} else {
+			for(const w of word.current().values) {
+				if(Red.isAnyWord(w) && ctx.hasWord(w.name, false, true)) {
+					ctx.setWord(w.name, Red.RawUnset.unset, false, true);
+				}
+			}
+		}
+
+		return Red.RawUnset.unset;
+	}
+
 
 	// ... Rebol-specific stuff I might add
 

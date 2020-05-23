@@ -10,7 +10,6 @@ export function $$form(
 	_part?: number
 ): boolean {
 	buffer.push(str.toJsString());
-
 	return false;
 }
 
@@ -21,14 +20,20 @@ export function $$mold(
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	const str_ = str.values.slice(str.index-1);
-
-	if(str_.length == 0) {
+	if(str.length == 0) {
 		buffer.push('""');
 	} else {
-		buffer.push('"');
-		buffer.push(str_.map(ch => ch.toRedChar()).join(""));
-		buffer.push('"');
+		const chars = str.toRedString();
+		
+		if(chars.includes('^"')) {
+			buffer.push("{");
+			buffer.push(chars.replace(/\^"/g, '"'));
+			buffer.push("}");
+		} else {
+			buffer.push('"');
+			buffer.push(chars);
+			buffer.push('"');
+		}
 	}
 
 	return false;
@@ -37,9 +42,9 @@ export function $$mold(
 // ...
 
 export function $$append(
-	ctx:    Red.Context,
-	str:    Red.RawString,
-	value:  Red.AnyType,
+	ctx:   Red.Context,
+	str:   Red.RawString,
+	value: Red.AnyType,
 	_: RedActions.AppendOptions = {}
 ): Red.RawString {
 	if(_.part !== undefined || _.dup !== undefined) {

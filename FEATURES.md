@@ -20,7 +20,7 @@
 | `string!`                | Y        | Y      | N           | Y             | P             |
 | `file!`                  | Y        | P      | N           | N             | BI            |
 | `url!`                   | Y        | PB     | N           | N             | BI            |
-| `char!`                  | Y        | Y      | N           | N             | N             |
+| `char!`                  | Y        | Y      | N           | Y             | P             |
 | `integer!`               | Y        | P      | N           | Y             | P             |
 | `float!`                 | Y        | P***   | N           | Y             | P             |
 | `context!`               | Y        | NA     | P           | P             | N             |
@@ -156,7 +156,7 @@
 | `to-local-file`     | N      |
 | `wait`              | N      |
 | `checksum`          | N      |
-| `unset`             | N      |
+| `unset`             | Y      |
 | `new-line`          | N      |
 | `new-line?`         | N      |
 | `context?`          | N      |
