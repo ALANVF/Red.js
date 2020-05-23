@@ -10,7 +10,7 @@ export function $$make(
 		return new Red.RawBlock([]);
 	} else if(Red.isAnyPath(spec)) {
 		return new Red.RawBlock(spec.path.slice(spec.index-1));
-	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen /*|| spec instanceof Red/RawHash*/) {
+	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
 		const blk: Red.AnyType[] = [];
@@ -124,7 +124,7 @@ export function $$append(
 	} else if(_.only !== undefined) {
 		series.values.push(value);
 	} else {
-		if(value instanceof Red.RawBlock /*|| value instanceof Red.RawHash*/ || value instanceof Red.RawParen) {
+		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
 			series.values.push(...value.values.slice(value.index - 1));
 		} else if(Red.isAnyPath(value)) {
 			series.values.push(...value.path.slice(value.index - 1));

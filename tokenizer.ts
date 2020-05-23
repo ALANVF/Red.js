@@ -914,10 +914,10 @@ function tokenToRed(token: RedToken): Red.AnyType {
 	}
 
 	else if("char" in token) {
-		return new Red.RawChar(token.char);
+		return Red.RawChar.fromRedChar(token.char);
 	}
 	else if("string" in token) {
-		return Red.RawString.fromNormalString(token.string, token.multi);
+		return Red.RawString.fromRedString(token.string, token.multi);
 	}
 	else if("file" in token) {
 		return new Red.RawFile(token.file);

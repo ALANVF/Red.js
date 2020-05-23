@@ -4,13 +4,14 @@ TL;DR:
 - Finish implementing features.
 
 Finish very soon:
-- Reimplement `char!` and `string!`.
 - Add support for `map!`, `binary!`, and `date!` literals.
 - Fix stringy types like `file!` and `tag!`.
 - Fix refinements for natives and actions.
+- Remove `pre1` from the preprocessor.
 
 Finish somewhat soon:
-- Redo the implementation for `money!`.
+- Unify `percent!` behavior.
+- Reimplement `money!`.
 - Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
 	- Quoting specs: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#741-function-type
 - Implement (more) math natives.
@@ -70,3 +71,4 @@ Things already done:
 - Add (at least basic) support for construction syntax.
 - Stop boxing compound natives such as `pair!` and `time!`.
 - Fix `to` (internal issue).
+- Reimplement `char!` and `string!`.

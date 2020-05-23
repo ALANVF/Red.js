@@ -27,7 +27,7 @@ export function $$mold(
 		buffer.push('""');
 	} else {
 		buffer.push('"');
-		buffer.push(str_.map(ch => ch.char).join(""));
+		buffer.push(str_.map(ch => ch.toRedChar()).join(""));
 		buffer.push('"');
 	}
 
@@ -38,19 +38,19 @@ export function $$mold(
 
 export function $$append(
 	ctx:    Red.Context,
-	series: Red.RawString,
+	str:    Red.RawString,
 	value:  Red.AnyType,
 	_: RedActions.AppendOptions = {}
 ): Red.RawString {
 	if(_.part !== undefined || _.dup !== undefined) {
 		Red.todo();
 	} else if(value instanceof Red.RawChar) {
-		series.values.push(value);
+		str.values.push(value);
 	} else if(value instanceof Red.RawString) {
-		series.values.push(...value.values.slice(value.index - 1));
+		str.values.push(...value.current().values);
 	} else { // Unsure if /only should be ignored
-		series.values.push(...RedActions.$$form(ctx, value).values);
+		str.values.push(...RedActions.$$form(ctx, value).values);
 	}
 
-	return series;
+	return str;
 }

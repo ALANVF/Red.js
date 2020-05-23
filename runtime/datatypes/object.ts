@@ -18,7 +18,6 @@ export function $$make(
 			blk.shift();
 
 			const grouped = groupSingle(out, blk);
-			
 			out.addWord(head.name, evalSingle(out, grouped.made, grouped.noEval));
 			blk = grouped.restNodes;
 		} else {

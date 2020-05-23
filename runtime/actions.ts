@@ -587,7 +587,7 @@ module RedActions {
 		const str: string[] = [];
 		const ml = valueSendAction("$$form", ctx, value, str, _.part && _.part[0].value);
 		
-		return Red.RawString.fromNormalString(str.join(""), ml);
+		return Red.RawString.fromRedString(str.join(""), ml); // maybe change
 	}
 
 	export function $$mold(
@@ -610,7 +610,7 @@ module RedActions {
 
 		const ml = valueSendAction("$$mold", ctx, value, str, 1, __);
 		
-		return Red.RawString.fromJsString(str.join(""), ml);
+		return Red.RawString.fromJsString(str.join(""), ml); // maybe change
 	}
 
 	/*

@@ -81,8 +81,8 @@ export function $$to(
 			return new Red.RawWord(str);
 		}
 	} else if(spec instanceof Red.RawChar) {
-		if(spec.char.match(/^[a-zA-Z_+\-*\/\.~`?!^&|=]$/)) {
-			return new Red.RawWord(spec.char);
+		if(spec.toJsChar().match(/^[a-zA-Z_+\-*\/\.~`?!^&|=]$/)) {
+			return new Red.RawWord(spec.toJsChar());
 		} else {
 			throw new Error("error");
 		}

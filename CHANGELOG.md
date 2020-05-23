@@ -1,5 +1,6 @@
 # Version 0.0.7 (currently in development)
 - Fixed `to` action.
+- Reimplemented `char!` and `string!`.
 
 
 # Version 0.0.6

@@ -26,8 +26,8 @@ export function $$to(
 			return new Red.RawSetWord(str);
 		}
 	} else if(spec instanceof Red.RawChar) {
-		if(spec.char.match(/^[a-zA-Z_+\-*\/\.~`?!^&|=]$/)) {
-			return new Red.RawSetWord(spec.char);
+		if(spec.toJsChar().match(/^[a-zA-Z_+\-*\/\.~`?!^&|=]$/)) {
+			return new Red.RawSetWord(spec.toJsChar());
 		} else {
 			throw new Error("error");
 		}

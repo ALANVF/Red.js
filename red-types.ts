@@ -181,7 +181,7 @@ export class RawPercent extends RawValue {
 	}
 }
 
-export class RawChar extends RawValue {
+/*export class RawChar extends RawValue {
 	constructor(public char: string) {
 		super();
 	}
@@ -248,6 +248,87 @@ export class RawChar extends RawValue {
 			return this.char;
 		}
 	}
+}*/
+
+export class RawChar extends RawValue {
+	constructor(public char: number) {
+		super();
+	}
+
+	static fromJsChar(char: string) {
+		if(char.length != 0) {
+			return new RawChar(char.charCodeAt(0));
+		} else {
+			throw new Error(`Invalid char! literal #""!`);
+		}
+	}
+
+	static fromRedChar(char: string) {
+		if(char[0] == "^") {
+			const esc = char.slice(1).toUpperCase();
+			switch(esc) {
+				case "\"": return new RawChar(34);
+				case "^":  return new RawChar(94);
+				case "\\": return new RawChar(28);
+				case "]":  return new RawChar(29);
+				case "_":  return new RawChar(31);
+
+				case "@": case "(NULL)": return new RawChar(0);
+				          case "(BACK)": return new RawChar(8);
+				case "-": case "(TAB)":  return new RawChar(9);
+				case "/": case "(LINE)": return new RawChar(10);
+				          case "(PAGE)": return new RawChar(12);
+				case "[": case "(ESC)":  return new RawChar(27);
+				case "~": case "(DEL)":  return new RawChar(127);
+
+				default: {
+					if("A" <= esc && esc <= "Z") {
+						return new RawChar(esc.charCodeAt(0) - 64);
+					} else if(esc.match(/^\(([A-F\d]+)\)$/i)) {
+						return new RawChar(parseInt(RegExp.$1, 16));
+					} else {
+						throw new Error(`Invalid char! literal #"^${esc}"!`);
+					}
+				}
+			}
+		} else if(char.length != 0) {
+			return new RawChar(char.charCodeAt(0));
+		} else {
+			throw new Error(`Invalid char! literal #""!`);
+		}
+	}
+
+	toJsChar() {
+		return String.fromCharCode(this.char);
+	}
+
+	toRedChar() {
+		switch(this.char) {
+			case 34:  return "^\"";
+			case 64:  return "^^";
+			case 28:  return "^\\";
+			case 29:  return "^]";
+			case 31:  return "^_";
+
+			case 0:   return "^@";
+			case 8:   return "^(back)";
+			case 9:   return "^-";
+			case 10:  return "^/";
+			case 12:  return "^(page)";
+			case 27:  return "^[";
+			case 127: return "^~";
+
+			case 30: return "^(1E)";
+
+			default: {
+				if(1 <= this.char && this.char <= 26) {
+					return "^" + String.fromCharCode(this.char + 64);
+				} else {
+					return String.fromCharCode(this.char);
+				}
+			}
+		}
+	}
 }
 
 export class RawLogic extends RawValue {
@@ -291,23 +372,23 @@ export class RawString extends RawValue implements Series, SeriesOf<RawChar> {
 		value:     string,
 		multiline: boolean = false
 	) {
-		return new RawString([...value].map(c => RawChar.fromNormalChar(c)), multiline);
+		return new RawString([...value].map(c => RawChar.fromJsChar(c)), multiline);
 	}
 
-	static fromNormalString(
+	static fromRedString(
 		value:     string,
 		multiline: boolean = false
 	) {
 		const out = [];
-		const redEscapeChar = /\^(?:[A-Z\[\\\]_@\-\/~"\^]||\((?:\h+|null|back|tab|line|page|esc|del)\))/i;
+		const redEscapeChar = /\^(?:[A-Z\[\\\]_@\-\/~"\^]|\((?:null|back|tab|line|page|esc|del|[A-F\d]+)\))/i;
 
-		while(value != "") {
-			if(value.search(redEscapeChar) == 0) {
-				const m = redEscapeChar.exec(value)!;
-				out.push(new RawChar(m.toString()));
-				value = value.slice(m.toString().length);
+		while(value.length != 0) {
+			const m = value.match(redEscapeChar);
+			if(m != null && m.index == 0) {
+				out.push(RawChar.fromRedChar(m[0]));
+				value = value.slice(m[0].length);
 			} else {
-				out.push(new RawChar(value[0]));
+				out.push(new RawChar(value.charCodeAt(0)));
 				value = value.slice(1);
 			}
 		}
@@ -316,7 +397,11 @@ export class RawString extends RawValue implements Series, SeriesOf<RawChar> {
 	}
 
 	toJsString() {
-		return this.values.slice(this.index - 1).map(char => char.toNormalChar()).join("");
+		return this.values.slice(this.index - 1).map(char => char.toJsChar()).join("");
+	}
+
+	toRedString() {
+		return this.values.slice(this.index - 1).map(char => char.toRedChar()).join("");
 	}
 
 	pick(i: number) {
