@@ -318,33 +318,29 @@ export function callFunction(
 			}
 		}) as Red.AnyType[];
 
-		if(refArgs.length == 0) {
-			return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, fnArgs, []);
-		} else {
-			const refOptions: [Red.RawRefinement, Red.AnyType[]][] = [];
+		const refOptions: [Red.RawRefinement, Red.AnyType[]][] = [];
 
-			for(const ref of refines) {
-				const getRef = fn.getRefine(ref);
-				const newArgs: Red.AnyType[] = [];
-				const evalArg = (arg: Argument, i: number) => {
-					if(getRef.addArgs[i].name instanceof Red.RawWord) {
-						return evalSingle(ctx, arg.expr, arg.noEval);
-					} else if(arg.expr instanceof RedFunctionCall) {
-						throw new Error("error!");
-					} else {
-						return arg.expr;
-					}
-				};
-
-				for(let i = 0; i < getRef.addArgs.length; i++) {
-					newArgs.push(evalArg(refArgs.shift()!, i));
+		for(const ref of refines) {
+			const getRef = fn.getRefine(ref);
+			const newArgs: Red.AnyType[] = [];
+			const evalArg = (arg: Argument, i: number) => {
+				if(getRef.addArgs[i].name instanceof Red.RawWord) {
+					return evalSingle(ctx, arg.expr, arg.noEval);
+				} else if(arg.expr instanceof RedFunctionCall) {
+					throw new Error("error!");
+				} else {
+					return arg.expr;
 				}
+			};
 
-				refOptions.push([ref, newArgs]);
+			for(let i = 0; i < getRef.addArgs.length; i++) {
+				newArgs.push(evalArg(refArgs.shift()!, i));
 			}
 
-			return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, fnArgs, refOptions);
+			refOptions.push([ref, newArgs]);
 		}
+
+		return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, fnArgs, refOptions);
 	} else {
 		throw new Error("error!");
 	}
@@ -542,7 +538,7 @@ export function groupSingle(
 				out.passed.push(argument(b.shift()!));
 			}
 		}
-
+		
 		return {
 			made: out,
 			restNodes: b,

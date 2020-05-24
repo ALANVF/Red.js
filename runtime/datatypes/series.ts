@@ -163,19 +163,19 @@ export function $$poke(
 	ser:   Red.RawSeries,
 	index: Red.AnyType,
 	value: Red.AnyType
-): Red.AnyType|Red.RawBitset {
+): Red.AnyType {
 	if(!(index instanceof Red.RawInteger)) {
 		throw new TypeError("error!");
 	}
 	
-	if(index.value < 1) {
-		return Red.RawNone.none;
+	if(index.value < 1 || index.value > ser.length) {
+		throw new RangeError("error!");
 	} else {
 		// change this lol
 		if(ser instanceof Red.RawBlock || ser instanceof Red.RawParen) {
 			if(ser.values[(ser.index - 1) + (index.value - 1)]) {
 				ser.values[(ser.index - 1) + (index.value - 1)] = value;
-				return ser; // no?
+				return value;
 			} else {
 				throw new RangeError("Value out of range!");
 			}
