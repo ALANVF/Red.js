@@ -1,10 +1,6 @@
 Red []
 
-#define TODO none
-#define FIGURE-THIS-OUT-LATER? none
-
-
-FIGURE-THIS-OUT-LATER? [
+'FIGURE-THIS-OUT-LATER? [
 make: make action! [[
 		"Returns a new value made from a spec for that value's type"
 		type	 [any-type!] "The datatype, an example or prototype value"
@@ -15,7 +11,7 @@ make: make action! [[
 ]
 ]
 
-TODO [
+'TODO [
 random: make action! [[
 		"Returns a random value of the same datatype; or shuffles series"
 		value	"Maximum value of result (modified when series)"
@@ -67,7 +63,7 @@ mold: make action! [[
 	mold
 ]
 
-TODO [
+'TODO [
 modify: make action! [[
 		"Change mode for target aggregate value"
 		target	 [object! series!]
@@ -81,7 +77,7 @@ modify: make action! [[
 
 ;-- Scalar actions --
 
-TODO [
+'TODO [
 absolute: make action! [[
 		"Returns the non-negative value"
 		value	 [number! char! pair! time!]
@@ -118,7 +114,7 @@ multiply: make action! [[
 	multiply
 ]
 
-TODO [
+'TODO [
 negate: make action! [[
 		"Returns the opposite (additive inverse) value"
 		number 	 [number! bitset! pair! time!]
@@ -146,7 +142,7 @@ remainder: make action! [[
 	remainder
 ]
 
-TODO [
+'TODO [
 round: make action! [[
 		"Returns the nearest integer. Halves round up (away from zero) by default"
 		n		[number! time! pair!]
@@ -172,7 +168,7 @@ subtract: make action! [[
 	subtract
 ]
 
-TODO [
+'TODO [
 even?: make action! [[
 		"Returns true if the number is evenly divisible by 2"
 		number 	 [number! char! time!]
@@ -260,7 +256,7 @@ back: make action! [[
 	back
 ]
 
-TODO [
+'TODO [
 change: make action! [[
 		"Changes a value in a series and returns the series after the change"
 		series [series! port!] "Series at point to change"
@@ -296,7 +292,7 @@ copy: make action! [[
 	copy
 ]
 
-TODO [
+'TODO [
 find: make action! [[
 		"Returns the series where a value is found, or NONE"
 		series	 [series! bitset! typeset! port! map! none!]
@@ -344,7 +340,7 @@ index?: make action! [[
 	index_q
 ]
 
-TODO [
+'TODO [
 insert: make action! [[
 		"Inserts value(s) at series index; returns series past the insertion"
 		series	   [series! port! bitset!]
@@ -368,7 +364,7 @@ length?: make action! [[
 	length_q
 ]
 
-TODO [
+'TODO [
 move: make action! [[
 		"Moves one or more elements from one series to another position or series"
 		origin	   [series! port!]
@@ -408,7 +404,7 @@ poke: make action! [[
 	poke
 ]
 
-TODO [
+'TODO [
 put: make action! [[
 		"Replaces the value following a key, and returns the new value"
 		series	 [series! port! map! object!]
@@ -491,7 +487,7 @@ skip: make action! [[
 	skip
 ]
 
-TODO [
+'TODO [
 swap: make action! [[
 		"Swaps elements between two series or the same series"
 		series1  [series! port!]
@@ -518,7 +514,7 @@ tail?: make action! [[
 	tail_q
 ]
 
-TODO [
+'TODO [
 take: make action! [[
 		"Removes and returns one or more elements"
 		series	 [series! port! none!]
@@ -547,7 +543,7 @@ trim: make action! [[
 
 ;-- I/O actions --
 
-TODO [
+'TODO [
 create: make action! [[
 		"Send port a create request"
 		port [port! file! url! block!]
