@@ -9,7 +9,7 @@ export function $$make(
 	if(spec instanceof Red.RawInteger || spec instanceof Red.RawFloat) {
 		return new Red.RawBlock([]);
 	} else if(Red.isAnyPath(spec)) {
-		return new Red.RawBlock(spec.path.slice(spec.index-1));
+		return new Red.RawBlock(spec.current().path);
 	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
@@ -30,7 +30,36 @@ export function $$make(
 	}
 }
 
-// $$to
+export function $$to(
+	_ctx:   Red.Context,
+	_proto: Red.AnyType,
+	spec:   Red.AnyType
+): Red.RawBlock {
+	if(spec instanceof Red.RawInteger || spec instanceof Red.RawFloat) {
+		return new Red.RawBlock([]);
+	} else if(Red.isAnyPath(spec)) {
+		return new Red.RawBlock(spec.current().path);
+	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash || spec instanceof Red.RawString) {
+		return new Red.RawBlock(spec.values.slice(spec.index-1));
+	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
+		const blk: Red.AnyType[] = [];
+
+		for(let i = 0; i < spec.words.length; i++) {
+			blk.push(new Red.RawSetWord(spec.words[i]));
+			blk.push(spec.values[i]);
+		}
+
+		return new Red.RawBlock(blk);
+	} /* else if(spec instanceof Red.RawMap) {
+		...
+	} */ else if(spec instanceof Red.RawVector) {
+		return new Red.RawBlock(spec.values.slice(spec.index-1));
+	} else if(spec instanceof Red.RawTypeset) {
+		return new Red.RawBlock([...spec.types]);
+	} else {
+		throw new TypeError("Cannot convert an instance of " + Red.typeName(spec) + " to a block!");
+	}
+}
 
 export function $$form(
 	ctx:    Red.Context,
