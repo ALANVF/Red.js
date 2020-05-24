@@ -21,10 +21,10 @@ Red.evalRed(`
 		get
 	]
 `);
-Red.evalFile("./core/scalars.red");
 Red.evalFile("./core/natives.red");
 Red.evalFile("./core/actions.red");
 Red.evalFile("./core/operators.red");
+Red.evalFile("./core/scalars.red");
 Red.evalFile("./core/functions.red");
 Red.evalFile("./core/interactive.red");
 /* ------------------------------------- */
