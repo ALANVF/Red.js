@@ -111,7 +111,7 @@
 | `bind`              | N      |
 | `in`                | N      |
 | `parse`             | N      |
-| `union`             | N      |
+| `union`             | P      |
 | `unique`            | N      |
 | `intersect`         | N      |
 | `difference`        | N      |

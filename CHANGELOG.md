@@ -1,10 +1,19 @@
-# Version 0.0.7 (currently in development)
+# Version 0.0.7
 - Fixed `to` action.
 - Reimplemented `char!` and `string!`.
 - Added basic actions for `char!`.
 - Fixed inconsistent `mold` behavior for `string!` and `char!`.
-- Fixed `pick` bug.
+- Fixed `pick` and `poke` bugs.
 - Added `unset` native.
+- Added more utility functions.
+- Fixed a context bug.
+- Added `union` native (paritally).
+- Added more supported types for `make block!`.
+- Added `to` action for `block!`.
+- Added `copy` action for `string!`.
+- Fixed an issue where function refinements that didn't take any arguments would be ignored.
+- Made the interactive help function better.
+- Added all typesets.
 
 
 # Version 0.0.6
