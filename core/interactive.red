@@ -6,8 +6,6 @@ Red [
 ;-- This won't be implemented the way it is in normal Red for now.
 ;-- Actual implementation: https://github.com/red/red/blob/master/environment/console/help.red
 
-help: none
-?: none
 help-ctx: make context! [
 	HELP-USAGE:
 {Use HELP or ? to view built-in docs for functions, values 
@@ -29,30 +27,44 @@ Other useful functions:
 	about  - Display version number and build date
 	quit   - Leave the Red console}
 
+	set 'a-an func [
+		"Returns the appropriate variant of a or an (simple, vs 100% grammatically correct)"
+		str [string!]
+		/pre "Prepend to str"
+		/local tmp
+	][
+		;@@ need to implement the find action before this can work
+		;tmp: either find "aeiou" str/1 ["an"] ["a"]
+		;either pre [rejoin [tmp #" " str]][tmp]
+		tmp: either any [#"a" = str/1 #"e" = str/1 #"i" = str/1 #"o" = str/1 #"u" = str/1] ["an"]["a"]
+		either pre [rejoin [tmp #" " str]][tmp]
+	]
+
 	set 'help func [
 		"Displays information about functions, values, objects, and datatypes."
 		'word [any-type!]
 		/local
 			val val-type
 	][
+		
 		case [
-			unset! = type? :word [
+			unset? :word [
 				print HELP-USAGE
 			]
 
 			any [
-				word! = type? :word  get-word! = type? :word
-				path! = type? :word  get-path! = type? :word
+				word? :word  get-word? :word
+				path? :word  get-path? :word
 			] [
 				either unset! = val-type: type? val: get/any :word [
 					print form reduce ["No information on" :word]
 				][
-					print form reduce [:word "is a(n)" val-type "of value:" mold :val]
+					print form reduce [:word "is" a-an/pre form val-type "of value:" mold :val]
 				]
 			]
 
 			'else [
-				print form reduce [mold :word "is a(n)" type? :word]
+				print form reduce [mold :word "is" a-an/pre form type? :word]
 			]
 		]
 	]
