@@ -79,6 +79,14 @@ export class RawPath extends RawValue implements Series {
 		super();
 	}
 
+	current(): RawPath {
+		if(this.index == 1) {
+			return this;
+		} else {
+			return new RawPath(this.path.slice(this.index - 1));
+		}
+	}
+
 	get length() {
 		return this.path.length - (this.index - 1);
 	}
@@ -89,6 +97,14 @@ export class RawLitPath extends RawValue implements Series {
 	
 	constructor(public path: AnyType[]) {
 		super();
+	}
+
+	current(): RawLitPath {
+		if(this.index == 1) {
+			return this;
+		} else {
+			return new RawLitPath(this.path.slice(this.index - 1));
+		}
 	}
 
 	get length() {
@@ -103,6 +119,14 @@ export class RawGetPath extends RawValue implements Series {
 		super();
 	}
 
+	current(): RawGetPath {
+		if(this.index == 1) {
+			return this;
+		} else {
+			return new RawGetPath(this.path.slice(this.index - 1));
+		}
+	}
+
 	get length() {
 		return this.path.length - (this.index - 1);
 	}
@@ -113,6 +137,14 @@ export class RawSetPath extends RawValue implements Series {
 	
 	constructor(public path: AnyType[]) {
 		super();
+	}
+
+	current(): RawSetPath {
+		if(this.index == 1) {
+			return this;
+		} else {
+			return new RawSetPath(this.path.slice(this.index - 1));
+		}
 	}
 
 	get length() {
