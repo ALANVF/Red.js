@@ -635,7 +635,7 @@ module RedNatives {
 		if(Red.isAnyWord(value)) {
 			name = value.name;
 		} else {
-			return Red.todo();
+			Red.todo();
 		}
 
 		const fres = ctx.hasWord(name, isCase, true);
@@ -704,7 +704,15 @@ module RedNatives {
 			return Red.todo();
 		}
 		
-		ctx.addWord(word, newValue, isCase, true);
+		// TODO: fix the actual `addWord` method for contexts
+		//ctx.addWord(word, newValue, isCase, true);
+		if(ctx.hasWord(word, isCase)) {
+			ctx.setWord(word, newValue, isCase);
+		} else if(ctx.outer !== undefined) {
+			$$set(ctx.outer, value, newValue, _);
+		} else {
+			ctx.addWord(word, newValue, isCase);
+		}
 		
 		return newValue;
 	}
@@ -808,6 +816,45 @@ module RedNatives {
 		#get-definition NAT_IN
 	]
 	*/
+
+	// ...
+
+	/*
+	union: make native! [[
+			"Returns the union of two data sets"
+			set1 [block! hash! string! bitset! typeset!]
+			set2 [block! hash! string! bitset! typeset!]
+			/case "Use case-sensitive comparison"
+			/skip "Treat the series as fixed size records"
+				size [integer!]
+			return: [block! hash! string! bitset! typeset!]
+		]
+		union
+	]
+	*/
+	export function $$union(
+		ctx:  Red.Context,
+		set1: Red.RawBlock|Red.RawHash|Red.RawString|Red.RawBitset|Red.RawTypeset,
+		set2: typeof set1,
+		_: {
+			case?: []
+			skip?: [Red.RawInteger]
+		} = {}
+	): typeof set1 {
+		if(_.case !== undefined || _.skip !== undefined) Red.todo();
+
+		if(set1 instanceof Red.RawBlock && set2 instanceof Red.RawBlock) {
+			Red.todo();
+		} else if(set1 instanceof Red.RawHash && set2 instanceof Red.RawHash) {
+			Red.todo();
+		} else if(set1 instanceof Red.RawString && set2 instanceof Red.RawString) {
+			Red.todo();
+		} else if((set1 instanceof Red.RawBitset && set2 instanceof Red.RawBitset) || (set1 instanceof Red.RawTypeset && set2 instanceof Red.RawTypeset)) {
+			return RedActions.$$or_t(ctx, set1, set2) as typeof set1;
+		} else {
+			throw new TypeError(`Expected ${Red.typeName(set1)} not ${Red.typeName(set2)}`);
+		}
+	}
 
 	// ...
 

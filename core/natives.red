@@ -1,9 +1,5 @@
 Red []
 
-; temp
-#define TODO none
-#define FIGURE-THIS-OUT-LATER? none
-
 if: make native! [[
 		"If conditional expression is TRUE, evaluate block; else return NONE"
 		cond  	 [any-type!]
@@ -91,7 +87,7 @@ foreach: make native! [[
 	foreach
 ]
 
-TODO [
+'TODO [
 forall: make native! [[
 		"Evaluates body for all values in a series"
 		'word [word!]   "Word referring to series to iterate over"
@@ -118,7 +114,7 @@ func: make native! [[
 	func
 ]
 
-TODO [
+'TODO [
 function: make native! [[
 		"Defines a function, making all set-words found in body, local"
 		spec [block!]
@@ -204,7 +200,7 @@ get: make native! [[
 	get
 ]
 
-FIGURE-THIS-OUT-LATER? [
+'FIGURE-THIS-OUT-LATER? [
 set: make native! [[
 		"Sets the value(s) one or more words refer to"
 		word	[any-word! block! object! path!] "Word, object, map path or block of words to set"
@@ -312,7 +308,7 @@ type?: make native! [[
 	type_q
 ]
 
-TODO [
+'TODO [
 stats: make native! [[
 		"Returns interpreter statistics"
 		/show "TBD:"
@@ -361,6 +357,7 @@ parse: make native! [[
 	]
 	parse
 ]
+]
 
 union: make native! [[
 		"Returns the union of two data sets"
@@ -374,6 +371,7 @@ union: make native! [[
 	union
 ]
 
+'TODO [
 unique: make native! [[
 		"Returns the data set with duplicates removed"
 		set [block! hash! string!]
@@ -625,7 +623,7 @@ value?: make native! [[
 	value_q
 ]
 
-TODO [
+'TODO [
 try: make native! [[
 		"Tries to DO a block and returns its value or an error"
 		block	[block!]
@@ -690,7 +688,7 @@ return: make native! [[
 	return
 ]
 
-TODO [
+'TODO [
 throw: make native! [[
 		"Throws control back to a previous catch"
 		value [any-type!] "Value returned from catch"
@@ -773,7 +771,7 @@ unset: make native! [[
 	unset
 ]
 
-TODO [
+'TODO [
 new-line: make native! [[
 		"Sets or clears the new-line marker within a list series"
 		position [any-list!] "Position to change marker (modified)"
