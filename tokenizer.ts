@@ -942,8 +942,18 @@ function tokenToRed(token: RedToken): Red.AnyType {
 	else if("tag" in token) { // TODO: implement
 		throw new Error("unimplemented!");
 	}
-	else if("binary" in token) { // TODO: implement
-		throw new Error("unimplemented!");
+	else if("binary" in token) {
+		let bytes: Buffer;
+		
+		if(token.base == 2) {
+			bytes = Buffer.from(token.binary.match(/.{8}/g)!.map(b => parseInt(b, 2)));
+		} else if(token.base == 16) {
+			bytes = Buffer.from(token.binary, "hex");
+		} else {
+			bytes = Buffer.from(token.binary, "base64");
+		}
+
+		return new Red.RawBinary(bytes);
 	}
 
 	else if("block" in token) {

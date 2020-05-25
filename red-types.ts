@@ -457,7 +457,7 @@ export class RawBlock extends RawValue implements Series, SeriesOf<AnyType> {
 export class RawBinary extends RawValue implements Series, SeriesOf<number> {
 	index: number = 1;
 	
-	constructor(public bytes: Uint8Array) {
+	constructor(public bytes: Buffer) {
 		super();
 	}
 

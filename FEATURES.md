@@ -50,7 +50,7 @@
 | `percent!`               | Y        | Y      | N           | N             | N             |
 | `tuple!`                 | Y        | Y      | N           | N             | N             |
 | `map!`                   | Y        | PB     | N           | N             | N             |
-| `binary!`                | Y        | PB     | N           | N             | PI            |
+| `binary!`                | Y        | Y      | N           | N             | PI            |
 | `time!`                  | Y        | Y      | N           | N             | N             |
 | `tag!`                   | Y        | N      | B           | B             | BI            |
 | `email!`                 | Y        | B****  | B           | B             | BI            |
