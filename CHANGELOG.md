@@ -2,6 +2,8 @@
 - Added `negative?`, `positive?`, `max`, and `min` natives.
 - Added support for `binary!` literals.
 - Added support for `map!` literals.
+- File loading now works in browser js.
+- `do` now accepts `file!`s.
 
 
 # Version 0.0.7

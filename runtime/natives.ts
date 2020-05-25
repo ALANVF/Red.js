@@ -4,6 +4,8 @@ import {system$words} from "./system";
 import {transformPath, evalSingle, groupSingle, ExprType} from "./eval";
 import * as Red from "../red-types";
 import RedActions from "./actions";
+import RedUtil from "./util";
+import RedMain from "../red";
 
 function maxmin(
 	ctx:   Red.Context,
@@ -589,7 +591,7 @@ module RedNatives {
 				return last;
 			}
 		} else if(value instanceof Red.RawFile) {
-			Red.todo();
+			return RedMain.evalFile(value.name, undefined, ctx);
 		} else if(value instanceof Red.RawString) {
 			let out = new Red.RawBlock(tokenize(value.current().toJsString()));
 			//if(doExpand) out = pre(ctx, out);

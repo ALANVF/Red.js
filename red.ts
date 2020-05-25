@@ -6,7 +6,6 @@ import * as RedSystem from "./runtime/system";
 import * as RedEval from "./runtime/eval";
 import RedNatives from "./runtime/natives";
 import RedActions from "./runtime/actions";
-import {readFileSync} from "fs";
 
 module Red {
 	export import Types = RedTypes;
@@ -87,7 +86,7 @@ module Red {
 		outerState?: FileState,
 		ctx:         RedTypes.Context = RedSystem.system$words
 	) {
-		const src = readFileSync(filePath).toString();
+		const src = RedUtil.readFile(filePath);
 		let parsed = new RedTypes.RawBlock(RedParser.tokenize(src));
 		let state: FileState;
 
@@ -103,14 +102,15 @@ module Red {
 
 		parsed = RedPre.pre(ctx, parsed);
 
-		let body: RedEval.ExprType[] = parsed.values;
 		let res: RedEval.GroupSingleResult = {made: RedTypes.RawUnset.unset, restNodes: [], noEval: false};
+		let body: RedEval.ExprType[] = parsed.values;
+		let ret: RedTypes.AnyType = RedTypes.RawUnset.unset;
 		
 		try {
 			while(body.length > 0) {
 				res = RedEval.groupSingle(ctx, body);
 				body = res.restNodes;
-				RedEval.evalSingle(ctx, res.made, res.noEval);
+				ret = RedEval.evalSingle(ctx, res.made, res.noEval);
 			}
 		} catch(e) {
 			switch(e.constructor) {
@@ -128,6 +128,8 @@ module Red {
 					throw e;
 			}
 		}
+		
+		return ret;
 	}
 
 	export function evalCode(

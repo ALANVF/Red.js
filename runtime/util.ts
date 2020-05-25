@@ -44,6 +44,38 @@ module RedUtil {
 		
 		return copy as T;
 	}
+	
+	export function readFile(path: string): string {
+		let res = "";
+		let hasRequire: boolean;
+		
+		try {
+			require;
+			hasRequire = true;
+		} catch(_) {
+			hasRequire = false;
+		}
+		
+		if(hasRequire) {
+			res = require("fs").readFileSync(path).toString();
+		} else {
+			if(global.fetch === undefined) {
+				throw new Error("Internal error!");
+			} else {
+				fetch(path).then(data => {
+					data.text().then(text => {
+						res = text;
+					}).catch(err => {
+						throw err;
+					});
+				}).catch(err => {
+					throw err;
+				});
+			}
+		}
+		
+		return res;
+	}
 }
 
 export default RedUtil
