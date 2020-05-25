@@ -1,3 +1,7 @@
+# Version 0.0.8 (in development)
+- Added `negative?`, `positive?`, `max`, and `min` natives.
+
+
 # Version 0.0.7
 - Fixed `to` action.
 - Reimplemented `char!` and `string!`.

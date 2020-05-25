@@ -433,6 +433,8 @@ dehex: make native! [[
 	]
 	dehex
 ]
+]
+
 
 negative?: make native! [[
 		"Returns TRUE if the number is negative"
@@ -464,6 +466,7 @@ min: make native! [[
 	min
 ]
 
+'TODO [
 shift: make native! [[
 		"Perform a bit shift operation. Right shift (decreasing) by default"
 		data	[integer!]

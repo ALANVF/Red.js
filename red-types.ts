@@ -733,6 +733,10 @@ export class RawTuple extends RawValue {
 		
 		return this.values[i - 1];
 	}
+
+	get length() {
+		return this.values.length;
+	}
 }
 
 

@@ -5,6 +5,84 @@ import {transformPath, evalSingle, groupSingle, ExprType} from "./eval";
 import * as Red from "../red-types";
 import RedActions from "./actions";
 
+function maxmin(
+	ctx:   Red.Context,
+	left:  Red.RawScalar|Red.RawSeries,
+	right: Red.RawScalar|Red.RawSeries,
+	isMax: boolean
+): Red.RawScalar|Red.RawSeries {
+	if(left instanceof Red.RawPair) {
+		const out = new Red.RawPair(left.x, left.y);
+		
+		if(right instanceof Red.RawPair) {
+			if(isMax) {
+				if(out.x < right.x) out.x = right.x;
+				if(out.y < right.y) out.y = right.y;
+			} else {
+				if(out.x > right.x) out.x = right.x;
+				if(out.y > right.y) out.y = right.y;
+			}
+
+			return out;
+		}
+
+		else if(right instanceof Red.RawInteger || right instanceof Red.RawFloat) {
+			const i = Math.floor(right.value);
+
+			if(isMax) {
+				if(out.x < i) out.x = i;
+				if(out.y < i) out.y = i;
+			} else {
+				if(out.x > i) out.x = i;
+				if(out.y > i) out.y = i;
+			}
+
+			return out;
+		}
+	}
+
+	else if(left instanceof Red.RawTuple) {
+		const out = new Red.RawTuple([...left.values]);
+		
+		if(right instanceof Red.RawTuple && left.length == right.length) {
+			if(isMax) {
+				for(let i = 0; i < left.length; i++) {
+					if(out.values[i] < right.values[i]) out.values[i] = right.values[i];
+				}
+			} else {
+				for(let i = 0; i < left.length; i++) {
+					if(out.values[i] > right.values[i]) out.values[i] = right.values[i];
+				}
+			}
+
+			return out;
+		}
+
+		else if(right instanceof Red.RawInteger || right instanceof Red.RawFloat) {
+			const i = Math.floor(right.value);
+			const b = i < 0 ? 0 : (i > 255 ? 255 : i);
+
+			if(isMax) {
+				for(let i = 0; i < left.length; i++) {
+					if(out.values[i] < b) out.values[i] = b;
+				}
+			} else {
+				for(let i = 0; i < left.length; i++) {
+					if(out.values[i] > b) out.values[i] = b;
+				}
+			}
+
+			return out;
+		}
+	}
+	
+	if(RedActions.$compare(ctx, left, right, Red.ComparisonOp.LESSER).cond == isMax) {
+		return right;
+	} else {
+		return left;
+	}
+}
+
 module RedNatives {
 	// debugging
 	export function $$print(
@@ -854,6 +932,50 @@ module RedNatives {
 		} else {
 			throw new TypeError(`Expected ${Red.typeName(set1)} not ${Red.typeName(set2)}`);
 		}
+	}
+
+	// ...
+	
+	export function $$negative_q(
+		_ctx: Red.Context,
+		num:  Red.RawNumber|Red.RawTime
+	): Red.RawLogic {
+		if(num instanceof Red.RawInteger || num instanceof Red.RawFloat || num instanceof Red.RawPercent) {
+			return Red.RawLogic.from(num.value < 0);
+		} else if(num instanceof Red.RawMoney) {
+			return Red.RawLogic.from(num.value < 0);
+		} else {
+			return Red.RawLogic.from(num.toNumber() < 0);
+		}
+	}
+
+	export function $$positive_q(
+		_ctx: Red.Context,
+		num:  Red.RawNumber|Red.RawTime
+	): Red.RawLogic {
+		if(num instanceof Red.RawInteger || num instanceof Red.RawFloat || num instanceof Red.RawPercent) {
+			return Red.RawLogic.from(num.value > 0);
+		} else if(num instanceof Red.RawMoney) {
+			return Red.RawLogic.from(num.value > 0);
+		} else {
+			return Red.RawLogic.from(num.toNumber() > 0);
+		}
+	}
+	
+	export function $$max(
+		ctx:   Red.Context,
+		left:  Red.RawScalar|Red.RawSeries,
+		right: Red.RawScalar|Red.RawSeries
+	): Red.RawScalar|Red.RawSeries {
+		return maxmin(ctx, left, right, true);
+	}
+	
+	export function $$min(
+		ctx:   Red.Context,
+		left:  Red.RawScalar|Red.RawSeries,
+		right: Red.RawScalar|Red.RawSeries
+	): Red.RawScalar|Red.RawSeries {
+		return maxmin(ctx, left, right, false);
 	}
 
 	// ...

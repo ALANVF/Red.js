@@ -26,7 +26,6 @@ import * as ACT_getPath    from "./datatypes/get-path";
 import * as ACT_object     from "./datatypes/object";
 import * as ACT_typeset    from "./datatypes/typeset";
 import * as ACT_series     from "./datatypes/series";
-import {send} from "process";
 
 module RedActions {
 	export interface RandomOptions {

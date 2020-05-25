@@ -118,10 +118,10 @@
 | `exclude`           | N      |
 | `complement?`       | N      |
 | `dehex`             | N      |
-| `negative?`         | N      |
-| `positive?`         | N      |
-| `max`               | N      |
-| `min`               | N      |
+| `negative?`         | Y      |
+| `positive?`         | Y      |
+| `max`               | Y      |
+| `min`               | Y      |
 | `shift`             | N      |
 | `to-hex`            | N      |
 | `sine`              | N      |
