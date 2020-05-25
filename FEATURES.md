@@ -49,7 +49,7 @@
 | `pair!`                  | Y        | Y      | N           | N             | N             |
 | `percent!`               | Y        | Y      | N           | N             | N             |
 | `tuple!`                 | Y        | Y      | N           | N             | N             |
-| `map!`                   | Y        | PB     | N           | N             | N             |
+| `map!`                   | Y        | Y      | N           | N             | N             |
 | `binary!`                | Y        | Y      | N           | N             | PI            |
 | `time!`                  | Y        | Y      | N           | N             | N             |
 | `tag!`                   | Y        | N      | B           | B             | BI            |

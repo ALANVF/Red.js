@@ -944,7 +944,7 @@ function tokenToRed(token: RedToken): Red.AnyType {
 	}
 	else if("binary" in token) {
 		let bytes: Buffer;
-		
+
 		if(token.base == 2) {
 			bytes = Buffer.from(token.binary.match(/.{8}/g)!.map(b => parseInt(b, 2)));
 		} else if(token.base == 16) {
@@ -962,8 +962,27 @@ function tokenToRed(token: RedToken): Red.AnyType {
 	else if("paren" in token) {
 		return new Red.RawParen(token.paren.map(tokenToRed));
 	}
-	else if("map" in token) { // TODO: implement
-		throw new Error("unimplemented!");
+	else if("map" in token) {
+		if(token.map.length % 2 == 0) {
+			const pairs: [Red.AnyType, Red.AnyType][] = [];
+
+			for(let i = 0; i < token.map.length; i += 2) {
+				const k = tokenToRed(token.map[i]);
+				const v = tokenToRed(token.map[i + 1]);
+
+				if(Red.isScalar(k) || Red.isAnyString(k) || k instanceof Red.RawSetWord) {
+					pairs.push([k, v]);
+				} else if(Red.isAnyWord(k)) {
+					pairs.push([new Red.RawSetWord(k.name), v]);
+				} else {
+					throw new Error(`${Red.typeName(k)} is not allowed here!`);
+				}
+			}
+
+			return new Red.RawMap(pairs);
+		} else {
+			throw new Error("Invalid map literal!");
+		}
 	}
 	else if("tuple" in token) {
 		return new Red.RawTuple(token.tuple);

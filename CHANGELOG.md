@@ -1,6 +1,7 @@
 # Version 0.0.8 (in development)
 - Added `negative?`, `positive?`, `max`, and `min` natives.
-- Added support for `binary!` literals. 
+- Added support for `binary!` literals.
+- Added support for `map!` literals.
 
 
 # Version 0.0.7

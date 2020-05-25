@@ -1313,6 +1313,11 @@ export function isa(
 	}
 }
 
+export function isScalar(value: AnyType): value is RawScalar {
+	const names = "integer! float! percent! money! char! pair! tuple! time! date!";
+	return names.includes(typeName(value));
+}
+
 export function isSeries(value: AnyType): value is RawSeries {
 	const names = "block! paren! string! file! url! path! lit-path! set-path! get-path! vector! hash! binary! tag! email! image!".split(" ");
 	return names.includes(typeName(value));
@@ -1330,6 +1335,10 @@ export function isAnyPath(value: AnyType): value is RawAnyPath {
 	return value instanceof RawPath || value instanceof RawLitPath || value instanceof RawGetPath || value instanceof RawSetPath;
 }
 
+export function isAnyString(value: AnyType): value is RawAnyString {
+	//string! file! url! tag! email!
+	return value instanceof RawString || value instanceof RawFile || value instanceof RawUrl || value instanceof RawTag || value instanceof RawEmail;
+}
 
 /// control flow
 //export class RawError
