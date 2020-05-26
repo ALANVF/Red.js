@@ -107,7 +107,6 @@ const regexRules = {
 	// dates
 	// nan and inf (1.#nan and 1.#inf)
 	// ' in number literals
-	// tags
 	// fix %"..." files
 	// and more
 	comment:     /;.*?$/m,
@@ -126,7 +125,8 @@ const regexRules = {
 	specialWord: /<[<=>]|>[>=]|>>>|[%<](?=[\s()\[\]<>:]|$)|>/,
 	time:        /([\+\-]?\d+):(\d+)(?::(\d+(?:\.\d+)?))?/,
 	pair:        /([\+\-]?\d+)[xX]([\+\-]?\d+)/,
-	tuple:       /(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?/
+	tuple:       /(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?/,
+	tag:         /<([^=><\[\](){}l^"\s](?:"[^"]*"||'[^']*'||[^>])*)>/
 };
 
 const chars = {
@@ -757,6 +757,11 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 		
 		made.push({string: out.slice(0, -1), multi: true});
 	}
+	
+	// tag!
+	else if(res = rdr.matchRx(regexRules.tag)) {
+		made.push({tag: res[1]});
+	}
 
 	// binary! (base 2)
 	else if(rdr.match("2#{")) {
@@ -939,8 +944,8 @@ function tokenToRed(token: RedToken): Red.AnyType {
 			return new Red.RawRefinement(new Red.RawWord(token.refinement));
 		}
 	}
-	else if("tag" in token) { // TODO: implement
-		throw new Error("unimplemented!");
+	else if("tag" in token) {
+		return new Red.RawTag(token.tag);
 	}
 	else if("binary" in token) {
 		let bytes: Buffer;

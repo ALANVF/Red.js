@@ -52,7 +52,7 @@
 | `map!`                   | Y        | Y      | N           | N             | N             |
 | `binary!`                | Y        | Y      | N           | N             | PI            |
 | `time!`                  | Y        | Y      | N           | N             | N             |
-| `tag!`                   | Y        | N      | B           | B             | BI            |
+| `tag!`                   | Y        | Y      | B           | B             | BI            |
 | `email!`                 | Y        | B****  | B           | B             | BI            |
 | `handle!`                | N        | NA     | N           | N             | N             |
 | `date!`                  | Y        | N      | N           | N             | N             |
