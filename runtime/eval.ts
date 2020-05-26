@@ -501,7 +501,7 @@ export function groupSingle(
 		};
 	}
 
-	if(made instanceof RedFunctionCall) {console.log(1);
+	if(made instanceof RedFunctionCall) {
 		const out = RedUtil.clone(made);
 		const nargs = made.totalArity;
 		const refs: Red.RawArgument[] = [];

@@ -49,7 +49,8 @@ Other useful functions:
 		
 		case [
 			unset? :word [
-				print HELP-USAGE
+				;print HELP-USAGE
+				print help-ctx/HELP-USAGE
 			]
 
 			any [
