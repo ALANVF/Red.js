@@ -4,6 +4,7 @@
 - Added support for `map!` literals.
 - File loading now works in browser js.
 - `do` now accepts `file!`s.
+- `lit-word!` arguments that accept `unset!` now work.
 
 
 # Version 0.0.7
