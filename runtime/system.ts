@@ -81,7 +81,7 @@ addDatatype("action!", Red.Action);
 system$words.addWord(
 	"number!",
 	new Red.RawTypeset(
-		"integer! float! percent! money!"
+		"integer! float! percent!"
 			.split(/\s+/)
 			.map(n => system$words.getWord<Red.RawDatatype>(n))
 	)

@@ -13,6 +13,14 @@ export class RawValue {
 	isTruthy(): boolean {
 		return true;
 	}
+	
+	isa(type: RawDatatype | RawTypeset): boolean {
+		if(type instanceof RawDatatype) {
+			return this.constructor === type.repr;
+		} else {
+			return type.types.some(ty => this.isa(ty));
+		}
+	}
 }
 
 export class RawDatatype extends RawValue {
@@ -776,7 +784,7 @@ export type RawAnyBlock =
 	| RawBlock | RawParen | RawAnyPath | RawHash;
 
 export type RawNumber =
-	| RawInteger | RawFloat | RawPercent | RawMoney;
+	| RawInteger | RawFloat | RawPercent;
 
 export type RawScalar =
 	| RawChar | RawInteger | RawFloat | RawPair | RawPercent | RawMoney
@@ -1302,17 +1310,6 @@ export function todo(): never {
 
 
 /// type checking
-export function isa(
-	value: AnyType,
-	type: RawDatatype|RawTypeset
-): boolean {
-	if(type instanceof RawDatatype) {
-		return value.constructor === type.repr;
-	} else {
-		return type.types.some(ty => isa(value, ty));
-	}
-}
-
 export function isScalar(value: AnyType): value is RawScalar {
 	const names = "integer! float! percent! money! char! pair! tuple! time! date!";
 	return names.includes(typeName(value));
@@ -1336,7 +1333,6 @@ export function isAnyPath(value: AnyType): value is RawAnyPath {
 }
 
 export function isAnyString(value: AnyType): value is RawAnyString {
-	//string! file! url! tag! email!
 	return value instanceof RawString || value instanceof RawFile || value instanceof RawUrl || value instanceof RawTag || value instanceof RawEmail;
 }
 
