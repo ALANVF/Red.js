@@ -14,6 +14,16 @@ export class RedFunctionCall {
 		public refines: Red.RawRefinement[],
 		public passed:  Argument[]
 	) {}
+	
+	get totalArity(): number {
+		let nargs = this.func.arity;
+		
+		for(const ref of this.refines) {
+			nargs += this.func.getRefine(ref).addArgs.length;
+		}
+	
+		return nargs;
+	}
 }
 
 export type ExprType = Red.AnyType | RedFunctionCall;
@@ -107,16 +117,6 @@ export function transformPath(
 	}
 
 	return value;
-}
-
-function totalArity(func: RedFunctionCall): number {
-	let nargs = func.func.arity;
-	
-	for(const ref of func.refines) {
-		nargs += func.func.getRefine(ref).addArgs.length;
-	}
-
-	return nargs;
 }
 
 // 1 + 2 * 3 - 4 : (+ 1 (* 2 (- 3 4))) --> (- (* (+ 1 2) 3) 4)
@@ -396,8 +396,10 @@ export function evalSingle(
 		return value;
 	} else if(value instanceof Red.RawParen) {
 		return RedNatives.$$do(ctx, value);
-	} else if(value instanceof Red.RawWord || value instanceof Red.RawGetWord || value instanceof Red.RawPath || value instanceof Red.RawGetPath) {
+	} else if(value instanceof Red.RawWord || value instanceof Red.RawPath) {
 		return RedNatives.$$get(ctx, value);
+	} else if(value instanceof Red.RawGetWord || value instanceof Red.RawGetPath) {
+		return RedNatives.$$get(ctx, value, {any: []});
 	} else {
 		return value;
 	}
@@ -481,7 +483,7 @@ export function groupSingle(
 		made = b0;
 	} else if(b0 instanceof Red.RawGetWord) {
 		return {
-			made: RedNatives.$$get(ctx, b0),
+			made: RedNatives.$$get(ctx, b0, {any: []}),
 			restNodes: b,
 			noEval: true
 		};
@@ -499,10 +501,11 @@ export function groupSingle(
 		};
 	}
 
-	if(made instanceof RedFunctionCall) {
+	if(made instanceof RedFunctionCall) {console.log(1);
 		const out = RedUtil.clone(made);
-		const nargs = totalArity(made);
+		const nargs = made.totalArity;
 		const refs: Red.RawArgument[] = [];
+		const fnName = out.func.name.length == 0 ? stringifyRed(ctx, b0) : out.func.name;
 		
 		for(const r of made.refines) {
 			refs.push(...made.func.getRefine(r).addArgs);
@@ -511,19 +514,24 @@ export function groupSingle(
 		const args = [...made.func.args, ...refs];
 		
 		for(let i = 0; out.passed.length < nargs; i++) {
-			const arg = args[i].name;
+			const arg = args[i];
+			const name = arg.name;
 			
-			if(arg instanceof Red.RawWord) {
-				const next = groupSingle(ctx, b);
-				
-				if(next.made instanceof Red.RawParen && !next.noEval) {
-					next.made = RedNatives.$$do(ctx, next.made);
-				}
+			if(name instanceof Red.RawWord) {
+				if(b.length > 0) {
+					const next = groupSingle(ctx, b);
+					
+					if(next.made instanceof Red.RawParen && !next.noEval) {
+						next.made = RedNatives.$$do(ctx, next.made);
+					}
 
-				out.passed.push(argument(next.made, next.noEval));
-				b = next.restNodes;
-			} else if(arg instanceof Red.RawGetWord) {
-				const next = b.shift()!;
+					out.passed.push(argument(next.made, next.noEval));
+					b = next.restNodes;
+				} else {
+					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+				}
+			} else if(name instanceof Red.RawGetWord) {
+				const next = b.shift();
 				
 				if(
 					next instanceof Red.RawWord || next instanceof Red.RawPath
@@ -531,11 +539,35 @@ export function groupSingle(
 					next instanceof Red.RawGetWord || next instanceof Red.RawGetPath
 				) {
 					out.passed.push(argument(RedNatives.$$get(ctx, next), true));
-				} else {
+				} else if(next !== undefined) {
 					out.passed.push(argument(next));
+				} else {
+					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
 				}
 			} else {
-				out.passed.push(argument(b.shift()!));
+				const next = b.shift();
+				
+				checkUnset:
+				if(arg.typeSpec != null && next === undefined) {
+					// Small hack for now
+					for(const val of arg.typeSpec.values) {
+						if(val instanceof Red.RawWord) {
+							const n = val.name.toLowerCase();
+							if(n == "unset!" || n == "any-type!" || n == "internal!") {
+								out.passed.push(argument(Red.RawUnset.unset));
+								break checkUnset;
+							}
+						} else {
+							throw new Error("error!");
+						}
+					}
+					
+					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+				} else if(next !== undefined) {
+					out.passed.push(argument(next));
+				} else {
+					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+				}
 			}
 		}
 		
@@ -574,22 +606,28 @@ export function groupSingle(
 		};
 	} else if((blk[0] instanceof Red.RawWord || blk[0] instanceof Red.RawPath) && (made instanceof Red.Action || made instanceof Red.Native || made instanceof Red.RawFunction)) {
 		const out = new RedFunctionCall(made, [], []);
-		const nargs = totalArity(out);
+		const nargs = out.totalArity;
+		const fnName = out.func.name.length == 0 ? stringifyRed(ctx, b0) : out.func.name;
 
 		for(let i = 0; out.passed.length < nargs; i++) {
-			const arg = made.args[i].name;
+			const arg = made.args[i];
+			const name = arg.name;
 			
-			if(arg instanceof Red.RawWord) {
-				const next = groupSingle(ctx, b);
-				
-				if(next.made instanceof Red.RawParen && !next.noEval) {
-					next.made = RedNatives.$$do(ctx, next.made);
-				}
+			if(name instanceof Red.RawWord) {
+				if(b.length > 0) {
+					const next = groupSingle(ctx, b);
+					
+					if(next.made instanceof Red.RawParen && !next.noEval) {
+						next.made = RedNatives.$$do(ctx, next.made);
+					}
 
-				out.passed.push(argument(next.made, next.noEval));
-				b = next.restNodes;
-			} else if(arg instanceof Red.RawGetWord) {
-				const next = b.shift()!;
+					out.passed.push(argument(next.made, next.noEval));
+					b = next.restNodes;
+				} else {
+					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+				}
+			} else if(name instanceof Red.RawGetWord) {
+				const next = b.shift();
 				
 				if(
 					next instanceof Red.RawWord || next instanceof Red.RawPath
@@ -597,11 +635,35 @@ export function groupSingle(
 					next instanceof Red.RawGetWord || next instanceof Red.RawGetPath
 				) {
 					out.passed.push(argument(RedNatives.$$get(ctx, next), true));
-				} else {
+				} else if(next !== undefined) {
 					out.passed.push(argument(next));
+				} else {
+					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
 				}
 			} else {
-				out.passed.push(argument(b.shift()!));
+				const next = b.shift();
+				
+				checkUnset2:
+				if(arg.typeSpec != null && next === undefined) {
+					// Small hack for now
+					for(const val of arg.typeSpec.values) {
+						if(val instanceof Red.RawWord) {
+							const n = val.name.toLowerCase();
+							if(n == "unset!" || n == "any-type!" || n == "internal!") {
+								out.passed.push(argument(Red.RawUnset.unset));
+								break checkUnset2;
+							}
+						} else {
+							throw new Error("error!");
+						}
+					}
+					
+					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+				} else if(next !== undefined) {
+					out.passed.push(argument(next));
+				} else {
+					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+				}
 			}
 		}
 
