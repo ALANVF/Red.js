@@ -126,7 +126,138 @@ const regexRules = {
 	time:        /([\+\-]?\d+):(\d+)(?::(\d+(?:\.\d+)?))?/,
 	pair:        /([\+\-]?\d+)[xX]([\+\-]?\d+)/,
 	tuple:       /(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?/,
-	tag:         /<([^=><\[\](){}l^"\s](?:"[^"]*"||'[^']*'||[^>])*)>/
+	tag:         /<([^=><\[\](){}l^"\s](?:"[^"]*"||'[^']*'||[^>])*)>/,
+	date:        /./ // https://doc.red-lang.org/en/datatypes/date.html
+};
+
+{
+	const anyCase = (str: string) => [...str].map(ch => `[${ch}${ch.toUpperCase()}]`).join("");
+	const rule = (str: string) => str.replace(/\s+/gm, "");
+	
+	// Basic rules
+	const sep = "[/-]";
+	const yyyy = "\\d{3,4}";
+	const yy = "\\d{2}";
+	const m = "1[012]||[1-9]";
+	const mm = "1[012]||0[1-9]";
+	const mon = "jan feb mar apr may jun jul aug sep oct nov dec".split(" ").map(anyCase).join("|");
+	const month = "january febuary march april may june july august september october november december".split(" ").map(anyCase).join("|");
+	const d = "[1-7]";
+	const dd = "3[01]||[12]\\d||0?[1-9]";
+	const ddd = "36[0-6]||3[0-5]\\d||[12]\\d{2}||00[1-9]||0[1-9]\\d";
+	const ww = "5[012]||[1-4]\\d||0[1-9]";
+	const hour = "\\d{1,2}"
+	const min = "\\d{1,2}";
+	const ss = "\\d{1,2}";
+	const dec = "\\d+";
+	const sign = "[+-]";
+	const min15 = "\\d{1,2}";
+	const hhmm = "\\d{4}";
+	const hhmmss = "\\d{6}";
+	
+	// Compound rules:
+	const sec = rule(`
+		${ss}
+		(?:
+			\\.
+			${dec}
+		)?
+	`);
+	
+	const zone = rule(`
+		(?<zone_sign> ${sign})
+		(?:
+			(?<zone_hm15>
+				(?<zone_hm15_hour> ${hour})
+				(?:
+					:
+					(?<zone_hm15_min15> ${min15})
+				)?
+			)
+			| (?<zone_hhmm> ${hhmm})
+		)?
+	`);
+	
+	const time = rule(`
+		(?<time_hms>
+			(?<time_hms_hour> ${hour})
+			:
+			(?<time_hms_min> ${min})
+			:
+			(?<time_hms_sec> ${sec})
+		)
+		| (?<time_hhmmss>
+			(?<time_hhmmss_hhmmss> ${hhmmss})
+			(?:
+				\\.
+				(?<time_hhmmss_dec> ${dec})
+			)?
+		)
+		| (?<time_hhmm> ${hhmm})
+	`);
+	
+	const mmm = (outer: string) => rule(`
+		  (?<${outer}_mmm_m> ${m})
+		| (?<${outer}_mmm_mon> ${mon})
+		| (?<${outer}_mmm_month> ${month})
+	`);
+	
+	const date = rule(`
+		(?<date_yyyymmmdd>
+			(?<date_yyyymmmdd_yyyy> ${yyyy})
+			(?<date_yyyymmmdd_mmm> ${mmm("date_yyyymmmdd")})
+			(?<date_yyyymmmdd_dd> ${dd})
+		)
+		| (?<date_ddmmmy>
+			(?<date_ddmmmy_dd> ${dd})
+			${sep}
+			(?<date_ddmmmy_mmm> ${mmm("date_ddmmmy")})
+			${sep}
+			(?:
+				  (?<date_ddmmmy_yyyy> ${yyyy})
+				| (?<date_ddmmmy_yy> ${yy})
+			)
+		)
+	`);
+	
+	const dateT = rule(`
+		(?<dateT_yyyy> ${yyyy})
+		(?:
+			(?<dateT_yyyymmdd>
+				(?<dateT_yyyymmdd_mm> ${mm})
+				(?<dateT_yyyymmdd_dd> ${dd})
+			)
+			| (?<dateT_yyyyW>
+				-W
+				(?<dateT_yyyyW_ww> ${ww})
+				(?:
+					-
+					(?<dateT_yyyyW_d> ${d})
+				)?
+			)
+			| (?<dateT_yyyyddd>
+				-
+				(?<dateT_yyyyddd_ddd> ${ddd})
+			)
+		)
+	`);
+	
+	const main = rule(`
+		(?:
+			  (?<date> ${date})
+			| (?<dateT> ${dateT}) (?=T)
+		)
+		(?:
+			[/T]
+			(?<time> ${time})
+			(?:
+				  (?<Z> Z)
+				| (?<zone> ${zone})
+			)?
+		)?
+	`);
+	
+	regexRules.date = new RegExp(main);
 };
 
 const chars = {
