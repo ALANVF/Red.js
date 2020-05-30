@@ -720,7 +720,11 @@ export class RawTime extends RawValue {
 
 /// complex compound types
 export class RawDate extends RawValue {
-	constructor(public date: Date) {
+	constructor(
+		public date:    Date,
+		public hasTime: boolean,
+		public zone:    number = 0 
+	) {
 		super();
 	}
 }
@@ -1288,7 +1292,7 @@ export function wrap(value: any): AnyType {
 	} else if(value instanceof Map) {
 		return new RawMap(Array.from(value.entries()).map(([k, v]) => [wrap(k), wrap(v)]));
 	} else if(value instanceof Date) {
-		return new RawDate(value);
+		return new RawDate(value, true);
 	} else if(value instanceof DataView) {
 		throw new Error("unimplemented!");
 	} else if(typeof value == "object") {

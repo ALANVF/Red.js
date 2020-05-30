@@ -1,5 +1,136 @@
 import * as Red from "./red-types";
 
+namespace DateMatch {
+	type Match = {[key: string]: string | undefined};
+	
+	export interface YYYYMMMDD extends Match {
+		date_yyyymmmdd_yyyy:      string;
+		
+		date_yyyymmmdd_mmm_m:     string | undefined;
+		date_yyyymmmdd_mmm_mon:   string | undefined;
+		date_yyyymmmdd_mmm_month: string | undefined;
+		
+		date_yyyymmmdd_dd:        string;
+	}
+	
+	export interface DDMMMY extends Match {
+		date_ddmmmy_dd:         string;
+		
+		date_ddmmmy_mmm_m:     string | undefined;
+		date_ddmmmy_mmm_mon:   string | undefined;
+		date_ddmmmy_mmm_month: string | undefined;
+		
+		date_ddmmmy_yyyy:      string | undefined;
+		date_ddmmmy_yy:        string | undefined;
+	}
+	
+	export interface YYYYDDD extends Match {
+		date_yyyyddd_yyyy: string;
+		date_yyyyddd_ddd:  string;
+	}
+	
+	export interface YYYYW extends Match {
+		date_yyyyW_yyyy: string;
+		date_yyyyW_ww:   string;
+		date_yyyyW_d:    string | undefined;
+	}
+	
+	export interface DateT extends Match {
+		dateT_yyyy: string;
+		dateT_mm:   string;
+		dateT_dd:   string;
+	}
+	
+	export interface HMS extends Match {
+		time_hms_hour: string;
+		time_hms_min:  string;
+		time_hms_sec:  string | undefined;
+	}
+	
+	export interface HHMMSS extends Match {
+		time_hhmmss_hhmmss: string;
+		time_hhmmss_dec:    string | undefined;
+	}
+	
+	export interface HHMM extends Match {
+		time_hhmm: string;
+	}
+	
+	export interface ZoneHM15 extends Match {
+		zone_sign:        "+" | "-";
+		zone_hm15_hour:   string;
+		zone_hm15_min15:  string;
+	}
+	
+	export interface ZoneHHMM extends Match {
+		zone_sign: "+" | "-";
+		zone_hhmm: string;
+	}
+	
+	export interface ZoneHour extends Match {
+		zone_sign: "+" | "-";
+		zone_hour: string;
+	}
+	
+	export function isYYYYMMMDD(match: Match): match is YYYYMMMDD {
+		return match.date_yyyymmmdd !== undefined;
+	}
+	
+	export function isDDMMMY(match: Match): match is DDMMMY {
+		return match.date_ddmmmy !== undefined;
+	}
+	
+	export function isYYYYDDD(match: Match): match is YYYYDDD {
+		return match.date_yyyyddd !== undefined;
+	}
+	
+	export function isYYYYW(match: Match): match is YYYYW {
+		return match.date_yyyyW !== undefined;
+	}
+	
+	export function isDateT(match: Match): match is DateT {
+		return match.dateT !== undefined;
+	}
+	
+	export function isHMS(match: Match): match is HMS {
+		return match.time_hms !== undefined;
+	}
+	
+	export function isHHMMSS(match: Match): match is HHMMSS {
+		return match.time_hhmmss !== undefined;
+	}
+	
+	export function isHHMM(match: Match): match is HHMM {
+		return match.time_hhmm !== undefined;
+	}
+	
+	export function isZoneHM15(match: Match): match is ZoneHM15 {
+		return match.zone_hm15 !== undefined;
+	}
+	
+	export function isZoneHHMM(match: Match): match is ZoneHHMM {
+		return match.zone_hhmm !== undefined;
+	}
+	
+	export function isZoneHour(match: Match): match is ZoneHour {
+		return match.zone_hour !== undefined;
+	}
+}
+
+
+type DateToken =
+	| {kind: "year-month-day", year: number, month: number, day: number}
+	| {kind: "year-week-day",  year: number, week: number, day: number}
+	| {kind: "year-day",       year: number, day: number};
+
+type DateTimeToken =
+	| {kind: "hh-mm-ss", hour: number, minute: number, second: number}
+	| {kind: "hhmmss",   time: number};
+
+type DateZoneToken =
+	| {kind: "hh-mm", sign: '+' | '-', hour: number, minute: number}
+	| {kind: "hhmm",  sign: '+' | '-', time: number};
+
 type RedToken =
 	| {word: string}
 	| {getWord: string}
@@ -32,7 +163,7 @@ type RedToken =
 	| {tuple: number[]}
 	| {pair: {x: number, y: number}}
 
-	| {date: Date}
+	| {date: DateToken, time?: DateTimeToken, zone?: DateZoneToken}
 	| {time: {hour: number, minute: number, second: number}}
 	
 	| {construct: RedToken[]};
@@ -104,7 +235,6 @@ class Reader {
 
 const regexRules = {
 	// TODO:
-	// dates
 	// nan and inf (1.#nan and 1.#inf)
 	// ' in number literals
 	// fix %"..." files
@@ -133,19 +263,19 @@ const regexRules = {
 {
 	const anyCase = (str: string) => [...str].map(ch => `[${ch}${ch.toUpperCase()}]`).join("");
 	const rule = (str: string) => str.replace(/\s+/gm, "");
-	
+
 	// Basic rules
 	const sep = "[/-]";
 	const yyyy = "\\d{3,4}";
 	const yy = "\\d{2}";
-	const m = "1[012]||[1-9]";
-	const mm = "1[012]||0[1-9]";
+	const m = "1[012]|0?[1-9]";
+	const mm = "1[012]|0[1-9]";
 	const mon = "jan feb mar apr may jun jul aug sep oct nov dec".split(" ").map(anyCase).join("|");
 	const month = "january febuary march april may june july august september october november december".split(" ").map(anyCase).join("|");
 	const d = "[1-7]";
-	const dd = "3[01]||[12]\\d||0?[1-9]";
-	const ddd = "36[0-6]||3[0-5]\\d||[12]\\d{2}||00[1-9]||0[1-9]\\d";
-	const ww = "5[012]||[1-4]\\d||0[1-9]";
+	const dd = "3[01]|[12]\\d|0?[1-9]";
+	const ddd = "36[0-6]|3[0-5]\\d|[12]\\d{2}|0\\d[1-9]|0[1-9]\\d";
+	const ww = "5[012]|[1-4]\\d|0[1-9]";
 	const hour = "\\d{1,2}"
 	const min = "\\d{1,2}";
 	const ss = "\\d{1,2}";
@@ -154,7 +284,7 @@ const regexRules = {
 	const min15 = "\\d{1,2}";
 	const hhmm = "\\d{4}";
 	const hhmmss = "\\d{6}";
-	
+
 	// Compound rules:
 	const sec = rule(`
 		${ss}
@@ -163,28 +293,29 @@ const regexRules = {
 			${dec}
 		)?
 	`);
-	
+
 	const zone = rule(`
 		(?<zone_sign> ${sign})
 		(?:
 			(?<zone_hm15>
 				(?<zone_hm15_hour> ${hour})
-				(?:
-					:
-					(?<zone_hm15_min15> ${min15})
-				)?
+				:
+				(?<zone_hm15_min15> ${min15})
 			)
+			| (?<zone_hour> ${hour}\\b)
 			| (?<zone_hhmm> ${hhmm})
-		)?
+		)
 	`);
-	
+
 	const time = rule(`
 		(?<time_hms>
 			(?<time_hms_hour> ${hour})
 			:
 			(?<time_hms_min> ${min})
-			:
-			(?<time_hms_sec> ${sec})
+			(?:
+				:
+				(?<time_hms_sec> ${sec})
+			)?
 		)
 		| (?<time_hhmmss>
 			(?<time_hhmmss_hhmmss> ${hhmmss})
@@ -195,17 +326,19 @@ const regexRules = {
 		)
 		| (?<time_hhmm> ${hhmm})
 	`);
-	
+
 	const mmm = (outer: string) => rule(`
 		  (?<${outer}_mmm_m> ${m})
 		| (?<${outer}_mmm_mon> ${mon})
 		| (?<${outer}_mmm_month> ${month})
 	`);
-	
+
 	const date = rule(`
 		(?<date_yyyymmmdd>
 			(?<date_yyyymmmdd_yyyy> ${yyyy})
+			${sep}
 			(?<date_yyyymmmdd_mmm> ${mmm("date_yyyymmmdd")})
+			${sep}
 			(?<date_yyyymmmdd_dd> ${dd})
 		)
 		| (?<date_ddmmmy>
@@ -218,30 +351,28 @@ const regexRules = {
 				| (?<date_ddmmmy_yy> ${yy})
 			)
 		)
-	`);
-	
-	const dateT = rule(`
-		(?<dateT_yyyy> ${yyyy})
-		(?:
-			(?<dateT_yyyymmdd>
-				(?<dateT_yyyymmdd_mm> ${mm})
-				(?<dateT_yyyymmdd_dd> ${dd})
-			)
-			| (?<dateT_yyyyW>
-				-W
-				(?<dateT_yyyyW_ww> ${ww})
-				(?:
-					-
-					(?<dateT_yyyyW_d> ${d})
-				)?
-			)
-			| (?<dateT_yyyyddd>
+		| (?<date_yyyyddd>
+			(?<date_yyyyddd_yyyy> ${yyyy})
+			-
+			(?<date_yyyyddd_ddd> ${ddd})
+		)
+		| (?<date_yyyyW>
+			(?<date_yyyyW_yyyy> ${yyyy})
+			-W
+			(?<date_yyyyW_ww> ${ww})
+			(?:
 				-
-				(?<dateT_yyyyddd_ddd> ${ddd})
-			)
+				(?<date_yyyyW_d> ${d})
+			)?
 		)
 	`);
-	
+
+	const dateT = rule(`
+		(?<dateT_yyyy> ${yyyy})
+		(?<dateT_mm> ${mm})
+		(?<dateT_dd> ${dd})
+	`);
+
 	const main = rule(`
 		(?:
 			  (?<date> ${date})
@@ -256,7 +387,7 @@ const regexRules = {
 			)?
 		)?
 	`);
-	
+
 	regexRules.date = new RegExp(main);
 };
 
@@ -506,6 +637,10 @@ const checks = {
 
 	construct(rdr: Reader): boolean {
 		return rdr.peek(2) == "#[";
+	},
+	
+	date(rdr: Reader): boolean {
+		return rdr.matchRx(/\d+[\-\/T]/, false) != null;
 	}
 };
 
@@ -625,6 +760,151 @@ const actions = {
 
 	construct(rdr: Reader) {
 		return this.delim(rdr, "constructor!", "#[", "]");
+	},
+	
+	date(rdr: Reader) {
+		const match = rdr.matchRx(regexRules.date);
+		if(match && match.groups) {
+			function getMonth(name: string) {
+				name = name.toLowerCase();
+				return "jan feb mar apr may jun jul aug sep oct nov dec".split(" ").findIndex(month => name.startsWith(month));
+			}
+			
+			const res = match.groups;
+			
+			let date: DateToken,
+				time: DateTimeToken | undefined,
+				zone: DateZoneToken | undefined;
+			
+			let day:   number,
+				month: number,
+				year:  number;
+			
+			if(DateMatch.isDDMMMY(res)) {
+				day = +res.date_ddmmmy_dd;
+				
+				if(res.date_ddmmmy_mmm_m !== undefined) {
+					month = +res.date_ddmmmy_mmm_m;
+				} else if(res.date_ddmmmy_mmm_mon !== undefined) {
+					month = getMonth(res.date_ddmmmy_mmm_mon);
+				} else if(res.date_ddmmmy_mmm_month !== undefined) {
+					month = getMonth(res.date_ddmmmy_mmm_month);
+				} else {
+					throw new Error("Error 1!");
+				}
+				
+				if(res.date_ddmmmy_yyyy !== undefined) {
+					year = +res.date_ddmmmy_yyyy;
+				} else if(res.date_ddmmmy_yy !== undefined) {
+					year = +res.date_ddmmmy_yy;
+					year += (year > 50) ? 1900 : 2000;
+				} else {
+					throw new Error("Error 2!");
+				}
+				
+				date = {kind: "year-month-day", year, month, day};
+			} else if(DateMatch.isYYYYMMMDD(res)) {
+				day = +res.date_yyyymmmdd_dd;
+				
+				if(res.date_yyyymmmdd_mmm_m !== undefined) {
+					month = +res.date_yyyymmmdd_mmm_m;
+				} else if(res.date_yyyymmmdd_mmm_mon !== undefined) {
+					month = getMonth(res.date_yyyymmmdd_mmm_mon);
+				} else if(res.date_yyyymmmdd_mmm_month !== undefined) {
+					month = getMonth(res.date_yyyymmmdd_mmm_month);
+				} else {
+					throw new Error("Error 3!");
+				}
+				
+				if(res.date_yyyymmmdd_yyyy !== undefined) {
+					year = +res.date_yyyymmmdd_yyyy;
+				} else if(res.date_yyyymmmdd_yy !== undefined) {
+					year = +res.date_yyyymmmdd_yy;
+					year += (year > 50) ? 1900 : 2000;
+				} else {
+					throw new Error("Error 4!");
+				}
+				
+				date = {kind: "year-month-day", year, month, day};
+			} else if(DateMatch.isYYYYDDD(res)) {
+				date = {
+					kind: "year-day",
+					year: +res.date_yyyyddd_yyyy,
+					day:  +res.date_yyyyddd_ddd
+				};
+			} else if(DateMatch.isYYYYW(res)) {
+				date = {
+					kind: "year-week-day",
+					year: +res.date_yyyyW_yyyy,
+					week: +res.date_yyyyW_ww,
+					day:  (res.date_yyyyW_d === undefined) ? 1 : +res.date_yyyyW_d
+				};
+			} else if(DateMatch.isDateT(res)) {
+				date = {
+					kind:  "year-month-day",
+					year:  +res.dateT_yyyy,
+					month: +res.dateT_mm,
+					day:   +res.dateT_dd
+				};
+			} else {
+				throw new Error("Error 5!");
+			}
+			
+			if(res.time !== undefined) {
+				if(DateMatch.isHMS(res)) {
+					time = {
+						kind:   "hh-mm-ss",
+						hour:   +res.time_hms_hour,
+						minute: +res.time_hms_min,
+						second: (res.time_hms_sec === undefined) ? 0 : +res.time_hms_sec
+					};
+				} else if(DateMatch.isHHMM(res)) {
+					time = {
+						kind: "hhmmss",
+						time: +res.time_hhmm * 100
+					};
+				} else if(DateMatch.isHHMMSS(res)) {
+					const ms = (res.time_hhmmss_dec === undefined) ? 0 : +`0.${res.time_hhmmss_dec}`;
+					
+					time = {
+						kind: "hhmmss",
+						time: +res.time_hhmmss_hhmmss + ms
+					};
+				} else {
+					throw new Error("Error 6!");
+				}
+			}
+			
+			if(res.zone !== undefined) {
+				if(DateMatch.isZoneHM15(res)) {
+					zone = {
+						kind:   "hh-mm",
+						sign:   res.zone_sign,
+						hour:   +res.zone_hm15_hour,
+						minute: +res.zone_hm15_min15
+					};
+				} else if(DateMatch.isZoneHHMM(res)) {
+					zone = {
+						kind: "hhmm",
+						sign: res.zone_sign,
+						time: +res.zone_hhmm
+					};
+				} else if(DateMatch.isZoneHour(res)) {
+					zone = {
+						kind:   "hh-mm",
+						sign:   res.zone_sign,
+						hour:   +res.zone_hour,
+						minute: 0
+					}
+				} else {
+					throw new Error("Error 7!");
+				}
+			}
+			
+			return {date, time, zone};
+		} else {
+			throw new Error("Error while parsing date!");
+		}
 	}
 };
 
@@ -802,7 +1082,13 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 	}
 
 	// date!
-	// ...
+	else if(checks.date(rdr)) {
+		const date = actions.date(rdr);
+		
+		console.dir(date, {depth: null});
+		
+		Red.todo();
+	}
 
 	// float! and percent!
 	else if(checks.float(rdr)) {
