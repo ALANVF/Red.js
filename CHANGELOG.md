@@ -6,7 +6,7 @@
 - `do` now accepts `file!`s.
 - `lit-word!` arguments that accept `unset!` now work.
 - Added support for `tag!` literals.
-- Added support for `date!` literals,
+- Added support for `date!` literals.
 
 
 # Version 0.0.7
