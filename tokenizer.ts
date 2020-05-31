@@ -1,4 +1,6 @@
 import * as Red from "./red-types";
+import RedUtil from "./runtime/util";
+
 
 namespace DateMatch {
 	type Match = {[key: string]: string | undefined};
@@ -786,9 +788,9 @@ const actions = {
 				if(res.date_ddmmmy_mmm_m !== undefined) {
 					month = +res.date_ddmmmy_mmm_m;
 				} else if(res.date_ddmmmy_mmm_mon !== undefined) {
-					month = getMonth(res.date_ddmmmy_mmm_mon);
+					month = getMonth(res.date_ddmmmy_mmm_mon) + 1;
 				} else if(res.date_ddmmmy_mmm_month !== undefined) {
-					month = getMonth(res.date_ddmmmy_mmm_month);
+					month = getMonth(res.date_ddmmmy_mmm_month) + 1;
 				} else {
 					throw new Error("Error 1!");
 				}
@@ -809,9 +811,9 @@ const actions = {
 				if(res.date_yyyymmmdd_mmm_m !== undefined) {
 					month = +res.date_yyyymmmdd_mmm_m;
 				} else if(res.date_yyyymmmdd_mmm_mon !== undefined) {
-					month = getMonth(res.date_yyyymmmdd_mmm_mon);
+					month = getMonth(res.date_yyyymmmdd_mmm_mon) + 1;
 				} else if(res.date_yyyymmmdd_mmm_month !== undefined) {
-					month = getMonth(res.date_yyyymmmdd_mmm_month);
+					month = getMonth(res.date_yyyymmmdd_mmm_month) + 1;
 				} else {
 					throw new Error("Error 3!");
 				}
@@ -1083,11 +1085,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 
 	// date!
 	else if(checks.date(rdr)) {
-		const date = actions.date(rdr);
-		
-		console.dir(date, {depth: null});
-		
-		Red.todo();
+		made.push(actions.date(rdr));
 	}
 
 	// float! and percent!
@@ -1413,8 +1411,69 @@ function tokenToRed(token: RedToken): Red.AnyType {
 		return new Red.RawPair(token.pair.x, token.pair.y);
 	}
 
-	else if("date" in token) { // TODO: implement
-		throw new Error("unimplemented!");
+	else if("date" in token) {
+		let date = new Date();
+		
+		if(token.date.kind == "year-month-day") {
+			date.setFullYear(token.date.year, token.date.month - 1, token.date.day);
+		} else if(token.date.kind == "year-week-day") {
+			date = RedUtil.Dates.weekToDate(token.date.year, token.date.week);
+			if(token.date.day > 1) {
+				date.setDate(date.getDate() + (token.date.day - 1));
+			}
+		} else {
+			date.setFullYear(token.date.year, 0, token.date.day);
+		}
+		
+		if(token.time !== undefined) {
+			if(token.time.kind == "hh-mm-ss") {
+				date.setUTCHours(token.time.hour);
+				date.setUTCMinutes(token.time.minute);
+				date.setUTCSeconds(token.time.second, (token.time.second * 1000) % 1000);
+			} else {
+				const seconds = token.time.time % 100;
+				const minutes = Math.floor(token.time.time / 100) % 100;
+				const hours = Math.floor(token.time.time / 10000) % 100;
+				
+				date.setUTCHours(hours);
+				date.setUTCMinutes(minutes);
+				date.setUTCSeconds(seconds, 0);
+			}
+		} else {
+			date.setUTCHours(0);
+			date.setUTCMinutes(0);
+			date.setUTCSeconds(0, 0);
+		}
+		
+		if(token.zone !== undefined) {
+			if(token.zone.kind == "hhmm") {
+				token.zone = <{kind: "hh-mm", sign: "+" | "-", hour: number, minute: number}><any>{
+					kind:    "hh-mm",
+					sign:    token.zone.sign,
+					hours:   Math.floor(token.zone.time / 100),
+					minutes: token.zone.time % 100
+				};
+			}
+			
+			if(token.zone.minute < 15) {
+				token.zone.minute = 0;
+			} else if(token.zone.minute < 30) {
+				token.zone.minute = 15;
+			} else if(token.zone.minute < 45) {
+				token.zone.minute = 30;
+			} else if(token.zone.minute < 60) {
+				token.zone.minute = 45;
+			} else if(token.zone.minute >= 60) {
+				token.zone.hour += Math.floor(token.zone.minute / 60);
+				token.zone.minute %= 60;
+			}
+			
+			delete token.zone.kind;
+			
+			return new Red.RawDate(date, token.time !== undefined, <{sign: "+" | "-", hour: number, minute: number}>token.zone);
+		} else {
+			return new Red.RawDate(date, token.time !== undefined);
+		}
 	}
 	else if("time" in token) {
 		return new Red.RawTime(token.time.hour, token.time.minute, token.time.second);

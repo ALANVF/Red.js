@@ -719,11 +719,12 @@ export class RawTime extends RawValue {
 
 
 /// complex compound types
+export type RawDateZone = {sign: "+" | "-", hour: number, minute: number};
 export class RawDate extends RawValue {
 	constructor(
 		public date:    Date,
 		public hasTime: boolean,
-		public zone:    number = 0 
+		public zone:    RawDateZone = {sign: "+", hour: 0, minute: 0}
 	) {
 		super();
 	}

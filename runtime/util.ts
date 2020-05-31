@@ -76,6 +76,26 @@ module RedUtil {
 		
 		return res;
 	}
+	
+	export namespace Dates {
+		export function getYearday(date: Date): number {
+			const diff = +date - +new Date(date.getFullYear(), 0, 1);
+			return (diff / 86400000) + 1;
+		}
+		
+		export function weekToDate(year: number, week: number): Date {
+			week -= 1;
+			
+			const date = new Date(year, 0, week * 7);
+			const day = date.getDay();
+			
+			if(day != 1) {
+				date.setFullYear(year, 0, (week * 7) + ((day < 4) ? 1 - day : (6 - day) + 2));
+			}
+			
+			return date;
+		}
+	}
 }
 
 export default RedUtil
