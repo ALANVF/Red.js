@@ -55,7 +55,7 @@
 | `tag!`                   | Y        | Y      | B           | B             | BI            |
 | `email!`                 | Y        | B****  | B           | B             | BI            |
 | `handle!`                | N        | NA     | N           | N             | N             |
-| `date!`                  | Y        | N      | N           | N             | N             |
+| `date!`                  | Y        | Y      | N           | N             | N             |
 | `port!`                  | N        | NA     | N           | N             | N             |
 | `image!`                 | N        | NA     | N           | N             | BI            |
 | `money!`                 | P        | B****  | N           | N             | N             |

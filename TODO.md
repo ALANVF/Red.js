@@ -4,7 +4,6 @@ TL;DR:
 - Finish implementing features.
 
 Finish very soon:
-- Add support for `map!`, `binary!`, and `date!` literals.
 - Fix stringy types like `file!` and `tag!`.
 - Fix refinements for natives and actions.
 - Remove `pre1` from the preprocessor.
@@ -74,3 +73,4 @@ Things already done:
 - Reimplement `char!` and `string!`.
 - Implement basic actions for `char!`.
 - Fix function arguments that accept `unset!`.
+- Add support for `map!`, `binary!`, and `date!` literals.

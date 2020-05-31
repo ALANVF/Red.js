@@ -1,4 +1,4 @@
-# Version 0.0.8 (in development)
+# Version 0.0.8
 - Added `negative?`, `positive?`, `max`, and `min` natives.
 - Added support for `binary!` literals.
 - Added support for `map!` literals.
@@ -6,6 +6,7 @@
 - `do` now accepts `file!`s.
 - `lit-word!` arguments that accept `unset!` now work.
 - Added support for `tag!` literals.
+- Added support for `date!` literals,
 
 
 # Version 0.0.7
