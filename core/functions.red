@@ -29,7 +29,7 @@ empty?: func [
 ][
 	case [
 		series? series [tail? series]
-		;map? series [series = #()]   ;@@ need to add support for map! literals first
+		map? series [series = #()]
 		none? series [true]
 	]
 ]
@@ -145,6 +145,26 @@ charset: func [
 	spec [block! integer! char! string! bitset! binary!]
 ][
 	make bitset! spec
+]
+
+extract: func [
+	"Extracts a value from a series at regular intervals"
+	series	[series!]
+	width	[integer!]	 "Size of each entry (the skip)"
+	/index				 "Extract from an offset position"
+		pos [integer!]	 "The position" 
+	/into				 "Provide an output series instead of creating a new one"
+		output [series!] "Output series"
+][
+	width: max 1 width
+	if pos [series: at series pos]
+	unless into [output: make series (length? series) / width]
+	
+	while [not tail? series][
+		append/only output series/1
+		series: skip series width
+	]
+	output
 ]
 
 rejoin: func [

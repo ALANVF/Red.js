@@ -1,5 +1,6 @@
 # Version 0.0.9 (in development)
 - Fixed `skip` bug.
+- Addex `extract` helper function.
 
 
 # Version 0.0.8
