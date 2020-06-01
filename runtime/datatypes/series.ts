@@ -98,7 +98,7 @@ export function $$skip(
 	index:  number
 ): Red.RawSeries {
 	const _ = RedUtil.clone(series); // FIX: stop copying the series
-	_.index += index - 1;
+	_.index += index;
 	return _;
 }
 

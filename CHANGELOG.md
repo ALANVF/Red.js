@@ -1,3 +1,7 @@
+# Version 0.0.9 (in development)
+- Fixed `skip` bug.
+
+
 # Version 0.0.8
 - Added `negative?`, `positive?`, `max`, and `min` natives.
 - Added support for `binary!` literals.
