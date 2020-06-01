@@ -6,25 +6,26 @@ TL;DR:
 Finish very soon:
 - Fix stringy types like `file!` and `tag!`.
 - Remove `pre1` from the preprocessor.
+- Unify `percent!` behavior.
+- Implement (more) math natives.
 
 Finish somewhat soon:
-- Unify `percent!` behavior.
-- Reimplement `money!`.
 - Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
 	- Quoting specs: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#741-function-type
-- Implement (more) math natives.
 - Implement actions for more datatypes.
-- Allow including files (kinda already done?).
 - Add newline markers in blocks (will require rewriting many things).
 - Redo/reimplement literally everything related to vectors.
-	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector)
+	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector).
+	- Might use JS' typed arrays to increase efficiency.
 - Give functions custom contexts so that `self` can be used in a function inside an object/context.
 - Switch from using unions to interfaces for the type system.
+- Reimplement `money!`.
+- Add Red's newly implemented `ref!` type.
 
 Finish sometime:
 - Finish all natives.
 - Finish all actions.
-- Add builtin utility functions.
+- Add builtin utility functions (in-progress).
 - Implement remaining datatypes.
 - Add more rules to the parser (mostly done).
 - Make error messages way more helpful/descriptive.
@@ -33,7 +34,6 @@ Finish sometime:
 - Add the `reactor!`/`deep-reactor!` type (I don't even know where to start with that one).
 - Add the `port!` type (and actors and stuff).
 - Add extra stuff the the global system object.
-- Add Red's newly proposed `ref!` type.
 - Finish implementing macros.
 
 Finish if I'm still bored:
@@ -74,3 +74,4 @@ Things already done:
 - Fix function arguments that accept `unset!`.
 - Add support for `map!`, `binary!`, and `date!` literals.
 - Fix refinements for natives and actions.
+- Allow including files.
