@@ -221,33 +221,42 @@ export function callNative(
 	
 	if(funcArity + refArity != args.length) {
 		throw new Error(`Invalid number of arguments passed to native ${fn.name}`);
-	} else if(funcArity + refArity == 0) {
-		return fn.func(ctx);
-	} else if(funcArity == args.length) {
+	} else {
+		const funcArgs = args.slice(0, fn.arity);
+		const refArgs = args.slice(fn.arity);
+		
 		// Evaluate regular arguments
-		const args_ = args.map((a, i) => {
+		const fnArgs = funcArgs.map((a, i) => {
 			if(fn.args[i].name instanceof Red.RawWord) {
 				return evalSingle(ctx, a.expr, a.noEval);
 			} else {
 				return a.expr;
 			}
-		});
+		}) as Red.AnyType[];
+		
+		const refOptions: Record<string, Red.AnyType[]> = {};
 
-		if(refines.length != 0) {
-			const refineOptions: Record<string, any> = {};
-
-			for(const ref of refines) {
-				if(ref.name instanceof Red.RawInteger) {
-					throw new Error("Functions may not have integer refinements!");
+		for(const ref of refines) {
+			const getRef = fn.getRefine(ref);
+			const newArgs: Red.AnyType[] = [];
+			const evalArg = (arg: Argument, i: number) => {
+				if(getRef.addArgs[i].name instanceof Red.RawWord) {
+					return evalSingle(ctx, arg.expr, arg.noEval);
+				} else if(arg.expr instanceof RedFunctionCall) {
+					throw new Error("error!");
 				} else {
-					refineOptions[ref.name.name] = []; // TODO: fix
+					return arg.expr;
 				}
+			};
+
+			for(let i = 0; i < getRef.addArgs.length; i++) {
+				newArgs.push(evalArg(refArgs.shift()!, i));
 			}
 
-			return fn.func(ctx, ...args_, refineOptions);
-		} else {
-			return fn.func(ctx, ...args_);
+			refOptions[ref.word.name.toLowerCase()] = newArgs;
 		}
+		
+		return fn.func(ctx, ...fnArgs, refOptions);
 	}
 }
 
@@ -262,32 +271,42 @@ export function callAction(
 	
 	if(funcArity + refArity != args.length) {
 		throw new Error(`Invalid number of arguments passed to action ${fn.name}`);
-	} else if(funcArity + refArity == 0) {
-		return fn.func(ctx);
-	} else if(funcArity == args.length) {
+	} else {
+		const funcArgs = args.slice(0, fn.arity);
+		const refArgs = args.slice(fn.arity);
+		
 		// Evaluate regular arguments
-		const args_ = args.map((a, i) => {
+		const fnArgs = funcArgs.map((a, i) => {
 			if(fn.args[i].name instanceof Red.RawWord) {
 				return evalSingle(ctx, a.expr, a.noEval);
 			} else {
 				return a.expr;
 			}
-		});
+		}) as Red.AnyType[];
+		
+		const refOptions: Record<string, Red.AnyType[]> = {};
 
-		if(refines.length != 0) {
-			const refineOptions: Record<string, any> = {};
-			for(const ref of refines) {
-				if(ref.name instanceof Red.RawInteger) {
-					throw new Error("Functions may not have integer refinements!");
+		for(const ref of refines) {
+			const getRef = fn.getRefine(ref);
+			const newArgs: Red.AnyType[] = [];
+			const evalArg = (arg: Argument, i: number) => {
+				if(getRef.addArgs[i].name instanceof Red.RawWord) {
+					return evalSingle(ctx, arg.expr, arg.noEval);
+				} else if(arg.expr instanceof RedFunctionCall) {
+					throw new Error("error!");
 				} else {
-					refineOptions[ref.name.name] = []; // TODO: fix
+					return arg.expr;
 				}
+			};
+
+			for(let i = 0; i < getRef.addArgs.length; i++) {
+				newArgs.push(evalArg(refArgs.shift()!, i));
 			}
 
-			return fn.func(ctx, ...args_, refineOptions);
-		} else {
-			return fn.func(ctx, ...args_);
+			refOptions[ref.word.name.toLowerCase()] = newArgs;
 		}
+		
+		return fn.func(ctx, ...fnArgs, refOptions);
 	}
 }
 
@@ -302,9 +321,10 @@ export function callFunction(
 	
 	if(funcArity + refArity != args.length) {
 		throw new Error(`Invalid number of arguments passed to action ${fn.name}`);
-	} else if(funcArity + refArity == 0) {
-		return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, [], []);
-	} else if(funcArity + refArity == args.length) {
+	//} else if(funcArity + refArity == 0) {
+	//	return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, [], []);
+	//} else if(funcArity + refArity == args.length) {
+	} else {
 		const funcArgs = args.slice(0, fn.arity);
 		const refArgs = args.slice(fn.arity);
 		
@@ -341,8 +361,6 @@ export function callFunction(
 		}
 
 		return fnRunInCtx(fnCreateTempCtx(ctx, fn), fn, fnArgs, refOptions);
-	} else {
-		throw new Error("error!");
 	}
 }
 

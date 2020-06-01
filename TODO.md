@@ -5,7 +5,6 @@ TL;DR:
 
 Finish very soon:
 - Fix stringy types like `file!` and `tag!`.
-- Fix refinements for natives and actions.
 - Remove `pre1` from the preprocessor.
 
 Finish somewhat soon:
@@ -74,3 +73,4 @@ Things already done:
 - Implement basic actions for `char!`.
 - Fix function arguments that accept `unset!`.
 - Add support for `map!`, `binary!`, and `date!` literals.
+- Fix refinements for natives and actions.
