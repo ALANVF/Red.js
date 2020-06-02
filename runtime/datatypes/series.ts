@@ -2,13 +2,6 @@ import * as Red from "../../red-types";
 import RedUtil from "../util";
 import RedActions from "../actions";
 
-type RedMoreBlocky = Red.RawBlock | Red.RawParen | Red.RawString | Red.RawVector;
-
-function isMoreBlocky(value: Red.AnyType): value is RedMoreBlocky {
-	return value instanceof Red.RawBlock || value instanceof Red.RawParen
-		|| value instanceof Red.RawString || value instanceof Red.RawVector;
-}
-
 
 /* Native actions */
 
@@ -157,7 +150,7 @@ poke: make action! [[
 	#get-definition ACT_POKE
 ]
 */
-// wtf is this doing
+// go back over this at some point
 export function $$poke(
 	_ctx:  Red.Context,
 	ser:   Red.RawSeries,
@@ -171,13 +164,17 @@ export function $$poke(
 	if(index.value < 1 || index.value > ser.length) {
 		throw new RangeError("error!");
 	} else {
-		// change this lol
-		if(ser instanceof Red.RawBlock || ser instanceof Red.RawParen) {
-			if(ser.values[(ser.index - 1) + (index.value - 1)]) {
-				ser.values[(ser.index - 1) + (index.value - 1)] = value;
-				return value;
+		if(("poke" in ser) && ("pick" in ser)) {
+			if(ser instanceof Red.RawBinary) {
+				if(value instanceof Red.RawInteger) {
+					ser.poke(index.value, value.value); // FIX: needs fixing
+					return new Red.RawInteger(ser.pick(index.value));
+				} else {
+					throw new Error("error!");
+				}
 			} else {
-				throw new RangeError("Value out of range!");
+				ser.poke(index.value, value as any); // TODO: fix
+				return ser.pick(index.value);
 			}
 		} else {
 			Red.todo();

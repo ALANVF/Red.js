@@ -2,6 +2,7 @@
 - Fixed `skip` bug.
 - Added `extract` helper function.
 - Fixed refinement arguments.
+- Improved `poke` for `series!` types.
 
 
 # Version 0.0.8

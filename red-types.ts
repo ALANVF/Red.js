@@ -6,6 +6,7 @@ interface Series {
 // temporary
 interface SeriesOf<T> extends Series {
 	pick(i: number): T;
+	poke(i: number, v: T): void;
 	current(): SeriesOf<T>;
 }
 
@@ -390,6 +391,17 @@ export class RawString extends RawValue implements Series, SeriesOf<RawChar> {
 		
 		return this.values[(this.index - 1) + (i - 1)];
 	}
+	
+	poke(
+		i: number,
+		v: RawChar
+	) {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		this.values[(this.index - 1) + (i - 1)] = v;
+	}
 
 	current(): RawString {
 		if(this.index == 1) {
@@ -404,7 +416,7 @@ export class RawString extends RawValue implements Series, SeriesOf<RawChar> {
 	}
 }
 
-export class RawParen extends RawValue implements Series {
+export class RawParen extends RawValue implements Series, SeriesOf<AnyType> {
 	index: number = 1;
 	
 	constructor(public values: AnyType[]) {
@@ -417,6 +429,17 @@ export class RawParen extends RawValue implements Series {
 		}
 		
 		return this.values[(this.index - 1) + (i - 1)];
+	}
+	
+	poke(
+		i: number,
+		v: AnyType
+	) {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		this.values[(this.index - 1) + (i - 1)] = v;
 	}
 
 	current(): RawParen {
@@ -445,6 +468,17 @@ export class RawBlock extends RawValue implements Series, SeriesOf<AnyType> {
 		}
 		
 		return this.values[(this.index - 1) + (i - 1)];
+	}
+	
+	poke(
+		i: number,
+		v: AnyType
+	) {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		this.values[(this.index - 1) + (i - 1)] = v;
 	}
 
 	current(): RawBlock {
@@ -475,6 +509,17 @@ export class RawBinary extends RawValue implements Series, SeriesOf<number> {
 		}
 		
 		return this.bytes[(this.index - 1) + (i - 1)];
+	}
+	
+	poke(
+		i: number,
+		v: number
+	) {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		this.bytes[(this.index - 1) + (i - 1)] = v;
 	}
 
 	current(): RawBinary {
@@ -556,6 +601,17 @@ export class RawHash extends RawValue implements Series, SeriesOf<AnyType> {
 		}
 		
 		return this.values[(this.index - 1) + (i - 1)];
+	}
+	
+	poke(
+		i: number,
+		v: AnyType
+	) {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		this.values[(this.index - 1) + (i - 1)] = v;
 	}
 
 	current(): RawHash {
@@ -654,6 +710,18 @@ export class RawVector extends RawValue implements Series, SeriesOf<RawInteger|R
 		}
 		
 		return this.values[(this.index - 1) + (i - 1)];
+	}
+	
+	poke(
+		i: number,
+		v: AnyType
+	) {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		//this.values[(this.index - 1) + (i - 1)] = v;
+		throw new Error("Unimplemented!");
 	}
 
 	current(): RawVector {
@@ -1296,6 +1364,8 @@ export function wrap(value: any): AnyType {
 		return new RawDate(value, true);
 	} else if(value instanceof DataView) {
 		throw new Error("unimplemented!");
+	} else if(value instanceof RawValue) {
+		return value;
 	} else if(typeof value == "object") {
 		const obj = new RawObject();
 

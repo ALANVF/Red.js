@@ -1,25 +1,4 @@
 module RedUtil {
-	/*export function IN_TYPESET(
-		ctx:   Red.Context,
-		value: Red.AnyType,
-		ts:    Red.RawTypeset
-	): boolean {
-		for(const t of ts.types) {
-			if(t instanceof Red.RawWord) {
-				const ty = RedNatives.$$get(ctx, t);
-
-				if(ty instanceof Red.RawTypeset) {
-					return IN_TYPESET(ctx, value, ty);
-				} else {
-					return value.constructor === ty;
-				}
-			} else {
-				throw new Error("error!");
-			}
-		}
-		return false;
-	}*/
-	
 	export function make<T>(
 		typeFn:  new(...args: any[]) => T,
 		initObj: {[k in keyof T]?: k extends undefined ? any : T[k]}
