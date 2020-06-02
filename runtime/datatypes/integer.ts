@@ -56,10 +56,8 @@ export function $$add(
 ): Red.AnyType {
 	if(right instanceof Red.RawInteger) {
 		return new Red.RawInteger(left.value + right.value);
-	} else if(right instanceof Red.RawFloat) {
+	} else if(right instanceof Red.RawFloat || right instanceof Red.RawPercent) {
 		return new Red.RawFloat(left.value + right.value);
-	} else if(right instanceof Red.RawPercent) {
-		return new Red.RawFloat(left.value + right.value / 100);
 	} else if(right instanceof Red.RawChar) {
 		return new Red.RawInteger(left.value + right.char);
 	} else if(right instanceof Red.RawMoney) {
@@ -79,7 +77,7 @@ export function $$add(
 			return new Red.RawVector(
 				values
 					.slice(right.index-1)
-					.map(v => new Red.RawPercent(left.value * 100 + v.value))
+					.map(v => new Red.RawPercent(left.value + v.value))
 			);
 		} else if(Red.RawVector.isChar(values)) {
 			return new Red.RawVector(
@@ -106,10 +104,8 @@ export function $$subtract(
 ): Red.AnyType {
 	if(right instanceof Red.RawInteger) {
 		return new Red.RawInteger(left.value - right.value);
-	} else if(right instanceof Red.RawFloat) {
-		return new Red.RawFloat(left.value - right.value);
-	} else if(right instanceof Red.RawPercent) {
-		return new Red.RawFloat(left.value - right.value / 100);
+	} else if(right instanceof Red.RawFloat || right instanceof Red.RawPercent) {
+		return new Red.RawFloat(left.value - right.value);;
 	} else if(right instanceof Red.RawChar) {
 		return new Red.RawInteger(left.value - right.char);
 	} else if(right instanceof Red.RawMoney) {
@@ -129,7 +125,7 @@ export function $$subtract(
 			return new Red.RawVector(
 				values
 					.slice(right.index-1)
-					.map(v => new Red.RawPercent(left.value * 100 - v.value))
+					.map(v => new Red.RawPercent(left.value - v.value))
 			);
 		} else if(Red.RawVector.isChar(values)) {
 			return new Red.RawVector(
@@ -156,10 +152,8 @@ export function $$multiply(
 ): Red.AnyType {
 	if(right instanceof Red.RawInteger) {
 		return new Red.RawInteger(left.value * right.value);
-	} else if(right instanceof Red.RawFloat) {
+	} else if(right instanceof Red.RawFloat || right instanceof Red.RawPercent) {
 		return new Red.RawFloat(left.value * right.value);
-	} else if(right instanceof Red.RawPercent) {
-		return new Red.RawFloat(left.value * (right.value / 100));
 	} else if(right instanceof Red.RawChar) {
 		return new Red.RawInteger(left.value * right.char);
 	} else if(right instanceof Red.RawMoney) {
@@ -179,7 +173,7 @@ export function $$multiply(
 			return new Red.RawVector(
 				values
 					.slice(right.index-1)
-					.map(v => new Red.RawPercent(left.value * 100 * v.value))
+					.map(v => new Red.RawPercent(left.value * v.value))
 			);
 		} else if(Red.RawVector.isChar(values)) {
 			return new Red.RawVector(
@@ -206,10 +200,8 @@ export function $$divide(
 ): Red.AnyType {
 	if(right instanceof Red.RawInteger) {
 		return new Red.RawInteger(Math.floor(left.value / right.value));
-	} else if(right instanceof Red.RawFloat) {
+	} else if(right instanceof Red.RawFloat || right instanceof Red.RawPercent) {
 		return new Red.RawFloat(left.value / right.value);
-	} else if(right instanceof Red.RawPercent) {
-		return new Red.RawFloat(left.value / (right.value / 100));
 	} else if(right instanceof Red.RawChar) {
 		return new Red.RawInteger(Math.floor(left.value / right.char));
 	} else if(right instanceof Red.RawMoney) {
@@ -229,7 +221,7 @@ export function $$divide(
 			return new Red.RawVector(
 				values
 					.slice(right.index-1)
-					.map(v => new Red.RawPercent(left.value * 100 / v.value))
+					.map(v => new Red.RawPercent(left.value / v.value))
 			);
 		} else if(Red.RawVector.isChar(values)) {
 			return new Red.RawVector(
@@ -256,10 +248,8 @@ export function $$remainder(
 ): Red.AnyType {
 	if(right instanceof Red.RawInteger) {
 		return new Red.RawInteger(left.value % right.value);
-	} else if(right instanceof Red.RawFloat) {
+	} else if(right instanceof Red.RawFloat || right instanceof Red.RawPercent) {
 		return new Red.RawFloat(left.value % right.value);
-	} else if(right instanceof Red.RawPercent) {
-		return new Red.RawFloat(left.value % (right.value / 100));
 	} else if(right instanceof Red.RawChar) {
 		return new Red.RawInteger(left.value % right.char);
 	} else if(right instanceof Red.RawMoney) {
@@ -277,7 +267,7 @@ export function $$remainder(
 			return new Red.RawVector(
 				values
 					.slice(right.index-1)
-					.map(v => new Red.RawPercent(left.value * 100 % v.value))
+					.map(v => new Red.RawPercent(left.value % v.value))
 			);
 		} else if(Red.RawVector.isChar(values)) {
 			return new Red.RawVector(

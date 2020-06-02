@@ -6,7 +6,6 @@ TL;DR:
 Finish very soon:
 - Fix stringy types like `file!` and `tag!`.
 - Remove `pre1` from the preprocessor.
-- Unify `percent!` behavior.
 - Implement (more) math natives.
 
 Finish somewhat soon:
@@ -75,3 +74,4 @@ Things already done:
 - Add support for `map!`, `binary!`, and `date!` literals.
 - Fix refinements for natives and actions.
 - Allow including files.
+- Unify `percent!` behavior.

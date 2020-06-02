@@ -1327,7 +1327,7 @@ function tokenToRed(token: RedToken): Red.AnyType {
 		return new Red.RawFloat(token.float);
 	}
 	else if("percent" in token) {
-		return new Red.RawPercent(token.percent);
+		return new Red.RawPercent(token.percent / 100);
 	}
 	else if("money" in token) {
 		return new Red.RawMoney(token.money, token.region);

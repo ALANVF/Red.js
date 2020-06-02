@@ -3,6 +3,7 @@
 - Added `extract` helper function.
 - Fixed refinement arguments.
 - Improved `poke` for `series!` types.
+- Unified `percent!` behavior.
 
 
 # Version 0.0.8
