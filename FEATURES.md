@@ -122,7 +122,7 @@
 | `positive?`         | Y      |
 | `max`               | Y      |
 | `min`               | Y      |
-| `shift`             | N      |
+| `shift`             | Y      |
 | `to-hex`            | N      |
 | `sine`              | N      |
 | `cosine`            | N      |

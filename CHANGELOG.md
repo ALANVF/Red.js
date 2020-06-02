@@ -4,6 +4,7 @@
 - Fixed refinement arguments.
 - Improved `poke` for `series!` types.
 - Unified `percent!` behavior.
+- Added `shift` native.
 
 
 # Version 0.0.8

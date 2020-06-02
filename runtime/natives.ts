@@ -979,6 +979,24 @@ module RedNatives {
 	): Red.RawScalar|Red.RawSeries {
 		return maxmin(ctx, left, right, false);
 	}
+	
+	export function $$shift(
+		_ctx: Red.Context,
+		int:  Red.RawInteger,
+		bits: Red.RawInteger,
+		_: {
+			left?:    [],
+			logical?: []
+		} = {}
+	): Red.RawInteger {
+		if(_.left !== undefined) {
+			return new Red.RawInteger(int.value << bits.value);
+		} else if(_.logical !== undefined) {
+			return new Red.RawInteger(int.value >>> bits.value);
+		} else {
+			return new Red.RawInteger(int.value >> bits.value);
+		}
+	}
 
 	// ...
 

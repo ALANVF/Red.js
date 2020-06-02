@@ -466,7 +466,6 @@ min: make native! [[
 	min
 ]
 
-'TODO [
 shift: make native! [[
 		"Perform a bit shift operation. Right shift (decreasing) by default"
 		data	[integer!]
@@ -478,6 +477,7 @@ shift: make native! [[
 	shift
 ]
 
+'TODO [
 to-hex: make native! [[
 		"Converts numeric value to a hex issue! datatype (with leading # and 0's)"
 		value	[integer!]
