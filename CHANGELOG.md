@@ -8,7 +8,8 @@
 - Added trigonometric natives.
 - Added `nan?` and `zero?` natives.
 - Added more math natives.
-- Added `absolute` and `negate` actions.
+- Added `absolute`, `negate`, and `power` actions.
+- Added (partially incomplete) `make`/`to` actions for `integer!` and `float!`.
 
 
 # Version 0.0.8

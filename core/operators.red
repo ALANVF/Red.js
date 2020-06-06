@@ -4,7 +4,7 @@ Red []
 -:   make op! :subtract
 *:   make op! :multiply
 /:   make op! :divide
-;//:  make op! :modulo
+//:  make op! :modulo
 %:   make op! :remainder
 =:   make op! :equal?
 <>:  make op! :not-equal?
@@ -17,7 +17,7 @@ Red []
 ;<<:  make op! :shift-left
 ;>>:  make op! :shift-right
 ;>>>: make op! :shift-logical
-;**:  make op! :power
+**:  make op! :power
 and: make op! :and~
 or:  make op! :or~
 xor: make op! :xor~

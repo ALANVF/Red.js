@@ -21,8 +21,8 @@
 | `file!`                  | Y        | P      | N           | N             | BI            |
 | `url!`                   | Y        | PB     | N           | N             | BI            |
 | `char!`                  | Y        | Y      | N           | Y             | P             |
-| `integer!`               | Y        | P      | N           | Y             | P             |
-| `float!`                 | Y        | P***   | N           | Y             | P             |
+| `integer!`               | Y        | P      | P           | Y             | P             |
+| `float!`                 | Y        | P***   | P           | Y             | P             |
 | `context!`               | Y        | NA     | P           | P             | N             |
 | `word!`                  | Y        | Y      | Y           | Y             | N             |
 | `set-word!`              | Y        | Y      | Y           | Y             | N             |

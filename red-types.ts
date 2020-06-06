@@ -843,6 +843,9 @@ export type RawAnyWord =
 export type RawAnyPath =
 	| RawPath | RawLitPath | RawGetPath | RawSetPath;
 
+export type RawAnyList =
+	| RawBlock | RawParen | RawHash;
+
 export type RawSeries =
 	| RawString
 	| RawAnyPath
@@ -1413,6 +1416,10 @@ export function isAnyString(value: AnyType): value is RawAnyString {
 
 export function isNumber(value: AnyType): value is RawNumber {
 	return value instanceof RawInteger || value instanceof RawFloat || value instanceof RawPercent;
+}
+
+export function isAnyList(value: AnyType): value is RawAnyList {
+	return value instanceof RawBlock || value instanceof RawParen || value instanceof RawHash;
 }
 
 /// control flow

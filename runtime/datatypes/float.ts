@@ -29,7 +29,35 @@ export function $compare(
 	}
 }
 
-// $$make
+export const $$make = $$to;
+
+export function $$to(
+	_ctx:   Red.Context,
+	_proto: Red.AnyType,
+	spec:   Red.AnyType
+): Red.RawFloat {
+	if(spec instanceof Red.RawInteger || spec instanceof Red.RawPercent) {
+		return new Red.RawFloat(spec.value);
+	} else if(spec instanceof Red.RawChar) {
+		return new Red.RawFloat(spec.char);
+	} else if(spec instanceof Red.RawFloat) {
+		return spec;
+	} else if(spec instanceof Red.RawMoney) {
+		Red.todo();
+	} else if(spec instanceof Red.RawBinary) {
+		Red.todo();
+	} else if(spec instanceof Red.RawIssue) {
+		Red.todo();
+	} else if(spec instanceof Red.RawTime) {
+		return new Red.RawFloat(spec.toNumber());
+	} else if(Red.isAnyString(spec)) {
+		Red.todo();
+	} else if(Red.isAnyList(spec)) {
+		Red.todo();
+	} else {
+		throw new Error("error!");
+	}
+}
 
 export function $$form(
 	_ctx:   Red.Context,

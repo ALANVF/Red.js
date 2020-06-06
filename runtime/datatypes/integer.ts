@@ -27,7 +27,45 @@ export function $compare(
 	}
 }
 
-// $$make
+export function $$make(
+	ctx:   Red.Context,
+	proto: Red.AnyType,
+	spec:  Red.AnyType
+): Red.RawInteger {
+	if(spec instanceof Red.RawLogic) {
+		return new Red.RawInteger(+spec.cond);
+	} else {
+		return $$to(ctx, proto, spec);
+	}
+}
+
+export function $$to(
+	_ctx:   Red.Context,
+	_proto: Red.AnyType,
+	spec:   Red.AnyType
+): Red.RawInteger {
+	if(spec instanceof Red.RawInteger) {
+		return spec;
+	} else if(spec instanceof Red.RawChar) {
+		return new Red.RawInteger(spec.char);
+	} else if(spec instanceof Red.RawFloat || spec instanceof Red.RawPercent) {
+		return new Red.RawInteger(Math.floor(spec.value));
+	} else if(spec instanceof Red.RawMoney) {
+		Red.todo();
+	} else if(spec instanceof Red.RawBinary) {
+		Red.todo();
+	} else if(spec instanceof Red.RawIssue) {
+		Red.todo();
+	} else if(spec instanceof Red.RawTime) {
+		return new Red.RawInteger(Math.floor(spec.toNumber()));
+	} else if(spec instanceof Red.RawDate) {
+		Red.todo();
+	} else if(Red.isAnyString(spec)) {
+		Red.todo();
+	} else {
+		throw new Error("error!");
+	}
+}
 
 export function $$form(
 	_ctx:   Red.Context,
