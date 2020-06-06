@@ -553,7 +553,6 @@ arctangent2: make native! [[
 	arctangent2
 ]
 
-'TODO [
 nan?: make native! [[
 		"Returns TRUE if the number is Not-a-Number"
 		value	[number!]
@@ -570,6 +569,7 @@ zero?: make native! [[
 	zero_q
 ]
 
+'TODO [
 log-2: make native! [[
 		"Return the base-2 logarithm"
 		value	[number!]

@@ -6,6 +6,7 @@
 - Unified `percent!` behavior.
 - Added `shift` native.
 - Added trigonometric natives.
+- Added `nan?` and `zero?` natives.
 
 
 # Version 0.0.8

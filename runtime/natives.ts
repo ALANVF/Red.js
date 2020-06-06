@@ -1001,7 +1001,7 @@ module RedNatives {
 	// ...
 	
 	export function $$sine(
-		_ctx: Red.Context,
+		_ctx:  Red.Context,
 		angle: Red.RawNumber,
 		_: {
 			radians?: []
@@ -1015,7 +1015,7 @@ module RedNatives {
 	}
 	
 	export function $$cosine(
-		_ctx: Red.Context,
+		_ctx:  Red.Context,
 		angle: Red.RawNumber,
 		_: {
 			radians?: []
@@ -1029,7 +1029,7 @@ module RedNatives {
 	}
 	
 	export function $$tangent(
-		_ctx: Red.Context,
+		_ctx:  Red.Context,
 		angle: Red.RawNumber,
 		_: {
 			radians?: []
@@ -1043,7 +1043,7 @@ module RedNatives {
 	}
 	
 	export function $$arcsine(
-		_ctx: Red.Context,
+		_ctx:  Red.Context,
 		value: Red.RawNumber,
 		_: {
 			radians?: []
@@ -1057,7 +1057,7 @@ module RedNatives {
 	}
 	
 	export function $$arccosine(
-		_ctx: Red.Context,
+		_ctx:  Red.Context,
 		value: Red.RawNumber,
 		_: {
 			radians?: []
@@ -1071,7 +1071,7 @@ module RedNatives {
 	}
 	
 	export function $$arctangent(
-		_ctx: Red.Context,
+		_ctx:  Red.Context,
 		value: Red.RawNumber,
 		_: {
 			radians?: []
@@ -1086,8 +1086,8 @@ module RedNatives {
 	
 	export function $$arctangent2(
 		_ctx: Red.Context,
-		y: Red.RawNumber,
-		x: Red.RawNumber,
+		y:    Red.RawNumber,
+		x:    Red.RawNumber,
 		_: {
 			radians?: []
 		} = {}
@@ -1096,6 +1096,30 @@ module RedNatives {
 			return new Red.RawFloat(Math.atan2(y.value, x.value) * 180 / Math.PI);
 		} else {
 			return new Red.RawFloat(Math.atan2(y.value, x.value));
+		}
+	}
+	
+	export function $$nan_q(
+		_ctx:  Red.Context,
+		value: Red.RawNumber
+	): Red.RawLogic {
+		return Red.RawLogic.from(isNaN(value.value));
+	}
+	
+	export function $$zero_q(
+		_ctx:  Red.Context,
+		value: Red.RawNumber|Red.RawPair|Red.RawTime|Red.RawChar|Red.RawTuple
+	): Red.RawLogic {
+		if(Red.isNumber(value)) {
+			return Red.RawLogic.from(value.value == 0);
+		} else if(value instanceof Red.RawPair) {
+			return Red.RawLogic.from(value.x == 0 && value.y == 0);
+		} else if(value instanceof Red.RawTime) {
+			return Red.RawLogic.from(value.seconds == 0 && value.minutes == 0 && value.hours == 0);
+		} else if(value instanceof Red.RawChar) {
+			return Red.RawLogic.from(value.char == 0);
+		} else {
+			return Red.RawLogic.from(value.values.every(n => n == 0));
 		}
 	}
 

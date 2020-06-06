@@ -131,8 +131,8 @@
 | `arccosine`         | Y      |
 | `arctangent`        | Y      |
 | `arctangent2`       | Y      |
-| `nan?`              | N      |
-| `zero?`             | N      |
+| `nan?`              | Y      |
+| `zero?`             | Y      |
 | `log-2`             | N      |
 | `log-10`            | N      |
 | `log-e`             | N      |

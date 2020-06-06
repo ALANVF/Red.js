@@ -1411,6 +1411,10 @@ export function isAnyString(value: AnyType): value is RawAnyString {
 	return value instanceof RawString || value instanceof RawFile || value instanceof RawUrl || value instanceof RawTag || value instanceof RawEmail;
 }
 
+export function isNumber(value: AnyType): value is RawNumber {
+	return value instanceof RawInteger || value instanceof RawFloat || value instanceof RawPercent;
+}
+
 /// control flow
 //export class RawError
 
