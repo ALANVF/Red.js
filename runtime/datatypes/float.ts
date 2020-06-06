@@ -51,6 +51,13 @@ export function $$mold(
 	return $$form(ctx, value, buffer, _.part);
 }
 
+export function $$absolute(
+	_ctx:  Red.Context,
+	value: Red.RawFloat
+): Red.RawFloat {
+	return new Red.RawFloat(Math.abs(value.value));
+}
+
 export function $$add(
 	ctx:   Red.Context,
 	left:  Red.RawFloat,
@@ -209,6 +216,21 @@ export function $$divide(
 	} else {
 		throw new TypeError("Can't divide float! with type " + Red.typeName(right));
 	}
+}
+
+export function $$power(
+	_ctx:     Red.Context,
+	value:    Red.RawFloat,
+	exponent: Red.RawInteger|Red.RawFloat
+): Red.RawFloat {
+	return new Red.RawFloat(value.value ** exponent.value);
+}
+
+export function $$negate(
+	_ctx:  Red.Context,
+	value: Red.RawFloat
+): Red.RawFloat {
+	return new Red.RawFloat(-value.value);
 }
 
 // ...

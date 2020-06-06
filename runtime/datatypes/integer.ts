@@ -49,6 +49,13 @@ export function $$mold(
 	return $$form(ctx, value, buffer, _.part);
 }
 
+export function $$absolute(
+	_ctx:  Red.Context,
+	value: Red.RawInteger
+): Red.RawInteger {
+	return new Red.RawInteger(Math.abs(value.value));
+}
+
 export function $$add(
 	ctx:   Red.Context,
 	left:  Red.RawInteger,
@@ -285,6 +292,25 @@ export function $$remainder(
 	} else {
 		throw new TypeError("Can't get the remainder of integer! with type " + Red.typeName(right));
 	}
+}
+
+export function $$power(
+	_ctx:     Red.Context,
+	value:    Red.RawInteger,
+	exponent: Red.RawInteger|Red.RawFloat
+): Red.RawNumber {
+	if(exponent instanceof Red.RawInteger && exponent.value >= 0) {
+		return new Red.RawInteger(value.value ** exponent.value);
+	} else {
+		return new Red.RawFloat(value.value ** exponent.value);
+	}
+}
+
+export function $$negate(
+	_ctx:  Red.Context,
+	value: Red.RawInteger
+): Red.RawInteger {
+	return new Red.RawInteger(-value.value);
 }
 
 // ...

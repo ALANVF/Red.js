@@ -77,14 +77,12 @@ modify: make action! [[
 
 ;-- Scalar actions --
 
-'TODO [
 absolute: make action! [[
 		"Returns the non-negative value"
 		value	 [number! char! pair! time!]
 		return:  [number! char! pair! time!]
 	]
 	absolute
-]
 ]
 
 add: make action! [[
@@ -114,7 +112,6 @@ multiply: make action! [[
 	multiply
 ]
 
-'TODO [
 negate: make action! [[
 		"Returns the opposite (additive inverse) value"
 		number 	 [number! bitset! pair! time!]
@@ -130,7 +127,6 @@ power: make action! [[
 		return:	 [number!]
 	]
 	power
-]
 ]
 
 remainder: make action! [[

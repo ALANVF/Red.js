@@ -625,63 +625,59 @@ module RedActions {
 	]
 
 	;-- Scalar actions --
-
-	absolute: make action! [[
-			"Returns the non-negative value"
-			value	 [number! char! pair! time!]
-			return:  [number! char! pair! time!]
-		]
-		#get-definition ACT_ABSOLUTE
-	]
 	*/
+	
+	export function $$absolute(
+		ctx:   Red.Context,
+		value: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawTime
+	): typeof value {
+		return valueSendAction("$$absolute", ctx, value);
+	}
 
 	export function $$add(
 		ctx:    Red.Context,
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate,
-		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate
-	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate {
+		value2: typeof value1
+	): typeof value1 {
 		return valueSendAction("$$add", ctx, value1, value2);
 	}
 
 	export function $$divide(
 		ctx:    Red.Context,
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate,
-		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate
-	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate {
+		value2: typeof value1
+	): typeof value1 {
 		return valueSendAction("$$divide", ctx, value1, value2);
 	}
 
 	export function $$multiply(
 		ctx:    Red.Context,
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate,
-		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate
-	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate {
+		value2: typeof value1
+	): typeof value1 {
 		return valueSendAction("$$multiply", ctx, value1, value2);
 	}
-
-	/*
-	negate: make action! [[
-			"Returns the opposite (additive inverse) value"
-			number 	 [number! bitset! pair! time!]
-			return:  [number! bitset! pair! time!]
-		]
-		#get-definition ACT_NEGATE
-	]
-
-	power: make action! [[
-			"Returns a number raised to a given power (exponent)"
-			number	 [number!] "Base value"
-			exponent [integer! float!] "The power (index) to raise the base value by"
-			return:	 [number!]
-		]
-		#get-definition ACT_POWER
-	]*/
+	
+	export function $$negate(
+		ctx:    Red.Context,
+		number: Red.RawNumber|Red.RawBitset|Red.RawPair|Red.RawTime
+	): typeof number {
+		return valueSendAction("$$negate", ctx, number);
+	}
+	
+	export function $$power(
+		ctx:      Red.Context,
+		number:   Red.RawNumber,
+		exponent: Red.RawInteger|Red.RawFloat
+	): typeof number {
+		return valueSendAction("$$power", ctx, number, exponent);
+	}
 
 	export function $$remainder(
 		ctx:    Red.Context,
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple,
-		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple
-	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple {
+		value2: typeof value1
+	): typeof value1 {
 		return valueSendAction("$$remainder", ctx, value1, value2);
 	}
 
@@ -704,8 +700,8 @@ module RedActions {
 	export function $$subtract(
 		ctx:    Red.Context,
 		value1: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate,
-		value2: Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate
-	): Red.RawNumber|Red.RawChar|Red.RawPair|Red.RawVector|Red.RawTime|Red.RawTuple|Red.RawDate {
+		value2: typeof value1
+	): typeof value1 {
 		return valueSendAction("$$subtract", ctx, value1, value2);
 	}
 
@@ -734,31 +730,31 @@ module RedActions {
 	export function $$and_t(
 		ctx:    Red.Context,
 		value1: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector,
-		value2: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector
-	): Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector {
+		value2: typeof value1
+	): typeof value1 {
 		return valueSendAction("$$and_t", ctx, value1, value2);
 	}
 
 	export function $$complement(
 		ctx:   Red.Context,
 		value: Red.RawLogic|Red.RawInteger|Red.RawBitset|Red.RawTypeset|Red.RawBinary
-	): Red.RawLogic|Red.RawInteger|Red.RawBitset|Red.RawTypeset|Red.RawBinary {
+	): typeof value {
 		return valueSendAction("$$complement", ctx, value)
 	}
 
 	export function $$or_t(
 		ctx:    Red.Context,
 		value1: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector,
-		value2: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector
-	): Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector {
+		value2: typeof value1
+	): typeof value1 {
 		return valueSendAction("$$or_t", ctx, value1, value2);
 	}
 
 	export function $$xor_t(
 		ctx:    Red.Context,
 		value1: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector,
-		value2: Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector
-	): Red.RawLogic|Red.RawInteger|Red.RawChar|Red.RawBitset|Red.RawTypeset|Red.RawPair|Red.RawTuple|Red.RawVector {
+		value2: typeof value1
+	): typeof value1 {
 		return valueSendAction("$$xor_t", ctx, value1, value2);
 	}
 

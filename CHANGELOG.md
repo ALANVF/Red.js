@@ -8,6 +8,7 @@
 - Added trigonometric natives.
 - Added `nan?` and `zero?` natives.
 - Added more math natives.
+- Added `absolute` and `negate` actions.
 
 
 # Version 0.0.8
