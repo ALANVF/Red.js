@@ -487,6 +487,7 @@ to-hex: make native! [[
 	]
 	to_hex
 ]
+]
 
 sine: make native! [[
 		"Returns the trigonometric sine"
@@ -541,6 +542,7 @@ arctangent: make native! [[
 	]
 	arctangent
 ]
+
 arctangent2: make native! [[
 		"Returns the smallest angle between the vectors (1,0) and (x,y) in degrees by default (-180,180]"
 		y       [number!]
@@ -551,6 +553,7 @@ arctangent2: make native! [[
 	arctangent2
 ]
 
+'TODO [
 nan?: make native! [[
 		"Returns TRUE if the number is Not-a-Number"
 		value	[number!]

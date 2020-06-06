@@ -997,6 +997,107 @@ module RedNatives {
 			return new Red.RawInteger(int.value >> bits.value);
 		}
 	}
+	
+	// ...
+	
+	export function $$sine(
+		_ctx: Red.Context,
+		angle: Red.RawNumber,
+		_: {
+			radians?: []
+		} = {}
+	): Red.RawFloat {
+		if(_.radians === undefined) {
+			return new Red.RawFloat(Math.sin(angle.value * Math.PI / 180));
+		} else {
+			return new Red.RawFloat(Math.sin(angle.value));
+		}
+	}
+	
+	export function $$cosine(
+		_ctx: Red.Context,
+		angle: Red.RawNumber,
+		_: {
+			radians?: []
+		} = {}
+	): Red.RawFloat {
+		if(_.radians === undefined) {
+			return new Red.RawFloat(Math.cos(angle.value * Math.PI / 180));
+		} else {
+			return new Red.RawFloat(Math.cos(angle.value));
+		}
+	}
+	
+	export function $$tangent(
+		_ctx: Red.Context,
+		angle: Red.RawNumber,
+		_: {
+			radians?: []
+		} = {}
+	): Red.RawFloat {
+		if(_.radians === undefined) {
+			return new Red.RawFloat(Math.tan(angle.value * Math.PI / 180));
+		} else {
+			return new Red.RawFloat(Math.tan(angle.value));
+		}
+	}
+	
+	export function $$arcsine(
+		_ctx: Red.Context,
+		value: Red.RawNumber,
+		_: {
+			radians?: []
+		} = {}
+	): Red.RawFloat {
+		if(_.radians === undefined) {
+			return new Red.RawFloat(Math.asin(value.value) * 180 / Math.PI);
+		} else {
+			return new Red.RawFloat(Math.asin(value.value));
+		}
+	}
+	
+	export function $$arccosine(
+		_ctx: Red.Context,
+		value: Red.RawNumber,
+		_: {
+			radians?: []
+		} = {}
+	): Red.RawFloat {
+		if(_.radians === undefined) {
+			return new Red.RawFloat(Math.acos(value.value) * 180 / Math.PI);
+		} else {
+			return new Red.RawFloat(Math.acos(value.value));
+		}
+	}
+	
+	export function $$arctangent(
+		_ctx: Red.Context,
+		value: Red.RawNumber,
+		_: {
+			radians?: []
+		} = {}
+	): Red.RawFloat {
+		if(_.radians === undefined) {
+			return new Red.RawFloat(Math.atan(value.value) * 180 / Math.PI);
+		} else {
+			return new Red.RawFloat(Math.atan(value.value));
+		}
+	}
+	
+	export function $$arctangent2(
+		_ctx: Red.Context,
+		y: Red.RawNumber,
+		x: Red.RawNumber,
+		_: {
+			radians?: []
+		} = {}
+	): Red.RawFloat {
+		if(_.radians === undefined) {
+			return new Red.RawFloat(Math.atan2(y.value, x.value) * 180 / Math.PI);
+		} else {
+			return new Red.RawFloat(Math.atan2(y.value, x.value));
+		}
+	}
 
 	// ...
 

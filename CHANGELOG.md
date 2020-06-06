@@ -5,6 +5,7 @@
 - Improved `poke` for `series!` types.
 - Unified `percent!` behavior.
 - Added `shift` native.
+- Added trigonometric natives.
 
 
 # Version 0.0.8
