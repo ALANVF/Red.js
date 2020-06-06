@@ -133,11 +133,11 @@
 | `arctangent2`       | Y      |
 | `nan?`              | Y      |
 | `zero?`             | Y      |
-| `log-2`             | N      |
-| `log-10`            | N      |
-| `log-e`             | N      |
-| `exp`               | N      |
-| `square-root`       | N      |
+| `log-2`             | Y      |
+| `log-10`            | Y      |
+| `log-e`             | Y      |
+| `exp`               | Y      |
+| `square-root`       | Y      |
 | `construct`         | N      |
 | `value?`            | Y      |
 | `try`               | N      |

@@ -1122,6 +1122,41 @@ module RedNatives {
 			return Red.RawLogic.from(value.values.every(n => n == 0));
 		}
 	}
+	
+	export function $$log_2(
+		_ctx:  Red.Context,
+		value: Red.RawNumber
+	): Red.RawFloat {
+		return new Red.RawFloat(Math.log2(value.value));
+	}
+	
+	export function $$log_10(
+		_ctx:  Red.Context,
+		value: Red.RawNumber
+	): Red.RawFloat {
+		return new Red.RawFloat(Math.log10(value.value));
+	}
+	
+	export function $$log_e(
+		_ctx:  Red.Context,
+		value: Red.RawNumber
+	): Red.RawFloat {
+		return new Red.RawFloat(Math.log(value.value));
+	}
+	
+	export function $$exp(
+		_ctx:  Red.Context,
+		value: Red.RawNumber
+	): Red.RawFloat {
+		return new Red.RawFloat(Math.exp(value.value));
+	}
+	
+	export function $$square_root(
+		_ctx:  Red.Context,
+		value: Red.RawNumber
+	): Red.RawFloat {
+		return new Red.RawFloat(Math.sqrt(value.value));
+	}
 
 	// ...
 

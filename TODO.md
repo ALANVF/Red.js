@@ -9,6 +9,7 @@ Finish very soon:
 - Implement (more) math natives.
 
 Finish somewhat soon:
+- Add the `error!` type.
 - Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
 	- Quoting specs: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#741-function-type
 - Implement actions for more datatypes.

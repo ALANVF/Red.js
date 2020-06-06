@@ -7,6 +7,7 @@
 - Added `shift` native.
 - Added trigonometric natives.
 - Added `nan?` and `zero?` natives.
+- Added more math natives.
 
 
 # Version 0.0.8

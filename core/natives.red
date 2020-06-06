@@ -569,7 +569,6 @@ zero?: make native! [[
 	zero_q
 ]
 
-'TODO [
 log-2: make native! [[
 		"Return the base-2 logarithm"
 		value	[number!]
@@ -610,6 +609,7 @@ square-root: make native! [[
 	square_root
 ]
 
+'TODO [
 construct: make native! [[
 		"Makes a new object from an unevaluated spec; standard logic words are evaluated"
 		block [block!]
