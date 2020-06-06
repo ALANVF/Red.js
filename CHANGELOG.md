@@ -10,6 +10,7 @@
 - Added more math natives.
 - Added `absolute`, `negate`, and `power` actions.
 - Added (partially incomplete) `make`/`to` actions for `integer!` and `float!`.
+- Added some more helper functions.
 
 
 # Version 0.0.8

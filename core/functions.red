@@ -147,6 +147,29 @@ charset: func [
 	make bitset! spec
 ]
 
+mod: func [
+	"Compute a nonnegative remainder of A divided by B"
+	a		[number! money! char! pair! tuple! vector! time!]
+	b		[number! money! char! pair! tuple! vector! time!]	"Must be nonzero"
+	return: [number! money! char! pair! tuple! vector! time!]
+	/local r
+][
+	if (r: a % b) < 0 [r: r + b]
+	a: absolute a
+	either all [a + r = (a + b) r + r - b > 0][r - b][r]
+]
+
+modulo: func [
+	"Wrapper for MOD that handles errors like REMAINDER. Negligible values (compared to A and B) are rounded to zero"
+	a		[number! money! char! pair! tuple! vector! time!]
+	b		[number! money! char! pair! tuple! vector! time!]
+	return: [number! money! char! pair! tuple! vector! time!]
+	/local r
+][
+	r: mod a absolute b
+	either any [a - r = a r + b = b][0][r]
+]
+
 extract: func [
 	"Extracts a value from a series at regular intervals"
 	series	[series!]
@@ -167,6 +190,66 @@ extract: func [
 	output
 ]
 
+cos: func [
+	"Returns the trigonometric cosine"
+	angle [float!] "Angle in radians"
+][
+	cosine/radians angle
+]
+
+sin: func [
+	"Returns the trigonometric sine"
+	angle [float!] "Angle in radians"
+][
+	sine/radians angle
+]
+
+tan: func [
+	"Returns the trigonometric tangent"
+	angle [float!] "Angle in radians"
+][
+	tan/radians angle
+]
+
+acos: func [
+	"Returns the trigonometric arccosine (in radians in range [0,pi])"
+	cosine [float!] "in range [-1,1]"
+][
+	arccosine/radians cosine
+]
+
+asin: func [
+	"Returns the trigonometric arcsine (in radians in range [-pi/2,pi/2])"
+	sine [float!] "in range [-1,1]"
+][
+	arcsine/radians sine
+]
+
+atan: func [
+	"Returns the trigonometric arctangent (in radians in range [-pi/2,+pi/2])"
+	tangent [float!] "in range [-inf,+inf]"
+][
+	arctangent/radians tangent
+]
+
+atan2: func [
+	"Returns the smallest angle between the vectors (1,0) and (x,y) in range (-pi,pi]"
+	y		[number!]
+	x		[number!]
+	return:	[float!]
+][
+	arctangent2/radians y x
+]
+
+
+sqrt: func [
+	"Returns the square root of a number"
+	number	[number!]
+	return:	[float!]
+][
+	square-root number
+]
+
 rejoin: func [
 	"Reduces and joins a block of values."
 	block [block!] "Values to reduce and join"
@@ -185,6 +268,14 @@ sum: func [
 	result: make any [values/1 0] 0
 	foreach value values [result: result + value]
 	result
+]
+
+average: func [
+	"Returns the average of all values in a block"
+	block [block! vector! paren! hash!]
+][
+	if empty? block [return none]
+	divide sum block to float! length? block
 ]
 
 last?: func [
