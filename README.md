@@ -50,12 +50,17 @@ Red.evalCode(fizzbuzz);
 # Running
 
 ## Locally
-In order to run this locally, you'll need Node 12.13.1 or higher installed (I haven't tested it with any older versions yet) and TypeScript 3.9.2.
+In order to run this locally, you'll need:
+- Node 12.13.1 or higher (I haven't tested it with any older versions yet)
+- TypeScript 3.9.2 (`npm install -g typescript@3.9.2`).
+- @types/node 13.13.5 (`npm install -g @types/node@13.13.5`).
+
+Alternativly, you can `cd` to the project directory and do `npm install`.
 
 ## In a browser
 I have yet to actually test Red.js using browser js, but it should be fine as long as you aren't using IE or Firefox.
 
-You can also run the Red.js REPL (currently version 0.0.8) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
+You can also run the Red.js REPL (currently version 0.0.9) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
 
 
 # Current limitations
@@ -68,4 +73,9 @@ You can also run the Red.js REPL (currently version 0.0.8) in your browser [righ
 
 # Notes
 
-Please look at TODO.md
+Please look at TODO.md and FEATURES.md
+
+
+# FAQ
+
+TODO
