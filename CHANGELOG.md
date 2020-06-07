@@ -3,6 +3,7 @@
 - Fixed get-path/set-path bugs.
 - Fixed `pick` bug.
 - `print` now prints values correctly.
+- Added `string!` comparison.
 
 
 # Version 0.0.9

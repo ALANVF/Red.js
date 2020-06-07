@@ -1,6 +1,73 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 
+export function $compare(
+	ctx:    Red.Context,
+	value1: Red.RawString,
+	value2: Red.AnyType,
+	op:     Red.ComparisonOp
+): Red.CompareResult {
+	if(
+		value1.constructor !== value2.constructor
+		&&
+		(
+			!Red.isAnyString(value2)
+			||
+			(
+				op != Red.ComparisonOp.EQUAL
+				&&
+				op != Red.ComparisonOp.NOT_EQUAL
+			)
+		)
+	) {
+		return RedActions.valueSendAction("$compare", ctx, value2, value1, Red.ComparisonOp.flip(op));
+	} else {
+		const same = value1 === value2;
+		
+		if(op == Red.ComparisonOp.SAME) {
+			return same ? 0 : -1;
+		} else if(same && (op == Red.ComparisonOp.EQUAL || op == Red.ComparisonOp.FIND || op == Red.ComparisonOp.STRICT_EQUAL || op == Red.ComparisonOp.NOT_EQUAL)) {
+			return 0;
+		} else {
+			let other: string;
+			
+			if(value2 instanceof Red.RawString) {
+				const cmp = (l: string, r: string) =>
+					(l < r || l.length < r.length)
+						? -1
+						: (l > r || l.length > r.length)
+							? 1
+							: 0;
+				
+				other = value2.toJsString();
+				
+				if(op == Red.ComparisonOp.CASE_SORT || op == Red.ComparisonOp.STRICT_EQUAL || op == Red.ComparisonOp.GREATER
+				|| op == Red.ComparisonOp.GREATER_EQUAL || op == Red.ComparisonOp.LESSER || op == Red.ComparisonOp.LESSER_EQUAL) {
+					return cmp(value1.toJsString(), other);
+				} else {
+					return cmp(value1.toJsString().toLowerCase(), other.toLowerCase());
+				}
+			} else if(op == Red.ComparisonOp.EQUAL || op == Red.ComparisonOp.NOT_EQUAL) {
+				if(value2 instanceof Red.RawFile) {
+					other = value2.name.slice(value2.index - 1);
+				} else if(value2 instanceof Red.RawUrl) {
+					other = value2.url.slice(value2.index - 1);
+				} else if(value2 instanceof Red.RawEmail) {
+					other = (value2.user + "@" + value2.host).slice(value2.index - 1);
+				} else if(value2 instanceof Red.RawTag) {
+					other = value2.tag.slice(value2.index - 1);
+				} else {
+					throw new Error("error!");
+				}
+				
+				return value1.toJsString().toLowerCase() == other.toLowerCase() ? 0 : -1;
+			} else {
+				return -2;
+			}
+		}
+	}
+}
+
 // $$make
 
 export function $$form(

@@ -9,6 +9,7 @@ Finish very soon:
 - Remove `pre1` from the preprocessor.
 - Add more `series!` actions.
 - Add the `error!` type.
+- Fix relative paths when loading files.
 
 Finish somewhat soon:
 - Add some tests.
