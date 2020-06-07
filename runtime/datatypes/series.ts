@@ -131,7 +131,11 @@ export function $$pick(
 			if(ser instanceof Red.RawBinary) {
 				return new Red.RawInteger(ser.pick(index.value));
 			} else {
-				return ser.pick(index.value);
+				try {
+					return ser.pick(index.value);
+				} catch {
+					return Red.RawNone.none;
+				}
 			}
 		} else {
 			Red.todo();

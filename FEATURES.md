@@ -95,8 +95,8 @@
 | `compose`           | P      |
 | `get`               | P      |
 | `set`               | P      |
-| `print`             | P*     |
-| `prin`              | Y**    |
+| `print`             | Y      |
+| `prin`              | Y*     |
 | `equal?`            | Y      |
 | `not-equal?`        | Y      |
 | `strict-equal?`     | Y      |
@@ -173,6 +173,4 @@
 | `decompress`        | N      |
 | `recycle`           | N      |
 
-\* This currently only prints out `string!`s as regular text (mainly for debugging).
-
-\*\* This can't be used in browsers.
+\* This can't be used in browsers.

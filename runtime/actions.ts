@@ -1,5 +1,6 @@
 import {system$words} from "./system";
 import * as Red from "../red-types";
+import * as RedEval from "./eval";
 
 import * as ACT_datatype   from "./datatypes/datatype";
 import * as ACT_none       from "./datatypes/none";
@@ -390,6 +391,10 @@ module RedActions {
 		accessor: Red.AnyType,
 		isCase:   Red.RawLogic
 	): Red.AnyType {
+		if(accessor instanceof Red.RawGetWord || accessor instanceof Red.RawGetPath || accessor instanceof Red.RawParen) {
+			accessor = RedEval.evalSingle(ctx, accessor, false);
+		}
+		
 		return valueSendAction("$evalPath", ctx, value, accessor, isCase.cond);
 	}
 
@@ -415,6 +420,10 @@ module RedActions {
 		newValue: Red.AnyType,
 		isCase:   Red.RawLogic
 	): Red.AnyType {
+		if(accessor instanceof Red.RawGetWord || accessor instanceof Red.RawGetPath || accessor instanceof Red.RawParen) {
+			accessor = RedEval.evalSingle(ctx, accessor, false);
+		}
+		
 		return valueSendAction("$setPath", ctx, value, accessor, newValue, isCase.cond);
 	}
 

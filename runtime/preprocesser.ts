@@ -78,7 +78,7 @@ function pre2(mc: MacroCtx) {
 			stack.splice(0, 4);
 			mc.macros.funcs.push(mfunc);
 		} else if(value instanceof Red.RawIssue && value.value == "include" && stack0 instanceof Red.RawFile) {
-			stack.splice(0, 1, new Red.RawWord("do"));
+			stack.unshift(new Red.RawWord("do"));
 		} else {
 			stack.unshift(values[i]);
 		}

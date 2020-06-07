@@ -86,15 +86,19 @@ function maxmin(
 }
 
 module RedNatives {
-	// debugging
 	export function $$print(
-		_ctx: Red.Context,
-		val:  Red.AnyType
+		ctx: Red.Context,
+		val: Red.AnyType,
+		_: {
+			debug?: []
+		} = {}
 	) {
-		if(val instanceof Red.RawString) {
+		if(_.debug !== undefined) {
+			console.log(val);
+		} else if(val instanceof Red.RawString) {
 			console.log(val.toJsString());
 		} else {
-			console.log(val);
+			console.log(RedActions.$$form(ctx, val).toJsString());
 		}
 
 		return Red.RawUnset.unset;
@@ -105,7 +109,7 @@ module RedNatives {
 		ctx: Red.Context,
 		val: Red.AnyType
 	) {
-		if(process == null) {
+		if(globalThis["process"] === undefined) {
 			throw new Error('Red.js native! "system/words/prin" may only be used in node.js supported environments!');
 		} else {
 			process.stdout.write(RedActions.$$form(ctx, val).toJsString());

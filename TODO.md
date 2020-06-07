@@ -8,9 +8,10 @@ Finish very soon:
 - Fix stringy types like `file!` and `tag!`.
 - Remove `pre1` from the preprocessor.
 - Add more `series!` actions.
+- Add the `error!` type.
 
 Finish somewhat soon:
-- Add the `error!` type.
+- Add some tests.
 - Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
 	- Quoting specs: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#741-function-type
 - Implement actions for more datatypes.

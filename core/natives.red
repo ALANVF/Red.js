@@ -218,6 +218,7 @@ set: make native! [[
 print: make native! [[
 		"Outputs a value followed by a newline"
 		value	[any-type!]
+		/debug "Red.js-specific option. Internal use only"
 	]
 	print
 ]

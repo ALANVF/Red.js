@@ -1,3 +1,10 @@
+# Version 0.1.0 (in development)
+- Fixed `#include` directive.
+- Fixed get-path/set-path bugs.
+- Fixed `pick` bug.
+- `print` now prints values correctly.
+
+
 # Version 0.0.9
 - Fixed `skip` bug.
 - Added `extract` helper function.
