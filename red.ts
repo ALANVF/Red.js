@@ -86,7 +86,7 @@ module Red {
 		outerState?: FileState,
 		ctx:         RedTypes.Context = RedSystem.system$words
 	) {
-		const src = RedUtil.readFile(filePath);
+		const src = RedUtil.readFile(filePath); // TODO: use system/options/path for stuff
 		let parsed = new RedTypes.RawBlock(RedParser.tokenize(src));
 		let state: FileState;
 

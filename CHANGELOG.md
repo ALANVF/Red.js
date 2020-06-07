@@ -6,6 +6,7 @@
 - Added `string!` comparison.
 - Added bit-shift operators.
 - Fixed a `case` bug.
+- Added some testing scripts.
 
 
 # Version 0.0.9
