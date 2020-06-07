@@ -5,6 +5,7 @@
 - `print` now prints values correctly.
 - Added `string!` comparison.
 - Added bit-shift operators.
+- Fixed a `case` bug.
 
 
 # Version 0.0.9

@@ -508,13 +508,16 @@ module RedNatives {
 
 			const matchBlock = evalSingle(ctx, next.made, next.noEval);
 
-			if(!(matchBlock instanceof Red.RawBlock)) {
-				throw new TypeError("Expected block! but got " + Red.typeName(matchBlock));
-			}
-
-			if(matchExpr.isTruthy()) {
-				ret = $$do(ctx, matchBlock);
-				if(!isAll) break;
+			if(matchBlock instanceof Red.RawBlock) {
+				if(matchExpr.isTruthy()) {
+					ret = $$do(ctx, matchBlock);
+					if(!isAll) break;
+				}
+			} else {
+				if(matchExpr.isTruthy()) {
+					ret = evalSingle(ctx, matchBlock, false);
+					if(!isAll) break;
+				}
 			}
 		}
 
