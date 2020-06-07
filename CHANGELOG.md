@@ -4,6 +4,7 @@
 - Fixed `pick` bug.
 - `print` now prints values correctly.
 - Added `string!` comparison.
+- Added bit-shift operators.
 
 
 # Version 0.0.9

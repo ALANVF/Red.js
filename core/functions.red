@@ -12,6 +12,31 @@ join: func [
 	append value reduce :rest
 ]
 
+shift-left: func [
+	"Shift bits to the left"
+	data [integer!]
+	bits [integer!]
+][
+	shift/left data bits
+]
+
+shift-right: func [
+	"Shift bits to the right"
+	data [integer!]
+	bits [integer!]
+][
+	shift data bits
+]
+
+shift-logical: func [
+	"Shift bits to the right (unsigned)"
+	data [integer!]
+	bits [integer!]
+][
+	shift/logical data bits
+]
+
+
 also: func [
 	"Returns the first value, but also evaluates the second"
 	value1 [any-type!]
