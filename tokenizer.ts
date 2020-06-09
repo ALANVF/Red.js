@@ -242,7 +242,7 @@ const regexRules = {
 	// fix %"..." files
 	// and more
 	comment:     /;.*?$/m,
-	name:        /(?:[a-zA-Z_\*=\&\|!?~`]|[\+\-\.](?!\d))(?:[\w\+\-\*=>\&\|!?~`\.\']|<(?!<))*/,
+	name:        /(?:[a-zA-Z_\*=\&\|!?~`^]|[\+\-\.](?!\d))(?:[\w\+\-\*=>\&\|!?~`\.\'^]|<(?!<))*/,
 	hexa:        /([A-F\d]{2,})h/,
 	number:      /[\+\-]?\d+(?:\.\d+)?/,
 	integer:     /[\+\-]?\d+(?!\.)/,
@@ -422,7 +422,8 @@ const chars = {
 	lbrack: 91,
 	rbrack: 93,
 	colon: 58,
-	sharp: 35
+	sharp: 35,
+	caret: 94
 };
 
 const checks = {
@@ -449,6 +450,7 @@ const checks = {
 					|| nextc == chars.ques
 					|| nextc == chars.tilde
 					|| nextc == chars.bquote
+					|| nextc == chars.caret
 				)
 				|| (
 					nextc == chars.dot

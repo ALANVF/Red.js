@@ -7,6 +7,7 @@
 - Added bit-shift operators.
 - Fixed a `case` bug.
 - Added some testing scripts.
+- Carets are now allowed in identifiers.
 
 
 # Version 0.0.9
