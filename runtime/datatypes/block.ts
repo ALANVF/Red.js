@@ -1,5 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {tokenize} from "../../tokenizer";
 
 export function $$make(
 	_ctx:   Red.Context,
@@ -39,7 +40,7 @@ export function $$to(
 		return new Red.RawBlock([]);
 	} else if(Red.isAnyPath(spec)) {
 		return new Red.RawBlock(spec.current().path);
-	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash || spec instanceof Red.RawString) {
+	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
 		const blk: Red.AnyType[] = [];
@@ -54,6 +55,8 @@ export function $$to(
 		...
 	} */ else if(spec instanceof Red.RawVector) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
+	} else if(spec instanceof Red.RawString) {
+		return new Red.RawBlock(tokenize(spec.toJsString()));
 	} else if(spec instanceof Red.RawTypeset) {
 		return new Red.RawBlock([...spec.types]);
 	} else {
