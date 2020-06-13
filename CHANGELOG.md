@@ -8,7 +8,7 @@
 - Fixed a `case` bug.
 - Added some testing scripts.
 - Carets are now allowed in identifiers.
-- Fixed `to block!` for strings.
+- Fixed `to block!` for strings and maps.
 - Fixed a typo in the tokenizer.
 
 

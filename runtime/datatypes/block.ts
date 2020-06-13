@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 import {tokenize} from "../../tokenizer";
+import RedUtil from "../util";
 
 export function $$make(
 	_ctx:   Red.Context,
@@ -14,17 +15,13 @@ export function $$make(
 	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
-		const blk: Red.AnyType[] = [];
-
-		for(let i = 0; i < spec.words.length; i++) {
-			blk.push(new Red.RawSetWord(spec.words[i]));
-			blk.push(spec.values[i]);
-		}
-
-		return new Red.RawBlock(blk);
-	} /* else if(spec instanceof Red.RawMap) {
-		...
-	} */ else if(spec instanceof Red.RawVector) {
+		return new Red.RawBlock(RedUtil.Arrays.zip(
+			spec.words.map(w => new Red.RawSetWord(w)),
+			spec.values
+		).flat())
+	} else if(spec instanceof Red.RawMap) {
+		return new Red.RawBlock(RedUtil.Arrays.zip(spec.keys, spec.values).flat());
+	} else if(spec instanceof Red.RawVector) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else {
 		throw new TypeError("Cannot create a block! from an instance of " + Red.typeName(spec));
@@ -43,17 +40,13 @@ export function $$to(
 	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
-		const blk: Red.AnyType[] = [];
-
-		for(let i = 0; i < spec.words.length; i++) {
-			blk.push(new Red.RawSetWord(spec.words[i]));
-			blk.push(spec.values[i]);
-		}
-
-		return new Red.RawBlock(blk);
-	} /* else if(spec instanceof Red.RawMap) {
-		...
-	} */ else if(spec instanceof Red.RawVector) {
+		return new Red.RawBlock(RedUtil.Arrays.zip(
+			spec.words.map(w => new Red.RawSetWord(w)),
+			spec.values
+		).flat())
+	} else if(spec instanceof Red.RawMap) {
+		return new Red.RawBlock(RedUtil.Arrays.zip(spec.keys, spec.values).flat());
+	} else if(spec instanceof Red.RawVector) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.RawString) {
 		return new Red.RawBlock(tokenize(spec.toJsString()));

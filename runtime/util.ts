@@ -75,6 +75,34 @@ module RedUtil {
 			return date;
 		}
 	}
+	
+	export namespace Arrays {
+		export function zip<T, U>(arr1: T[], arr2: U[]): [T, U][]
+		export function zip<T, U, V>(arr1: T[], arr2: U[], mapping: (a1: T, a2: U) => V): V[]
+		export function zip<T, U, V>(arr1: T[], arr2: U[], mapping?: (a1: T, a2: U) => V): V[] | [T, U][] {
+			if(arr1.length != arr2.length) {
+				throw new Error("Array lengths must be equal!");
+			}
+			
+			if(mapping === undefined) {
+				const out: [T, U][] = [];
+				
+				for(let i = 0; i < arr1.length; i++) {
+					out.push([arr1[i], arr2[i]]);
+				}
+				
+				return out;
+			} else {
+				const out: V[] = [];
+				
+				for(let i = 0; i < arr1.length; i++) {
+					out.push(mapping(arr1[i], arr2[i]));
+				}
+				
+				return out;
+			}
+		}
+	}
 }
 
 export default RedUtil
