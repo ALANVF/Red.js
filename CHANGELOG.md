@@ -11,6 +11,7 @@
 - Fixed `to block!` for strings and maps.
 - Fixed a typo in the tokenizer.
 - Fixed some `block!` and `paren!` actions.
+- Fixed a thing related to `map!` keys.
 
 
 # Version 0.0.9

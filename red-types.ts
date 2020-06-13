@@ -638,7 +638,12 @@ export class RawMap extends RawValue {
 		this.values = [];
 
 		for(const [key, val] of pairs) {
-			this.keys.push(key);
+			if(key instanceof RawWord || key instanceof RawLitWord || key instanceof RawGetWord) {
+				this.keys.push(new RawSetWord(key.name));
+			} else {
+				this.keys.push(key);
+			}
+			
 			this.values.push(val);
 		}
 	}
