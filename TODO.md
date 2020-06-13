@@ -4,8 +4,11 @@ TL;DR:
 - Finish implementing features.
 
 Finish very soon:
-- Add bit-shift operators.
 - Fix stringy types like `file!` and `tag!`.
+	- [x] `file!`
+	- [x] `tag!`
+	- [ ] `email!`
+	- [ ] `url!`
 - Remove `pre1` from the preprocessor.
 - Add more `series!` actions.
 - Add the `error!` type.
@@ -80,3 +83,4 @@ Things already done:
 - Allow including files.
 - Unify `percent!` behavior.
 - Implement (more) math natives.
+- Add bit-shift operators.

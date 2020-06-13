@@ -649,11 +649,43 @@ export class RawMap extends RawValue {
 	}
 }
 
-export class RawFile extends RawValue implements Series {
+export class RawFile extends RawValue implements Series, SeriesOf<RawChar> {
 	index: number = 1;
 
 	constructor(public name: string) {
 		super();
+	}
+	
+	pick(i: number): RawChar {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		return new RawChar(this.name.charCodeAt((this.index - 1) + (i - 1)));
+	}
+	
+	poke(
+		i: number,
+		v: AnyType
+	) {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		if(v instanceof RawChar) {
+			const index = (this.index - 1) + (i - 1);
+			this.name = this.name.slice(0, index - 1) + v.toJsChar() + this.name.slice(index);
+		} else {
+			throw new Error(`Unexpected ${typeName(v)}`);
+		}
+	}
+	
+	current(): RawFile {
+		if(this.index == 1) {
+			return this;
+		} else {
+			return new RawFile(this.name.slice(this.index - 1));
+		}
 	}
 
 	get length() {
@@ -661,11 +693,43 @@ export class RawFile extends RawValue implements Series {
 	}
 }
 
-export class RawTag extends RawValue implements Series {
+export class RawTag extends RawValue implements Series, SeriesOf<RawChar> {
 	index: number = 1;
 	
 	constructor(public tag: string) {
 		super();
+	}
+	
+	pick(i: number): RawChar {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		return new RawChar(this.tag.charCodeAt((this.index - 1) + (i - 1)));
+	}
+	
+	poke(
+		i: number,
+		v: AnyType
+	) {
+		if(i < 1 || i > this.length) {
+			throw new Error(`Invalid index: ${i}`);
+		}
+		
+		if(v instanceof RawChar) {
+			const index = (this.index - 1) + (i - 1);
+			this.tag = this.tag.slice(0, index - 1) + v.toJsChar() + this.tag.slice(index);
+		} else {
+			throw new Error(`Unexpected ${typeName(v)}`);
+		}
+	}
+	
+	current(): RawTag {
+		if(this.index == 1) {
+			return this;
+		} else {
+			return new RawTag(this.tag.slice(this.index - 1));
+		}
 	}
 
 	get length() {
