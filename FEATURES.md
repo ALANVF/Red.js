@@ -11,15 +11,15 @@
 # Datatypes
 |                          | datatype | syntax | `make`/`to` | `form`/`mold` | other actions |
 |--------------------------|----------|--------|-------------|---------------|---------------|
-| `datatype!`              | Y        | NA     | NA          | Y             | N             |
-| `unset!`                 | Y        | NA     | N           | N             | N             |
+| `datatype!`              | Y        | NA     | NA          | Y             | P             |
+| `unset!`                 | Y        | NA     | N           | Y             | N             |
 | `none!`                  | Y        | P      | Y           | Y             | P             |
 | `logic!`                 | Y        | P*     | N           | Y             | P             |
 | `block!`                 | Y        | Y      | Y           | P**           | P             |
 | `paren!`                 | Y        | Y      | Y           | P**           | P             |
-| `string!`                | Y        | Y      | N           | Y             | P             |
-| `file!`                  | Y        | P      | N           | N             | BI            |
-| `url!`                   | Y        | PB     | N           | N             | BI            |
+| `string!`                | Y        | P      | N           | Y             | P             |
+| `file!`                  | Y        | P      | N           | Y             | BI            |
+| `url!`                   | Y        | PB     | N           | Y             | BI            |
 | `char!`                  | Y        | Y      | N           | Y             | P             |
 | `integer!`               | Y        | P      | P           | Y             | P             |
 | `float!`                 | Y        | P***   | P           | Y             | P             |
@@ -49,16 +49,17 @@
 | `pair!`                  | Y        | Y      | N           | Y             | P             |
 | `percent!`               | Y        | Y      | N           | N             | N             |
 | `tuple!`                 | Y        | Y      | N           | N             | N             |
-| `map!`                   | Y        | Y      | N           | N             | N             |
+| `map!`                   | Y        | Y      | N           | Y             | N             |
 | `binary!`                | Y        | Y      | N           | N             | PI            |
 | `time!`                  | Y        | Y      | N           | N             | N             |
-| `tag!`                   | Y        | Y      | B           | B             | BI            |
-| `email!`                 | Y        | B****  | B           | B             | BI            |
+| `tag!`                   | Y        | Y      | B           | Y             | P             |
+| `email!`                 | Y        | B****  | B           | Y             | P             |
 | `handle!`                | N        | NA     | N           | N             | N             |
 | `date!`                  | Y        | Y      | N           | N             | N             |
 | `port!`                  | N        | NA     | N           | N             | N             |
 | `image!`                 | N        | NA     | N           | N             | BI            |
 | `money!`                 | P        | B****  | N           | N             | N             |
+| `ref!`                   | N        | N      | N           | N             | N             |
 
 \* Only basic construction syntax is currently supported.
 
@@ -172,5 +173,6 @@
 | `compress`          | N      |
 | `decompress`        | N      |
 | `recycle`           | N      |
+| `transcode`         | N      |
 
 \* This can't be used in browsers.

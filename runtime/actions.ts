@@ -3,11 +3,14 @@ import * as Red from "../red-types";
 import * as RedEval from "./eval";
 
 import * as ACT_datatype   from "./datatypes/datatype";
+import * as ACT_unset      from "./datatypes/unset";
 import * as ACT_none       from "./datatypes/none";
 import * as ACT_logic      from "./datatypes/logic";
 import * as ACT_block      from "./datatypes/block";
 import * as ACT_paren      from "./datatypes/paren";
 import * as ACT_string     from "./datatypes/string";
+import * as ACT_file       from "./datatypes/file";
+import * as ACT_url        from "./datatypes/url";
 import * as ACT_char       from "./datatypes/char";
 import * as ACT_integer    from "./datatypes/integer";
 import * as ACT_float      from "./datatypes/float";
@@ -28,7 +31,10 @@ import * as ACT_getPath    from "./datatypes/get-path";
 import * as ACT_object     from "./datatypes/object";
 import * as ACT_typeset    from "./datatypes/typeset";
 import * as ACT_pair       from "./datatypes/pair";
+import * as ACT_map        from "./datatypes/map";
 import * as ACT_series     from "./datatypes/series";
+import * as ACT_tag        from "./datatypes/tag";
+import * as ACT_email      from "./datatypes/email";
 
 module RedActions {
 	export interface RandomOptions {
@@ -281,14 +287,14 @@ module RedActions {
 	export const ACT: Record<string, TypeActionsSet> = {
 		"ACT_VALUE":      [],
 		"ACT_DATATYPE":   [ACT_datatype],
-		"ACT_UNSET":      [],
+		"ACT_UNSET":      [ACT_unset],
 		"ACT_NONE":       [ACT_none],
 		"ACT_LOGIC":      [ACT_logic],
 		"ACT_BLOCK":      [ACT_block, ACT_series],
 		"ACT_PAREN":      [ACT_paren, ACT_block, ACT_series],
 		"ACT_STRING":     [ACT_string, ACT_series],
-		"ACT_FILE":       [ACT_string, ACT_series],
-		"ACT_URL":        [ACT_string, ACT_series],
+		"ACT_FILE":       [ACT_file, ACT_string, ACT_series],
+		"ACT_URL":        [ACT_url, ACT_string, ACT_series],
 		"ACT_CHAR":       [ACT_char],
 		"ACT_INTEGER":    [ACT_integer],
 		"ACT_FLOAT":      [ACT_float],
@@ -319,12 +325,12 @@ module RedActions {
 		"ACT_PAIR":       [ACT_pair],
 		"ACT_PERCENT":    [ACT_float],
 		"ACT_TUPLE":      [],
-		"ACT_MAP":        [],
+		"ACT_MAP":        [ACT_map],
 		"ACT_BINARY":     [ACT_string, ACT_series],
 		"ACT_SERIES":     [ACT_series],
 		"ACT_TIME":       [],
-		"ACT_TAG":        [ACT_string, ACT_series],
-		"ACT_EMAIL":      [ACT_string, ACT_series],
+		"ACT_TAG":        [ACT_tag, ACT_string, ACT_series],
+		"ACT_EMAIL":      [ACT_email, ACT_string, ACT_series],
 		"ACT_HANDLE":     [],
 		"ACT_DATE":       [],
 		"ACT_PORT":       [],
