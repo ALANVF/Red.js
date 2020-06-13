@@ -15,8 +15,8 @@
 | `unset!`                 | Y        | NA     | N           | N             | N             |
 | `none!`                  | Y        | P      | Y           | Y             | P             |
 | `logic!`                 | Y        | P*     | N           | Y             | P             |
-| `block!`                 | Y        | Y      | P           | P**           | P             |
-| `paren!`                 | Y        | Y      | B           | PB            | PI            |
+| `block!`                 | Y        | Y      | Y           | P**           | P             |
+| `paren!`                 | Y        | Y      | Y           | P**           | P             |
 | `string!`                | Y        | Y      | N           | Y             | P             |
 | `file!`                  | Y        | P      | N           | N             | BI            |
 | `url!`                   | Y        | PB     | N           | N             | BI            |

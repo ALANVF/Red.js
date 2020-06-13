@@ -33,9 +33,7 @@ export function $$to(
 	_proto: Red.AnyType,
 	spec:   Red.AnyType
 ): Red.RawBlock {
-	if(spec instanceof Red.RawInteger || spec instanceof Red.RawFloat) {
-		return new Red.RawBlock([]);
-	} else if(Red.isAnyPath(spec)) {
+	if(Red.isAnyPath(spec)) {
 		return new Red.RawBlock(spec.current().path);
 	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
@@ -53,7 +51,7 @@ export function $$to(
 	} else if(spec instanceof Red.RawTypeset) {
 		return new Red.RawBlock([...spec.types]);
 	} else {
-		throw new TypeError("Cannot convert an instance of " + Red.typeName(spec) + " to a block!");
+		return new Red.RawBlock([spec]);
 	}
 }
 
