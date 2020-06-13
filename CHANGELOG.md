@@ -9,6 +9,7 @@
 - Added some testing scripts.
 - Carets are now allowed in identifiers.
 - Fixed `to block!` for strings.
+- Fixed a typo in the tokenizer.
 
 
 # Version 0.0.9
