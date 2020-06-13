@@ -12,6 +12,7 @@
 - Fixed a typo in the tokenizer.
 - Fixed some `block!` and `paren!` actions.
 - Fixed a thing related to `map!` keys.
+- Added some actions for `pair!`s.
 
 
 # Version 0.0.9

@@ -27,6 +27,7 @@ import * as ACT_setPath    from "./datatypes/set-path";
 import * as ACT_getPath    from "./datatypes/get-path";
 import * as ACT_object     from "./datatypes/object";
 import * as ACT_typeset    from "./datatypes/typeset";
+import * as ACT_pair       from "./datatypes/pair";
 import * as ACT_series     from "./datatypes/series";
 
 module RedActions {
@@ -315,7 +316,7 @@ module RedActions {
 		"ACT_ERROR":      [],
 		"ACT_VECTOR":     [ACT_series],
 		"ACT_HASH":       [ACT_block, ACT_series],
-		"ACT_PAIR":       [],
+		"ACT_PAIR":       [ACT_pair],
 		"ACT_PERCENT":    [ACT_float],
 		"ACT_TUPLE":      [],
 		"ACT_MAP":        [],
