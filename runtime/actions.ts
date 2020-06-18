@@ -32,6 +32,7 @@ import * as ACT_object     from "./datatypes/object";
 import * as ACT_typeset    from "./datatypes/typeset";
 import * as ACT_pair       from "./datatypes/pair";
 import * as ACT_map        from "./datatypes/map";
+import * as ACT_binary     from "./datatypes/binary";
 import * as ACT_series     from "./datatypes/series";
 import * as ACT_tag        from "./datatypes/tag";
 import * as ACT_email      from "./datatypes/email";
@@ -326,7 +327,7 @@ module RedActions {
 		"ACT_PERCENT":    [ACT_float],
 		"ACT_TUPLE":      [],
 		"ACT_MAP":        [ACT_map],
-		"ACT_BINARY":     [ACT_string, ACT_series],
+		"ACT_BINARY":     [ACT_binary, ACT_string, ACT_series],
 		"ACT_SERIES":     [ACT_series],
 		"ACT_TIME":       [],
 		"ACT_TAG":        [ACT_tag, ACT_string, ACT_series],
