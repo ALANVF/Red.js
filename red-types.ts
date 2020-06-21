@@ -340,7 +340,7 @@ export class RawNone extends RawValue {
 
 
 /// series types
-export class RawString extends RawValue implements Series, SeriesOf<RawChar> {
+export class RawString extends RawValue implements SeriesOf<RawChar> {
 	index: number = 1;
 
 	constructor(
@@ -418,7 +418,7 @@ export class RawString extends RawValue implements Series, SeriesOf<RawChar> {
 	}
 }
 
-export class RawParen extends RawValue implements Series, SeriesOf<AnyType> {
+export class RawParen extends RawValue implements SeriesOf<AnyType> {
 	index: number = 1;
 	
 	constructor(public values: AnyType[]) {
@@ -457,7 +457,7 @@ export class RawParen extends RawValue implements Series, SeriesOf<AnyType> {
 	}
 }
 
-export class RawBlock extends RawValue implements Series, SeriesOf<AnyType> {
+export class RawBlock extends RawValue implements SeriesOf<AnyType> {
 	index: number = 1;
 
 	constructor(public values: AnyType[]) {
@@ -498,7 +498,7 @@ export class RawBlock extends RawValue implements Series, SeriesOf<AnyType> {
 
 
 /// series-like types
-export class RawBinary extends RawValue implements Series, SeriesOf<number> {
+export class RawBinary extends RawValue implements SeriesOf<number> {
 	index: number = 1;
 	
 	constructor(public bytes: Buffer) {
@@ -611,7 +611,7 @@ export class RawBitset extends RawValue {
 	}
 }
 
-export class RawHash extends RawValue implements Series, SeriesOf<AnyType> {
+export class RawHash extends RawValue implements SeriesOf<AnyType> {
 	index: number = 1;
 	
 	constructor(public values: AnyType[]) {
@@ -672,7 +672,7 @@ export class RawMap extends RawValue {
 	}
 }
 
-export class RawFile extends RawValue implements Series, SeriesOf<RawChar> {
+export class RawFile extends RawValue implements SeriesOf<RawChar> {
 	index: number = 1;
 
 	constructor(public name: string) {
@@ -716,7 +716,7 @@ export class RawFile extends RawValue implements Series, SeriesOf<RawChar> {
 	}
 }
 
-export class RawTag extends RawValue implements Series, SeriesOf<RawChar> {
+export class RawTag extends RawValue implements SeriesOf<RawChar> {
 	index: number = 1;
 	
 	constructor(public tag: string) {
@@ -773,7 +773,7 @@ export class RawUrl extends RawValue implements Series {
 }
 
 type Vector = (RawInteger[] | RawFloat[] | RawChar[] | RawPercent[]) & unknown[]; // incomplete hack for dumb union bug
-export class RawVector extends RawValue implements Series, SeriesOf<RawInteger|RawFloat|RawChar|RawPercent> {
+export class RawVector extends RawValue implements SeriesOf<RawInteger|RawFloat|RawChar|RawPercent> {
 	index: number = 1;
 
 	constructor(public values: Vector) {
