@@ -20,6 +20,7 @@ import * as ACT_setWord    from "./datatypes/set-word";
 import * as ACT_litWord    from "./datatypes/lit-word";
 import * as ACT_getWord    from "./datatypes/get-word";
 import * as ACT_refinement from "./datatypes/refinement";
+import * as ACT_issue      from "./datatypes/issue";
 import * as ACT_native     from "./datatypes/native";
 import * as ACT_action     from "./datatypes/action";
 import * as ACT_op         from "./datatypes/op";
@@ -306,7 +307,7 @@ module RedActions {
 		"ACT_LIT_WORD":   [ACT_litWord, ACT_word],
 		"ACT_GET_WORD":   [ACT_getWord, ACT_word],
 		"ACT_REFINEMENT": [ACT_refinement, ACT_word],
-		"ACT_ISSUE":      [ACT_word],
+		"ACT_ISSUE":      [ACT_issue, ACT_word],
 		"ACT_NATIVE":     [ACT_native],
 		"ACT_ACTION":     [ACT_action],
 		"ACT_OP":         [ACT_op],

@@ -29,7 +29,7 @@
 | `lit-word!`              | Y        | Y      | Y           | Y             | N             |
 | `get-word!`              | Y        | Y      | Y           | Y             | N             |
 | `refinement!`            | Y        | Y      | N           | P             | N             |
-| `issue!`                 | Y        | Y      | B           | B             | N             |
+| `issue!`                 | Y        | Y      | B           | Y             | N             |
 | `native!`                | Y        | NA     | P           | Y             | N             |
 | `action!`                | Y        | NA     | P           | Y             | N             |
 | `op!`                    | Y        | NA     | P           | P             | N             |
