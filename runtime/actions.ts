@@ -31,7 +31,10 @@ import * as ACT_setPath    from "./datatypes/set-path";
 import * as ACT_getPath    from "./datatypes/get-path";
 import * as ACT_object     from "./datatypes/object";
 import * as ACT_typeset    from "./datatypes/typeset";
+import * as ACT_vector     from "./datatypes/vector";
+import * as ACT_hash       from "./datatypes/hash";
 import * as ACT_pair       from "./datatypes/pair";
+import * as ACT_percent    from "./datatypes/percent";
 import * as ACT_tuple      from "./datatypes/tuple";
 import * as ACT_map        from "./datatypes/map";
 import * as ACT_binary     from "./datatypes/binary";
@@ -39,6 +42,7 @@ import * as ACT_series     from "./datatypes/series";
 import * as ACT_time       from "./datatypes/time";
 import * as ACT_tag        from "./datatypes/tag";
 import * as ACT_email      from "./datatypes/email";
+import * as ACT_date       from "./datatypes/date";
 
 module RedActions {
 	export interface RandomOptions {
@@ -324,10 +328,10 @@ module RedActions {
 		"ACT_OBJECT":     [ACT_object, ACT_context],
 		"ACT_TYPESET":    [ACT_typeset],
 		"ACT_ERROR":      [],
-		"ACT_VECTOR":     [ACT_series],
-		"ACT_HASH":       [ACT_block, ACT_series],
+		"ACT_VECTOR":     [ACT_vector, ACT_series],
+		"ACT_HASH":       [ACT_hash, ACT_block, ACT_series],
 		"ACT_PAIR":       [ACT_pair],
-		"ACT_PERCENT":    [ACT_float],
+		"ACT_PERCENT":    [ACT_percent, ACT_float],
 		"ACT_TUPLE":      [ACT_tuple],
 		"ACT_MAP":        [ACT_map],
 		"ACT_BINARY":     [ACT_binary, ACT_string, ACT_series],
@@ -336,7 +340,7 @@ module RedActions {
 		"ACT_TAG":        [ACT_tag, ACT_string, ACT_series],
 		"ACT_EMAIL":      [ACT_email, ACT_string, ACT_series],
 		"ACT_HANDLE":     [],
-		"ACT_DATE":       [],
+		"ACT_DATE":       [ACT_date],
 		"ACT_PORT":       [],
 		"ACT_IMAGE":      [ACT_series],
 		"ACT_EVENT":      [],

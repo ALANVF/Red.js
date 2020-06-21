@@ -62,7 +62,7 @@ export function $$mold(
 	
 	if(obj.words.length > 0) {
 		buffer.push("\n");
-		const idt = "\t".repeat(indent);
+		const idt = " ".repeat(indent*4);
 
 		for(const word of obj.words) {
 			const value = obj.getWord(word);
@@ -74,7 +74,7 @@ export function $$mold(
 		}
 	}
 
-	buffer.push("\t".repeat(indent - 1));
+	buffer.push(" ".repeat((indent-1)*4));
 	buffer.push("]");
 	
 	return obj.words.length > 0;

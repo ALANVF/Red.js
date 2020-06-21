@@ -112,7 +112,7 @@ export function $$mold(
 	const thisIndent = " ".repeat(indent*4);
 	const nextIndent = " ".repeat((indent+1)*4);
 	
-	buffer.push(lastIndent + "make function! [[");
+	buffer.push("make function! [[");
 	
 	if(value.docSpec != null) {
 		buffer.push(RedActions.$$mold(ctx, value.docSpec).toJsString());
@@ -120,47 +120,47 @@ export function $$mold(
 
 	for(const arg of value.args) {
 		buffer.push("\n" + thisIndent);
-		buffer.push(RedActions.$$mold(ctx, arg.name).toJsString());
+		RedActions.valueSendAction("$$mold", ctx, arg.name, buffer, indent + 1, _);
 		
 		if(arg.typeSpec != null) {
 			buffer.push(" ");
-			buffer.push(RedActions.$$mold(ctx, arg.typeSpec).toJsString());
+			RedActions.valueSendAction("$$mold", ctx, arg.typeSpec, buffer, indent + 1, _);
 		}
 
 		if(arg.docSpec != null) {
 			buffer.push(" ");
-			buffer.push(RedActions.$$mold(ctx, arg.docSpec).toJsString());
+			RedActions.valueSendAction("$$mold", ctx, arg.docSpec, buffer, indent + 1, _);
 		}
 	}
 
 	for(const ref of value.refines) {
 		buffer.push("\n" + thisIndent);
-		buffer.push(RedActions.$$mold(ctx, ref.ref).toJsString());
+		RedActions.valueSendAction("$$mold", ctx, ref.ref, buffer, indent + 1, _);
 
 		if(ref.docSpec != null) {
 			buffer.push(" ");
-			buffer.push(RedActions.$$mold(ctx, ref.docSpec).toJsString());
+			RedActions.valueSendAction("$$mold", ctx, ref.docSpec, buffer, indent + 1, _);
 		}
 
 		for(const arg of ref.addArgs) {
 			buffer.push("\n" + nextIndent);
-			buffer.push(RedActions.$$mold(ctx, arg.name).toJsString());
+			RedActions.valueSendAction("$$mold", ctx, arg.name, buffer, indent + 1, _);
 			
 			if(arg.typeSpec != null) {
 				buffer.push(" ");
-				buffer.push(RedActions.$$mold(ctx, arg.typeSpec).toJsString());
+				RedActions.valueSendAction("$$mold", ctx, arg.typeSpec, buffer, indent + 1, _);
 			}
 
 			if(arg.docSpec != null) {
 				buffer.push(" ");
-				buffer.push(RedActions.$$mold(ctx, arg.docSpec).toJsString());
+				RedActions.valueSendAction("$$mold", ctx, arg.docSpec, buffer, indent + 1, _);
 			}
 		}
 	}
 
 	if(value.retSpec != null) {
 		buffer.push("\n" + thisIndent + "return: ");
-		buffer.push(RedActions.$$mold(ctx, value.retSpec).toJsString());
+		RedActions.valueSendAction("$$mold", ctx, value.retSpec, buffer, indent + 1, _);
 	}
 
 	if(value.arity != 0) {

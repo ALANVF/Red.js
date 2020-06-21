@@ -1,29 +1,33 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 
-// $$make
-
-// $$to
-
 export function $$form(
 	_ctx:   Red.Context,
-	binary: Red.RawBinary,
+	bitset: Red.RawBitset,
 	buffer: string[],
 	_part?: number
 ): boolean {
+	buffer.push("make bitset! ");
+	
+	if(bitset.negated) buffer.push("[not ");
+	
 	buffer.push("#{");
-	buffer.push(binary.bytes.toString("hex").toUpperCase());
+	buffer.push([...bitset.bytes].map(byte =>
+		(byte < 16 ? "0" : "") + byte.toString(16).toUpperCase()
+	).join(""));
 	buffer.push("}");
+	
+	if(bitset.negated) buffer.push("]");
 	
 	return false;
 }
 
 export function $$mold(
 	ctx:     Red.Context,
-	binary:  Red.RawBinary,
+	bitset:  Red.RawBitset,
 	buffer:  string[],
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	return $$form(ctx, binary, buffer, _.part);
+	return $$form(ctx, bitset, buffer, _.part);
 }

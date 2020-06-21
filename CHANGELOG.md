@@ -13,8 +13,29 @@
 - Fixed some `block!` and `paren!` actions.
 - Fixed a thing related to `map!` keys.
 - Added some actions for `pair!`s.
-- Added `form`/`mold` support for stringy types, `map!`, `unset!`, `binary!`, `issue!`, `time!`, and `tuple!`.
 - Fixed `bitset!` internals.
+- Fixed `form` for `refinement!` values.
+- Fixed `mold` issues for:
+	- `op!`
+	- `native!`
+	- `action!`
+	- `function!`
+	- `context!`
+	- `object!`
+	- `logic!`
+- Added `form`/`mold` support for most remaining datatypes:
+	- stringy types
+	- `map!`
+	- `unset!`
+	- `binary!`
+	- `issue!`
+	- `time!`
+	- `tuple!`
+	- `percent!`
+	- `hash!`
+	- `vector!`
+	- `bitset!`
+	- `date!`
 
 
 # Version 0.0.9

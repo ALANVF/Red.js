@@ -38,7 +38,12 @@ export function $$mold(
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	buffer.push("#[" + value.cond.toString() + "]")
+	if(_.all === true) {
+		buffer.push("#[" + value.cond.toString() + "]")
+	} else {
+		buffer.push(value.cond.toString());
+	}
+	
 	return false;
 }
 
