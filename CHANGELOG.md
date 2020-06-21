@@ -13,7 +13,7 @@
 - Fixed some `block!` and `paren!` actions.
 - Fixed a thing related to `map!` keys.
 - Added some actions for `pair!`s.
-- Added `form`/`mold` support for stringy types, `map!`, `unset!`, `binary!`, and `issue!`.
+- Added `form`/`mold` support for stringy types, `map!`, `unset!`, `binary!`, `issue!`, `time!`, and `tuple!`.
 - Fixed `bitset!` internals.
 
 

@@ -48,10 +48,10 @@
 | `hash!`                  | P        | NA     | N           | N             | PI            |
 | `pair!`                  | Y        | Y      | N           | Y             | P             |
 | `percent!`               | Y        | Y      | N           | N             | N             |
-| `tuple!`                 | Y        | Y      | N           | N             | N             |
+| `tuple!`                 | Y        | Y      | N           | Y             | N             |
 | `map!`                   | Y        | Y      | N           | Y             | N             |
 | `binary!`                | Y        | Y      | N           | Y             | PI            |
-| `time!`                  | Y        | Y      | N           | N             | N             |
+| `time!`                  | Y        | Y      | N           | Y             | N             |
 | `tag!`                   | Y        | Y      | B           | Y             | P             |
 | `email!`                 | Y        | B****  | B           | Y             | P             |
 | `handle!`                | N        | NA     | N           | N             | N             |
