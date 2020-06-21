@@ -36,7 +36,7 @@
 	- `vector!`
 	- `bitset!`
 	- `date!`
-- Accidently broke tests/demo.red (but I'll fix that later).
+- Accidentally broke tests/demo.red (but I'll fix that later).
 
 
 # Version 0.0.9
