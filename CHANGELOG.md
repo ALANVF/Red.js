@@ -14,6 +14,7 @@
 - Fixed a thing related to `map!` keys.
 - Added some actions for `pair!`s.
 - Added `form`/`mold` support for stringy types, `map!`, `unset!`, and `binary!`.
+- Fixed `bitset!` internals.
 
 
 # Version 0.0.9

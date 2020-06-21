@@ -1,3 +1,5 @@
+import RedUtil from "./runtime/util";
+
 interface Series {
 	index:  number;
 	length: number;
@@ -536,54 +538,75 @@ export class RawBinary extends RawValue implements Series, SeriesOf<number> {
 }
 
 export class RawBitset extends RawValue {
+	// For reference:
 	// https://github.com/red/red/blob/master/runtime/datatypes/bitset.reds
 	// https://github.com/rebol/rebol/blob/master/src/core/t-bitset.c#L202
+	// https://github.com/rebol/rebol/blob/master/src/core/f-enbase.c#L422
+	// https://github.com/red/red/blob/master/runtime/datatypes/bitset.reds#L565
+	// https://github.com/red/red/blob/master/runtime/macros.reds#L505
 	
-	bytes:   bigint;
+	bytes:   Uint8Array;
 	negated: boolean;
 	
+	private toByte(bit: number) {
+		return 1 << (7 - (bit & 7));
+	}
+	
 	constructor(
-		bytes:   number[],
+		bits:    number[] | number,
 		negated: boolean
 	) {
 		super();
-
-		this.bytes = BigInt(bytes.map(byte => {
-			if(byte % 1 == 0 && byte > -1) {
-				return 1 << (7 - (byte & 7));
-			} else {
-				throw new Error("error!");
+		
+		if(typeof bits == "number") {
+			this.bytes = new Uint8Array((bits - 1 << 3) + 1);
+		} else if(bits.length == 0) {
+			this.bytes = new Uint8Array();
+		} else {
+			this.bytes = new Uint8Array((RedUtil.Arrays.max(bits) >> 3) + 1);
+			
+			for(const bit of bits) {
+				this.bytes[bit >> 3] += this.toByte(bit);
 			}
-		}).reduce((a, b) => a | b, 0));
+		}
 		
 		this.negated = negated;
 	}
-
+	
 	hasBit(
-		byte:    number,
+		bit:     number,
 		_noCase: boolean = false // ignore noCase for now
 	): boolean {
-		if(byte % 1 == 0 && byte > -1) {
-			return ((1n << (7n - (BigInt(byte) & 7n)) & this.bytes) != 0n) != this.negated;
+		const i = bit >> 3;
+		
+		if(i >= this.bytes.length) {
+			return this.negated;
 		} else {
-			throw new Error("error!");
+			return ((this.toByte(bit) & this.bytes[i]) != 0) != this.negated;
 		}
 	}
-
+	
 	setBit(
-		byte:   number,
+		bit:    number,
 		status: boolean
 	) {
-		if(byte % 1 == 0 && byte > -1) {
-			const bit = 1n << (7n - (BigInt(byte) & 7n));
-			
-			if(this.negated == status) {
-				this.bytes &= ~bit;
-			} else {
-				this.bytes |= bit;
+		const i = bit >> 3;
+		const byte = this.toByte(bit);
+		
+		if(this.negated == status) {
+			if(i < this.bytes.length) {
+				this.bytes[i] &= ~byte;
 			}
 		} else {
-			throw new Error("error!");
+			if(i > this.bytes.length) {
+				this.bytes = new Uint8Array([
+					...this.bytes,
+					...Array(i - this.bytes.length).fill(0),
+					byte
+				]);
+			} else {
+				this.bytes[i] |= byte;
+			}
 		}
 	}
 }
