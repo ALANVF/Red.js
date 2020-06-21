@@ -73,8 +73,7 @@ module Red {
 					throw new Error("Throw error: Nothing to return (in Red file <anon>)");
 
 				default:
-					console.error("Error in Red file <anon> near: ", RedEval.stringifyRed(ctx, res ? res.made : body[0]));
-					throw e;
+					throw new Error(`Error in Red file <anon> near: ${RedEval.stringifyRed(ctx, res ? res.made : body[0])}\n${e}`);
 			}
 		}
 
@@ -124,8 +123,7 @@ module Red {
 					throw new Error(`Throw error: Nothing to return (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
 
 				default:
-					console.error(`Error in Red file ${state.file ? "%"+state.file.name : "<anon>"} near: `, RedEval.stringifyRed(ctx, res ? res.made : body[0]));
-					throw e;
+					throw new Error(`Error in Red file ${state.file ? "%"+state.file.name : "<anon>"} near: ${RedEval.stringifyRed(ctx, res ? res.made : body[0])}\n${e}`);
 			}
 		}
 		
@@ -174,8 +172,7 @@ module Red {
 					throw new Error(`Throw error: Nothing to return (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
 
 				default:
-					console.error(`Error in Red file ${state.file ? "%"+state.file.name : "<anon>"} near: `, RedEval.stringifyRed(ctx, res ? res.made : body[0]));
-					throw e;
+					throw new Error(`Error in Red file ${state.file ? "%"+state.file.name : "<anon>"} near: ${RedEval.stringifyRed(ctx, res ? res.made : body[0])}\n${e}`);
 			}
 		}
 
@@ -209,8 +206,7 @@ module Red {
 					throw new Error("Throw error: Nothing to return (in Red file <anon>)");
 
 				default:
-					console.error("Error in Red file <anon> near: ", RedEval.stringifyRed(ctx, res ? res.made : body[0]));
-					throw e;
+					throw new Error(`Error in Red file <anon> near: ${RedEval.stringifyRed(ctx, res ? res.made : body[0])}\n${e}`);
 			}
 		}
 

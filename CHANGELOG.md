@@ -1,4 +1,4 @@
-# Version 0.1.0 (in development)
+# Version 0.1.0
 - Fixed `#include` directive.
 - Fixed get-path/set-path bugs.
 - Fixed `pick` bug.
@@ -36,6 +36,7 @@
 	- `vector!`
 	- `bitset!`
 	- `date!`
+- Accidently broke tests/demo.red (but I'll fix that later).
 
 
 # Version 0.0.9

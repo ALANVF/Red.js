@@ -3,7 +3,7 @@
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"target": "esnext",
-		"lib": ["es6", "dom", "esnext.bigint", "esnext.array"],
+		"lib": ["es6", "dom", "esnext.array"],
 		"strict": true,
 		"allowJs": true,
 		"sourceMap": true

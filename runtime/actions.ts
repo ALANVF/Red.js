@@ -516,7 +516,7 @@ module RedActions {
 				Red.ComparisonOp.FIND
 			].includes(op)
 		) {
-			throw new Error(`Invalid comparison: ${value1}, ${op}, ${value2}`);
+			throw new Error(`Invalid comparison: ${$$mold(ctx, value1).toJsString()}, ${op}, ${$$mold(ctx, value2).toJsString()}`);
 		}
 
 		switch(op) {

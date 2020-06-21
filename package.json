@@ -1,6 +1,6 @@
 {
 	"name": "red.js",
-	"version": "0.1.0b",
+	"version": "0.1.0",
 	"description": "A web-based runtime for the Red programming language",
 	"main": "app.js",
 	"author": "theangryepicbanana",

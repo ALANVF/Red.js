@@ -18,7 +18,7 @@ Finish somewhat soon:
 - Redo/reimplement literally everything related to vectors.
 	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector).
 	- Might use JS' typed arrays to increase efficiency.
-- Give functions custom contexts so that `self` can be used in a function inside an object/context.
+- Give functions special contexts so that `self` can be used in a function inside an object/context.
 - Switch from using unions to interfaces for the type system.
 - Reimplement `money!`.
 - Add Red's newly implemented `ref!` type.
