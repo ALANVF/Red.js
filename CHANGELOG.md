@@ -1,3 +1,7 @@
+# Version 0.1.1
+- Fixed `>>>` (and tests/demo.red).
+
+
 # Version 0.1.0
 - Fixed `#include` directive.
 - Fixed get-path/set-path bugs.

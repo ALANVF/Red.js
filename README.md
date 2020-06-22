@@ -60,7 +60,7 @@ Alternativly, you can `cd` to the project directory and do `npm install`.
 ## In a browser
 I have yet to actually test Red.js using browser js, but it should be fine as long as you aren't using IE or Firefox.
 
-You can also run the Red.js REPL (currently version 0.1.0) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
+You can also run the Red.js REPL (currently version 0.1.1) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
 
 
 # Current limitations
