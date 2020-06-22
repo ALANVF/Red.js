@@ -71,11 +71,34 @@ You can also run the Red.js REPL (currently version 0.1.1) in your browser [righ
 - I'm currently only 1 person, so progress is gonna be kind of slow as long as it's just me.
 
 
-# Notes
-
-Please look at TODO.md and FEATURES.md
-
-
 # FAQ
 
-TODO
+## Why not transpile to JS? Wouldn't that be easier and faster than using an interpreter?
+This is sadly not possible due to the fundamental differences between Red and JS.
+In order to support all of the meta-programming features that Red has, it'd be no
+different transpiling to JS than just embedding the interpreter. There may be a
+JS dialect of Red.js at some point in the future, but for now it will remain interpreted.
+
+## Why do expressions in the REPL print out JS/JSON?
+Because it's helpful to be able to easily inspect values when debugging. I'll probably
+disable it some time in the future.
+
+## Why isn't feature X in Red.js if it exists in normal Red?
+Red.js is not a perfect replica of normal Red, as there are a large number of things
+that JS cannot do within a browser that can normally be done in Red (due to browser limitations).
+There *could* be features that only work when using native JS, but I would like to mainly
+focus on features that work on both runtimes.
+
+## Do you plan to implement dialects such as Red/System?
+I already answered that.
+
+## Will Red.js be able to compile to WebAssembly?
+I also already answered that.
+
+## What can I do to help with development?
+Anything helps!
+
+
+# Other notes
+
+Please consider looking at TODO.md and FEATURES.md
