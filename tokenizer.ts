@@ -1,5 +1,6 @@
 import * as Red from "./red-types";
 import RedUtil from "./runtime/util";
+import {Ref} from "./helper-types";
 
 
 namespace DateMatch {
@@ -1342,7 +1343,7 @@ function tokenToRed(token: RedToken): Red.AnyType {
 		return Red.RawString.fromRedString(token.string, token.multi);
 	}
 	else if("file" in token) {
-		return new Red.RawFile(token.file);
+		return new Red.RawFile(new Ref(token.file));
 	}
 	else if("email" in token) {
 		const [l, r] = token.email.split("@");
@@ -1362,7 +1363,7 @@ function tokenToRed(token: RedToken): Red.AnyType {
 		}
 	}
 	else if("tag" in token) {
-		return new Red.RawTag(token.tag);
+		return new Red.RawTag(new Ref(token.tag));
 	}
 	else if("binary" in token) {
 		let bytes: Buffer;
@@ -1375,7 +1376,7 @@ function tokenToRed(token: RedToken): Red.AnyType {
 			bytes = Buffer.from(token.binary, "base64");
 		}
 
-		return new Red.RawBinary(bytes);
+		return new Red.RawBinary(new Ref(bytes));
 	}
 
 	else if("block" in token) {

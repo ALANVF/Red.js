@@ -8,7 +8,7 @@ export function $$form(
 	buffer: string[],
 	_part?: number
 ): boolean {
-	buffer.push(url.url.slice(url.index - 1));
+	buffer.push(url.url.ref.slice(url.index - 1));
 	return false;
 }
 

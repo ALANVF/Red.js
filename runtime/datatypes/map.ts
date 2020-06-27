@@ -53,3 +53,15 @@ export function $$mold(
 	
 	return map.keys.length > 0;
 }
+
+// ...
+
+export function $$clear(
+	_ctx: Red.Context,
+	map:  Red.RawMap
+): Red.RawMap {
+	map.keys.splice(0);
+	map.values.splice(0);
+	
+	return map;
+}

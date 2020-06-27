@@ -12,7 +12,7 @@ export function $$form(
 	_part?: number
 ): boolean {
 	buffer.push("#{");
-	buffer.push(binary.bytes.toString("hex").toUpperCase());
+	buffer.push(binary.bytes.ref.slice(binary.index - 1).toString("hex").toUpperCase());
 	buffer.push("}");
 	
 	return false;

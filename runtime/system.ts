@@ -1,4 +1,5 @@
 import * as Red from "../red-types";
+import {Ref} from "../helper-types";
 
 export const system = new Red.Context();
 export const system$words = new Red.Context();
@@ -12,7 +13,7 @@ system.addWord("options", system$options);
 system.addWord("standard", system$std);
 
 /* system/options */
-system$options.addWord("path", new Red.RawFile("./"));
+system$options.addWord("path", new Red.RawFile(new Ref("./")));
 system$options.addWord("args", Red.RawNone.none);
 
 /* system/words */

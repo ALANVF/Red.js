@@ -833,16 +833,14 @@ module RedActions {
 				count [number!]
 		]
 		#get-definition ACT_CHANGE
-	]
-
-	clear: make action! [[
-			"Removes series values from current index to tail; returns new tail"
-			series	 [series! port! bitset! map! none!]
-			return:  [series! port! bitset! map! none!]
-		]
-		#get-definition ACT_CLEAR
-	]
-	*/
+	]*/
+	
+	export function $$clear(
+		ctx:    Red.Context,
+		series: Red.RawSeries|Red.RawBitset|Red.RawMap|Red.RawNone
+	): typeof series {
+		return valueSendAction("$$clear", ctx, series);
+	}
 
 	/*
 	copy: make action! [[

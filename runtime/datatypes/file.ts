@@ -8,7 +8,7 @@ export function $$form(
 	buffer: string[],
 	_part?: number
 ): boolean {
-	buffer.push(file.current().name);
+	buffer.push(file.current().name.ref);
 	return false;
 }
 

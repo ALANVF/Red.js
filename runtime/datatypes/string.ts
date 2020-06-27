@@ -49,13 +49,13 @@ export function $compare(
 				}
 			} else if(op == Red.ComparisonOp.EQUAL || op == Red.ComparisonOp.NOT_EQUAL) {
 				if(value2 instanceof Red.RawFile) {
-					other = value2.name.slice(value2.index - 1);
+					other = value2.name.ref.slice(value2.index - 1);
 				} else if(value2 instanceof Red.RawUrl) {
-					other = value2.url.slice(value2.index - 1);
+					other = value2.url.ref.slice(value2.index - 1);
 				} else if(value2 instanceof Red.RawEmail) {
 					other = (value2.user + "@" + value2.host).slice(value2.index - 1);
 				} else if(value2 instanceof Red.RawTag) {
-					other = value2.tag.slice(value2.index - 1);
+					other = value2.tag.ref.slice(value2.index - 1);
 				} else {
 					throw new Error("error!");
 				}
@@ -138,6 +138,8 @@ export function $$append(
 		for(const elem of value.current().values) {
 			str.values.push(...RedActions.$$form(ctx, elem).values);
 		}
+	} else if(value instanceof Red.RawFile) {
+		str.values.push(...[...value.current().name.ref].map(s => new Red.RawChar(s.charCodeAt(0))))
 	} else { // Unsure if /only should be ignored
 		str.values.push(...RedActions.$$form(ctx, value).values);
 	}

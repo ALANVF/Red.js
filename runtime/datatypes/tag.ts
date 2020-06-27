@@ -9,7 +9,7 @@ export function $$form(
 	_part?: number
 ): boolean {
 	buffer.push("<");
-	buffer.push(tag.current().tag);
+	buffer.push(tag.current().tag.ref);
 	buffer.push(">");
 	return false;
 }

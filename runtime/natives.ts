@@ -596,7 +596,7 @@ module RedNatives {
 				return last;
 			}
 		} else if(value instanceof Red.RawFile) {
-			return RedMain.evalFile(value.name, undefined, ctx);
+			return RedMain.evalFile(value.name.ref, undefined, ctx);
 		} else if(value instanceof Red.RawString) {
 			let out = new Red.RawBlock(tokenize(value.current().toJsString()));
 			//if(doExpand) out = pre(ctx, out);

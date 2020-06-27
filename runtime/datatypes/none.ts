@@ -65,3 +65,12 @@ export function $$mold(
 		return $$form(ctx, value, buffer, _.part);
 	}
 }
+
+// ...
+
+export function $$clear(
+	_ctx: Red.Context,
+	none: Red.RawNone
+): Red.RawNone {
+	return none;
+}

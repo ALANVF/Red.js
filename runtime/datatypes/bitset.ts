@@ -31,3 +31,14 @@ export function $$mold(
 ): boolean {
 	return $$form(ctx, bitset, buffer, _.part);
 }
+
+// ...
+
+export function $$clear(
+	_ctx:   Red.Context,
+	bitset: Red.RawBitset
+): Red.RawBitset {
+	bitset.bytes = new Uint8Array();
+	
+	return bitset;
+}

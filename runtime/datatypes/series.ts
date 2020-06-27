@@ -143,6 +143,31 @@ export function $$pick(
 	}
 }
 
+// ...
+
+export function $$clear(
+	_ctx:   Red.Context,
+	series: Red.RawSeries
+): Red.RawSeries {
+	if(Red.isAnyList(series) || series instanceof Red.RawString || series instanceof Red.RawVector) {
+		series.values.splice(series.index - 1);
+	} else if(series instanceof Red.RawFile) {
+		series.name.set(ref => ref.slice(0, series.index - 1));
+	} else if(series instanceof Red.RawTag) {
+		series.tag.set(ref => ref.slice(0, series.index - 1));
+	} else if(series instanceof Red.RawEmail) {
+		Red.todo();
+	} else if(series instanceof Red.RawUrl) {
+		series.url.set(ref => ref.slice(0, series.index - 1));
+	} else if(series instanceof Red.RawBinary) {
+		series.bytes.set(ref => Buffer.from([...ref].slice(0, series.index - 1)));
+	} else {
+		series.path.splice(series.index - 1);
+	}
+	
+	return series;
+}
+
 /*
 poke: make action! [[
 		"Replaces the series value at a given index, and returns the new value"

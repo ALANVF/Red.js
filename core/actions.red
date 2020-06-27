@@ -265,6 +265,7 @@ change: make action! [[
 	]
 	change
 ]
+]
 
 clear: make action! [[
 		"Removes series values from current index to tail; returns new tail"
@@ -272,7 +273,6 @@ clear: make action! [[
 		return:  [series! port! bitset! map! none!]
 	]
 	clear
-]
 ]
 
 copy: make action! [[

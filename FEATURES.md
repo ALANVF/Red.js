@@ -39,7 +39,7 @@
 | `set-path!`              | Y        | Y      | N           | Y             | N         | PI            |
 | `get-path!`              | Y        | Y      | N           | Y             | N         | PI            |
 | `routine!`               | N        | NA     | N           | N             | N         | N             |
-| `bitset!`                | Y        | NA     | N           | Y             | N         | N             |
+| `bitset!`                | Y        | NA     | N           | Y             | N         | P             |
 | `point!`                 | N        | NA     | N           | N             | N         | N             |
 | `object!`                | Y        | NA     | P           | Y             | N         | P             |
 | `typeset!`               | Y        | NA     | P           | Y             | N         | P             |
@@ -49,7 +49,7 @@
 | `pair!`                  | Y        | Y      | N           | Y             | N         | P             |
 | `percent!`               | Y        | Y      | N           | Y             | B         | PI            |
 | `tuple!`                 | Y        | Y      | N           | Y             | N         | N             |
-| `map!`                   | Y        | Y      | N           | Y             | N         | N             |
+| `map!`                   | Y        | Y      | N           | Y             | N         | P             |
 | `binary!`                | Y        | Y      | N           | Y             | N         | PI            |
 | `time!`                  | Y        | Y      | N           | Y             | N         | N             |
 | `tag!`                   | Y        | Y      | B           | Y             | N         | P             |

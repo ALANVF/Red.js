@@ -1,4 +1,5 @@
 import RedUtil from "./runtime/util";
+import {Ref} from "./helper-types";
 
 interface Series {
 	index:  number;
@@ -501,7 +502,7 @@ export class RawBlock extends RawValue implements SeriesOf<AnyType> {
 export class RawBinary extends RawValue implements SeriesOf<number> {
 	index: number = 1;
 	
-	constructor(public bytes: Buffer) {
+	constructor(public bytes: Ref<Buffer>) {
 		super();
 	}
 
@@ -510,7 +511,7 @@ export class RawBinary extends RawValue implements SeriesOf<number> {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
-		return this.bytes[(this.index - 1) + (i - 1)];
+		return this.bytes.ref[(this.index - 1) + (i - 1)];
 	}
 	
 	poke(
@@ -521,19 +522,19 @@ export class RawBinary extends RawValue implements SeriesOf<number> {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
-		this.bytes[(this.index - 1) + (i - 1)] = v;
+		this.bytes.ref[(this.index - 1) + (i - 1)] = v;
 	}
 
 	current(): RawBinary {
 		if(this.index == 1) {
 			return this;
 		} else {
-			return new RawBinary(this.bytes.subarray(this.index - 1));
+			return new RawBinary(this.bytes.copyWith(ref => ref.copyWithin(0, this.index - 1)));
 		}
 	}
 
 	get length() {
-		return this.bytes.length - (this.index - 1);
+		return this.bytes.ref.length - (this.index - 1);
 	}
 }
 
@@ -675,7 +676,7 @@ export class RawMap extends RawValue {
 export class RawFile extends RawValue implements SeriesOf<RawChar> {
 	index: number = 1;
 
-	constructor(public name: string) {
+	constructor(public name: Ref<string>) {
 		super();
 	}
 	
@@ -684,7 +685,7 @@ export class RawFile extends RawValue implements SeriesOf<RawChar> {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
-		return new RawChar(this.name.charCodeAt((this.index - 1) + (i - 1)));
+		return new RawChar(this.name.ref.charCodeAt((this.index - 1) + (i - 1)));
 	}
 	
 	poke(
@@ -697,7 +698,7 @@ export class RawFile extends RawValue implements SeriesOf<RawChar> {
 		
 		if(v instanceof RawChar) {
 			const index = (this.index - 1) + (i - 1);
-			this.name = this.name.slice(0, index - 1) + v.toJsChar() + this.name.slice(index);
+			this.name.set(ref => ref.slice(0, index - 1) + v.toJsChar() + ref.slice(index));
 		} else {
 			throw new Error(`Unexpected ${typeName(v)}`);
 		}
@@ -707,19 +708,19 @@ export class RawFile extends RawValue implements SeriesOf<RawChar> {
 		if(this.index == 1) {
 			return this;
 		} else {
-			return new RawFile(this.name.slice(this.index - 1));
+			return new RawFile(this.name.copyWith(ref => ref.slice(this.index - 1)));
 		}
 	}
 
 	get length() {
-		return this.name.length - (this.index - 1);
+		return this.name.ref.length - (this.index - 1);
 	}
 }
 
 export class RawTag extends RawValue implements SeriesOf<RawChar> {
 	index: number = 1;
 	
-	constructor(public tag: string) {
+	constructor(public tag: Ref<string>) {
 		super();
 	}
 	
@@ -728,7 +729,7 @@ export class RawTag extends RawValue implements SeriesOf<RawChar> {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
-		return new RawChar(this.tag.charCodeAt((this.index - 1) + (i - 1)));
+		return new RawChar(this.tag.ref.charCodeAt((this.index - 1) + (i - 1)));
 	}
 	
 	poke(
@@ -741,7 +742,7 @@ export class RawTag extends RawValue implements SeriesOf<RawChar> {
 		
 		if(v instanceof RawChar) {
 			const index = (this.index - 1) + (i - 1);
-			this.tag = this.tag.slice(0, index - 1) + v.toJsChar() + this.tag.slice(index);
+			this.tag.set(ref => ref.slice(0, index - 1) + v.toJsChar() + ref.slice(index));
 		} else {
 			throw new Error(`Unexpected ${typeName(v)}`);
 		}
@@ -751,24 +752,24 @@ export class RawTag extends RawValue implements SeriesOf<RawChar> {
 		if(this.index == 1) {
 			return this;
 		} else {
-			return new RawTag(this.tag.slice(this.index - 1));
+			return new RawTag(this.tag.copyWith(ref => ref.slice(this.index - 1)));
 		}
 	}
 
 	get length() {
-		return this.tag.length - (this.index - 1);
+		return this.tag.ref.length - (this.index - 1);
 	}
 }
 
 export class RawUrl extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(public url: string) {
+	constructor(public url: Ref<string>) {
 		super();
 	}
 
 	get length() {
-		return this.url.length - (this.index - 1);
+		return this.url.ref.length - (this.index - 1);
 	}
 }
 
