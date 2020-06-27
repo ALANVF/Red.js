@@ -1,3 +1,7 @@
+# Version 0.1.2 (in development)
+- Removed `pre1` from the preprocessor.
+
+
 # Version 0.1.1
 - Fixed `>>>` (and tests/demo.red).
 

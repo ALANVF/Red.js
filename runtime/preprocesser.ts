@@ -31,35 +31,6 @@ class MacroCtx {
 	}
 }
 
-// TODO: remove this function because it doesn't seem to be necessary
-export function pre1(
-	ctx:  Red.Context,
-	body: Red.RawBlock
-) {
-	const values = body.values;
-	
-	for(let i = body.values.length-1; i >= 0; i--) {
-		const value = values[i];
-		
-		if(value instanceof Red.RawIssue) {
-			//values[i] = value;
-
-			// why does this exist
-			/*if(value.value == "macro") {
-				values[i + 1] = values[i + 1];
-				values[i + 2] = values[i + 2];
-				values[i + 3] = values[i + 3];
-				values[i + 4] = values[i + 4];
-			}*/
-
-			continue;
-		}
-	}
-
-	body.values = values;
-	return new MacroCtx(ctx, body);
-}
-
 function pre2(mc: MacroCtx) {
 	const values = mc.body.values;
 	const stack = [];
@@ -117,5 +88,5 @@ function pre3(mc: MacroCtx) {
 }
 
 export function pre(ctx: Red.Context, body: Red.RawBlock) {
-	return pre3(pre2(pre1(ctx, body)));
+	return pre3(pre2(new MacroCtx(ctx, body)));
 }

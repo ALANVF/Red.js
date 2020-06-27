@@ -4,10 +4,10 @@ TL;DR:
 - Finish implementing features.
 
 Finish very soon:
-- Remove `pre1` from the preprocessor.
 - Add more `series!` actions.
 - Add the `error!` type.
 - Fix relative paths when loading files.
+- Add `compare` action for all datatypes.
 
 Finish somewhat soon:
 - Add some tests.
@@ -80,3 +80,4 @@ Things already done:
 - Implement (more) math natives.
 - Add bit-shift operators.
 - Fix stringy types like `file!` and `tag!`.
+- Remove `pre1` from the preprocessor.

@@ -1,5 +1,5 @@
 import {tokenize} from "../tokenizer";
-import {pre, pre1} from "./preprocesser";
+import {pre} from "./preprocesser";
 import {system$words} from "./system";
 import {transformPath, evalSingle, groupSingle, ExprType} from "./eval";
 import * as Red from "../red-types";
@@ -555,8 +555,6 @@ module RedNatives {
 
 			if(_.expand !== undefined)
 				val = pre(ctx, val);
-			else
-				val = pre1(ctx, val).body
 			
 			if(_.next !== undefined) {
 				Red.todo();
@@ -577,7 +575,7 @@ module RedNatives {
 				return last;
 			}
 		} else if(value instanceof Red.RawParen) {
-			let val = pre1(ctx, value.current()).body;
+			let val = value.current();
 			
 			if(_.next !== undefined) {
 				Red.todo();

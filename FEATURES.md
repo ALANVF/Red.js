@@ -9,57 +9,57 @@
 - B  = Just broken.
 
 # Datatypes
-|                          | datatype | syntax | `make`/`to` | `form`/`mold` | other actions |
-|--------------------------|----------|--------|-------------|---------------|---------------|
-| `datatype!`              | Y        | NA     | NA          | Y             | P             |
-| `unset!`                 | Y        | NA     | N           | Y             | N             |
-| `none!`                  | Y        | P      | Y           | Y             | P             |
-| `logic!`                 | Y        | P*     | N           | Y             | P             |
-| `block!`                 | Y        | Y      | Y           | P**           | P             |
-| `paren!`                 | Y        | Y      | Y           | P**           | P             |
-| `string!`                | Y        | P      | N           | Y             | P             |
-| `file!`                  | Y        | P      | N           | Y             | PI            |
-| `url!`                   | Y        | PB     | N           | Y             | PI            |
-| `char!`                  | Y        | Y      | N           | Y             | P             |
-| `integer!`               | Y        | P      | P           | Y             | P             |
-| `float!`                 | Y        | P***   | P           | Y             | P             |
-| `context!`               | Y        | NA     | P           | Y             | P             |
-| `word!`                  | Y        | Y      | Y           | Y             | N             |
-| `set-word!`              | Y        | Y      | Y           | Y             | N             |
-| `lit-word!`              | Y        | Y      | Y           | Y             | N             |
-| `get-word!`              | Y        | Y      | Y           | Y             | N             |
-| `refinement!`            | Y        | Y      | N           | Y             | N             |
-| `issue!`                 | Y        | Y      | B           | Y             | N             |
-| `native!`                | Y        | NA     | P           | Y             | N             |
-| `action!`                | Y        | NA     | P           | Y             | N             |
-| `op!`                    | Y        | NA     | P           | Y             | N             |
-| `function!`              | Y        | NA     | P           | Y             | N             |
-| `path!`                  | Y        | Y      | N           | Y             | PI            |
-| `lit-path!`              | Y        | Y      | N           | Y             | PI            |
-| `set-path!`              | Y        | Y      | N           | Y             | PI            |
-| `get-path!`              | Y        | Y      | N           | Y             | PI            |
-| `routine!`               | N        | NA     | N           | N             | N             |
-| `bitset!`                | Y        | NA     | N           | Y             | N             |
-| `point!`                 | N        | NA     | N           | N             | N             |
-| `object!`                | Y        | NA     | P           | Y             | P             |
-| `typeset!`               | Y        | NA     | P           | Y             | P             |
-| `error!`                 | N        | NA     | N           | N             | N             |
-| `vector!`                | P        | NA     | N           | Y             | PI            |
-| `hash!`                  | P        | NA     | N           | Y             | PI            |
-| `pair!`                  | Y        | Y      | N           | Y             | P             |
-| `percent!`               | Y        | Y      | N           | Y             | PI            |
-| `tuple!`                 | Y        | Y      | N           | Y             | N             |
-| `map!`                   | Y        | Y      | N           | Y             | N             |
-| `binary!`                | Y        | Y      | N           | Y             | PI            |
-| `time!`                  | Y        | Y      | N           | Y             | N             |
-| `tag!`                   | Y        | Y      | B           | Y             | P             |
-| `email!`                 | Y        | B****  | B           | Y             | P             |
-| `handle!`                | N        | NA     | N           | N             | N             |
-| `date!`                  | Y        | Y      | N           | Y             | N             |
-| `port!`                  | N        | NA     | N           | N             | N             |
-| `image!`                 | N        | NA     | N           | N             | BI            |
-| `money!`                 | P        | B****  | N           | N             | N             |
-| `ref!`                   | N        | N      | N           | N             | N             |
+|                          | datatype | syntax | `make`/`to` | `form`/`mold` | `compare` | other actions |
+|--------------------------|----------|--------|-------------|---------------|-----------|---------------|
+| `datatype!`              | Y        | NA     | NA          | Y             | Y         | P             |
+| `unset!`                 | Y        | NA     | N           | Y             | Y         | N             |
+| `none!`                  | Y        | P      | Y           | Y             | Y         | P             |
+| `logic!`                 | Y        | P*     | N           | Y             | Y         | P             |
+| `block!`                 | Y        | Y      | Y           | P**           | N         | P             |
+| `paren!`                 | Y        | Y      | Y           | P**           | N         | P             |
+| `string!`                | Y        | P      | N           | Y             | Y         | P             |
+| `file!`                  | Y        | P      | N           | Y             | N         | PI            |
+| `url!`                   | Y        | PB     | N           | Y             | N         | PI            |
+| `char!`                  | Y        | Y      | N           | Y             | Y         | P             |
+| `integer!`               | Y        | P      | P           | Y             | Y         | P             |
+| `float!`                 | Y        | P***   | P           | Y             | Y         | P             |
+| `context!`               | Y        | NA     | P           | Y             | N         | P             |
+| `word!`                  | Y        | Y      | Y           | Y             | Y         | N             |
+| `set-word!`              | Y        | Y      | Y           | Y             | Y         | N             |
+| `lit-word!`              | Y        | Y      | Y           | Y             | Y         | N             |
+| `get-word!`              | Y        | Y      | Y           | Y             | Y         | N             |
+| `refinement!`            | Y        | Y      | N           | Y             | Y         | N             |
+| `issue!`                 | Y        | Y      | B           | Y             | Y         | N             |
+| `native!`                | Y        | NA     | P           | Y             | N         | N             |
+| `action!`                | Y        | NA     | P           | Y             | N         | N             |
+| `op!`                    | Y        | NA     | P           | Y             | N         | N             |
+| `function!`              | Y        | NA     | P           | Y             | N         | N             |
+| `path!`                  | Y        | Y      | N           | Y             | N         | PI            |
+| `lit-path!`              | Y        | Y      | N           | Y             | N         | PI            |
+| `set-path!`              | Y        | Y      | N           | Y             | N         | PI            |
+| `get-path!`              | Y        | Y      | N           | Y             | N         | PI            |
+| `routine!`               | N        | NA     | N           | N             | N         | N             |
+| `bitset!`                | Y        | NA     | N           | Y             | N         | N             |
+| `point!`                 | N        | NA     | N           | N             | N         | N             |
+| `object!`                | Y        | NA     | P           | Y             | N         | P             |
+| `typeset!`               | Y        | NA     | P           | Y             | N         | P             |
+| `error!`                 | N        | NA     | N           | N             | N         | N             |
+| `vector!`                | P        | NA     | N           | Y             | N         | PI            |
+| `hash!`                  | P        | NA     | N           | Y             | N         | PI            |
+| `pair!`                  | Y        | Y      | N           | Y             | N         | P             |
+| `percent!`               | Y        | Y      | N           | Y             | B         | PI            |
+| `tuple!`                 | Y        | Y      | N           | Y             | N         | N             |
+| `map!`                   | Y        | Y      | N           | Y             | N         | N             |
+| `binary!`                | Y        | Y      | N           | Y             | N         | PI            |
+| `time!`                  | Y        | Y      | N           | Y             | N         | N             |
+| `tag!`                   | Y        | Y      | B           | Y             | N         | P             |
+| `email!`                 | Y        | B****  | B           | Y             | N         | P             |
+| `handle!`                | N        | NA     | N           | N             | N         | N             |
+| `date!`                  | Y        | Y      | N           | Y             | N         | N             |
+| `port!`                  | N        | NA     | N           | N             | N         | N             |
+| `image!`                 | N        | NA     | N           | N             | N         | BI            |
+| `money!`                 | P        | B****  | N           | N             | N         | N             |
+| `ref!`                   | N        | N      | N           | N             | N         | N             |
 
 \* Only basic construction syntax is currently supported.
 
