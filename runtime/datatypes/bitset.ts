@@ -42,3 +42,31 @@ export function $$clear(
 	
 	return bitset;
 }
+
+// ...
+
+export function $$remove(
+	_ctx:   Red.Context,
+	bitset: Red.RawBitset,
+	_: RedActions.RemoveOptions = {}
+): Red.RawBitset {
+	if(_.key === undefined) {
+		throw new Error("Refinement /key is required!");
+	} else {
+		const key = _.key;
+		
+		if(key instanceof Red.RawInteger) {
+			if(key.value < 0) {
+				throw new Error("Index out of bounds!");
+			} else {
+				bitset.setBit(key.value, false);
+			}
+		} else if(key instanceof Red.RawChar) {
+			bitset.setBit(key.char, false);
+		} else {
+			throw new TypeError(`Unexpected ${Red.typeName(key)}`);
+		}
+	}
+	
+	return bitset;
+}

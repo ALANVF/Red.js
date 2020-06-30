@@ -108,7 +108,7 @@ module RedActions {
 
 	export interface RemoveOptions {
 		part?: Red.RawNumber|Red.RawChar|Red.RawSeries;
-		key?:  Red.RawScalar|Red.RawAnyString|Red.RawAnyWord|Red.RawBlock;
+		key?:  Red.RawScalar|Red.RawAnyString|Red.RawAnyWord|Red.RawBinary|Red.RawBlock;
 	}
 
 	export interface SelectOptions {
@@ -1010,20 +1010,23 @@ module RedActions {
 			return:  [series! port! map! object!]
 		]
 		#get-definition ACT_PUT
-	]
+	]*/
+	
+	export function $$remove(
+		ctx:    Red.Context,
+		series: Red.RawSeries|Red.RawBitset|Red.RawMap|Red.RawNone,
+		_: {
+			part?: [Red.RawNumber|Red.RawChar|Red.RawSeries],
+			key?:  [Red.RawScalar|Red.RawAnyString|Red.RawAnyWord|Red.RawBinary|Red.RawBlock]
+		} = {}
+	): typeof series {
+		return valueSendAction("$$remove", ctx, series, {
+			part: _.part === undefined ? undefined : _.part[0],
+			key:  _.key === undefined ? undefined : _.key[0]
+		});
+	}
 
-	remove: make action! [[
-			"Returns the series at the same index after removing a value"
-			series	 [series! port! bitset! map! none!]
-			/part "Removes a number of values, or values up to the given series index"
-				length [number! char! series!]
-			/key "Removes a key in map"
-				key-arg [scalar! any-string! any-word! binary! block!]
-			return:  [series! port! bitset! map! none!]
-		]
-		#get-definition ACT_REMOVE
-	]
-
+	/*
 	reverse: make action! [[
 			"Reverses the order of elements; returns at same position"
 			series	 [series! port! pair! tuple!]

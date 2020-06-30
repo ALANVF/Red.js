@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 import RedUtil from "../util";
+import RedNatives from "../natives";
 
 /* Actions */
 export function $$form(
@@ -64,4 +65,31 @@ export function $$clear(
 	map.values.splice(0);
 	
 	return map;
+}
+
+// ...
+
+export function $$remove(
+	ctx: Red.Context,
+	map: Red.RawMap,
+	_: RedActions.RemoveOptions = {}
+): Red.RawMap {
+	if(_.key === undefined) {
+		throw new Error("Refinement /key is required!");
+	} else {
+		const key = _.key;
+		const eql: ((v: Red.AnyType) => boolean) = Red.isAnyWord(key)
+			? (k => Red.isAnyWord(k) && k.name == key.name)
+			: (k => RedNatives.$$strict_equal_q(ctx, key, k).cond);
+		
+		for(let i = 0; i < map.keys.length; i++) {
+			if(eql(map.keys[i])) {
+				map.keys.splice(i, 1);
+				map.values.splice(i, 1);
+				break;
+			}
+		}
+		
+		return map;
+	}
 }

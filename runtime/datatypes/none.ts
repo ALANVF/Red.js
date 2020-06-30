@@ -74,3 +74,13 @@ export function $$clear(
 ): Red.RawNone {
 	return none;
 }
+
+// ...
+
+export function $$remove(
+	_ctx: Red.Context,
+	none: Red.RawNone,
+	_: RedActions.RemoveOptions = {}
+): Red.RawNone {
+	return none;
+}

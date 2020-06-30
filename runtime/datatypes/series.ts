@@ -2,6 +2,27 @@ import * as Red from "../../red-types";
 import RedUtil from "../util";
 import RedActions from "../actions";
 
+function sameSeries(
+	ser1: Red.RawSeries,
+	ser2: typeof ser1
+): boolean {
+	if(Red.isAnyList(ser1) || ser1 instanceof Red.RawString || ser1 instanceof Red.RawVector) {
+		return ser1.values === (<typeof ser1>ser2).values;
+	} else if(ser1 instanceof Red.RawFile) {
+		return ser1.name === (<typeof ser1>ser2).name;
+	} else if(ser1 instanceof Red.RawTag) {
+		return ser1.tag === (<typeof ser1>ser2).tag;
+	} else if(ser1 instanceof Red.RawEmail) {
+		return ser1.host === (<typeof ser1>ser2).host && ser1.user === (<typeof ser1>ser2).user; // fix later
+	} else if(ser1 instanceof Red.RawUrl) {
+		return ser1.url === (<typeof ser1>ser2).url;
+	} else if(ser1 instanceof Red.RawBinary) {
+		return ser1.bytes === (<typeof ser1>ser2).bytes;
+	} else {
+		return ser1.path === (<typeof ser1>ser2).path;
+	}
+}
+
 
 /* Native actions */
 
@@ -211,4 +232,59 @@ export function $$poke(
 	}
 }
 
-// Misc
+
+function seriesRemove(series: Red.RawSeries, index: number, length: number) {
+	if(Red.isAnyList(series) || series instanceof Red.RawString || series instanceof Red.RawVector) {
+		series.values.splice(index, length);
+	} else if(series instanceof Red.RawFile) {
+		series.name.set(ref => ref.slice(0, index) + ref.slice(index + length));
+	} else if(series instanceof Red.RawTag) {
+		series.tag.set(ref => ref.slice(0, index) + ref.slice(index + length));
+	} else if(series instanceof Red.RawEmail) {
+		Red.todo();
+	} else if(series instanceof Red.RawUrl) {
+		series.url.set(ref => ref.slice(0, index) + ref.slice(index + length));
+	} else if(series instanceof Red.RawBinary) {
+		series.bytes.set(ref => {
+			const vals = [...ref];
+			vals.splice(index, length);
+			return Buffer.from(vals);
+		});
+	} else {
+		series.path.splice(index, length);
+	}
+}
+
+export function $$remove(
+	_ctx:   Red.Context,
+	series: Red.RawSeries,
+	_: RedActions.RemoveOptions = {}
+): typeof series {
+	if(_.part === undefined && _.key === undefined) {
+		seriesRemove(series, series.index - 1, 1);
+	} else if(_.part !== undefined && _.key === undefined) {
+		let length = 0;
+		
+		if(Red.isNumber(_.part)) {
+			length = Math.floor(_.part.value);
+		} else if(_.part instanceof Red.RawChar) {
+			length = _.part.char;
+		} else if(Red.isSeries(_.part)) {
+			if(_.part.constructor === series.constructor && sameSeries(_.part, series)) {
+				length = _.part.index - series.index;
+			} else {
+				throw new Error("Value error!")
+			}
+		} else {
+			throw new TypeError("Error!");
+		}
+		
+		if(length > 0) {
+			seriesRemove(series, series.index - 1, length);
+		}
+	} else {
+		throw new Error("Invalid refinement /key for series!");
+	}
+	
+	return series;
+}

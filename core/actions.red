@@ -411,6 +411,7 @@ put: make action! [[
 	]
 	put
 ]
+]
 
 remove: make action! [[
 		"Returns the series at the same index after removing a value"
@@ -424,6 +425,7 @@ remove: make action! [[
 	remove
 ]
 
+'TODO [
 reverse: make action! [[
 		"Reverses the order of elements; returns at same position"
 		series	 [series! port! pair! tuple!]

@@ -3,6 +3,7 @@
 - Reimplemented several `series!` types.
 - Fixed `form`/`mold` for `binary!` values with an offset.
 - Added `clear` action.
+- Added `remove` action.
 
 
 # Version 0.1.1

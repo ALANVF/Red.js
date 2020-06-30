@@ -1,5 +1,3 @@
-import Red from "./red";
-
 export class Ref<T> {
 	constructor(public ref: T) {}
 	

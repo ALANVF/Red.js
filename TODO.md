@@ -8,6 +8,7 @@ Finish very soon:
 - Add the `error!` type.
 - Fix relative paths when loading files.
 - Add `compare` action for all datatypes.
+- Remove the "multiline" property from `string!`s because it's not actually needed.
 
 Finish somewhat soon:
 - Add some tests.
