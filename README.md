@@ -8,7 +8,6 @@ Red.js is a web runtime for the [Red programming language](https://www.red-lang.
 ```typescript
 import Red from "./red";
 
-
 /* this stuff is temporary */
 Red.evalRed(`
 	get: make native! [[
@@ -60,13 +59,13 @@ Alternativly, you can `cd` to the project directory and do `npm install`.
 ## In a browser
 I have yet to actually test Red.js using browser js, but it should be fine as long as you aren't using IE or Firefox.
 
-You can also run the Red.js REPL (currently version 0.1.1) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
+You can also run the Red.js REPL (currently version 0.1.2) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
 
 
 # Current limitations
 
 - Because I didn't want to try recreating Red/System just yet, TypeScript is being used for development instead.
-- Things that interact with the OS don't exist because web browsers don't do that.
+- Things that interact with the OSs don't exist because web browsers don't do that.
 - I have yet to benchmark anything, but there's a good chance that this is probably many times slower than the default implementation of Red.
 - I'm currently only 1 person, so progress is gonna be kind of slow as long as it's just me.
 
@@ -94,6 +93,9 @@ I already answered that.
 
 ## Will Red.js be able to compile to WebAssembly?
 I also already answered that.
+
+## Why TypeScript?
+I would have much rather used something like TypedCoffeeScript, but it's dead and doesn't really have any tooling. In the end, this is still better than using something like Flow.
 
 ## What can I do to help with development?
 Anything helps!

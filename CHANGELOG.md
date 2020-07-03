@@ -1,4 +1,4 @@
-# Version 0.1.2 (in development)
+# Version 0.1.2
 - Removed `pre1` from the preprocessor.
 - Reimplemented several `series!` types.
 - Fixed `form`/`mold` for `binary!` values with an offset.
