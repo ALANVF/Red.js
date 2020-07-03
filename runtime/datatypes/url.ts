@@ -1,6 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
-import {insert} from "./string-ref";
+import {append, insert} from "./string-ref";
 
 /* Actions */
 export function $$form(
@@ -21,6 +21,19 @@ export function $$mold(
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	return $$form(ctx, url, buffer, _.part);
+}
+
+// ...
+
+export function $$append(
+	ctx:   Red.Context,
+	url:   Red.RawUrl,
+	value: Red.AnyType,
+	_: RedActions.AppendOptions = {}
+): Red.RawUrl {
+	append(ctx, url.url, value, _, encodeURI);
+	
+	return url;
 }
 
 // ...

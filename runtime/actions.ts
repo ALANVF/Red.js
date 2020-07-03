@@ -799,7 +799,17 @@ module RedActions {
 	): Red.RawSeries|Red.RawBitset {
 		const __: AppendOptions = {};
 
-		if(_.part !== undefined) Red.todo();
+		if(_.part !== undefined) {
+			const [length] = _.part;
+			
+			if(Red.isNumber(length)) {
+				__.part = Math.floor(length.value);
+			} else if(!(series instanceof Red.RawBitset) && Red.sameSeries(series, length)) {
+				__.part = length.index - series.index;
+			} else {
+				throw new Error("Error!");
+			}
+		}
 		if(_.only !== undefined) __.only = true;
 		if(_.dup !== undefined)  __.dup = _.dup[0].value;
 		
@@ -867,7 +877,19 @@ module RedActions {
 	): Red.RawSeries|Red.Context|Red.RawObject|Red.RawBitset|Red.RawMap {
 		const __: CopyOptions = {};
 
-		if(_.part !== undefined)  Red.todo();
+		if(_.part !== undefined) {
+			const [length] = _.part;
+			
+			if(Red.isNumber(length)) {
+				__.part = Math.floor(length.value);
+			} else if(length instanceof Red.RawPair) {
+				Red.todo();
+			} else if(Red.isSeries(value) && Red.sameSeries(value, length)) {
+				__.part = length.index - value.index;
+			} else {
+				throw new Error("Error!");
+			}
+		}
 		if(_.deep !== undefined)  __.deep = true;
 		if(_.types !== undefined) __.types = _.types[0];
 		

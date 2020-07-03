@@ -1,6 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
-import {insert} from "./string-ref";
+import {append, insert} from "./string-ref";
 
 /* Actions */
 export function $$form(
@@ -21,6 +21,19 @@ export function $$mold(
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	return $$form(ctx, email, buffer, _.part);
+}
+
+// ...
+
+export function $$append(
+	ctx:   Red.Context,
+	email: Red.RawEmail,
+	value: Red.AnyType,
+	_: RedActions.AppendOptions = {}
+): Red.RawEmail {
+	append(ctx, email.email, value, _, encodeURI);
+	
+	return email;
 }
 
 // ...

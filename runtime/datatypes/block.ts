@@ -164,37 +164,44 @@ export function $$copy(
 // ...
 
 export function $$append(
-	_ctx:   Red.Context,
-	series: Red.RawBlock,
-	value:  Red.AnyType,
+	_ctx:  Red.Context,
+	list:  Red.RawAnyList,
+	value: Red.AnyType,
 	_: RedActions.AppendOptions = {}
-): Red.RawBlock {
-	if(_.part !== undefined || _.dup !== undefined) {
-		Red.todo();
-	} else if(_.only !== undefined) {
-		series.values.push(value);
-	} else {
-		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
-			series.values.push(...value.values.slice(value.index - 1));
-		} else if(Red.isAnyPath(value)) {
-			series.values.push(...value.path.slice(value.index - 1));
+): Red.RawAnyList {
+	if(_.only !== undefined || !(Red.isAnyList(value) || Red.isAnyPath(value))) {
+		if(_.dup !== undefined) {
+			for(let i = 0; i < _.dup; i++) {
+				list.values.push(value);
+			}
 		} else {
-			series.values.push(value);
+			list.values.push(value);
+		}
+	} else {
+		const values = "values" in value ? value.current().values : value.current().path;
+		if(_.dup !== undefined) {
+			for(let i = 0; i < _.dup; i++) {
+				list.values.push(...values);
+			}
+		} else if(_.part !== undefined) {
+			list.values.push(...values.slice(0, _.part));
+		} else {
+			list.values.push(...values);
 		}
 	}
-
-	return series;
+	
+	return list;
 }
 
 // ...
 
 export function $$insert(
-	_ctx:   Red.Context,
-	series: Red.RawAnyList,
-	value:  Red.AnyType,
+	_ctx:  Red.Context,
+	list:  Red.RawAnyList,
+	value: Red.AnyType,
 	_: RedActions.InsertOptions = {}
-): Red.RawBlock {
-	const index = series.index - 1;
+): Red.RawAnyList {
+	const index = list.index - 1;
 	
 	if(_.dup !== undefined) {
 		const dups = [];
@@ -211,21 +218,21 @@ export function $$insert(
 			for(let i = 0; i < _.dup; i++) dups.push(value);
 		}
 		
-		series.values.splice(index, 0, ...dups);
-		series.index += dups.length;
+		list.values.splice(index, 0, ...dups);
+		list.index += dups.length;
 	} else if(_.only !== undefined) {
-		insertOnly(series.values, value, index);
-		series.index++;
+		insertOnly(list.values, value, index);
+		list.index++;
 	} else {
 		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
-			series.index += insertAll(series.values, value.current().values, index, _.part);
+			list.index += insertAll(list.values, value.current().values, index, _.part);
 		} else if(Red.isAnyPath(value)) {
-			series.index += insertAll(series.values, value.current().path, index, _.part);
+			list.index += insertAll(list.values, value.current().path, index, _.part);
 		} else {
-			insertOnly(series.values, value, index);
-			series.index++;
+			insertOnly(list.values, value, index);
+			list.index++;
 		}
 	}
 
-	return series;
+	return list;
 }

@@ -1,6 +1,26 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 
+function stringifyArg(
+	ctx:   Red.Context,
+	value: Red.AnyType
+): Red.RawChar[] {
+	if(value instanceof Red.RawChar) {
+		return [value];
+	} else if(value instanceof Red.RawString) {
+		return value.values.slice(value.index - 1);
+	} else if(Red.isAnyList(value)) {
+		return (<Red.RawAnyList>value).current().values.flatMap(elem =>
+			RedActions.$$form(ctx, elem).values
+		);
+	} else if(value instanceof Red.RawFile) {
+		return [...value.current().name.ref].map(s => new Red.RawChar(s.charCodeAt(0)));
+	} else {
+		return RedActions.$$form(ctx, value).values;
+	}
+}
+
+/* Actions */
 export function $compare(
 	ctx:    Red.Context,
 	value1: Red.RawString,
@@ -128,22 +148,18 @@ export function $$append(
 	value: Red.AnyType,
 	_: RedActions.AppendOptions = {}
 ): Red.RawString {
-	if(_.part !== undefined || _.dup !== undefined) {
-		Red.todo();
-	} else if(value instanceof Red.RawChar) {
-		str.values.push(value);
-	} else if(value instanceof Red.RawString) {
-		str.values.push(...value.current().values);
-	} else if(Red.isAnyList(value)) {
-		for(const elem of value.current().values) {
-			str.values.push(...RedActions.$$form(ctx, elem).values);
+	const addChars = stringifyArg(ctx, value);
+	
+	if(_.dup !== undefined) {
+		for(let i = 0; i < _.dup; i++) {
+			str.values.push(...addChars);
 		}
-	} else if(value instanceof Red.RawFile) {
-		str.values.push(...[...value.current().name.ref].map(s => new Red.RawChar(s.charCodeAt(0))));
-	} else { // Unsure if /only should be ignored
-		str.values.push(...RedActions.$$form(ctx, value).values);
+	} else if(_.part !== undefined) {
+		str.values.push(...addChars.slice(0, _.part));
+	} else {
+		str.values.push(...addChars);
 	}
-
+	
 	return str;
 }
 

@@ -71,6 +71,38 @@ export function $$mold(
 
 // ...
 
+export function $$append(
+	_ctx:  Red.Context,
+	path:  Red.RawAnyPath,
+	value: Red.AnyType,
+	_: RedActions.AppendOptions = {}
+): Red.RawAnyPath {
+	if(_.only !== undefined || !(Red.isAnyList(value) || Red.isAnyPath(value))) {
+		if(_.dup !== undefined) {
+			for(let i = 0; i < _.dup; i++) {
+				path.path.push(value);
+			}
+		} else {
+			path.path.push(value);
+		}
+	} else {
+		const values = "values" in value ? value.current().values : value.current().path;
+		if(_.dup !== undefined) {
+			for(let i = 0; i < _.dup; i++) {
+				path.path.push(...values);
+			}
+		} else if(_.part !== undefined) {
+			path.path.push(...values.slice(0, _.part));
+		} else {
+			path.path.push(...values);
+		}
+	}
+	
+	return path;
+}
+
+// ...
+
 export function $$insert(
 	_ctx:  Red.Context,
 	path:  Red.RawAnyPath,

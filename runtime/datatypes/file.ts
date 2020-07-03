@@ -1,6 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
-import {insert} from "./string-ref";
+import {append, insert} from "./string-ref";
 
 function encodeFileString(str: string): string {
 	let a: ReturnType<typeof str.match>;
@@ -38,6 +38,25 @@ export function $$mold(
 ): boolean {
 	buffer.push("%");
 	return $$form(ctx, file, buffer, _.part);
+}
+
+// ...
+
+export function $$append(
+	ctx:   Red.Context,
+	file:  Red.RawFile,
+	value: Red.AnyType,
+	_: RedActions.AppendOptions = {}
+): Red.RawFile {
+	append(ctx, file.name, value, _, (str, val) => {
+		if(val instanceof Red.RawFile) {
+			return str;
+		} else {
+			return encodeFileString(str);
+		}
+	});
+	
+	return file;
 }
 
 // ...
