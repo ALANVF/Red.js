@@ -5,6 +5,10 @@ TL;DR:
 
 Finish very soon:
 - Add more `series!` actions.
+- Redo/reimplement everything related to vectors.
+	- The current implementation has recently started to backfire due to TypeScript's broken "weak structural typing" in type unions.
+	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector).
+	- Might use JS' typed arrays to increase efficiency.
 - Add the `error!` type.
 - Fix relative paths when loading files.
 - Add `compare` action for all datatypes.
@@ -16,9 +20,6 @@ Finish somewhat soon:
 	- Quoting specs: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#741-function-type
 - Implement actions for more datatypes.
 - Add newline markers in blocks (will require rewriting many things).
-- Redo/reimplement literally everything related to vectors.
-	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector).
-	- Might use JS' typed arrays to increase efficiency.
 - Give functions special contexts so that `self` can be used in a function inside an object/context.
 - Switch from using unions to interfaces for the type system.
 - Reimplement `money!`.

@@ -1,6 +1,33 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 
+function insertOnly(
+	list:    Red.AnyType[],
+	value:   Red.AnyType,
+	index:   number
+) {
+	list.splice(index, 0, value);
+}
+
+function insertAll(
+	list:    Red.AnyType[],
+	values:  Red.AnyType[],
+	index:   number,
+	length?: number
+): number {
+	if(length !== 0) {
+		if(length === undefined || length >= values.length) {
+			list.splice(index, 0, ...values);
+			return values.length;
+		} else {
+			list.splice(index, 0, ...values.slice(0, length));
+		}
+	}
+	 
+	return length;
+}
+
+/* Actions */
 // $compare
 
 // $$make
@@ -40,4 +67,48 @@ export function $$mold(
 	}
 
 	return false;
+}
+
+// ...
+
+export function $$insert(
+	_ctx:  Red.Context,
+	path:  Red.RawAnyPath,
+	value: Red.AnyType,
+	_: RedActions.InsertOptions = {}
+): typeof path {
+	const index = path.index - 1;
+	
+	if(_.dup !== undefined) {
+		const dups = [];
+		
+		if(_.only !== undefined) {
+			for(let i = 0; i < _.dup; i++) dups.push(value);
+		} else if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+			const values = value.current().values;
+			for(let i = 0; i < _.dup; i++) dups.push(...values);
+		} else if(Red.isAnyPath(value)) {
+			const values = value.current().path;
+			for(let i = 0; i < _.dup; i++) dups.push(...values);
+		} else {
+			for(let i = 0; i < _.dup; i++) dups.push(value);
+		}
+		
+		path.path.splice(index, 0, ...dups);
+		path.index += dups.length;
+	} else if(_.only !== undefined) {
+		insertOnly(path.path, value, index);
+		path.index++;
+	} else {
+		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+			path.index += insertAll(path.path, value.current().values, index, _.part);
+		} else if(Red.isAnyPath(value)) {
+			path.index += insertAll(path.path, value.current().path, index, _.part);
+		} else {
+			insertOnly(path.path, value, index);
+			path.index++;
+		}
+	}
+
+	return path;
 }
