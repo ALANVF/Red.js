@@ -165,11 +165,40 @@ offset?: func [
 	subtract index? series2 index? series1
 ]
 
+repend: func [
+	"Appends a reduced value to a series and returns the series head"
+	series [series!]
+	value
+	/only "Appends a block value as a block"
+][
+	head either any [only not any-block? series][
+		insert/only tail series reduce :value
+	][
+		reduce/into :value tail series					;-- avoids wasting an intermediary block
+	]
+]
+
 charset: func [
 	"Shortcut for `make bitset!`"
 	spec [block! integer! char! string! bitset! binary!]
 ][
 	make bitset! spec
+]
+
+pad: func [
+	"Pad a FORMed value on right side with spaces"
+	str					"Value to pad, FORM it if not a string"
+	n		[integer!]	"Total size (in characters) of the new string"
+	/left				"Pad the string on left side"
+	/with				"Pad with char"
+	c		[char!]
+	return:	[string!]	"Modified input string at head"
+][
+	unless string? str [str: form str]
+	head insert/dup
+		any [all [left str] tail str]
+		any [c #" "]
+		(n - length? str)
 ]
 
 mod: func [

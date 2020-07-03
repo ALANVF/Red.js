@@ -5,6 +5,7 @@
 - Added `clear` action.
 - Added `remove` action.
 - Added `insert` action for `any-list`, `string!`, `file!`, `tag!`, and `url!`.
+- Added `pad` and `repend` helper functions.
 
 
 # Version 0.1.1
