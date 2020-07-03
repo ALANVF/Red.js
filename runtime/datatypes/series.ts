@@ -2,27 +2,6 @@ import * as Red from "../../red-types";
 import RedUtil from "../util";
 import RedActions from "../actions";
 
-function sameSeries(
-	ser1: Red.RawSeries,
-	ser2: typeof ser1
-): boolean {
-	if(Red.isAnyList(ser1) || ser1 instanceof Red.RawString || ser1 instanceof Red.RawVector) {
-		return ser1.values === (<typeof ser1>ser2).values;
-	} else if(ser1 instanceof Red.RawFile) {
-		return ser1.name === (<typeof ser1>ser2).name;
-	} else if(ser1 instanceof Red.RawTag) {
-		return ser1.tag === (<typeof ser1>ser2).tag;
-	} else if(ser1 instanceof Red.RawEmail) {
-		return ser1.host === (<typeof ser1>ser2).host && ser1.user === (<typeof ser1>ser2).user; // fix later
-	} else if(ser1 instanceof Red.RawUrl) {
-		return ser1.url === (<typeof ser1>ser2).url;
-	} else if(ser1 instanceof Red.RawBinary) {
-		return ser1.bytes === (<typeof ser1>ser2).bytes;
-	} else {
-		return ser1.path === (<typeof ser1>ser2).path;
-	}
-}
-
 
 /* Native actions */
 
@@ -270,7 +249,7 @@ export function $$remove(
 		} else if(_.part instanceof Red.RawChar) {
 			length = _.part.char;
 		} else if(Red.isSeries(_.part)) {
-			if(_.part.constructor === series.constructor && sameSeries(_.part, series)) {
+			if(_.part.constructor === series.constructor && Red.sameSeries(_.part, series)) {
 				length = _.part.index - series.index;
 			} else {
 				throw new Error("Value error!")

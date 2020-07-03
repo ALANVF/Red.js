@@ -134,12 +134,12 @@ export function $$append(
 		str.values.push(value);
 	} else if(value instanceof Red.RawString) {
 		str.values.push(...value.current().values);
-	} else if(value instanceof Red.RawBlock) {
+	} else if(Red.isAnyList(value)) {
 		for(const elem of value.current().values) {
 			str.values.push(...RedActions.$$form(ctx, elem).values);
 		}
 	} else if(value instanceof Red.RawFile) {
-		str.values.push(...[...value.current().name.ref].map(s => new Red.RawChar(s.charCodeAt(0))))
+		str.values.push(...[...value.current().name.ref].map(s => new Red.RawChar(s.charCodeAt(0))));
 	} else { // Unsure if /only should be ignored
 		str.values.push(...RedActions.$$form(ctx, value).values);
 	}
@@ -171,4 +171,50 @@ export function $$poke(
 	} else {
 		throw new TypeError("error!");
 	}
+}
+
+// ...
+
+export function $$insert(
+	ctx:   Red.Context,
+	str:   Red.RawString,
+	value: Red.AnyType,
+	_: RedActions.InsertOptions = {}
+): Red.RawString {
+	const index = str.index - 1;
+	let addStr: Red.RawChar[];
+	
+	if(value instanceof Red.RawChar) {
+		addStr = [value];
+	} else if(value instanceof Red.RawString) {
+		addStr = value.values.slice(value.index - 1);
+	} else if(Red.isAnyList(value)) {
+		addStr = [];
+		for(const elem of value.current().values) {
+			addStr.push(...RedActions.$$form(ctx, elem).values);
+		}
+	} else if(value instanceof Red.RawFile) {
+		addStr = [...value.current().name.ref].map(s => new Red.RawChar(s.charCodeAt(0)));
+	} else {
+		addStr = RedActions.$$form(ctx, value).values;
+	}
+	
+	if(_.dup !== undefined) {
+		const dups = [];
+		
+		for(let i = 0; i < _.dup; i++) {
+			dups.push(...addStr);
+		}
+		
+		str.values.splice(index, 0, ...dups);
+		str.index += dups.length;
+	} else if(_.part !== undefined) {
+		str.values.splice(index, 0, ...addStr.slice(0, _.part));
+		str.index += _.part;
+	} else {
+		str.values.splice(index, 0, ...addStr);
+		str.index += addStr.length;
+	}
+
+	return str;
 }

@@ -3,6 +3,33 @@ import RedActions from "../actions";
 import {tokenize} from "../../tokenizer";
 import RedUtil from "../util";
 
+function insertOnly(
+	list:    Red.AnyType[],
+	value:   Red.AnyType,
+	index:   number
+) {
+	list.splice(index, 0, value);
+}
+
+function insertAll(
+	list:    Red.AnyType[],
+	values:  Red.AnyType[],
+	index:   number,
+	length?: number
+): number {
+	if(length !== 0) {
+		if(length === undefined || length >= values.length) {
+			list.splice(index, 0, ...values);
+			return values.length;
+		} else {
+			list.splice(index, 0, ...values.slice(0, length));
+		}
+	}
+	 
+	return length;
+}
+
+/* Actions */
 export function $$make(
 	_ctx:   Red.Context,
 	_proto: Red.AnyType,
@@ -153,6 +180,50 @@ export function $$append(
 			series.values.push(...value.path.slice(value.index - 1));
 		} else {
 			series.values.push(value);
+		}
+	}
+
+	return series;
+}
+
+// ...
+
+export function $$insert(
+	_ctx:   Red.Context,
+	series: Red.RawAnyList,
+	value:  Red.AnyType,
+	_: RedActions.InsertOptions = {}
+): Red.RawBlock {
+	const index = series.index - 1;
+	
+	if(_.dup !== undefined) {
+		const dups = [];
+		
+		if(_.only !== undefined) {
+			for(let i = 0; i < _.dup; i++) dups.push(value);
+		} else if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+			const values = value.current().values;
+			for(let i = 0; i < _.dup; i++) dups.push(...values);
+		} else if(Red.isAnyPath(value)) {
+			const values = value.current().path;
+			for(let i = 0; i < _.dup; i++) dups.push(...values);
+		} else {
+			for(let i = 0; i < _.dup; i++) dups.push(value);
+		}
+		
+		series.values.splice(index, 0, ...dups);
+		series.index += dups.length;
+	} else if(_.only !== undefined) {
+		insertOnly(series.values, value, index);
+		series.index++;
+	} else {
+		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+			series.index += insertAll(series.values, value.current().values, index, _.part);
+		} else if(Red.isAnyPath(value)) {
+			series.index += insertAll(series.values, value.current().path, index, _.part);
+		} else {
+			insertOnly(series.values, value, index);
+			series.index++;
 		}
 	}
 

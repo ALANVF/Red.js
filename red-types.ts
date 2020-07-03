@@ -773,14 +773,14 @@ export class RawUrl extends RawValue implements Series {
 	}
 }
 
-type Vector = (RawInteger[] | RawFloat[] | RawChar[] | RawPercent[]) & unknown[]; // incomplete hack for dumb union bug
+type Vector = (RawInteger[] | RawFloat[] | RawChar[] | RawPercent[]) /*& unknown[]*/; // incomplete hack for dumb union bug
 export class RawVector extends RawValue implements SeriesOf<RawInteger|RawFloat|RawChar|RawPercent> {
 	index: number = 1;
 
 	constructor(public values: Vector) {
 		super();
 	}
-
+	
 	static isInteger(values: Vector): values is RawInteger[] {
 		return values.every((v: any) => v instanceof RawInteger);
 	}
@@ -1477,6 +1477,27 @@ export function wrap(value: any): AnyType {
 
 export function todo(): never {
 	throw new Error("This feature has not been implemented yet!");
+}
+
+export function sameSeries(
+	ser1: RawSeries,
+	ser2: typeof ser1
+): boolean {
+	if(isAnyList(ser1) || ser1 instanceof RawString || ser1 instanceof RawVector) {
+		return ser1.values === (<typeof ser1>ser2).values;
+	} else if(ser1 instanceof RawFile) {
+		return ser1.name === (<typeof ser1>ser2).name;
+	} else if(ser1 instanceof RawTag) {
+		return ser1.tag === (<typeof ser1>ser2).tag;
+	} else if(ser1 instanceof RawEmail) {
+		return ser1.host === (<typeof ser1>ser2).host && ser1.user === (<typeof ser1>ser2).user; // fix later
+	} else if(ser1 instanceof RawUrl) {
+		return ser1.url === (<typeof ser1>ser2).url;
+	} else if(ser1 instanceof RawBinary) {
+		return ser1.bytes === (<typeof ser1>ser2).bytes;
+	} else {
+		return ser1.path === (<typeof ser1>ser2).path;
+	}
 }
 
 

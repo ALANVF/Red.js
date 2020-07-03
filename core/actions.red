@@ -336,7 +336,6 @@ index?: make action! [[
 	index_q
 ]
 
-'TODO [
 insert: make action! [[
 		"Inserts value(s) at series index; returns series past the insertion"
 		series	   [series! port! bitset!]
@@ -349,7 +348,6 @@ insert: make action! [[
 		return:    [series! port! bitset!]
 	]
 	insert
-]
 ]
 
 length?: make action! [[

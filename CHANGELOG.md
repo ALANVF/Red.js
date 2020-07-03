@@ -4,6 +4,7 @@
 - Fixed `form`/`mold` for `binary!` values with an offset.
 - Added `clear` action.
 - Added `remove` action.
+- Added `insert` action for `any-list`, `string!`, `file!`, `tag!`, and `url!`.
 
 
 # Version 0.1.1

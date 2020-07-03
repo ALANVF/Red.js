@@ -934,6 +934,34 @@ module RedActions {
 		#get-definition ACT_INSERT
 	]
 	*/
+	export function $$insert(
+		ctx:    Red.Context,
+		series: Red.RawSeries|Red.RawBitset,
+		value:  Red.AnyType,
+		_: {
+			part?: [Red.RawNumber|Red.RawSeries],
+			only?: [],
+			dup?:  [Red.RawInteger]
+		} = {}
+	): typeof series {
+		const __: InsertOptions = {};
+		
+		if(_.part !== undefined) {
+			const [length] = _.part;
+			
+			if(Red.isNumber(length)) {
+				__.part = Math.floor(length.value);
+			} else if(!(series instanceof Red.RawBitset) && Red.sameSeries(series, length)) {
+				__.part = length.index - series.index;
+			} else {
+				throw new Error("Error!");
+			}
+		}
+		if(_.only !== undefined) __.only = true;
+		if(_.dup !== undefined) __.dup = _.dup[0].value;
+		
+		return valueSendAction("$$insert", ctx, series, value, __);
+	}
 
 	export function $$length_q(
 		ctx:    Red.Context,
@@ -992,7 +1020,7 @@ module RedActions {
 		series: Red.RawSeries|Red.RawBitset,
 		index:  Red.RawScalar|Red.RawAnyString|Red.RawAnyWord|Red.RawBlock|Red.RawLogic,
 		value:  Red.AnyType
-	): Red.AnyType {
+	): typeof series {
 		if(index instanceof Red.RawInteger && !(series instanceof Red.RawTuple || series instanceof Red.RawPair || series instanceof Red.RawTime)) {
 			return valueSendAction("$$poke", ctx, series, index, value);
 		} else {
