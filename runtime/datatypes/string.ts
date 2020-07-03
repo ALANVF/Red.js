@@ -53,7 +53,7 @@ export function $compare(
 				} else if(value2 instanceof Red.RawUrl) {
 					other = value2.url.ref.slice(value2.index - 1);
 				} else if(value2 instanceof Red.RawEmail) {
-					other = (value2.user + "@" + value2.host).slice(value2.index - 1);
+					other = (value2.email.ref).slice(value2.index - 1);
 				} else if(value2 instanceof Red.RawTag) {
 					other = value2.tag.ref.slice(value2.index - 1);
 				} else {

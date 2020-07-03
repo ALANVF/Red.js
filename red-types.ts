@@ -835,15 +835,12 @@ export class RawVector extends RawValue implements SeriesOf<RawInteger|RawFloat|
 export class RawEmail extends RawValue implements Series {
 	index: number = 1;
 	
-	constructor(
-		public user: string,
-		public host: string
-	) {
+	constructor(public email: Ref<string>) {
 		super();
 	}
 
 	get length() {
-		return this.user.length + 1 + this.host.length - (this.index - 1);
+		return this.email.ref.length - (this.index - 1);
 	}
 }
 
@@ -1490,7 +1487,7 @@ export function sameSeries(
 	} else if(ser1 instanceof RawTag) {
 		return ser1.tag === (<typeof ser1>ser2).tag;
 	} else if(ser1 instanceof RawEmail) {
-		return ser1.host === (<typeof ser1>ser2).host && ser1.user === (<typeof ser1>ser2).user; // fix later
+		return ser1.email === (<typeof ser1>ser2).email;
 	} else if(ser1 instanceof RawUrl) {
 		return ser1.url === (<typeof ser1>ser2).url;
 	} else if(ser1 instanceof RawBinary) {

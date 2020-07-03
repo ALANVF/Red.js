@@ -1346,8 +1346,7 @@ function tokenToRed(token: RedToken): Red.AnyType {
 		return new Red.RawFile(new Ref(token.file));
 	}
 	else if("email" in token) {
-		const [l, r] = token.email.split("@");
-		return new Red.RawEmail(l, r);
+		return new Red.RawEmail(new Ref(token.email));
 	}
 	else if("url" in token) { // TODO: implement
 		throw new Error("unimplemented!");

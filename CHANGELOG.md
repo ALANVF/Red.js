@@ -4,8 +4,9 @@
 - Fixed `form`/`mold` for `binary!` values with an offset.
 - Added `clear` action.
 - Added `remove` action.
-- Added `insert` action for `any-list!`, `any-path!`, `string!`, `file!`, `tag!`, and `url!`.
+- Added `insert` action for `any-list!`, `any-path!`, `any-string!`.
 - Added `pad` and `repend` helper functions.
+- Redid `email!`'s implementation.
 
 
 # Version 0.1.1
