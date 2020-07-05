@@ -1,5 +1,6 @@
 import RedUtil from "./runtime/util";
 import {Ref} from "./helper-types";
+import {Vector, VectorOf, ElemType, ElemSize, TypedArray, vector} from "./types/typed-vector";
 
 interface Series {
 	index:  number;
@@ -189,8 +190,6 @@ export class RawIssue extends RawValue {
 
 /// scalars
 export class RawInteger extends RawValue {
-	#_1 = undefined; // fix for dumb union bug
-	
 	constructor(public value: number) {
 		super();
 
@@ -201,8 +200,6 @@ export class RawInteger extends RawValue {
 }
 
 export class RawFloat extends RawValue {
-	#_2 = undefined; // fix for dumb union bug
-	
 	constructor(public value: number) {
 		super();
 	}
@@ -218,8 +215,6 @@ export class RawMoney extends RawValue {
 }
 
 export class RawPercent extends RawValue {
-	#_3 = undefined; // fix for dumb union bug
-	
 	constructor(public value: number) {
 		super();
 	}
@@ -773,28 +768,30 @@ export class RawUrl extends RawValue implements Series {
 	}
 }
 
-type Vector = (RawInteger[] | RawFloat[] | RawChar[] | RawPercent[]) /*& unknown[]*/; // incomplete hack for dumb union bug
-export class RawVector extends RawValue implements SeriesOf<RawInteger|RawFloat|RawChar|RawPercent> {
+export class RawVector extends RawValue implements SeriesOf<number> {
 	index: number = 1;
 
 	constructor(public values: Vector) {
 		super();
 	}
 	
-	static isInteger(values: Vector): values is RawInteger[] {
-		return values.every((v: any) => v instanceof RawInteger);
+	toRedValues(): AnyType[] {
+		switch(this.values.elemType) {
+			case "integer!": return [...this.values.repr].map(v => new RawInteger(v));
+			case "float!":   return [...this.values.repr].map(v => new RawFloat(v));
+			case "percent!": return [...this.values.repr].map(v => new RawPercent(v));
+			case "char!":    return [...this.values.repr].map(v => new RawChar(v));
+		}
 	}
-
-	static isDecimal(values: Vector): values is RawFloat[] {
-		return values.every((v: any) => v instanceof RawFloat);
-	}
-
-	static isChar(values: Vector): values is RawChar[] {
-		return values.every((v: any) => v instanceof RawChar);
-	}
-
-	static isPercent(values: Vector): values is RawPercent[] {
-		return values.every((v: any) => v instanceof RawPercent);
+	
+	pickBoxed(i: number) {
+		const value = this.pick(i);
+		switch(this.values.elemType) {
+			case "integer!": return new RawInteger(value);
+			case "float!":   return new RawFloat(value);
+			case "percent!": return new RawPercent(value);
+			case "char!":    return new RawChar(value);
+		}
 	}
 
 	pick(i: number) {
@@ -802,19 +799,18 @@ export class RawVector extends RawValue implements SeriesOf<RawInteger|RawFloat|
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
-		return this.values[(this.index - 1) + (i - 1)];
+		return this.values.get((this.index - 1) + (i - 1));
 	}
 	
 	poke(
 		i: number,
-		v: AnyType
+		v: number
 	) {
 		if(i < 1 || i > this.length) {
 			throw new Error(`Invalid index: ${i}`);
 		}
 		
-		//this.values[(this.index - 1) + (i - 1)] = v;
-		throw new Error("Unimplemented!");
+		this.values.set((this.index - 1) + (i - 1), v);
 	}
 
 	current(): RawVector {
@@ -1408,6 +1404,14 @@ export const TypeNames = [
 	"money!"
 ];
 
+export const Datatypes: Record<string, RawDatatype> = {};
+for(const [i, v] of Types.entries()) {
+	if(v != null) {
+		const name = TypeNames[i];
+		Datatypes[name] = new RawDatatype(name, v);
+	}
+}
+
 export function typeOf(val: AnyType): ValueType {
 	for(let i = 0; i < Types.length; i++) {
 		if(Types[i] != null) {
@@ -1424,6 +1428,7 @@ export function typeName(val: AnyType): string {
 	return TypeNames[typeOf(val)];
 }
 
+// TODO: make typed arrays return a vector
 export function wrap(value: number): RawInteger|RawFloat;
 export function wrap(value: string): RawString;
 export function wrap(value: boolean): RawLogic;

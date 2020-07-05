@@ -394,7 +394,7 @@ module RedNatives {
 	): Red.AnyType {
 		return RedActions.$$make(
 			ctx,
-			system$words.getWord<Red.RawDatatype>("function!"), // TODO: provide this automatically in system.ts
+			Red.Datatypes["function!"], // TODO: provide this automatically in system.ts
 			new Red.RawBlock([spec, body])
 		);
 	}
@@ -433,7 +433,7 @@ module RedNatives {
 
 		return RedActions.$$make(
 			ctx,
-			system$words.getWord<Red.RawDatatype>("function!"),
+			Red.Datatypes["function!"],
 			new Red.RawBlock([
 				new Red.RawBlock([
 					...(docSpec == null ? [] : [docSpec]),

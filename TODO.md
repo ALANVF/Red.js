@@ -5,10 +5,6 @@ TL;DR:
 
 Finish very soon:
 - Add more `series!` actions.
-- Redo/reimplement everything related to vectors.
-	- The current implementation has recently started to backfire due to TypeScript's broken "weak structural typing" in type unions.
-	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector).
-	- Might use JS' typed arrays to increase efficiency.
 - Add the `error!` type.
 - Fix relative paths when loading files.
 - Add `compare` action for all datatypes.
@@ -83,3 +79,7 @@ Things already done:
 - Add bit-shift operators.
 - Fix stringy types like `file!` and `tag!`.
 - Remove `pre1` from the preprocessor.
+- Redo/reimplement everything related to vectors.
+	- The current implementation has recently started to backfire due to TypeScript's broken "weak structural typing" in type unions.
+	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector).
+	- Might use JS' typed arrays to increase efficiency.

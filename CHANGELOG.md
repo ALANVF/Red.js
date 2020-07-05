@@ -1,3 +1,7 @@
+# Version 0.1.3
+- Reimplemented `vector!`s.
+
+
 # Version 0.1.2
 - Removed `pre1` from the preprocessor.
 - Reimplemented several `series!` types.

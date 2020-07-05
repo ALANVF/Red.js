@@ -130,6 +130,8 @@ export function $$pick(
 		if("pick" in ser) {
 			if(ser instanceof Red.RawBinary) {
 				return new Red.RawInteger(ser.pick(index.value));
+			} else if(ser instanceof Red.RawVector) {
+				return ser.pickBoxed(index.value);
 			} else {
 				try {
 					return ser.pick(index.value);
@@ -149,8 +151,10 @@ export function $$clear(
 	_ctx:   Red.Context,
 	series: Red.RawSeries
 ): Red.RawSeries {
-	if(Red.isAnyList(series) || series instanceof Red.RawString || series instanceof Red.RawVector) {
+	if(Red.isAnyList(series) || series instanceof Red.RawString) {
 		series.values.splice(series.index - 1);
+	} else if(series instanceof Red.RawVector) {
+		series.values.remove(series.index - 1, series.length)
 	} else if(series instanceof Red.RawFile) {
 		series.name.set(ref => ref.slice(0, series.index - 1));
 	} else if(series instanceof Red.RawTag) {
@@ -193,28 +197,38 @@ export function $$poke(
 	if(index.value < 1 || index.value > ser.length) {
 		throw new RangeError("error!");
 	} else {
-		if(("poke" in ser) && ("pick" in ser)) {
+		if("poke" in ser) {
 			if(ser instanceof Red.RawBinary) {
 				if(value instanceof Red.RawInteger) {
-					ser.poke(index.value, value.value); // FIX: needs fixing
-					return new Red.RawInteger(ser.pick(index.value));
+					ser.poke(index.value, value.value);
 				} else {
 					throw new Error("error!");
 				}
+			} else if(ser instanceof Red.RawVector) {
+				if(Red.isNumber(value)) {
+					ser.poke(index.value, value.value);
+				} else if(value instanceof Red.RawChar) {
+					ser.poke(index.value, value.char);
+				} else {
+					throw new TypeError("Error!");
+				}
 			} else {
 				ser.poke(index.value, value as any); // TODO: fix
-				return ser.pick(index.value);
 			}
 		} else {
 			Red.todo();
 		}
 	}
+	
+	return value;
 }
 
 
 function seriesRemove(series: Red.RawSeries, index: number, length: number) {
-	if(Red.isAnyList(series) || series instanceof Red.RawString || series instanceof Red.RawVector) {
+	if(Red.isAnyList(series) || series instanceof Red.RawString) {
 		series.values.splice(index, length);
+	} else if(series instanceof Red.RawVector) {
+		series.values.remove(index, length);
 	} else if(series instanceof Red.RawFile) {
 		series.name.set(ref => ref.slice(0, index) + ref.slice(index + length));
 	} else if(series instanceof Red.RawTag) {

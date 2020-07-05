@@ -17,66 +17,66 @@ system$options.addWord("path", new Red.RawFile(new Ref("./")));
 system$options.addWord("args", Red.RawNone.none);
 
 /* system/words */
-function addDatatype(name: string, datatype: Function) {
-	system$words.addWord(name, new Red.RawDatatype(name, datatype));
+function addDatatype(name: string) {
+	system$words.addWord(name, Red.Datatypes[name]);
 }
 
-addDatatype("red-value!", Red.RawValue);
-addDatatype("datatype!", Red.RawDatatype);
+addDatatype("red-value!");
+addDatatype("datatype!");
 
 // scalars
-addDatatype("word!", Red.RawWord);
-addDatatype("lit-word!", Red.RawLitWord);
-addDatatype("get-word!", Red.RawGetWord);
-addDatatype("set-word!", Red.RawSetWord);
+addDatatype("word!");
+addDatatype("lit-word!");
+addDatatype("get-word!");
+addDatatype("set-word!");
 
-addDatatype("path!", Red.RawPath);
-addDatatype("lit-path!", Red.RawLitPath);
-addDatatype("get-path!", Red.RawGetPath);
-addDatatype("set-path!", Red.RawSetPath);
+addDatatype("path!");
+addDatatype("lit-path!");
+addDatatype("get-path!");
+addDatatype("set-path!");
 
-addDatatype("refinement!", Red.RawRefinement);
-addDatatype("issue!", Red.RawIssue);
+addDatatype("refinement!");
+addDatatype("issue!");
 
-addDatatype("integer!", Red.RawInteger);
-addDatatype("float!", Red.RawFloat);
-addDatatype("money!", Red.RawMoney);
-addDatatype("percent!", Red.RawPercent);
-addDatatype("char!", Red.RawChar);
-addDatatype("logic!", Red.RawLogic);
-addDatatype("none!", Red.RawNone);
+addDatatype("integer!");
+addDatatype("float!");
+addDatatype("money!");
+addDatatype("percent!");
+addDatatype("char!");
+addDatatype("logic!");
+addDatatype("none!");
 
 // series
-addDatatype("binary!", Red.RawBinary);
-addDatatype("string!", Red.RawString);
-addDatatype("paren!", Red.RawParen);
-addDatatype("block!", Red.RawBlock);
-addDatatype("file!", Red.RawFile);
-addDatatype("url!", Red.RawUrl);
-addDatatype("vector!", Red.RawVector);
-addDatatype("hash!", Red.RawHash);
+addDatatype("binary!");
+addDatatype("string!");
+addDatatype("paren!");
+addDatatype("block!");
+addDatatype("file!");
+addDatatype("url!");
+addDatatype("vector!");
+addDatatype("hash!");
 
 // compound
-addDatatype("email!", Red.RawEmail);
-addDatatype("pair!", Red.RawPair);
-addDatatype("date!", Red.RawDate);
-addDatatype("tuple!", Red.RawTuple);
-addDatatype("map!", Red.RawMap);
-addDatatype("time!", Red.RawTime);
-addDatatype("tag!", Red.RawTag);
+addDatatype("email!");
+addDatatype("pair!");
+addDatatype("date!");
+addDatatype("tuple!");
+addDatatype("map!");
+addDatatype("time!");
+addDatatype("tag!");
 
 // other
-addDatatype("bitset!", Red.RawBitset);
-addDatatype("typeset!", Red.RawTypeset);
-addDatatype("unset!", Red.RawUnset);
+addDatatype("bitset!");
+addDatatype("typeset!");
+addDatatype("unset!");
 
-addDatatype("context!", Red.Context);
-addDatatype("object!", Red.RawObject);
+addDatatype("context!");
+addDatatype("object!");
 
-addDatatype("function!", Red.RawFunction);
-addDatatype("op!", Red.Op);
-addDatatype("native!", Red.Native);
-addDatatype("action!", Red.Action);
+addDatatype("function!");
+addDatatype("op!");
+addDatatype("native!");
+addDatatype("action!");
 
 // typesets
 system$words.addWord(
@@ -84,7 +84,7 @@ system$words.addWord(
 	new Red.RawTypeset(
 		"integer! float! percent!"
 			.split(/\s+/)
-			.map(n => system$words.getWord<Red.RawDatatype>(n))
+			.map(n => Red.Datatypes[n])
 	)
 );
 
@@ -93,7 +93,7 @@ system$words.addWord(
 	new Red.RawTypeset(
 		"word! set-word! lit-word! get-word!"
 			.split(/\s+/)
-			.map(n => system$words.getWord<Red.RawDatatype>(n))
+			.map(n => Red.Datatypes[n])
 	)
 );
 
@@ -135,5 +135,5 @@ const types = `
 
 system$words.addWord(
 	"any-type!",
-	new Red.RawTypeset(types.split(/\s+/).map(n => system$words.getWord<Red.RawDatatype>(n)))
+	new Red.RawTypeset(types.split(/\s+/).map(n => Red.Datatypes[n]))
 );

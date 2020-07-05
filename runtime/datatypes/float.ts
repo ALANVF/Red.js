@@ -102,7 +102,7 @@ export function $$add(
 	} else if(right instanceof Red.RawDate) {
 		Red.todo();
 	} else if(right instanceof Red.RawVector) {
-		if(Red.RawVector.isPercent(right.values)) {
+		/*if(Red.RawVector.isPercent(right.values)) {
 			return new Red.RawVector(
 				right.values
 					.slice(right.index-1)
@@ -120,7 +120,8 @@ export function $$add(
 					.slice(right.index-1)
 					.map((v: any) => $$add(ctx, left, v))
 			);
-		}
+		}*/
+		Red.todo();
 	} else {
 		throw new TypeError("Can't add float! with type " + Red.typeName(right));
 	}
@@ -142,7 +143,7 @@ export function $$subtract(
 	} else if(right instanceof Red.RawDate) {
 		Red.todo();
 	} else if(right instanceof Red.RawVector) {
-		if(Red.RawVector.isPercent(right.values)) {
+		/*if(Red.RawVector.isPercent(right.values)) {
 			return new Red.RawVector(
 				right.values
 					.slice(right.index-1)
@@ -160,7 +161,8 @@ export function $$subtract(
 					.slice(right.index-1)
 					.map((v: any) => $$subtract(ctx, left, v))
 			);
-		}
+		}*/
+		Red.todo();
 	} else {
 		throw new TypeError("Can't subtract float! with type " + Red.typeName(right));
 	}
@@ -182,7 +184,7 @@ export function $$multiply(
 	} else if(right instanceof Red.RawDate) {
 		Red.todo();
 	} else if(right instanceof Red.RawVector) {
-		if(Red.RawVector.isPercent(right.values)) {
+		/*if(Red.RawVector.isPercent(right.values)) {
 			return new Red.RawVector(
 				right.values
 					.slice(right.index-1)
@@ -200,7 +202,8 @@ export function $$multiply(
 					.slice(right.index-1)
 					.map((v: any) => $$multiply(ctx, left, v))
 			);
-		}
+		}*/
+		Red.todo();
 	} else {
 		throw new TypeError("Can't multiply float! with type " + Red.typeName(right));
 	}
@@ -222,7 +225,7 @@ export function $$divide(
 	} else if(right instanceof Red.RawDate) {
 		Red.todo();
 	} else if(right instanceof Red.RawVector) {
-		if(Red.RawVector.isPercent(right.values)) {
+		/*if(Red.RawVector.isPercent(right.values)) {
 			return new Red.RawVector(
 				right.values
 					.slice(right.index-1)
@@ -240,7 +243,8 @@ export function $$divide(
 					.slice(right.index-1)
 					.map((v: any) => $$divide(ctx, left, v))
 			);
-		}
+		}*/
+		Red.todo();
 	} else {
 		throw new TypeError("Can't divide float! with type " + Red.typeName(right));
 	}

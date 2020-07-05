@@ -49,7 +49,7 @@ export function $$make(
 	} else if(spec instanceof Red.RawMap) {
 		return new Red.RawBlock(RedUtil.Arrays.zip(spec.keys, spec.values).flat());
 	} else if(spec instanceof Red.RawVector) {
-		return new Red.RawBlock(spec.values.slice(spec.index-1));
+		return new Red.RawBlock(spec.toRedValues().slice(spec.index-1));
 	} else {
 		throw new TypeError("Cannot create a block! from an instance of " + Red.typeName(spec));
 	}
@@ -72,7 +72,7 @@ export function $$to(
 	} else if(spec instanceof Red.RawMap) {
 		return new Red.RawBlock(RedUtil.Arrays.zip(spec.keys, spec.values).flat());
 	} else if(spec instanceof Red.RawVector) {
-		return new Red.RawBlock(spec.values.slice(spec.index-1));
+		return new Red.RawBlock(spec.toRedValues().slice(spec.index-1));
 	} else if(spec instanceof Red.RawString) {
 		return new Red.RawBlock(tokenize(spec.toJsString()));
 	} else if(spec instanceof Red.RawTypeset) {

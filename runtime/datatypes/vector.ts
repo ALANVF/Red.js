@@ -7,17 +7,22 @@ export function $$form(
 	buffer: string[],
 	part?:  number
 ): boolean {
-	const blk = vector.values.slice(vector.index-1);
+	const blk = vector.values.repr.slice(vector.index-1);
+	
+	let mapping: (v: number) => string;
+	
+	switch(vector.values.elemType) {
+		case "integer!": mapping = v => v.toFixed(0);                                break;
+		case "float!":   mapping = v => v % 1 == 0 ? v.toFixed(1) : v.toString();    break;
+		case "percent!": mapping = v => (v * 100).toString() + "%";                  break;
+		case "char!":    mapping = v => '#"' + new Red.RawChar(v).toRedChar() + '"'; break;
+	}
+	
+	buffer.push(mapping(blk[0]));
 
-	if(blk.length == 0) {
-		buffer.push("");
-	} else {
-		RedActions.valueSendAction("$$form", ctx, blk[0], buffer, part);
-
-		for(const val of blk.slice(1)) {
-			buffer.push(" ");
-			RedActions.valueSendAction("$$form", ctx, val, buffer, part);
-		}
+	for(const val of blk.slice(1)) {
+		buffer.push(" ");
+		buffer.push(mapping(val));
 	}
 
 	return false;
@@ -30,18 +35,27 @@ export function $$mold(
 	indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	const blk = vector.values.slice(vector.index-1);
-
+	const blk = vector.values.repr.slice(vector.index-1);
+	
 	buffer.push("make vector! [")
 	
 	if(blk.length == 0) {
 		buffer.push("]");
 	} else {
-		RedActions.valueSendAction("$$mold", ctx, blk[0], buffer, indent, _);
+		let mapping: (v: number) => string;
+		
+		switch(vector.values.elemType) {
+			case "integer!": mapping = v => v.toFixed(0);                                break;
+			case "float!":   mapping = v => v % 1 == 0 ? v.toFixed(1) : v.toString();    break;
+			case "percent!": mapping = v => (v * 100).toString() + "%";                  break;
+			case "char!":    mapping = v => '#"' + new Red.RawChar(v).toRedChar() + '"'; break;
+		}
+		
+		buffer.push(mapping(blk[0]));
 
 		for(const val of blk.slice(1)) {
 			buffer.push(" ");
-			RedActions.valueSendAction("$$mold", ctx, val, buffer, indent, _);
+			buffer.push(mapping(val));
 		}
 
 		buffer.push("]");
