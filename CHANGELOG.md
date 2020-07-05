@@ -1,4 +1,4 @@
-# Version 0.1.3
+# Version 0.1.3 (in development)
 - Reimplemented `vector!`s.
 
 
