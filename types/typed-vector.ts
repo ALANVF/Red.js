@@ -193,8 +193,8 @@ import Vector_Char16 from "./vectors/char16";
 import Vector_Char32 from "./vectors/char32";
 import Vector_Float32 from "./vectors/float32";
 import Vector_Float64 from "./vectors/float64";
-import Vector_Percent32 from "./vectors/float32";
-import Vector_Percent64 from "./vectors/float64";
+import Vector_Percent32 from "./vectors/percent32";
+import Vector_Percent64 from "./vectors/percent64";
 
 export type Vector = VectorOf<ElemType, ElemSize>;
 
@@ -208,8 +208,8 @@ export function vector(elem: ElemType, size: ElemSize, values: number[]): Vector
 		case "char!32":    return new Vector_Char32(values);
 		case "float!32":   return new Vector_Float32(values);
 		case "float!64":   return new Vector_Float64(values);
-		case "percent!32":   return new Vector_Percent32(values);
-		case "percent!64":   return new Vector_Percent64(values);
+		case "percent!32": return new Vector_Percent32(values);
+		case "percent!64": return new Vector_Percent64(values);
 		default:           throw new Error(`Invalid vector! spec \`[${elem} ${size} [${values.join(" ")}]]\`!`);
 	}
 }
