@@ -126,7 +126,13 @@ export abstract class VectorOf<T extends ElemType, S extends ElemSize> {
 	
 	abstract copyAs(fn: (v: Repr<T, S>) => Repr<T, S>): VectorOf<T, S>;
 	
-	//abstract mapSet(fn: (v: number, i?: number) => number): this;
+	mapSet(fn: (v: number, i?: number) => number): this {
+		for(let i = 0; i < this.repr.length; i++) {
+			this.repr[i] = fn(this.repr[i], i);
+		}
+		
+		return this;
+	}
 	
 	abstract push(...values: number[]): number[];
 	

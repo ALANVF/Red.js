@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
-import {append, insert} from "./string-ref";
+import {append, insert, change} from "./string-ref";
+import {$$skip} from "./series";
 
 /* Actions */
 export function $$form(
@@ -36,15 +37,20 @@ export function $$append(
 	return url;
 }
 
-// ...
-
 export function $$insert(
 	ctx:   Red.Context,
 	url:   Red.RawUrl,
 	value: Red.AnyType,
 	_: RedActions.InsertOptions = {}
 ): Red.RawUrl {
-	url.index += insert(ctx, url.url, url.index - 1, value, _, encodeURI);
-	
-	return url;
+	return $$skip(ctx, url, insert(ctx, url.url, url.index - 1, value, _, encodeURI));
+}
+
+export function $$change(
+	ctx:   Red.Context,
+	url:   Red.RawUrl,
+	value: Red.AnyType,
+	_: RedActions.ChangeOptions = {}
+): Red.RawUrl {
+	return $$skip(ctx, url, change(ctx, url.url, url.index - 1, value, _, encodeURI));
 }

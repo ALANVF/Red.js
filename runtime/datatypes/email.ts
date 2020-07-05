@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
-import {append, insert} from "./string-ref";
+import {append, insert, change} from "./string-ref";
+import {$$skip} from "./series";
 
 /* Actions */
 export function $$form(
@@ -36,15 +37,20 @@ export function $$append(
 	return email;
 }
 
-// ...
-
 export function $$insert(
 	ctx:   Red.Context,
 	email: Red.RawEmail,
 	value: Red.AnyType,
 	_: RedActions.InsertOptions = {}
 ): Red.RawEmail {
-	email.index += insert(ctx, email.email, email.index - 1, value, _, encodeURI);
-	
-	return email;
+	return $$skip(ctx, email, insert(ctx, email.email, email.index - 1, value, _, encodeURI));
+}
+
+export function $$change(
+	ctx:   Red.Context,
+	email: Red.RawEmail,
+	value: Red.AnyType,
+	_: RedActions.ChangeOptions = {}
+): Red.RawEmail {
+	return $$skip(ctx, email, change(ctx, email.email, email.index - 1, value, _, encodeURI));
 }

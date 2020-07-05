@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
-import {append, insert} from "./string-ref";
+import {append, insert, change} from "./string-ref";
+import {$$skip} from "./series";
 
 function encodeFileString(str: string): string {
 	let a: ReturnType<typeof str.match>;
@@ -59,21 +60,32 @@ export function $$append(
 	return file;
 }
 
-// ...
-
 export function $$insert(
 	ctx:   Red.Context,
 	file:  Red.RawFile,
 	value: Red.AnyType,
 	_: RedActions.InsertOptions = {}
 ): Red.RawFile {
-	file.index += insert(ctx, file.name, file.index - 1, value, _, (str, val) => {
+	return $$skip(ctx, file, insert(ctx, file.name, file.index - 1, value, _, (str, val) => {
 		if(val instanceof Red.RawFile) {
 			return str;
 		} else {
 			return encodeFileString(str);
 		}
-	});
-	
-	return file;
+	}));
+}
+
+export function $$change(
+	ctx:   Red.Context,
+	file:  Red.RawFile,
+	value: Red.AnyType,
+	_: RedActions.ChangeOptions = {}
+): Red.RawFile {
+	return $$skip(ctx, file, change(ctx, file.name, file.index - 1, value, _, (str, val) => {
+		if(val instanceof Red.RawFile) {
+			return str;
+		} else {
+			return encodeFileString(str);
+		}
+	}));
 }

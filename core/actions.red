@@ -252,7 +252,6 @@ back: make action! [[
 	back
 ]
 
-'TODO [
 change: make action! [[
 		"Changes a value in a series and returns the series after the change"
 		series [series! port!] "Series at point to change"
@@ -264,7 +263,6 @@ change: make action! [[
 			count [number!]
 	]
 	change
-]
 ]
 
 clear: make action! [[

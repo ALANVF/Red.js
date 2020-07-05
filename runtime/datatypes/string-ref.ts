@@ -57,7 +57,7 @@ export function insert(
 	index: number,
 	value: Red.AnyType,
 	_: RedActions.InsertOptions = {},
-	map?: (s: string, v?: typeof value) => string,
+	map?: (s: string, v?: typeof value) => string
 ): number {
 	const addStr = stringifyArg(ctx, value, map);
 	
@@ -77,6 +77,37 @@ export function insert(
 		return _.part;
 	} else {
 		str.set(ref => ref.slice(0, index) + addStr + ref.slice(index));
+		
+		return addStr.length;
+	}
+}
+
+export function change(
+	ctx:   Red.Context,
+	str:   Ref<string>,
+	index: number,
+	value: Red.AnyType,
+	_: RedActions.ChangeOptions = {},
+	map?: (s: string, v?: typeof value) => string
+): number {
+	const addStr = stringifyArg(ctx, value, map);
+	
+	if(_.dup !== undefined) {
+		let dups = "";
+		
+		for(let i = 0; i < _.dup; i++) {
+			dups += addStr;
+		}
+		
+		str.set(ref => ref.slice(0, index) + dups + ref.slice(index + dups.length));
+		
+		return dups.length;
+	} else if(_.part !== undefined) {
+		str.set(ref => ref.slice(0, index) + addStr.slice(0, _.part) + ref.slice(index + _.part!));
+		
+		return _.part;
+	} else {
+		str.set(ref => ref.slice(0, index) + addStr + ref.slice(index + addStr.length));
 		
 		return addStr.length;
 	}

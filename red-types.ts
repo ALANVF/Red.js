@@ -1289,7 +1289,8 @@ export enum ValueType {
 	image,
 	event,
 	closure,
-	money
+	money,
+	ref
 }
 
 export const Types: Function[] = [
@@ -1345,7 +1346,8 @@ export const Types: Function[] = [
 	null, //RawImage,
 	null, //RawEvent,
 	null, //RawClosure,
-	RawMoney
+	RawMoney,
+	null //RawRef
 ];
 
 export const TypeNames = [
@@ -1401,7 +1403,8 @@ export const TypeNames = [
 	"image!",
 	"event!",
 	"closure!",
-	"money!"
+	"money!",
+	"ref!"
 ];
 
 export const Datatypes: Record<string, RawDatatype> = {};
@@ -1510,7 +1513,7 @@ export function isScalar(value: AnyType): value is RawScalar {
 }
 
 export function isSeries(value: AnyType): value is RawSeries {
-	const names = "block! paren! string! file! url! path! lit-path! set-path! get-path! vector! hash! binary! tag! email! image!".split(" ");
+	const names = "block! paren! string! file! url! path! lit-path! set-path! get-path! vector! hash! binary! tag! email! image! ref!".split(" ");
 	return names.includes(typeName(value));
 }
 

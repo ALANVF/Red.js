@@ -29,6 +29,7 @@ import * as ACT_path       from "./datatypes/path";
 import * as ACT_litPath    from "./datatypes/lit-path";
 import * as ACT_setPath    from "./datatypes/set-path";
 import * as ACT_getPath    from "./datatypes/get-path";
+import * as ACT_bitset     from "./datatypes/bitset";
 import * as ACT_object     from "./datatypes/object";
 import * as ACT_typeset    from "./datatypes/typeset";
 import * as ACT_vector     from "./datatypes/vector";
@@ -323,7 +324,7 @@ module RedActions {
 		"ACT_SET_PATH":   [ACT_setPath, ACT_path, ACT_block, ACT_series],
 		"ACT_GET_PATH":   [ACT_getPath, ACT_path, ACT_block, ACT_series],
 		"ACT_ROUTINE":    [],
-		"ACT_BITSET":     [],
+		"ACT_BITSET":     [ACT_bitset],
 		"ACT_POINT":      [],
 		"ACT_OBJECT":     [ACT_object, ACT_context],
 		"ACT_TYPESET":    [ACT_typeset],
@@ -345,7 +346,8 @@ module RedActions {
 		"ACT_IMAGE":      [ACT_series],
 		"ACT_EVENT":      [],
 		"ACT_CLOSURE":    [],
-		"ACT_MONEY":      [] // https://github.com/9214/red/blob/money/runtime/datatypes/money.reds
+		"ACT_MONEY":      [], // https://github.com/9214/red/blob/money/runtime/datatypes/money.reds
+		"ACT_REF":        [ACT_string, ACT_series]
 	};
 
 	type ActionName = keyof BasicTypeActions;
@@ -830,20 +832,35 @@ module RedActions {
 	): Red.RawSeries {
 		return valueSendAction("$$back", ctx, series);
 	}
-
-	/*
-	change: make action! [[
-			"Changes a value in a series and returns the series after the change"
-			series [series! port!] "Series at point to change"
-			value [any-type!] "The new value"
-			/part "Limits the amount to change to a given length or position"
-				range [number! series!]
-			/only "Changes a series as a series."
-			/dup "Duplicates the change a specified number of times"
-				count [number!]
-		]
-		#get-definition ACT_CHANGE
-	]*/
+	
+	export function $$change(
+		ctx:    Red.Context,
+		series: Red.RawSeries,
+		value:  Red.AnyType,
+		_: {
+			part?: [Red.RawNumber|Red.RawSeries],
+			only?: [],
+			dup?:  [Red.RawNumber]
+		} = {}
+	): typeof series {
+		const __: ChangeOptions = {};
+		
+		if(_.part !== undefined) {
+			const [length] = _.part;
+			
+			if(Red.isNumber(length)) {
+				__.part = Math.floor(length.value);
+			} else if(Red.sameSeries(series, length)) {
+				__.part = length.index - series.index;
+			} else {
+				throw new Error("Error!");
+			}
+		}
+		if(_.only !== undefined) __.only = true;
+		if(_.dup !== undefined) __.dup = _.dup[0].value;
+		
+		return valueSendAction("$$change", ctx, series, value, __);
+	}
 	
 	export function $$clear(
 		ctx:    Red.Context,

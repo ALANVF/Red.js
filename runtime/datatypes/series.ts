@@ -57,57 +57,57 @@ export function $$length_q(
 
 // Navigation
 
-export function $$at(
+export function $$at<T extends Red.RawSeries>(
 	_ctx:   Red.Context,
-	series: Red.RawSeries,
+	series: T,
 	index:  number
-): Red.RawSeries {
+): T {
 	const _ = RedUtil.clone(series); // FIX: stop copying the series
 	_.index = index < 1 ? 1 : index;
 	return _;
 }
 
-export function $$back(
+export function $$back<T extends Red.RawSeries>(
 	_ctx:   Red.Context,
-	series: Red.RawSeries
-): Red.RawSeries {
+	series: T
+): T {
 	const _ = RedUtil.clone(series); // FIX: stop copying the series
 	if(_.index > 1) _.index--;
 	return _;
 }
 
-export function $$next(
+export function $$next<T extends Red.RawSeries>(
 	ctx:    Red.Context,
-	series: Red.RawSeries
-): Red.RawSeries {
+	series: T
+): T {
 	const _ = RedUtil.clone(series); // FIX: stop copying the series
 	if(_.index-1 <= $$head(ctx, _).length) _.index++;
 	return _;
 }
 
-export function $$skip(
+export function $$skip<T extends Red.RawSeries>(
 	_ctx:   Red.Context,
-	series: Red.RawSeries,
+	series: T,
 	index:  number
-): Red.RawSeries {
+): T {
 	const _ = RedUtil.clone(series); // FIX: stop copying the series
 	_.index += index;
 	return _;
 }
 
-export function $$head(
+export function $$head<T extends Red.RawSeries>(
 	_ctx:   Red.Context,
-	series: Red.RawSeries
-): Red.RawSeries {
+	series: T
+): T {
 	const _ = RedUtil.clone(series); // FIX: stop copying the series
 	_.index = 1;
 	return _;
 }
 
-export function $$tail(
+export function $$tail<T extends Red.RawSeries>(
 	ctx:    Red.Context,
-	series: Red.RawSeries
-): Red.RawSeries {
+	series: T
+): T {
 	const _ = RedUtil.clone(series); // FIX: stop copying the series
 	_.index = $$head(ctx, _).length + 1;
 	return _;
@@ -147,10 +147,10 @@ export function $$pick(
 
 // ...
 
-export function $$clear(
-	_ctx:   Red.Context,
-	series: Red.RawSeries
-): Red.RawSeries {
+export function $$clear<T extends Red.RawSeries>(
+	ctx:    Red.Context,
+	series: T
+): T {
 	if(Red.isAnyList(series) || series instanceof Red.RawString) {
 		series.values.splice(series.index - 1);
 	} else if(series instanceof Red.RawVector) {
@@ -166,10 +166,10 @@ export function $$clear(
 	} else if(series instanceof Red.RawBinary) {
 		series.bytes.set(ref => Buffer.from([...ref].slice(0, series.index - 1)));
 	} else {
-		series.path.splice(series.index - 1);
+		(<Red.RawAnyPath>series).path.splice(series.index - 1);
 	}
 	
-	return series;
+	return $$tail(ctx, series);
 }
 
 /*
@@ -248,16 +248,17 @@ function seriesRemove(series: Red.RawSeries, index: number, length: number) {
 	}
 }
 
-export function $$remove(
-	_ctx:   Red.Context,
-	series: Red.RawSeries,
+export function $$remove<T extends Red.RawSeries>(
+	ctx:    Red.Context,
+	series: T,
 	_: RedActions.RemoveOptions = {}
-): typeof series {
+): T {
+	let length = 0;
+	
 	if(_.part === undefined && _.key === undefined) {
 		seriesRemove(series, series.index - 1, 1);
+		length = 1;
 	} else if(_.part !== undefined && _.key === undefined) {
-		let length = 0;
-		
 		if(Red.isNumber(_.part)) {
 			length = Math.floor(_.part.value);
 		} else if(_.part instanceof Red.RawChar) {
@@ -279,5 +280,5 @@ export function $$remove(
 		throw new Error("Invalid refinement /key for series!");
 	}
 	
-	return series;
+	return $$at(ctx, series, length);
 }

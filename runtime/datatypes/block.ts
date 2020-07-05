@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 import {tokenize} from "../../tokenizer";
+import {$$skip} from "./series";
 import RedUtil from "../util";
 
 function insertOnly(
@@ -161,14 +162,12 @@ export function $$copy(
 	}
 }
 
-// ...
-
 export function $$append(
 	_ctx:  Red.Context,
 	list:  Red.RawAnyList,
 	value: Red.AnyType,
 	_: RedActions.AppendOptions = {}
-): Red.RawAnyList {
+): typeof list {
 	if(_.only !== undefined || !(Red.isAnyList(value) || Red.isAnyPath(value))) {
 		if(_.dup !== undefined) {
 			for(let i = 0; i < _.dup; i++) {
@@ -193,15 +192,14 @@ export function $$append(
 	return list;
 }
 
-// ...
-
 export function $$insert(
-	_ctx:  Red.Context,
+	ctx:   Red.Context,
 	list:  Red.RawAnyList,
 	value: Red.AnyType,
 	_: RedActions.InsertOptions = {}
-): Red.RawAnyList {
+): typeof list {
 	const index = list.index - 1;
+	let offset = 0;
 	
 	if(_.dup !== undefined) {
 		const dups = [];
@@ -219,20 +217,79 @@ export function $$insert(
 		}
 		
 		list.values.splice(index, 0, ...dups);
-		list.index += dups.length;
+		offset += dups.length;
 	} else if(_.only !== undefined) {
 		insertOnly(list.values, value, index);
-		list.index++;
+		offset++;
 	} else {
 		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
-			list.index += insertAll(list.values, value.current().values, index, _.part);
+			offset += insertAll(list.values, value.current().values, index, _.part);
 		} else if(Red.isAnyPath(value)) {
-			list.index += insertAll(list.values, value.current().path, index, _.part);
+			offset += insertAll(list.values, value.current().path, index, _.part);
 		} else {
 			insertOnly(list.values, value, index);
-			list.index++;
+			offset++;
 		}
 	}
 
-	return list;
+	return $$skip(ctx, list, offset);
+}
+
+export function $$change(
+	ctx:   Red.Context,
+	list:  Red.RawAnyList,
+	value: Red.AnyType,
+	_: RedActions.ChangeOptions = {}
+): typeof list {
+	const index = list.index - 1;
+	let offset = 0;
+	
+	if(_.dup !== undefined) {
+		const dups = [];
+		
+		if(_.only !== undefined) {
+			for(let i = 0; i < _.dup; i++) dups.push(value);
+		} else if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+			const values = value.current().values;
+			for(let i = 0; i < _.dup; i++) dups.push(...values);
+		} else if(Red.isAnyPath(value)) {
+			const values = value.current().path;
+			for(let i = 0; i < _.dup; i++) dups.push(...values);
+		} else {
+			for(let i = 0; i < _.dup; i++) dups.push(value);
+		}
+		
+		list.values.splice(index, dups.length, ...dups);
+		offset += dups.length;
+	} else if(_.only !== undefined) {
+		list.values[index] = value;
+		offset++;
+	} else {
+		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+			const values = value.current().values;
+			
+			if(_.part === undefined) {
+				list.values.splice(index, values.length, ...values);
+				offset += values.length;
+			} else {
+				list.values.splice(index, _.part, ...values.slice(0, _.part));
+				offset += _.part;
+			}
+		} else if(Red.isAnyPath(value)) {
+			const values = value.current().path;
+			
+			if(_.part === undefined) {
+				list.values.splice(index, values.length, ...values);
+				offset += values.length;
+			} else {
+				list.values.splice(index, _.part, ...values.slice(0, _.part));
+				offset += _.part;
+			}
+		} else {
+			list.values[index] = value;
+			offset++;
+		}
+	}
+
+	return $$skip(ctx, list, offset);
 }

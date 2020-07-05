@@ -1,5 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {$$skip} from "./series";
 
 function stringifyArg(
 	ctx:   Red.Context,
@@ -198,39 +199,55 @@ export function $$insert(
 	_: RedActions.InsertOptions = {}
 ): Red.RawString {
 	const index = str.index - 1;
-	let addStr: Red.RawChar[];
-	
-	if(value instanceof Red.RawChar) {
-		addStr = [value];
-	} else if(value instanceof Red.RawString) {
-		addStr = value.values.slice(value.index - 1);
-	} else if(Red.isAnyList(value)) {
-		addStr = [];
-		for(const elem of value.current().values) {
-			addStr.push(...RedActions.$$form(ctx, elem).values);
-		}
-	} else if(value instanceof Red.RawFile) {
-		addStr = [...value.current().name.ref].map(s => new Red.RawChar(s.charCodeAt(0)));
-	} else {
-		addStr = RedActions.$$form(ctx, value).values;
-	}
+	const addChars = stringifyArg(ctx, value);
+	let offset = 0;
 	
 	if(_.dup !== undefined) {
 		const dups = [];
 		
 		for(let i = 0; i < _.dup; i++) {
-			dups.push(...addStr);
+			dups.push(...addChars);
 		}
 		
 		str.values.splice(index, 0, ...dups);
-		str.index += dups.length;
+		offset += dups.length;
 	} else if(_.part !== undefined) {
-		str.values.splice(index, 0, ...addStr.slice(0, _.part));
-		str.index += _.part;
+		str.values.splice(index, 0, ...addChars.slice(0, _.part));
+		offset += _.part;
 	} else {
-		str.values.splice(index, 0, ...addStr);
-		str.index += addStr.length;
+		str.values.splice(index, 0, ...addChars);
+		offset += addChars.length;
 	}
 
-	return str;
+	return $$skip(ctx, str, offset);
+}
+
+export function $$change(
+	ctx:   Red.Context,
+	str:   Red.RawString,
+	value: Red.AnyType,
+	_: RedActions.ChangeOptions = {}
+): Red.RawString {
+	const index = str.index - 1;
+	const addChars = stringifyArg(ctx, value);
+	let offset = 0;
+	
+	if(_.dup !== undefined) {
+		const dups = [];
+		
+		for(let i = 0; i < _.dup; i++) {
+			dups.push(...addChars);
+		}
+		
+		str.values.splice(index, dups.length, ...dups);
+		offset += dups.length;
+	} else if(_.part !== undefined) {
+		str.values.splice(index, _.part, ...addChars.slice(0, _.part));
+		offset += _.part;
+	} else {
+		str.values.splice(index, addChars.length, ...addChars);
+		offset += addChars.length;
+	}
+
+	return $$skip(ctx, str, offset);
 }
