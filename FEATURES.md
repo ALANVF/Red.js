@@ -44,7 +44,7 @@
 | `object!`                | Y        | NA     | P           | Y             | N         | P             |
 | `typeset!`               | Y        | NA     | P           | Y             | N         | P             |
 | `error!`                 | N        | NA     | N           | N             | N         | N             |
-| `vector!`                | P        | NA     | N           | Y             | N         | PI            |
+| `vector!`                | P        | NA     | P           | Y             | N         | PI            |
 | `hash!`                  | P        | NA     | N           | Y             | N         | PI            |
 | `pair!`                  | Y        | Y      | N           | Y             | N         | P             |
 | `percent!`               | Y        | Y      | N           | Y             | B         | PI            |

@@ -5,6 +5,7 @@ TL;DR:
 
 Finish very soon:
 - Add more `series!` actions.
+- Change `form` and `mold` to use a string ref instead of a string array.
 - Add the `error!` type.
 - Fix relative paths when loading files.
 - Add `compare` action for all datatypes.
