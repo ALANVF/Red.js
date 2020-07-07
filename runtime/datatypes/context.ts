@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 import {evalSingle, groupSingle, ExprType} from "../eval";
+import {StringBuilder} from "../../helper-types";
 
 /* Native actions */
 export function $evalPath(
@@ -102,16 +103,16 @@ export function $$make(
 export function $$form(
 	ctx:     Red.Context,
 	context: Red.Context,
-	buffer:  string[],
+	builder: StringBuilder,
 	_part?:  number
 ): boolean {
 	for(let i = 0; i < context.words.length; i++) {
-		buffer.push(context.words[i]);
-		buffer.push(" ");
-		buffer.push(RedActions.$$mold(ctx, context.values[i]).toJsString());
+		builder.push(context.words[i]);
+		builder.push(" ");
+		builder.push(RedActions.$$mold(ctx, context.values[i]).toJsString());
 		
 		if(i + 1 < context.words.length) {
-			buffer.push("^/");
+			builder.push("^/");
 		}
 	}
 	
@@ -121,28 +122,28 @@ export function $$form(
 export function $$mold(
 	ctx:     Red.Context,
 	context: Red.Context,
-	buffer:  string[],
+	builder: StringBuilder,
 	indent:  number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	buffer.push("make context! [");
+	builder.push("make context! [");
 	
 	if(context.words.length > 0) {
-		buffer.push("\n");
+		builder.push("\n");
 		const idt = " ".repeat(indent*4);
 
 		for(const word of context.words) {
 			const value = context.getWord(word);
 			
-			buffer.push(idt);
-			buffer.push(word + ": "); // pretty-print ws later
-			RedActions.valueSendAction("$$mold", ctx, value, buffer, indent + 1, _);
-			buffer.push("\n");
+			builder.push(idt);
+			builder.push(word + ": "); // pretty-print ws later
+			RedActions.valueSendAction("$$mold", ctx, value, builder, indent + 1, _);
+			builder.push("\n");
 		}
 	}
 
-	buffer.push(" ".repeat((indent-1)*4));
-	buffer.push("]");
+	builder.push(" ".repeat((indent-1)*4));
+	builder.push("]");
 	
 	return context.words.length > 0;
 }

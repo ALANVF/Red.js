@@ -1,5 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 /* Native functions */
 export function $compare(
@@ -42,27 +43,27 @@ export function $$to(
 }
 
 export function $$form(
-	_ctx:   Red.Context,
-	_value: Red.RawNone,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	_value:  Red.RawNone,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push("none");
+	builder.push("none");
 	return false;
 }
 
 export function $$mold(
 	ctx:     Red.Context,
 	value:   Red.RawNone,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	if(_.all !== undefined) {
-		buffer.push("#[none]");
+		builder.push("#[none]");
 		return false;
 	} else {
-		return $$form(ctx, value, buffer, _.part);
+		return $$form(ctx, value, builder, _.part);
 	}
 }
 

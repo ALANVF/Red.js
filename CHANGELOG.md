@@ -4,6 +4,7 @@
 - Add `change` action.
 - Fix `insert` action.
 - Correctly implement `copy` action.
+- Improve `form`/`mold` internals.
 
 
 # Version 0.1.2

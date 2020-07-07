@@ -2,6 +2,7 @@ import * as Red from "../../red-types";
 import RedActions from "../actions";
 import {append, insert, change} from "./string-ref";
 import {$$skip} from "./series";
+import {StringBuilder} from "../../helper-types";
 
 function encodeFileString(str: string): string {
 	let a: ReturnType<typeof str.match>;
@@ -21,24 +22,24 @@ function encodeFileString(str: string): string {
 
 /* Actions */
 export function $$form(
-	_ctx:   Red.Context,
-	file:   Red.RawFile,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	file:    Red.RawFile,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(file.current().name.ref);
+	builder.push(file.current().name.ref);
 	return false;
 }
 
 export function $$mold(
 	ctx:     Red.Context,
 	file:    Red.RawFile,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	buffer.push("%");
-	return $$form(ctx, file, buffer, _.part);
+	builder.push("%");
+	return $$form(ctx, file, builder, _.part);
 }
 
 // ...

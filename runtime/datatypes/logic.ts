@@ -1,5 +1,6 @@
 ﻿import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 export function $compare(
 	_ctx:   Red.Context,
@@ -22,26 +23,26 @@ export function $compare(
 // $$make
 
 export function $$form(
-	_ctx:   Red.Context,
-	value:  Red.RawLogic,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	value:   Red.RawLogic,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(value.cond.toString());
+	builder.push(value.cond.toString());
 	return false;
 }
 
 export function $$mold(
 	_ctx:    Red.Context,
 	value:   Red.RawLogic,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	if(_.all === true) {
-		buffer.push("#[" + value.cond.toString() + "]")
+		builder.push("#[" + value.cond.toString() + "]")
 	} else {
-		buffer.push(value.cond.toString());
+		builder.push(value.cond.toString());
 	}
 	
 	return false;

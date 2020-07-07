@@ -1,27 +1,28 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 // $$make
 
 export function $$form(
-	_ctx:   Red.Context,
-	value:  Red.RawIssue,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	value:   Red.RawIssue,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(value.value);
+	builder.push(value.value);
 	return false;
 }
 
 export function $$mold(
 	_ctx:    Red.Context,
 	value:   Red.RawIssue,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	buffer.push("#");
-	buffer.push(value.value);
+	builder.push("#");
+	builder.push(value.value);
 
 	return false;
 }

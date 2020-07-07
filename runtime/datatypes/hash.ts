@@ -1,28 +1,29 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 export function $$mold(
-	ctx:    Red.Context,
-	hash:   Red.RawHash,
-	buffer: string[],
-	indent: number,
+	ctx:     Red.Context,
+	hash:    Red.RawHash,
+	builder: StringBuilder,
+	indent:  number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	const blk = hash.values.slice(hash.index-1);
 
-	buffer.push("make hash! [")
+	builder.push("make hash! [")
 	
 	if(blk.length == 0) {
-		buffer.push("]");
+		builder.push("]");
 	} else {
-		RedActions.valueSendAction("$$mold", ctx, blk[0], buffer, indent, _);
+		RedActions.valueSendAction("$$mold", ctx, blk[0], builder, indent, _);
 
 		for(const val of blk.slice(1)) {
-			buffer.push(" ");
-			RedActions.valueSendAction("$$mold", ctx, val, buffer, indent, _);
+			builder.push(" ");
+			RedActions.valueSendAction("$$mold", ctx, val, builder, indent, _);
 		}
 
-		buffer.push("]");
+		builder.push("]");
 	}
 
 	return false;

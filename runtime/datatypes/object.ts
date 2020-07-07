@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 import {evalSingle, groupSingle, ExprType} from "../eval";
+import {StringBuilder} from "../../helper-types";
 
 export function $$make(
 	ctx:   Red.Context,
@@ -33,18 +34,18 @@ export function $$make(
 }
 
 export function $$form(
-	ctx:    Red.Context,
-	obj:    Red.RawObject,
-	buffer: string[],
-	_part?: number
+	ctx:     Red.Context,
+	obj:     Red.RawObject,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
 	for(let i = 0; i < obj.words.length; i++) {
-		buffer.push(obj.words[i]);
-		buffer.push(" ");
-		buffer.push(RedActions.$$mold(ctx, obj.values[i]).toJsString());
+		builder.push(obj.words[i]);
+		builder.push(" ");
+		builder.push(RedActions.$$mold(ctx, obj.values[i]).toJsString());
 		
 		if(i + 1 < obj.words.length) {
-			buffer.push("^/");
+			builder.push("^/");
 		}
 	}
 	
@@ -52,30 +53,30 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx:    Red.Context,
-	obj:    Red.RawObject,
-	buffer: string[],
-	indent: number,
+	ctx:     Red.Context,
+	obj:     Red.RawObject,
+	builder: StringBuilder,
+	indent:  number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	buffer.push("make object! [");
+	builder.push("make object! [");
 	
 	if(obj.words.length > 0) {
-		buffer.push("\n");
+		builder.push("\n");
 		const idt = " ".repeat(indent*4);
 
 		for(const word of obj.words) {
 			const value = obj.getWord(word);
 			
-			buffer.push(idt);
-			buffer.push(word + ": "); // pretty-print ws later
-			RedActions.valueSendAction("$$mold", ctx, value, buffer, indent + 1, _);
-			buffer.push("\n");
+			builder.push(idt);
+			builder.push(word + ": "); // pretty-print ws later
+			RedActions.valueSendAction("$$mold", ctx, value, builder, indent + 1, _);
+			builder.push("\n");
 		}
 	}
 
-	buffer.push(" ".repeat((indent-1)*4));
-	buffer.push("]");
+	builder.push(" ".repeat((indent-1)*4));
+	builder.push("]");
 	
 	return obj.words.length > 0;
 }

@@ -1,5 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 function symbol(value: Red.RawAllWord): string {
 	if(Red.isAnyWord(value)) {
@@ -94,21 +95,21 @@ export function $$to(
 }
 
 export function $$form(
-	_ctx:   Red.Context,
-	value:  Red.RawWord,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	value:   Red.RawWord,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(value.name);
+	builder.push(value.name);
 	return false;
 }
 
 export function $$mold(
 	ctx:     Red.Context,
 	value:   Red.RawWord,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	return $$form(ctx, value, buffer, _.part);
+	return $$form(ctx, value, builder, _.part);
 }

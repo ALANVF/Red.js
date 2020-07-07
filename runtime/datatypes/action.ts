@@ -1,5 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 export function $$make(
 	_ctx:   Red.Context,
@@ -92,82 +93,82 @@ export function $$make(
 }
 
 export function $$form(
-	_ctx:   Red.Context,
-	_value: Red.Action,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	_value:  Red.Action,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push("?action?");
+	builder.push("?action?");
 	return false;
 }
 
 export function $$mold(
-	ctx:    Red.Context,
-	value:  Red.Action,
-	buffer: string[],
-	indent: number,
+	ctx:     Red.Context,
+	value:   Red.Action,
+	builder: StringBuilder,
+	indent:  number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	const lastIndent = " ".repeat((indent-1)*4);
 	const thisIndent = " ".repeat(indent*4);
 	const nextIndent = " ".repeat((indent+1)*4);
 
-	buffer.push("make action! [[");
+	builder.push("make action! [[");
 	
 	if(value.docSpec != null) {
-		buffer.push(RedActions.$$mold(ctx, value.docSpec).toJsString());
+		builder.push(RedActions.$$mold(ctx, value.docSpec).toJsString());
 	}
 
 	for(const arg of value.args) {
-		buffer.push("\n" + thisIndent);
-		RedActions.valueSendAction("$$mold", ctx, arg.name, buffer, indent + 1, _);
+		builder.push("\n" + thisIndent);
+		RedActions.valueSendAction("$$mold", ctx, arg.name, builder, indent + 1, _);
 		
 		if(arg.typeSpec != null) {
-			buffer.push(" ");
-			RedActions.valueSendAction("$$mold", ctx, arg.typeSpec, buffer, indent + 1, _);
+			builder.push(" ");
+			RedActions.valueSendAction("$$mold", ctx, arg.typeSpec, builder, indent + 1, _);
 		}
 
 		if(arg.docSpec != null) {
-			buffer.push(" ");
-			RedActions.valueSendAction("$$mold", ctx, arg.docSpec, buffer, indent + 1, _);
+			builder.push(" ");
+			RedActions.valueSendAction("$$mold", ctx, arg.docSpec, builder, indent + 1, _);
 		}
 	}
 
 	for(const ref of value.refines) {
-		buffer.push("\n" + thisIndent);
-		RedActions.valueSendAction("$$mold", ctx, ref.ref, buffer, indent + 1, _);
+		builder.push("\n" + thisIndent);
+		RedActions.valueSendAction("$$mold", ctx, ref.ref, builder, indent + 1, _);
 
 		if(ref.docSpec != null) {
-			buffer.push(" ");
-			RedActions.valueSendAction("$$mold", ctx, ref.docSpec, buffer, indent + 1, _);
+			builder.push(" ");
+			RedActions.valueSendAction("$$mold", ctx, ref.docSpec, builder, indent + 1, _);
 		}
 
 		for(const arg of ref.addArgs) {
-			buffer.push("\n" + nextIndent);
-			RedActions.valueSendAction("$$mold", ctx, arg.name, buffer, indent + 1, _);
+			builder.push("\n" + nextIndent);
+			RedActions.valueSendAction("$$mold", ctx, arg.name, builder, indent + 1, _);
 			
 			if(arg.typeSpec != null) {
-				buffer.push(" ");
-				RedActions.valueSendAction("$$mold", ctx, arg.typeSpec, buffer, indent + 1, _);
+				builder.push(" ");
+				RedActions.valueSendAction("$$mold", ctx, arg.typeSpec, builder, indent + 1, _);
 			}
 
 			if(arg.docSpec != null) {
-				buffer.push(" ");
-				RedActions.valueSendAction("$$mold", ctx, arg.docSpec, buffer, indent + 1, _);
+				builder.push(" ");
+				RedActions.valueSendAction("$$mold", ctx, arg.docSpec, builder, indent + 1, _);
 			}
 		}
 	}
 
 	if(value.retSpec != null) {
-		buffer.push("\n" + thisIndent + "return: ");
-		RedActions.valueSendAction("$$mold", ctx, value.retSpec, buffer, indent + 1, _);
+		builder.push("\n" + thisIndent + "return: ");
+		RedActions.valueSendAction("$$mold", ctx, value.retSpec, builder, indent + 1, _);
 	}
 
 	if(value.arity == 0 && value.refines.length == 0) {
-		buffer.push("]]");
+		builder.push("]]");
 		return false;
 	} else {
-		buffer.push("\n" + lastIndent + "]]");
+		builder.push("\n" + lastIndent + "]]");
 		return true;
 	}
 }

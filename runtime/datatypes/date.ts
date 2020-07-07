@@ -1,41 +1,42 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 /* Actions */
 export function $$form(
-	_ctx:   Red.Context,
-	date:   Red.RawDate,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	date:    Red.RawDate,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(date.date.getUTCDate().toString());
-	buffer.push("-");
-	buffer.push("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")[date.date.getUTCMonth()]);
-	buffer.push("-");
-	buffer.push(date.date.getUTCFullYear().toString());
+	builder.push(date.date.getUTCDate().toString());
+	builder.push("-");
+	builder.push("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")[date.date.getUTCMonth()]);
+	builder.push("-");
+	builder.push(date.date.getUTCFullYear().toString());
 	
 	if(date.hasTime) {
 		const minutes = date.date.getUTCMinutes();
 		const seconds = date.date.getUTCSeconds();
 		const mseconds = date.date.getUTCMilliseconds();
 		
-		buffer.push("/");
-		buffer.push(date.date.getUTCHours().toString());
-		buffer.push(":");
-		buffer.push((minutes < 10 ? "0" : "") + minutes.toString());
-		buffer.push(":");
-		buffer.push((seconds < 10 ? "0" : "") + seconds.toString());
+		builder.push("/");
+		builder.push(date.date.getUTCHours().toString());
+		builder.push(":");
+		builder.push((minutes < 10 ? "0" : "") + minutes.toString());
+		builder.push(":");
+		builder.push((seconds < 10 ? "0" : "") + seconds.toString());
 		
 		if(mseconds != 0) {
-			buffer.push(".");
-			buffer.push(mseconds.toString());
+			builder.push(".");
+			builder.push(mseconds.toString());
 		}
 		
 		if(date.zone.hour + date.zone.minute != 0) {
-			buffer.push(date.zone.sign);
-			buffer.push((date.zone.hour < 10 ? "0" : "") + date.zone.hour.toString());
-			buffer.push(":");
-			buffer.push((date.zone.minute < 10 ? "0" : "") + date.zone.minute.toString());
+			builder.push(date.zone.sign);
+			builder.push((date.zone.hour < 10 ? "0" : "") + date.zone.hour.toString());
+			builder.push(":");
+			builder.push((date.zone.minute < 10 ? "0" : "") + date.zone.minute.toString());
 		}
 	}
 	
@@ -45,9 +46,9 @@ export function $$form(
 export function $$mold(
 	ctx:     Red.Context,
 	date:    Red.RawDate,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	return $$form(ctx, date, buffer, _.part);
+	return $$form(ctx, date, builder, _.part);
 }

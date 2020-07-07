@@ -1,6 +1,7 @@
 ﻿import * as Red from "../../red-types";
 import RedNatives from "../natives";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 // $compare
 
@@ -33,14 +34,14 @@ export function $$make(
 }
 
 export function $$form(
-	_ctx:   Red.Context,
-	value:  Red.RawTypeset,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	value:   Red.RawTypeset,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push("make typeset! [");
-	buffer.push(value.types.map(type => type.name).join(" "));
-	buffer.push("]");
+	builder.push("make typeset! [");
+	builder.push(value.types.map(type => type.name).join(" "));
+	builder.push("]");
 	
 	return false;
 }
@@ -48,11 +49,11 @@ export function $$form(
 export function $$mold(
 	ctx:     Red.Context,
 	value:   Red.RawTypeset,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	return $$form(ctx, value, buffer, _.part);
+	return $$form(ctx, value, builder, _.part);
 }
 
 export function $$and_t(

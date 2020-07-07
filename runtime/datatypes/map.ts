@@ -2,24 +2,25 @@ import * as Red from "../../red-types";
 import RedActions from "../actions";
 import RedUtil from "../util";
 import RedNatives from "../natives";
+import {StringBuilder} from "../../helper-types";
 
 /* Actions */
 export function $$form(
-	ctx:    Red.Context,
-	map:    Red.RawMap,
-	buffer: string[],
-	_part?: number
+	ctx:     Red.Context,
+	map:     Red.RawMap,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
 	if(map.keys.length == 0) {
-		buffer.push("");
+		builder.push("");
 	} else {
 		for(let i = 0; i < map.keys.length; i++) {
-			buffer.push(RedActions.$$mold(ctx, map.keys[i]).toJsString());
-			buffer.push(" ");
-			buffer.push(RedActions.$$mold(ctx, map.values[i]).toJsString());
+			builder.push(RedActions.$$mold(ctx, map.keys[i]).toJsString());
+			builder.push(" ");
+			builder.push(RedActions.$$mold(ctx, map.values[i]).toJsString());
 			
 			if(i + 1 < map.keys.length) {
-				buffer.push("^/");
+				builder.push("^/");
 			}
 		}
 	}
@@ -28,29 +29,29 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx:    Red.Context,
-	map:    Red.RawMap,
-	buffer: string[],
-	indent: number,
+	ctx:     Red.Context,
+	map:     Red.RawMap,
+	builder: StringBuilder,
+	indent:  number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	buffer.push("#(");
+	builder.push("#(");
 	
 	if(map.keys.length > 0) {
-		buffer.push("\n");
+		builder.push("\n");
 		const idt = "\t".repeat(indent);
 		
 		for(const [key, value] of RedUtil.Arrays.zip(map.keys, map.values)) {
-			buffer.push(idt);
-			RedActions.valueSendAction("$$mold", ctx, key, buffer, indent + 1, _);
-			buffer.push(" ");
-			RedActions.valueSendAction("$$mold", ctx, value, buffer, indent + 1, _);
-			buffer.push("\n");
+			builder.push(idt);
+			RedActions.valueSendAction("$$mold", ctx, key, builder, indent + 1, _);
+			builder.push(" ");
+			RedActions.valueSendAction("$$mold", ctx, value, builder, indent + 1, _);
+			builder.push("\n");
 		}
 	}
 
-	buffer.push("\t".repeat(indent - 1));
-	buffer.push(")");
+	builder.push("\t".repeat(indent - 1));
+	builder.push(")");
 	
 	return map.keys.length > 0;
 }

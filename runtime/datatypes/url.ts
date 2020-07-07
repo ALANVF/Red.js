@@ -2,26 +2,27 @@ import * as Red from "../../red-types";
 import RedActions from "../actions";
 import {append, insert, change} from "./string-ref";
 import {$$skip} from "./series";
+import {StringBuilder} from "../../helper-types";
 
 /* Actions */
 export function $$form(
-	_ctx:   Red.Context,
-	url:    Red.RawUrl,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	url:     Red.RawUrl,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(url.url.ref.slice(url.index - 1));
+	builder.push(url.url.ref.slice(url.index - 1));
 	return false;
 }
 
 export function $$mold(
 	ctx:     Red.Context,
 	url:     Red.RawUrl,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	return $$form(ctx, url, buffer, _.part);
+	return $$form(ctx, url, builder, _.part);
 }
 
 // ...

@@ -1,23 +1,24 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 export function $$form(
 	_ctx:   Red.Context,
 	bitset: Red.RawBitset,
-	buffer: string[],
+	builder: StringBuilder,
 	_part?: number
 ): boolean {
-	buffer.push("make bitset! ");
+	builder.push("make bitset! ");
 	
-	if(bitset.negated) buffer.push("[not ");
+	if(bitset.negated) builder.push("[not ");
 	
-	buffer.push("#{");
-	buffer.push([...bitset.bytes].map(byte =>
+	builder.push("#{");
+	builder.push([...bitset.bytes].map(byte =>
 		(byte < 16 ? "0" : "") + byte.toString(16).toUpperCase()
 	).join(""));
-	buffer.push("}");
+	builder.push("}");
 	
-	if(bitset.negated) buffer.push("]");
+	if(bitset.negated) builder.push("]");
 	
 	return false;
 }
@@ -25,11 +26,11 @@ export function $$form(
 export function $$mold(
 	ctx:     Red.Context,
 	bitset:  Red.RawBitset,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	return $$form(ctx, bitset, buffer, _.part);
+	return $$form(ctx, bitset, builder, _.part);
 }
 
 // ...

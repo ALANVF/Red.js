@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 import {Vector, vector} from "../../types/typed-vector";
+import {StringBuilder} from "../../helper-types";
 
 function isIntegerArray(array: Red.AnyType[]): array is Red.RawInteger[] {
 	return array.every(v => v instanceof Red.RawInteger);
@@ -134,10 +135,10 @@ export function $$make(
 }
 
 export function $$form(
-	_ctx:   Red.Context,
-	vector: Red.RawVector,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	vector:  Red.RawVector,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
 	const blk = vector.values.repr.slice(vector.index-1);
 	
@@ -150,11 +151,11 @@ export function $$form(
 		case "char!":    mapping = v => new Red.RawChar(v).toJsChar();               break; // TODO: optimize this at some point
 	}
 	
-	buffer.push(mapping(blk[0]));
+	builder.push(mapping(blk[0]));
 
 	for(const val of blk.slice(1)) {
-		buffer.push(" ");
-		buffer.push(mapping(val));
+		builder.push(" ");
+		builder.push(mapping(val));
 	}
 
 	return false;
@@ -163,17 +164,17 @@ export function $$form(
 export function $$mold(
 	_ctx:    Red.Context,
 	vector:  Red.RawVector,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	const blk = vector.values.repr.slice(vector.index-1);
 	const isntDefault = !isDefaultSize(vector.values);
 	
-	buffer.push("make vector! [");
+	builder.push("make vector! [");
 	
 	if(isntDefault) {
-		buffer.push(`${vector.values.elemType} ${vector.values.elemSize} [`);
+		builder.push(`${vector.values.elemType} ${vector.values.elemSize} [`);
 	}
 	
 	if(blk.length != 0) {
@@ -186,18 +187,18 @@ export function $$mold(
 			case "char!":    mapping = v => '#"' + new Red.RawChar(v).toRedChar() + '"'; break; // TODO: optimize this at some point
 		}
 		
-		buffer.push(mapping(blk[0]));
+		builder.push(mapping(blk[0]));
 		
 		for(const val of blk.slice(1)) {
-			buffer.push(" ");
-			buffer.push(mapping(val));
+			builder.push(" ");
+			builder.push(mapping(val));
 		}
 		
-		buffer.push("]");
+		builder.push("]");
 	}
 	
 	if(isntDefault) {
-		buffer.push("]");
+		builder.push("]");
 	}
 
 	return false;

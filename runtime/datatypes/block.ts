@@ -3,6 +3,7 @@ import RedActions from "../actions";
 import {tokenize} from "../../tokenizer";
 import {$$skip} from "./series";
 import RedUtil from "../util";
+import {StringBuilder} from "../../helper-types";
 
 type AnyListConstructor = (typeof Red.RawBlock) | (typeof Red.RawParen) | (typeof Red.RawHash);
 
@@ -86,21 +87,21 @@ export function $$to(
 }
 
 export function $$form(
-	ctx:    Red.Context,
-	block:  Red.RawBlock,
-	buffer: string[],
-	part?:  number
+	ctx:     Red.Context,
+	block:   Red.RawBlock,
+	builder: StringBuilder,
+	part?:   number
 ): boolean {
 	const blk = block.values.slice(block.index-1);
 
 	if(blk.length == 0) {
-		buffer.push("");
+		builder.push("");
 	} else {
-		RedActions.valueSendAction("$$form", ctx, blk[0], buffer, part);
+		RedActions.valueSendAction("$$form", ctx, blk[0], builder, part);
 
 		for(const val of blk.slice(1)) {
-			buffer.push(" ");
-			RedActions.valueSendAction("$$form", ctx, val, buffer, part);
+			builder.push(" ");
+			RedActions.valueSendAction("$$form", ctx, val, builder, part);
 		}
 	}
 
@@ -108,27 +109,27 @@ export function $$form(
 }
 
 export function $$mold(
-	ctx:    Red.Context,
-	block:  Red.RawBlock,
-	buffer: string[],
-	indent: number,
+	ctx:     Red.Context,
+	block:   Red.RawBlock,
+	builder: StringBuilder,
+	indent:  number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	const blk = block.values.slice(block.index-1);
 
 	if(blk.length == 0) {
-		buffer.push("[]");
+		builder.push("[]");
 	} else {
-		buffer.push("[");
+		builder.push("[");
 		
-		RedActions.valueSendAction("$$mold", ctx, blk[0], buffer, indent, _);
+		RedActions.valueSendAction("$$mold", ctx, blk[0], builder, indent, _);
 
 		for(const val of blk.slice(1)) {
-			buffer.push(" ");
-			RedActions.valueSendAction("$$mold", ctx, val, buffer, indent, _);
+			builder.push(" ");
+			RedActions.valueSendAction("$$mold", ctx, val, builder, indent, _);
 		}
 
-		buffer.push("]");
+		builder.push("]");
 	}
 
 	return false;

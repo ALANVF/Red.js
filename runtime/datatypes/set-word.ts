@@ -1,5 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 export function $$to(
 	_ctx:   Red.Context,
@@ -39,22 +40,22 @@ export function $$to(
 }
 
 export function $$form(
-	_ctx:   Red.Context,
-	value:  Red.RawSetWord,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	value:   Red.RawSetWord,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(value.name);
+	builder.push(value.name);
 	return false;
 }
 
 export function $$mold(
 	_ctx:    Red.Context,
 	value:   Red.RawSetWord,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	buffer.push(value.name + ":");
+	builder.push(value.name + ":");
 	return false;
 }

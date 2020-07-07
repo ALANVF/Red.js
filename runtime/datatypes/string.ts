@@ -1,6 +1,7 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 import {$$skip} from "./series";
+import {StringBuilder} from "../../helper-types";
 
 function stringifyArg(
 	ctx:   Red.Context,
@@ -92,35 +93,35 @@ export function $compare(
 // $$make
 
 export function $$form(
-	_ctx:   Red.Context,
-	str:    Red.RawString,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	str:     Red.RawString,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(str.toJsString());
+	builder.push(str.toJsString());
 	return false;
 }
 
 export function $$mold(
 	_ctx:    Red.Context,
 	str:     Red.RawString,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	if(str.length == 0) {
-		buffer.push('""');
+		builder.push('""');
 	} else {
 		const chars = str.toRedString();
 		
 		if(chars.includes('^"')) {
-			buffer.push("{");
-			buffer.push(chars.replace(/\^"/g, '"'));
-			buffer.push("}");
+			builder.push("{");
+			builder.push(chars.replace(/\^"/g, '"'));
+			builder.push("}");
 		} else {
-			buffer.push('"');
-			buffer.push(chars);
-			buffer.push('"');
+			builder.push('"');
+			builder.push(chars);
+			builder.push('"');
 		}
 	}
 

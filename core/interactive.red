@@ -58,14 +58,14 @@ Other useful functions:
 				path? :word  get-path? :word
 			] [
 				either unset! = val-type: type? val: get/any :word [
-					print form reduce ["No information on" :word]
+					print reduce ["No information on" :word]
 				][
-					print form reduce [:word "is" a-an/pre form val-type "of value:" mold :val]
+					print reduce [:word "is" a-an/pre form val-type "of value:" mold :val]
 				]
 			]
 
 			'else [
-				print form reduce [mold :word "is" a-an/pre form type? :word]
+				print reduce [mold :word "is" a-an/pre form type? :word]
 			]
 		]
 	]

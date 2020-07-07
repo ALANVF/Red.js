@@ -1,14 +1,15 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 /* Actions */
 export function $$form(
-	_ctx:   Red.Context,
-	tuple:  Red.RawTuple,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	tuple:   Red.RawTuple,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(tuple.values.join("."));
+	builder.push(tuple.values.join("."));
 	
 	return false;
 }
@@ -16,9 +17,9 @@ export function $$form(
 export function $$mold(
 	ctx:     Red.Context,
 	tuple:   Red.RawTuple,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	return $$form(ctx, tuple, buffer, _.part);
+	return $$form(ctx, tuple, builder, _.part);
 }

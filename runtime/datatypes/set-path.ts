@@ -1,5 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 // $compare
 
@@ -8,40 +9,40 @@ import RedActions from "../actions";
 // $$to
 
 export function $$form(
-	ctx:    Red.Context,
-	value:  Red.RawSetPath,
-	buffer: string[],
-	part?:  number
+	ctx:     Red.Context,
+	value:   Red.RawSetPath,
+	builder: StringBuilder,
+	part?:   number
 ): boolean {
 	const [head, ...rest] = value.path.slice(value.index - 1);
 
-	RedActions.valueSendAction("$$form", ctx, head, buffer, part);
+	RedActions.valueSendAction("$$form", ctx, head, builder, part);
 	for(const val of rest) {
-		buffer.push("/");
-		RedActions.valueSendAction("$$form", ctx, val, buffer, part);
+		builder.push("/");
+		RedActions.valueSendAction("$$form", ctx, val, builder, part);
 	}
 
-	buffer.push(":");
+	builder.push(":");
 
 	return false;
 }
 
 export function $$mold(
-	ctx:    Red.Context,
-	value:  Red.RawSetPath,
-	buffer: string[],
-	indent: number,
+	ctx:     Red.Context,
+	value:   Red.RawSetPath,
+	builder: StringBuilder,
+	indent:  number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
 	const [head, ...rest] = value.path.slice(value.index - 1);
 	
-	RedActions.valueSendAction("$$mold", ctx, head, buffer, indent, _);
+	RedActions.valueSendAction("$$mold", ctx, head, builder, indent, _);
 	for(const val of rest) {
-		buffer.push("/");
-		RedActions.valueSendAction("$$mold", ctx, val, buffer, indent, _);
+		builder.push("/");
+		RedActions.valueSendAction("$$mold", ctx, val, builder, indent, _);
 	}
 
-	buffer.push(":");
+	builder.push(":");
 
 	return false;
 }

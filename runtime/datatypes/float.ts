@@ -1,5 +1,6 @@
 ﻿import * as Red from "../../red-types";
 import RedActions from "../actions";
+import {StringBuilder} from "../../helper-types";
 
 // TODO: make this all more accurate (and fix vector! ops since I already kinda did in integer.ts)
 
@@ -60,23 +61,23 @@ export function $$to(
 }
 
 export function $$form(
-	_ctx:   Red.Context,
-	value:  Red.RawFloat,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	value:   Red.RawFloat,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(value.value.toString());
+	builder.push(value.value.toString());
 	return false;
 }
 
 export function $$mold(
 	ctx:     Red.Context,
 	value:   Red.RawFloat,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	return $$form(ctx, value, buffer, _.part);
+	return $$form(ctx, value, builder, _.part);
 }
 
 export function $$absolute(

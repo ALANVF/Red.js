@@ -1,6 +1,7 @@
 import {system$words} from "./system";
 import * as Red from "../red-types";
 import * as RedEval from "./eval";
+import {StringBuilder} from "../helper-types";
 
 import * as ACT_datatype   from "./datatypes/datatype";
 import * as ACT_unset      from "./datatypes/unset";
@@ -228,8 +229,8 @@ module RedActions {
 		$$random?:     (ctx: Red.Context, sender: Sender, a?: RandomOptions)                          => Red.AnyType;
 		$$reflect?:    (ctx: Red.Context, sender: Sender, a: string)                                  => Red.AnyType;
 		$$to?:         (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$form?:       (ctx: Red.Context, sender: Sender, a: string[], b?: number)                    => boolean;
-		$$mold?:       (ctx: Red.Context, sender: Sender, a: string[], b: number, c?: MoldOptions)    => boolean;
+		$$form?:       (ctx: Red.Context, sender: Sender, a: StringBuilder, b?: number)                 => boolean; // RE-ALIGN
+		$$mold?:       (ctx: Red.Context, sender: Sender, a: StringBuilder, b: number, c?: MoldOptions) => boolean; // RE-ALIGN
 		$$modify?:     (ctx: Red.Context, sender: Sender, a: string, b: any, c: boolean)              => Red.AnyType;
 		$$absolute?:   (ctx: Red.Context, sender: Sender)                                             => Red.AnyType;
 		$$add?:        (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
@@ -611,10 +612,10 @@ module RedActions {
 			part?: [Red.RawInteger]
 		} = {}
 	): Red.RawString {
-		const str: string[] = [];
-		const ml = valueSendAction("$$form", ctx, value, str, _.part && _.part[0].value);
+		const builder = new StringBuilder();
+		const ml = valueSendAction("$$form", ctx, value, builder, _.part && _.part[0].value);
 		
-		return Red.RawString.fromRedString(str.join(""), ml); // maybe change
+		return Red.RawString.fromRedString(builder.str, ml); // change to js string later
 	}
 
 	export function $$mold(
@@ -627,7 +628,7 @@ module RedActions {
 			part?: [Red.RawInteger]
 		} = {}
 	): Red.RawString {
-		const str: string[] = [];
+		const builder = new StringBuilder();
 		const __: MoldOptions = {};
 
 		if(_.only !== undefined) __.only = true;
@@ -635,9 +636,9 @@ module RedActions {
 		if(_.flat !== undefined) __.flat = true;
 		if(_.part !== undefined) __.part = _.part[0].value;
 
-		const ml = valueSendAction("$$mold", ctx, value, str, 1, __);
+		const ml = valueSendAction("$$mold", ctx, value, builder, 1, __);
 		
-		return Red.RawString.fromJsString(str.join(""), ml); // maybe change
+		return Red.RawString.fromJsString(builder.str, ml);
 	}
 
 	/*

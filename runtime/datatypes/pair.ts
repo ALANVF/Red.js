@@ -1,8 +1,8 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
 import {evalSingle} from "../eval";
+import {StringBuilder} from "../../helper-types";
 
-/* Native actions */
 /* Native actions */
 export function $evalPath(
 	ctx:     Red.Context,
@@ -63,21 +63,21 @@ export function $setPath(
 
 /* Actions */
 export function $$form(
-	_ctx:   Red.Context,
-	pair:   Red.RawPair,
-	buffer: string[],
-	_part?: number
+	_ctx:    Red.Context,
+	pair:    Red.RawPair,
+	builder: StringBuilder,
+	_part?:  number
 ): boolean {
-	buffer.push(`${pair.x}x${pair.y}`);
+	builder.push(`${pair.x}x${pair.y}`);
 	return false;
 }
 
 export function $$mold(
 	ctx:     Red.Context,
 	pair:    Red.RawPair,
-	buffer:  string[],
+	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
 ): boolean {
-	return $$form(ctx, pair, buffer, _.part);
+	return $$form(ctx, pair, builder, _.part);
 }
