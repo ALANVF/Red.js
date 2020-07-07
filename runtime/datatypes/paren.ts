@@ -12,7 +12,7 @@ export function $$make(
 		return new Red.RawParen([]);
 	} else if(Red.isAnyPath(spec)) {
 		return new Red.RawParen(spec.current().path);
-	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
+	} else if(Red.isAnyList(spec)) {
 		return new Red.RawParen(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
 		return new Red.RawParen(RedUtil.Arrays.zip(
@@ -35,7 +35,7 @@ export function $$to(
 ): Red.RawParen {
 	if(Red.isAnyPath(spec)) {
 		return new Red.RawParen(spec.current().path);
-	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
+	} else if(Red.isAnyList(spec)) {
 		return new Red.RawParen(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
 		return new Red.RawParen(RedUtil.Arrays.zip(
@@ -80,30 +80,4 @@ export function $$mold(
 	}
 
 	return false;
-}
-
-export function $$copy(
-	ctx:   Red.Context,
-	paren: Red.RawParen,
-	_: RedActions.CopyOptions = {}
-): Red.RawParen {
-	if(_.part !== undefined || _.types !== undefined) {
-		Red.todo();
-	}
-
-	const blk = paren.values.slice(paren.index-1);
-	
-	if(_.deep === undefined) {
-		return new Red.RawParen(blk);
-	} else {
-		return new Red.RawParen(
-			blk.map(val => {
-				if(Red.isSeries(val) || val instanceof Red.Context || val instanceof Red.RawObject || val instanceof Red.RawBitset || val instanceof Red.RawMap) {
-					return RedActions.$$copy(ctx, val, {deep: []});
-				} else {
-					return val;
-				}
-			})
-		);
-	}
 }

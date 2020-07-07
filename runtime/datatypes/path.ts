@@ -118,7 +118,7 @@ export function $$insert(
 		
 		if(_.only !== undefined) {
 			for(let i = 0; i < _.dup; i++) dups.push(value);
-		} else if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+		} else if(Red.isAnyList(value)) {
 			const values = value.current().values;
 			for(let i = 0; i < _.dup; i++) dups.push(...values);
 		} else if(Red.isAnyPath(value)) {
@@ -134,7 +134,7 @@ export function $$insert(
 		insertOnly(path.path, value, index);
 		offset++;
 	} else {
-		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+		if(Red.isAnyList(value)) {
 			offset += insertAll(path.path, value.current().values, index, _.part);
 		} else if(Red.isAnyPath(value)) {
 			offset += insertAll(path.path, value.current().path, index, _.part);
@@ -161,7 +161,7 @@ export function $$change(
 		
 		if(_.only !== undefined) {
 			for(let i = 0; i < _.dup; i++) dups.push(value);
-		} else if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+		} else if(Red.isAnyList(value)) {
 			const values = value.current().values;
 			for(let i = 0; i < _.dup; i++) dups.push(...values);
 		} else if(Red.isAnyPath(value)) {
@@ -177,7 +177,7 @@ export function $$change(
 		path.path[index] = value;
 		offset++;
 	} else {
-		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+		if(Red.isAnyList(value)) {
 			const values = value.current().values;
 			
 			if(_.part === undefined) {

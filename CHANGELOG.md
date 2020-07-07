@@ -3,6 +3,7 @@
 - Added `make` action for `vector!`s.
 - Add `change` action.
 - Fix `insert` action.
+- Correctly implement `copy` action.
 
 
 # Version 0.1.2

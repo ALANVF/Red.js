@@ -4,6 +4,8 @@ import {tokenize} from "../../tokenizer";
 import {$$skip} from "./series";
 import RedUtil from "../util";
 
+type AnyListConstructor = (typeof Red.RawBlock) | (typeof Red.RawParen) | (typeof Red.RawHash);
+
 function insertOnly(
 	list:    Red.AnyType[],
 	value:   Red.AnyType,
@@ -40,7 +42,7 @@ export function $$make(
 		return new Red.RawBlock([]);
 	} else if(Red.isAnyPath(spec)) {
 		return new Red.RawBlock(spec.current().path);
-	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
+	} else if(Red.isAnyList(spec)) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
 		return new Red.RawBlock(RedUtil.Arrays.zip(
@@ -63,7 +65,7 @@ export function $$to(
 ): Red.RawBlock {
 	if(Red.isAnyPath(spec)) {
 		return new Red.RawBlock(spec.current().path);
-	} else if(spec instanceof Red.RawBlock || spec instanceof Red.RawParen || spec instanceof Red.RawHash) {
+	} else if(Red.isAnyList(spec)) {
 		return new Red.RawBlock(spec.values.slice(spec.index-1));
 	} else if(spec instanceof Red.Context || spec instanceof Red.RawObject) {
 		return new Red.RawBlock(RedUtil.Arrays.zip(
@@ -138,20 +140,22 @@ export function $$mold(
 
 export function $$copy(
 	ctx:   Red.Context,
-	block: Red.RawBlock,
+	list:  Red.RawAnyList,
 	_: RedActions.CopyOptions = {}
-): Red.RawBlock {
-	if(_.part !== undefined || _.types !== undefined) {
+): Red.RawAnyList {
+	if(_.types !== undefined) {
 		Red.todo();
 	}
 
-	const blk = block.values.slice(block.index-1);
+	const index = list.index - 1;
+	const values = list.values.slice(index, (_.part === undefined ? undefined : index + _.part));
+	const Constr = <AnyListConstructor>list.constructor;
 	
 	if(_.deep === undefined) {
-		return new Red.RawBlock(blk);
+		return new Constr(values);
 	} else {
-		return new Red.RawBlock(
-			blk.map(val => {
+		return new Constr(
+			values.map(val => {
 				if(Red.isSeries(val) || val instanceof Red.Context || val instanceof Red.RawObject || val instanceof Red.RawBitset || val instanceof Red.RawMap) {
 					return RedActions.$$copy(ctx, val, {deep: []});
 				} else {
@@ -206,7 +210,7 @@ export function $$insert(
 		
 		if(_.only !== undefined) {
 			for(let i = 0; i < _.dup; i++) dups.push(value);
-		} else if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+		} else if(Red.isAnyList(value)) {
 			const values = value.current().values;
 			for(let i = 0; i < _.dup; i++) dups.push(...values);
 		} else if(Red.isAnyPath(value)) {
@@ -222,7 +226,7 @@ export function $$insert(
 		insertOnly(list.values, value, index);
 		offset++;
 	} else {
-		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+		if(Red.isAnyList(value)) {
 			offset += insertAll(list.values, value.current().values, index, _.part);
 		} else if(Red.isAnyPath(value)) {
 			offset += insertAll(list.values, value.current().path, index, _.part);
@@ -249,7 +253,7 @@ export function $$change(
 		
 		if(_.only !== undefined) {
 			for(let i = 0; i < _.dup; i++) dups.push(value);
-		} else if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+		} else if(Red.isAnyList(value)) {
 			const values = value.current().values;
 			for(let i = 0; i < _.dup; i++) dups.push(...values);
 		} else if(Red.isAnyPath(value)) {
@@ -265,7 +269,7 @@ export function $$change(
 		list.values[index] = value;
 		offset++;
 	} else {
-		if(value instanceof Red.RawBlock || value instanceof Red.RawHash || value instanceof Red.RawParen) {
+		if(Red.isAnyList(value)) {
 			const values = value.current().values;
 			
 			if(_.part === undefined) {
