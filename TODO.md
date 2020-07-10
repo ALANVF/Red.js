@@ -5,7 +5,6 @@ TL;DR:
 
 Finish very soon:
 - Add more `series!` actions.
-- Change `form` and `mold` to use a string ref instead of a string array.
 - Add the `error!` type.
 - Fix relative paths when loading files.
 - Add `compare` action for all datatypes.
@@ -84,3 +83,4 @@ Things already done:
 	- The current implementation has recently started to backfire due to TypeScript's broken "weak structural typing" in type unions.
 	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector).
 	- Might use JS' typed arrays to increase efficiency.
+- Change `form` and `mold` to use a string ref instead of a string array.

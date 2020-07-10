@@ -1,4 +1,4 @@
-# Version 0.1.3 (in development)
+# Version 0.1.3
 - Reimplemented `vector!`s.
 - Added `make` action for `vector!`s.
 - Add `change` action.
