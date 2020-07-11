@@ -1,6 +1,7 @@
 # Version 0.1.4 (in development)
 - Implemented `reflect` action for `object!` and `map!`.
 - Finished implementing `foreach`.
+- Added more helper functions.
 
 
 # Version 0.1.3

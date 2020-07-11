@@ -3,14 +3,14 @@ Red [
 	File: 	 %functions.red
 ]
 
-join: func [
-	"Concatenates values."
-	value "Base value"
-	rest  "Value or block of values"
-][
-	value: either series? :value [copy value][form :value] 
-	append value reduce :rest
-]
+;join: func [
+;	"Concatenates values."
+;	value "Base value"
+;	rest  "Value or block of values"
+;][
+;	value: either series? :value [copy value][form :value] 
+;	append value reduce :rest
+;]
 
 shift-left: func [
 	"Shift bits to the left"
@@ -102,6 +102,22 @@ make-type-funcs: has [list to-list test-list _name docstring][
 	]
 	test-list: append copy to-list [
 		action! native! datatype! function! object! op! vector!
+	]
+	
+	;-- Generates all accessor functions (spec-of, body-of, words-of,...)
+	
+	foreach [name desc][
+		spec   "Returns the spec of a value that supports reflection"
+		body   "Returns the body of a value that supports reflection"
+		words  "Returns the list of words of a value that supports reflection"
+		class  "Returns the class ID of an object"
+		values "Returns the list of values of a value that supports reflection"
+	][
+		append list reduce [
+			to set-word! append form name "-of" to word! 'func reduce [desc to word! 'value] compose [
+				reflect :value (to lit-word! name)
+			] off
+		]
 	]
 	
 	;-- Generates all type testing functions (action?, bitset?, binary?,...)
