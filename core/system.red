@@ -1,7 +1,7 @@
 Red []
 
 'comment [
-system/script: make context! [
+system/script: make object! [
 	title: none
 	header: none
 	parent: none
@@ -9,8 +9,8 @@ system/script: make context! [
 	args: none
 ]
 
-system/standard: make context! [
-	header: make context! [
+system/standard: make object! [
+	header: make object! [
 		title: none
 		name: none
 		type: none
@@ -20,7 +20,7 @@ system/standard: make context! [
 		author: none
 		needs: none
 	]
-	error: make context! [
+	error: make object! [
 		code: none
 		type: none
 		id: none
@@ -31,7 +31,7 @@ system/standard: make context! [
 		where: none
 		stack: none
 	]
-	file-info: make context! [
+	file-info: make object! [
 		name: none
 		size: none
 		date: none

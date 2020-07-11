@@ -1,6 +1,5 @@
-import RedUtil from "./runtime/util";
 import {Ref} from "./helper-types";
-import {Vector, VectorOf, ElemType, ElemSize, TypedArray, vector} from "./types/typed-vector";
+import {Vector} from "./types/typed-vector";
 
 interface Series {
 	index:  number;
@@ -559,7 +558,7 @@ export class RawBitset extends RawValue {
 		} else if(bits.length == 0) {
 			this.bytes = new Uint8Array();
 		} else {
-			this.bytes = new Uint8Array((RedUtil.Arrays.max(bits) >> 3) + 1);
+			this.bytes = new Uint8Array((Math.max(...bits) >> 3) + 1);
 			
 			for(const bit of bits) {
 				this.bytes[bit >> 3] += this.toByte(bit);
@@ -1482,6 +1481,10 @@ export function wrap(value: any): AnyType {
 
 export function todo(): never {
 	throw new Error("This feature has not been implemented yet!");
+}
+
+export function difficult(): never {
+	throw new Error("This is difficult to implement, so it'll be a while until it's implemented");
 }
 
 export function sameSeries(

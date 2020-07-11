@@ -6,7 +6,7 @@ Red [
 ;-- This won't be implemented the way it is in normal Red for now.
 ;-- Actual implementation: https://github.com/red/red/blob/master/environment/console/help.red
 
-help-ctx: make context! [
+help-ctx: make object! [
 	HELP-USAGE:
 {Use HELP or ? to view built-in docs for functions, values 
 for contexts, or all values of a given datatype:

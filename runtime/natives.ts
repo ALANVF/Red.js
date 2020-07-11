@@ -4,7 +4,6 @@ import {system$words} from "./system";
 import {transformPath, evalSingle, groupSingle, ExprType} from "./eval";
 import * as Red from "../red-types";
 import RedActions from "./actions";
-import RedUtil from "./util";
 import RedMain from "../red";
 
 function maxmin(

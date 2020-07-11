@@ -22,6 +22,7 @@ random: make action! [[
 	]
 	random
 ]
+]
 
 reflect: make action! [[
 		"Returns internal details about a value via reflection"
@@ -29,7 +30,6 @@ reflect: make action! [[
 		field 	[word!] "spec, body, words, etc. Each datatype defines its own reflectors"
 	]
 	reflect
-]
 ]
 
 to: make action! [[

@@ -102,14 +102,6 @@ module RedUtil {
 				return out;
 			}
 		}
-		
-		export function max<T>(arr: T[]): T {
-			return arr.reduce((a, b) => a > b ? a : b);
-		}
-		
-		export function min<T>(arr: T[]): T {
-			return arr.reduce((a, b) => a < b ? a : b);
-		}
 	}
 }
 

@@ -33,6 +33,48 @@ export function $$make(
 	return out;
 }
 
+export function $$reflect(
+	_ctx:  Red.Context,
+	obj:   Red.RawObject,
+	field: string
+): Red.AnyType {
+	switch(field) {
+		case "changed": {
+			Red.difficult();
+		}
+		
+		case "class": {
+			return new Red.RawInteger(obj.id);
+		}
+		
+		case "words": {
+			return new Red.RawBlock(obj.words.map(word => new Red.RawWord(word)));
+		}
+		
+		case "values": {
+			return new Red.RawBlock([...obj.values]);
+		}
+		
+		case "body": {
+			const out: Red.AnyType[] = [];
+			
+			for(let i = 0; i < obj.words.length; i++) {
+				out.push(new Red.RawSetWord(obj.words[i]), obj.values[i]);
+			}
+			
+			return new Red.RawBlock(out);
+		}
+		
+		case "owner": {
+			Red.difficult();
+		}
+		
+		default: {
+			Red.todo();
+		}
+	}
+}
+
 export function $$form(
 	ctx:     Red.Context,
 	obj:     Red.RawObject,

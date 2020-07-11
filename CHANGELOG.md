@@ -1,8 +1,12 @@
+# Version 0.1.4 (in development)
+- Implemented `reflect` action for `object!` and `map!`.
+
+
 # Version 0.1.3
 - Reimplemented `vector!`s.
 - Added `make` action for `vector!`s.
-- Add `change` action.
-- Fix `insert` action.
+- Added `change` action.
+- Fixed `insert` action.
 - Correctly implement `copy` action.
 - Improve `form`/`mold` internals.
 

@@ -592,6 +592,13 @@ module RedActions {
 		#get-definition ACT_REFLECT
 	]
 	*/
+	export function $$reflect(
+		ctx:   Red.Context,
+		value: Red.AnyType,
+		field: Red.RawWord
+	): Red.AnyType {
+		return valueSendAction("$$reflect", ctx, value, field.name.toLowerCase());
+	}
 
 	export function $$to(
 		ctx:   Red.Context,

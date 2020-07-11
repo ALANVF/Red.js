@@ -1,10 +1,10 @@
 import * as Red from "../red-types";
 import {Ref} from "../helper-types";
 
-export const system = new Red.Context();
-export const system$words = new Red.Context();
-export const system$options = new Red.Context();
-export const system$std = new Red.Context();
+export const system = new Red.RawObject();
+export const system$words = new Red.RawObject();
+export const system$options = new Red.RawObject();
+export const system$std = new Red.RawObject();
 
 Red.Context.$.addWord("system", system);
 

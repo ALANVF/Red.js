@@ -5,6 +5,37 @@ import RedNatives from "../natives";
 import {StringBuilder} from "../../helper-types";
 
 /* Actions */
+
+export function $$reflect(
+	_ctx:  Red.Context,
+	map:   Red.RawMap,
+	field: string
+): Red.AnyType {
+	switch(field) {
+		case "words": {
+			return new Red.RawBlock(map.keys.map(key => key instanceof Red.RawSetWord ? key.word : key));
+		}
+		
+		case "values": {
+			return new Red.RawBlock([...map.values]);
+		}
+		
+		case "body": {
+			const out: Red.AnyType[] = [];
+			
+			for(let i = 0; i < map.keys.length; i++) {
+				out.push(map.keys[i], map.values[i]);
+			}
+			
+			return new Red.RawBlock(out);
+		}
+		
+		default: {
+			Red.todo();
+		}
+	}
+}
+
 export function $$form(
 	ctx:     Red.Context,
 	map:     Red.RawMap,
