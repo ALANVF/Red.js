@@ -1,7 +1,7 @@
 import {tokenize} from "../tokenizer";
 import {pre} from "./preprocesser";
 import {system$words} from "./system";
-import {transformPath, evalSingle, groupSingle, ExprType} from "./eval";
+import {transformPath, evalSingle, groupSingle, ExprType, stringifyRed} from "./eval";
 import * as Red from "../red-types";
 import RedActions from "./actions";
 import RedMain from "../red";
@@ -348,18 +348,23 @@ module RedNatives {
 	export function $$foreach(
 		ctx:    Red.Context,
 		word:   Red.RawWord|Red.RawBlock,
-		series: Red.RawSeries,
+		series: Red.RawSeries|Red.RawMap,
 		body:   Red.RawBlock
 	): Red.AnyType {
 		let status = true;
 		let ret;
+		
+		const values =
+			series instanceof Red.RawMap
+				? (RedActions.valueSendAction("$$reflect", ctx, series, "body") as Red.RawBlock)
+				: series;
 
 		if(word instanceof Red.RawWord) {
-			for(let i = series.index; i <= series.length && status; i++) {
+			for(let i = values.index; i <= values.length && status; i++) {
 				const newCtx = new Red.Context(ctx, [
-					[word.name, RedActions.$$pick(ctx, series, new Red.RawInteger(i))]
+					[word.name, RedActions.$$pick(ctx, values, new Red.RawInteger(i))]
 				]);
-
+				
 				try {
 					ret = $$do(newCtx, body);
 				} catch(e) {
@@ -376,7 +381,38 @@ module RedNatives {
 				}
 			}
 		} else {
-			Red.todo();
+			for(const value of word.values) {
+				if(!Red.isAnyWord(value)) {
+					throw new TypeError(`Invalid word! \`${stringifyRed(ctx, value)}\`!`);
+				}
+			}
+			
+			const words = (word.values as Red.RawAnyWord[]).map(word => word.name);
+			const skipBy = words.length;
+			
+			for(let i = values.index; i <= values.length && status; i += skipBy) {
+				const newCtx = new Red.Context(ctx,
+					words.map((word, offset) => [
+						word,
+						RedActions.$$pick(ctx, values, new Red.RawInteger(i + offset))
+					])
+				);
+				
+				try {
+					ret = $$do(newCtx, body);
+				} catch(e) {
+					switch(e.constructor) {
+						case Red.CFBreak:
+							ret = e.ret;
+							status = false;
+							break;
+						case Red.CFContinue:
+							break;
+						default:
+							throw e;
+					}
+				}
+			}
 		}
 
 		return ret || Red.RawUnset.unset;

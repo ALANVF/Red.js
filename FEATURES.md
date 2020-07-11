@@ -82,7 +82,7 @@
 | `loop`              | Y      |
 | `repeat`            | Y      |
 | `forever`           | Y      |
-| `foreach`           | P      |
+| `foreach`           | Y      |
 | `forall`            | N      |
 | `remove-each`       | N      |
 | `func`              | Y      |
