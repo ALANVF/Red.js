@@ -150,6 +150,79 @@ function fixOps(expr: RedFunctionCall) {
 	return flip(ops.reverse(), args.reverse());
 }
 
+function buildFunctionCall(
+	ctx:   Red.Context,
+	call:  RedFunctionCall,
+	nargs: number,
+	args:  Red.RawArgument[],
+	b0:    Red.RawWord | Red.RawPath,
+	b:     ExprType[]
+): GroupSingleResult {
+	const fnName = call.func.name.length == 0 ? stringifyRed(ctx, b0) : call.func.name;
+	
+	for(let i = 0; call.passed.length < nargs; i++) {
+		const arg = args[i];
+		const name = arg.name;
+		
+		if(name instanceof Red.RawWord) {
+			if(b.length > 0) {
+				const next = groupSingle(ctx, b);
+				
+				if(next.made instanceof Red.RawParen && !next.noEval) {
+					next.made = RedNatives.$$do(ctx, next.made);
+				}
+				
+				call.passed.push(argument(next.made, next.noEval));
+				b = next.restNodes;
+			} else {
+				throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+			}
+		} else if(name instanceof Red.RawGetWord) {
+			const next = b.shift();
+			
+			if(next !== undefined) {
+				call.passed.push(argument(next, true));
+			} else {
+				throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+			}
+		} else {
+			let next = b.shift();
+			
+			if(next instanceof Red.RawParen) {
+				next = RedNatives.$$do(ctx, next);
+			}
+				
+			checkUnset:
+			if(arg.typeSpec != null && next === undefined) {
+				// Small hack for now
+				for(const val of arg.typeSpec.values) {
+					if(val instanceof Red.RawWord) {
+						const n = val.name.toLowerCase();
+						if(n == "unset!" || n == "any-type!" || n == "internal!") {
+							call.passed.push(argument(Red.RawUnset.unset));
+							break checkUnset;
+						}
+					} else {
+						throw new Error("error!");
+					}
+				}
+				
+				throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+			} else if(next !== undefined) {
+				call.passed.push(argument(next));
+			} else {
+				throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
+			}
+		}
+	}
+	
+	return {
+		made: call,
+		restNodes: b,
+		noEval: false
+	}
+}
+
 // TODO: fix this for functions located inside an object!
 function fnCreateTempCtx(
 	ctx: Red.Context,
@@ -507,7 +580,6 @@ export function groupSingle(
 			made: out,
 			restNodes: next.restNodes,
 			noEval: false
-			
 		};
 	} else if(b0 instanceof Red.RawSetPath) {
 		const value = new Red.RawPath(b0.path.slice(0, -1));
@@ -549,145 +621,17 @@ export function groupSingle(
 		const out = RedUtil.clone(made);
 		const nargs = made.totalArity;
 		const refs: Red.RawArgument[] = [];
-		const fnName = out.func.name.length == 0 ? stringifyRed(ctx, b0) : out.func.name;
 		
 		for(const r of made.refines) {
 			refs.push(...made.func.getRefine(r).addArgs);
 		}
-
-		const args = [...made.func.args, ...refs];
 		
-		for(let i = 0; out.passed.length < nargs; i++) {
-			const arg = args[i];
-			const name = arg.name;
-			
-			if(name instanceof Red.RawWord) {
-				if(b.length > 0) {
-					const next = groupSingle(ctx, b);
-					
-					if(next.made instanceof Red.RawParen && !next.noEval) {
-						next.made = RedNatives.$$do(ctx, next.made);
-					}
-
-					out.passed.push(argument(next.made, next.noEval));
-					b = next.restNodes;
-				} else {
-					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
-				}
-			} else if(name instanceof Red.RawGetWord) {
-				const next = b.shift();
-				
-				if(
-					next instanceof Red.RawWord || next instanceof Red.RawPath
-						||
-					next instanceof Red.RawGetWord || next instanceof Red.RawGetPath
-				) {
-					out.passed.push(argument(RedNatives.$$get(ctx, next), true));
-				} else if(next !== undefined) {
-					out.passed.push(argument(next));
-				} else {
-					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
-				}
-			} else {
-				const next = b.shift();
-				
-				checkUnset:
-				if(arg.typeSpec != null && next === undefined) {
-					// Small hack for now
-					for(const val of arg.typeSpec.values) {
-						if(val instanceof Red.RawWord) {
-							const n = val.name.toLowerCase();
-							if(n == "unset!" || n == "any-type!" || n == "internal!") {
-								out.passed.push(argument(Red.RawUnset.unset));
-								break checkUnset;
-							}
-						} else {
-							throw new Error("error!");
-						}
-					}
-					
-					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
-				} else if(next !== undefined) {
-					out.passed.push(argument(next));
-				} else {
-					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
-				}
-			}
-		}
-		
-		return {
-			made: out,
-			restNodes: b,
-			noEval: false
-		};
+		return buildFunctionCall(ctx, out, nargs, [...made.func.args, ...refs], b0, b);
 	} else if((blk[0] instanceof Red.RawWord || blk[0] instanceof Red.RawPath) && (made instanceof Red.Action || made instanceof Red.Native || made instanceof Red.RawFunction)) {
 		const out = new RedFunctionCall(made, [], []);
 		const nargs = out.totalArity;
-		const fnName = out.func.name.length == 0 ? stringifyRed(ctx, b0) : out.func.name;
-
-		for(let i = 0; out.passed.length < nargs; i++) {
-			const arg = made.args[i];
-			const name = arg.name;
-			
-			if(name instanceof Red.RawWord) {
-				if(b.length > 0) {
-					const next = groupSingle(ctx, b);
-					
-					if(next.made instanceof Red.RawParen && !next.noEval) {
-						next.made = RedNatives.$$do(ctx, next.made);
-					}
-
-					out.passed.push(argument(next.made, next.noEval));
-					b = next.restNodes;
-				} else {
-					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
-				}
-			} else if(name instanceof Red.RawGetWord) {
-				const next = b.shift();
-				
-				if(
-					next instanceof Red.RawWord || next instanceof Red.RawPath
-						||
-					next instanceof Red.RawGetWord || next instanceof Red.RawGetPath
-				) {
-					out.passed.push(argument(RedNatives.$$get(ctx, next), true));
-				} else if(next !== undefined) {
-					out.passed.push(argument(next));
-				} else {
-					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
-				}
-			} else {
-				const next = b.shift();
-				
-				checkUnset2:
-				if(arg.typeSpec != null && next === undefined) {
-					// Small hack for now
-					for(const val of arg.typeSpec.values) {
-						if(val instanceof Red.RawWord) {
-							const n = val.name.toLowerCase();
-							if(n == "unset!" || n == "any-type!" || n == "internal!") {
-								out.passed.push(argument(Red.RawUnset.unset));
-								break checkUnset2;
-							}
-						} else {
-							throw new Error("error!");
-						}
-					}
-					
-					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
-				} else if(next !== undefined) {
-					out.passed.push(argument(next));
-				} else {
-					throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
-				}
-			}
-		}
-
-		return {
-			made: out,
-			restNodes: b,
-			noEval: false
-		};
+		
+		return buildFunctionCall(ctx, out, nargs, made.args, b0, b);
 	}
 
 	return {

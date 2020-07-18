@@ -3,6 +3,7 @@
 - Finished implementing `foreach`.
 - Added more helper functions.
 - Fixed quoting issues with `set-word!` and `set-path!`.
+- Fixed quoting bugs for `get-word!` and `lit-word!` function arguments.
 
 
 # Version 0.1.3
