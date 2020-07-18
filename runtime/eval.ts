@@ -168,7 +168,7 @@ function buildFunctionCall(
 			if(b.length > 0) {
 				const next = groupSingle(ctx, b);
 				
-				if(next.made instanceof Red.RawParen && !next.noEval) {
+				if(!next.noEval && next.made instanceof Red.RawParen) {
 					next.made = RedNatives.$$do(ctx, next.made);
 				}
 				
@@ -190,10 +190,12 @@ function buildFunctionCall(
 			
 			if(next instanceof Red.RawParen) {
 				next = RedNatives.$$do(ctx, next);
+			} else if(next instanceof Red.RawGetWord || next instanceof Red.RawGetPath) {
+				next = RedNatives.$$get(ctx, next, {any: []});
 			}
 				
 			checkUnset:
-			if(arg.typeSpec != null && next === undefined) {
+			if(arg.typeSpec != null && (next === undefined || next === Red.RawUnset.unset)) {
 				// Small hack for now
 				for(const val of arg.typeSpec.values) {
 					if(val instanceof Red.RawWord) {
@@ -208,7 +210,7 @@ function buildFunctionCall(
 				}
 				
 				throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
-			} else if(next !== undefined) {
+			} else if(next !== undefined && next !== Red.RawUnset.unset) {
 				call.passed.push(argument(next));
 			} else {
 				throw new Error(`Function ${fnName} is missing its ${stringifyRed(ctx, name)} argument!`);
@@ -606,6 +608,18 @@ export function groupSingle(
 	} else if(b0 instanceof Red.RawGetPath) {
 		return {
 			made: transformPath(ctx, b0, true),
+			restNodes: b,
+			noEval: true
+		};
+	} else if(b0 instanceof Red.RawLitWord) {
+		return {
+			made: b0.word,
+			restNodes: b,
+			noEval: true
+		};
+	} else if(b0 instanceof Red.RawLitPath) {
+		return {
+			made: new Red.RawPath(b0.path),
 			restNodes: b,
 			noEval: true
 		};

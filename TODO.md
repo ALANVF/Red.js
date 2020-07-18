@@ -12,8 +12,6 @@ Finish very soon:
 
 Finish somewhat soon:
 - Add some tests.
-- Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
-	- Quoting specs: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#741-function-type
 - Implement actions for more datatypes.
 - Add newline markers in blocks (will require rewriting many things).
 - Give functions special contexts so that `self` can be used in a function inside an object/context.
@@ -84,3 +82,5 @@ Things already done:
 	- Vector docs: [here](https://github.com/red/red/wiki/%5BDOC%5D-Comparison-of-aggregate-values-%28block%21-vector%21-object%21-hash%21-map%21%29#vector).
 	- Might use JS' typed arrays to increase efficiency.
 - Change `form` and `mold` to use a string ref instead of a string array.
+- Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
+	- Quoting specs: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#741-function-type
