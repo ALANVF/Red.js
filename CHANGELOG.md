@@ -2,6 +2,7 @@
 - Implemented `reflect` action for `object!` and `map!`.
 - Finished implementing `foreach`.
 - Added more helper functions.
+- Fixed quoting issues with `set-word!` and `set-path!`.
 
 
 # Version 0.1.3

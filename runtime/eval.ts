@@ -497,8 +497,34 @@ export function groupSingle(
 	} else if(b0 instanceof Red.RawPath) {
 		made = transformPath(ctx, b0);
 		noEval = true;
-	} else if(b0 instanceof Red.RawSetWord || b0 instanceof Red.RawSetPath) {
-		made = b0;
+	} else if(b0 instanceof Red.RawSetWord) {
+		const out = new RedFunctionCall(RedNatives._SET, [], [argument(b0, noEval)]);
+		const next = groupSingle(ctx, b);
+
+		out.passed.push(argument(next.made, next.noEval));
+
+		return {
+			made: out,
+			restNodes: next.restNodes,
+			noEval: false
+			
+		};
+	} else if(b0 instanceof Red.RawSetPath) {
+		const value = new Red.RawPath(b0.path.slice(0, -1));
+		const last = b0.path[b0.path.length - 1];
+		const out = new RedFunctionCall(RedActions.SET_PATH, [], [
+			argument(transformPath(ctx, value)),
+			argument(last, last instanceof Red.RawWord)
+		]); // FIX: this fails if the path is longer than 2 values?
+		const next = groupSingle(ctx, b);
+
+		out.passed.push(argument(next.made, next.noEval), argument(Red.RawLogic.false));
+
+		return {
+			made: out,
+			restNodes: next.restNodes,
+			noEval: false
+		};
 	} else if(b0 instanceof Red.RawGetWord) {
 		return {
 			made: RedNatives.$$get(ctx, b0, {any: []}),
@@ -592,34 +618,6 @@ export function groupSingle(
 		return {
 			made: out,
 			restNodes: b,
-			noEval: false
-		};
-	} else if(made instanceof Red.RawSetWord) {
-		const out = new RedFunctionCall(RedNatives._SET, [], [argument(made, noEval)]);
-		const next = groupSingle(ctx, b);
-
-		out.passed.push(argument(next.made, next.noEval));
-
-		return {
-			made: out,
-			restNodes: next.restNodes,
-			noEval: false
-			
-		};
-	} else if(made instanceof Red.RawSetPath) {
-		const value = new Red.RawPath(made.path.slice(0, -1));
-		const last = made.path[made.path.length - 1];
-		const out = new RedFunctionCall(RedActions.SET_PATH, [], [
-			argument(transformPath(ctx, value)),
-			argument(last, last instanceof Red.RawWord)
-		]); // FIX: this fails if the path is longer than 2 values
-		const next = groupSingle(ctx, b);
-
-		out.passed.push(argument(next.made, next.noEval), argument(Red.RawLogic.false));
-
-		return {
-			made: out,
-			restNodes: next.restNodes,
 			noEval: false
 		};
 	} else if((blk[0] instanceof Red.RawWord || blk[0] instanceof Red.RawPath) && (made instanceof Red.Action || made instanceof Red.Native || made instanceof Red.RawFunction)) {
