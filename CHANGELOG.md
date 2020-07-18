@@ -6,6 +6,7 @@
 - Fixed quoting bugs for `get-word!` and `lit-word!` function arguments.
 - Fixed `lit-word!` and `lit-path!` behavior.
 - Removed multiline property from `string!`s because it wasn't needed.
+- Fixed file error bug.
 
 
 # Version 0.1.3

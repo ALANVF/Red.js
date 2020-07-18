@@ -114,16 +114,16 @@ module Red {
 		} catch(e) {
 			switch(e.constructor) {
 				case RedTypes.CFBreak:
-					throw new Error(`Throw error: Nothing to break (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to break (in Red file ${state.file ? "%"+state.file.name.ref : "<anon>"})`);
 
 				case RedTypes.CFContinue:
-					throw new Error(`Throw error: Nothing to continue (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to continue (in Red file ${state.file ? "%"+state.file.name.ref : "<anon>"})`);
 
 				case RedTypes.CFReturn:
-					throw new Error(`Throw error: Nothing to return (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to return (in Red file ${state.file ? "%"+state.file.name.ref : "<anon>"})`);
 
 				default:
-					throw new Error(`Error in Red file ${state.file ? "%"+state.file.name : "<anon>"} near: ${RedEval.stringifyRed(ctx, res ? res.made : body[0])}\n${e}`);
+					throw new Error(`Error in Red file ${state.file ? "%"+state.file.name.ref : "<anon>"} near: ${RedEval.stringifyRed(ctx, res ? res.made : body[0])}\n${e}`);
 			}
 		}
 		
@@ -163,16 +163,16 @@ module Red {
 		} catch(e) {
 			switch(e.constructor) {
 				case RedTypes.CFBreak:
-					throw new Error(`Throw error: Nothing to break (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to break (in Red file ${state.file ? "%"+state.file.name.ref : "<anon>"})`);
 
 				case RedTypes.CFContinue:
-					throw new Error(`Throw error: Nothing to continue (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to continue (in Red file ${state.file ? "%"+state.file.name.ref : "<anon>"})`);
 
 				case RedTypes.CFReturn:
-					throw new Error(`Throw error: Nothing to return (in Red file ${state.file ? "%"+state.file.name : "<anon>"})`);
+					throw new Error(`Throw error: Nothing to return (in Red file ${state.file ? "%"+state.file.name.ref : "<anon>"})`);
 
 				default:
-					throw new Error(`Error in Red file ${state.file ? "%"+state.file.name : "<anon>"} near: ${RedEval.stringifyRed(ctx, res ? res.made : body[0])}\n${e}`);
+					throw new Error(`Error in Red file ${state.file ? "%"+state.file.name.ref : "<anon>"} near: ${RedEval.stringifyRed(ctx, res ? res.made : body[0])}\n${e}`);
 			}
 		}
 
