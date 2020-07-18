@@ -97,9 +97,8 @@ export function $$form(
 	value:   Red.RawFunction,
 	builder: StringBuilder,
 	part?:   number
-): boolean {
+) {
 	$$mold(ctx, value, builder, 1, {part});
-	return true;
 }
 
 export function $$mold(
@@ -108,7 +107,7 @@ export function $$mold(
 	builder: StringBuilder,
 	indent:  number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	const lastIndent = " ".repeat((indent-1)*4);
 	const thisIndent = " ".repeat(indent*4);
 	const nextIndent = " ".repeat((indent+1)*4);
@@ -171,6 +170,4 @@ export function $$mold(
 	builder.push("]");
 	builder.push(RedActions.$$mold(ctx, value.body).toJsString());
 	builder.push("]");
-
-	return true;
 }

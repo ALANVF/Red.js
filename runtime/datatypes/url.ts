@@ -10,9 +10,8 @@ export function $$form(
 	url:     Red.RawUrl,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(url.url.ref.slice(url.index - 1));
-	return false;
 }
 
 export function $$mold(
@@ -21,8 +20,8 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, url, builder, _.part);
+) {
+	$$form(ctx, url, builder, _.part);
 }
 
 // ...

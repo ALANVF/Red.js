@@ -26,9 +26,8 @@ export function $$form(
 	file:    Red.RawFile,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(file.current().name.ref);
-	return false;
 }
 
 export function $$mold(
@@ -37,9 +36,9 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	builder.push("%");
-	return $$form(ctx, file, builder, _.part);
+	$$form(ctx, file, builder, _.part);
 }
 
 // ...

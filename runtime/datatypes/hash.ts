@@ -8,7 +8,7 @@ export function $$mold(
 	builder: StringBuilder,
 	indent:  number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	const blk = hash.values.slice(hash.index-1);
 
 	builder.push("make hash! [")
@@ -25,6 +25,4 @@ export function $$mold(
 
 		builder.push("]");
 	}
-
-	return false;
 }

@@ -8,10 +8,8 @@ export function $$form(
 	tuple:   Red.RawTuple,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(tuple.values.join("."));
-	
-	return false;
 }
 
 export function $$mold(
@@ -20,6 +18,6 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, tuple, builder, _.part);
+) {
+	$$form(ctx, tuple, builder, _.part);
 }

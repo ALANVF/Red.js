@@ -38,9 +38,8 @@ export function $$form(
 	value:  Red.RawDatatype,
 	builder: StringBuilder,
 	_part?: number
-): boolean {
+) {
 	builder.push(value.name);
-	return false;
 }
 
 export function $$mold(
@@ -49,10 +48,9 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	if(_.all !== undefined) {
 		builder.push("#[datatype! " + value.name + "]");
-		return false;
 	} else {
 		return $$form(ctx, value, builder, _.part);
 	}

@@ -41,7 +41,7 @@ export function $$form(
 	map:     Red.RawMap,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	if(map.keys.length == 0) {
 		builder.push("");
 	} else {
@@ -55,8 +55,6 @@ export function $$form(
 			}
 		}
 	}
-	
-	return false;
 }
 
 export function $$mold(
@@ -65,7 +63,7 @@ export function $$mold(
 	builder: StringBuilder,
 	indent:  number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	builder.push("#(");
 	
 	if(map.keys.length > 0) {
@@ -83,8 +81,6 @@ export function $$mold(
 
 	builder.push("\t".repeat(indent - 1));
 	builder.push(")");
-	
-	return map.keys.length > 0;
 }
 
 // ...

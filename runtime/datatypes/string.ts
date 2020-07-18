@@ -97,9 +97,8 @@ export function $$form(
 	str:     Red.RawString,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(str.toJsString());
-	return false;
 }
 
 export function $$mold(
@@ -108,7 +107,7 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	if(str.length == 0) {
 		builder.push('""');
 	} else {
@@ -124,8 +123,6 @@ export function $$mold(
 			builder.push('"');
 		}
 	}
-
-	return false;
 }
 
 // ...

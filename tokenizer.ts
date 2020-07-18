@@ -151,7 +151,7 @@ type RedToken =
 	| {money: number, region: string}
 
 	| {char: string}
-	| {string: string, multi: boolean}
+	| {string: string}
 	| {file: string}
 	| {email: string}
 	| {url: string}
@@ -1127,7 +1127,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 
 	// string!
 	else if(res = rdr.matchRx(regexRules.string)) {
-		made.push({string: res[1], multi: false});
+		made.push({string: res[1]});
 	}
 
 	// string! (multiline)
@@ -1173,7 +1173,7 @@ function makeNext(rdr: Reader, made: RedToken[]) {
 			}
 		}
 		
-		made.push({string: out.slice(0, -1), multi: true});
+		made.push({string: out.slice(0, -1)});
 	}
 	
 	// tag!
@@ -1340,7 +1340,7 @@ function tokenToRed(token: RedToken): Red.AnyType {
 		return Red.RawChar.fromRedChar(token.char);
 	}
 	else if("string" in token) {
-		return Red.RawString.fromRedString(token.string, token.multi);
+		return Red.RawString.fromRedString(token.string);
 	}
 	else if("file" in token) {
 		return new Red.RawFile(new Ref(token.file));

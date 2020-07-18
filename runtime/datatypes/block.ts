@@ -91,7 +91,7 @@ export function $$form(
 	block:   Red.RawBlock,
 	builder: StringBuilder,
 	part?:   number
-): boolean {
+) {
 	const blk = block.values.slice(block.index-1);
 
 	if(blk.length == 0) {
@@ -104,8 +104,6 @@ export function $$form(
 			RedActions.valueSendAction("$$form", ctx, val, builder, part);
 		}
 	}
-
-	return false;
 }
 
 export function $$mold(
@@ -114,7 +112,7 @@ export function $$mold(
 	builder: StringBuilder,
 	indent:  number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	const blk = block.values.slice(block.index-1);
 
 	if(blk.length == 0) {
@@ -131,8 +129,6 @@ export function $$mold(
 
 		builder.push("]");
 	}
-
-	return false;
 }
 
 // $compare

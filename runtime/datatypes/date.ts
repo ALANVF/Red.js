@@ -8,7 +8,7 @@ export function $$form(
 	date:    Red.RawDate,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(date.date.getUTCDate().toString());
 	builder.push("-");
 	builder.push("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")[date.date.getUTCMonth()]);
@@ -39,8 +39,6 @@ export function $$form(
 			builder.push((date.zone.minute < 10 ? "0" : "") + date.zone.minute.toString());
 		}
 	}
-	
-	return false;
 }
 
 export function $$mold(
@@ -49,6 +47,6 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, date, builder, _.part);
+) {
+	$$form(ctx, date, builder, _.part);
 }

@@ -13,7 +13,7 @@ export function $$form(
 	value:  Red.RawGetPath,
 	builder: StringBuilder,
 	part?:  number
-): boolean {
+) {
 	const [head, ...rest] = value.path.slice(value.index - 1);
 
 	builder.push(":");
@@ -22,8 +22,6 @@ export function $$form(
 		builder.push("/");
 		RedActions.valueSendAction("$$form", ctx, val, builder, part);
 	}
-
-	return false;
 }
 
 export function $$mold(
@@ -32,7 +30,7 @@ export function $$mold(
 	builder: StringBuilder,
 	indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	const [head, ...rest] = value.path.slice(value.index - 1);
 	
 	builder.push(":");
@@ -41,6 +39,4 @@ export function $$mold(
 		builder.push("/");
 		RedActions.valueSendAction("$$mold", ctx, val, builder, indent, _);
 	}
-
-	return false;
 }

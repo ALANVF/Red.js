@@ -10,11 +10,10 @@ export function $$form(
 	tag:     Red.RawTag,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push("<");
 	builder.push(tag.current().tag.ref);
 	builder.push(">");
-	return false;
 }
 
 export function $$mold(
@@ -23,8 +22,8 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, tag, builder, _.part);
+) {
+	$$form(ctx, tag, builder, _.part);
 }
 
 // ...

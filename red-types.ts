@@ -338,24 +338,15 @@ export class RawNone extends RawValue {
 export class RawString extends RawValue implements SeriesOf<RawChar> {
 	index: number = 1;
 
-	constructor(
-		public values:    RawChar[],
-		public multiline: boolean = false
-	) {
+	constructor(public values: RawChar[]) {
 		super();
 	}
 
-	static fromJsString(
-		value:     string,
-		multiline: boolean = false
-	) {
-		return new RawString([...value].map(c => RawChar.fromJsChar(c)), multiline);
+	static fromJsString(value: string) {
+		return new RawString([...value].map(c => RawChar.fromJsChar(c)));
 	}
 
-	static fromRedString(
-		value:     string,
-		multiline: boolean = false
-	) {
+	static fromRedString(value: string) {
 		const out = [];
 		const redEscapeChar = /\^(?:[A-Z\[\\\]_@\-\/~"\^]|\((?:null|back|tab|line|page|esc|del|[A-F\d]+)\))/i;
 
@@ -370,7 +361,7 @@ export class RawString extends RawValue implements SeriesOf<RawChar> {
 			}
 		}
 
-		return new RawString(out, multiline);
+		return new RawString(out);
 	}
 
 	toJsString() {

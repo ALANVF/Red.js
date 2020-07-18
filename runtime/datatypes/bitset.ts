@@ -7,7 +7,7 @@ export function $$form(
 	bitset: Red.RawBitset,
 	builder: StringBuilder,
 	_part?: number
-): boolean {
+) {
 	builder.push("make bitset! ");
 	
 	if(bitset.negated) builder.push("[not ");
@@ -19,8 +19,6 @@ export function $$form(
 	builder.push("}");
 	
 	if(bitset.negated) builder.push("]");
-	
-	return false;
 }
 
 export function $$mold(
@@ -29,8 +27,8 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, bitset, builder, _.part);
+) {
+	$$form(ctx, bitset, builder, _.part);
 }
 
 // ...

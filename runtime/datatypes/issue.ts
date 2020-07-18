@@ -9,9 +9,8 @@ export function $$form(
 	value:   Red.RawIssue,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(value.value);
-	return false;
 }
 
 export function $$mold(
@@ -20,9 +19,7 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	builder.push("#");
 	builder.push(value.value);
-
-	return false;
 }

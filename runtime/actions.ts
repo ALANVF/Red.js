@@ -220,60 +220,60 @@ module RedActions {
 	*/
 	
 	export interface BasicTypeActions<Sender = any> {
-		$evalPath?:    (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: boolean)                 => Red.AnyType;
-		$setPath?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: Red.AnyType, c: boolean) => Red.AnyType;
-		$addPath?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: boolean)                 => void;
-		$compare?:     (ctx: Red.Context, sender: Sender, a: any, b: Red.ComparisonOp)                => Red.CompareResult;
+		$evalPath?:    (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: boolean)                   => Red.AnyType;
+		$setPath?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: Red.AnyType, c: boolean)   => Red.AnyType;
+		$addPath?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: boolean)                   => void;
+		$compare?:     (ctx: Red.Context, sender: Sender, a: any, b: Red.ComparisonOp)                  => Red.CompareResult;
 		
-		$$make?:       (ctx: Red.Context, sender: Red.AnyType, a: any)                                => Red.AnyType;
-		$$random?:     (ctx: Red.Context, sender: Sender, a?: RandomOptions)                          => Red.AnyType;
-		$$reflect?:    (ctx: Red.Context, sender: Sender, a: string)                                  => Red.AnyType;
-		$$to?:         (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$form?:       (ctx: Red.Context, sender: Sender, a: StringBuilder, b?: number)                 => boolean; // RE-ALIGN
-		$$mold?:       (ctx: Red.Context, sender: Sender, a: StringBuilder, b: number, c?: MoldOptions) => boolean; // RE-ALIGN
-		$$modify?:     (ctx: Red.Context, sender: Sender, a: string, b: any, c: boolean)              => Red.AnyType;
-		$$absolute?:   (ctx: Red.Context, sender: Sender)                                             => Red.AnyType;
-		$$add?:        (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$divide?:     (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$multiply?:   (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$negate?:     (ctx: Red.Context, sender: Sender)                                             => Red.AnyType;
-		$$power?:      (ctx: Red.Context, sender: Sender, a: any)                                     => Red.RawNumber;
-		$$remainder?:  (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$round?:      (ctx: Red.Context, sender: Sender, a?: RoundOptions)                           => Sender;
-		$$subtract?:   (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$even_q?:     (ctx: Red.Context, sender: Sender)                                             => Red.RawLogic;
-		$$odd_q?:      (ctx: Red.Context, sender: Sender)                                             => Red.RawLogic;
-		$$and_t?:      (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$complement?: (ctx: Red.Context, sender: Sender)                                             => Red.AnyType;
-		$$or_t?:       (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$xor_t?:      (ctx: Red.Context, sender: Sender, a: any)                                     => Red.AnyType;
-		$$append?:     (ctx: Red.Context, sender: Sender, a: any, b?: AppendOptions)                  => Red.RawSeries;
-		$$at?:         (ctx: Red.Context, sender: Sender, a: number)                                  => Red.RawSeries;
-		$$back?:       (ctx: Red.Context, sender: Sender)                                             => Red.RawSeries;
-		$$change?:     (ctx: Red.Context, sender: Sender, a: any, b?: ChangeOptions)                  => Red.RawSeries;
-		$$clear?:      (ctx: Red.Context, sender: Sender)                                             => Sender;
-		$$copy?:       (ctx: Red.Context, sender: Sender, a?: CopyOptions)                            => Sender;
-		$$find?:       (ctx: Red.Context, sender: Sender, a: Red.AnyType, b?: FindOptions)            => Red.AnyType;
-		$$head?:       (ctx: Red.Context, sender: Sender)                                             => Red.RawSeries;
-		$$head_q?:     (ctx: Red.Context, sender: Sender)                                             => Red.RawLogic;
-		$$index_q?:    (ctx: Red.Context, sender: Sender)                                             => Red.RawInteger;
-		$$insert?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b?: InsertOptions)          => Sender;
-		$$length_q?:   (ctx: Red.Context, sender: Sender)                                             => Red.RawInteger;
-		$$move?:       (ctx: Red.Context, sender: Sender, a: Red.RawSeries, b?: number)               => Red.RawSeries;
-		$$next?:       (ctx: Red.Context, sender: Sender)                                             => Red.RawSeries;
-		$$pick?:       (ctx: Red.Context, sender: Sender, a: Red.AnyType)                             => Red.AnyType;
-		$$poke?:       (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: Red.AnyType)             => Red.AnyType;
-		$$put?:        (ctx: Red.Context, sender: Sender, a: any, b: Red.AnyType, c: boolean)         => Sender;
-		$$remove?:     (ctx: Red.Context, sender: Sender, a?: RemoveOptions)                          => Sender;
-		$$reverse?:    (ctx: Red.Context, sender: Sender, a?: number)                                 => Sender;
-		$$select?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b?: SelectOptions)          => Red.AnyType;
-		$$sort?:       (ctx: Red.Context, sender: Sender, a?: SortOptions)                            => Red.RawSeries;
-		$$skip?:       (ctx: Red.Context, sender: Sender, a: number)                                  => Red.RawSeries;
-		$$swap?:       (ctx: Red.Context, sender: Sender, a: Red.RawSeries)                           => Red.RawSeries;
-		$$tail?:       (ctx: Red.Context, sender: Sender)                                             => Red.RawSeries;
-		$$tail_q?:     (ctx: Red.Context, sender: Sender)                                             => Red.RawLogic;
-		$$take?:       (ctx: Red.Context, sender: Sender, a?: TakeOptions)                            => Red.AnyType;
-		$$trim?:       (ctx: Red.Context, sender: Sender, a?: TrimOptions)                            => Red.RawSeries;
+		$$make?:       (ctx: Red.Context, sender: Red.AnyType, a: any)                                  => Red.AnyType;
+		$$random?:     (ctx: Red.Context, sender: Sender, a?: RandomOptions)                            => Red.AnyType;
+		$$reflect?:    (ctx: Red.Context, sender: Sender, a: string)                                    => Red.AnyType;
+		$$to?:         (ctx: Red.Context, sender: Sender, a: any)                                       => Red.AnyType;
+		$$form?:       (ctx: Red.Context, sender: Sender, a: StringBuilder, b?: number)                 => void;
+		$$mold?:       (ctx: Red.Context, sender: Sender, a: StringBuilder, b: number, c?: MoldOptions) => void;
+		$$modify?:     (ctx: Red.Context, sender: Sender, a: string, b: any, c: boolean)                => Red.AnyType;
+		$$absolute?:   (ctx: Red.Context, sender: Sender)                                               => Red.AnyType;
+		$$add?:        (ctx: Red.Context, sender: Sender, a: any)                                       => Red.AnyType;
+		$$divide?:     (ctx: Red.Context, sender: Sender, a: any)                                       => Red.AnyType;
+		$$multiply?:   (ctx: Red.Context, sender: Sender, a: any)                                       => Red.AnyType;
+		$$negate?:     (ctx: Red.Context, sender: Sender)                                               => Red.AnyType;
+		$$power?:      (ctx: Red.Context, sender: Sender, a: any)                                       => Red.RawNumber;
+		$$remainder?:  (ctx: Red.Context, sender: Sender, a: any)                                       => Red.AnyType;
+		$$round?:      (ctx: Red.Context, sender: Sender, a?: RoundOptions)                             => Sender;
+		$$subtract?:   (ctx: Red.Context, sender: Sender, a: any)                                       => Red.AnyType;
+		$$even_q?:     (ctx: Red.Context, sender: Sender)                                               => Red.RawLogic;
+		$$odd_q?:      (ctx: Red.Context, sender: Sender)                                               => Red.RawLogic;
+		$$and_t?:      (ctx: Red.Context, sender: Sender, a: any)                                       => Red.AnyType;
+		$$complement?: (ctx: Red.Context, sender: Sender)                                               => Red.AnyType;
+		$$or_t?:       (ctx: Red.Context, sender: Sender, a: any)                                       => Red.AnyType;
+		$$xor_t?:      (ctx: Red.Context, sender: Sender, a: any)                                       => Red.AnyType;
+		$$append?:     (ctx: Red.Context, sender: Sender, a: any, b?: AppendOptions)                    => Red.RawSeries;
+		$$at?:         (ctx: Red.Context, sender: Sender, a: number)                                    => Red.RawSeries;
+		$$back?:       (ctx: Red.Context, sender: Sender)                                               => Red.RawSeries;
+		$$change?:     (ctx: Red.Context, sender: Sender, a: any, b?: ChangeOptions)                    => Red.RawSeries;
+		$$clear?:      (ctx: Red.Context, sender: Sender)                                               => Sender;
+		$$copy?:       (ctx: Red.Context, sender: Sender, a?: CopyOptions)                              => Sender;
+		$$find?:       (ctx: Red.Context, sender: Sender, a: Red.AnyType, b?: FindOptions)              => Red.AnyType;
+		$$head?:       (ctx: Red.Context, sender: Sender)                                               => Red.RawSeries;
+		$$head_q?:     (ctx: Red.Context, sender: Sender)                                               => Red.RawLogic;
+		$$index_q?:    (ctx: Red.Context, sender: Sender)                                               => Red.RawInteger;
+		$$insert?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b?: InsertOptions)            => Sender;
+		$$length_q?:   (ctx: Red.Context, sender: Sender)                                               => Red.RawInteger;
+		$$move?:       (ctx: Red.Context, sender: Sender, a: Red.RawSeries, b?: number)                 => Red.RawSeries;
+		$$next?:       (ctx: Red.Context, sender: Sender)                                               => Red.RawSeries;
+		$$pick?:       (ctx: Red.Context, sender: Sender, a: Red.AnyType)                               => Red.AnyType;
+		$$poke?:       (ctx: Red.Context, sender: Sender, a: Red.AnyType, b: Red.AnyType)               => Red.AnyType;
+		$$put?:        (ctx: Red.Context, sender: Sender, a: any, b: Red.AnyType, c: boolean)           => Sender;
+		$$remove?:     (ctx: Red.Context, sender: Sender, a?: RemoveOptions)                            => Sender;
+		$$reverse?:    (ctx: Red.Context, sender: Sender, a?: number)                                   => Sender;
+		$$select?:     (ctx: Red.Context, sender: Sender, a: Red.AnyType, b?: SelectOptions)            => Red.AnyType;
+		$$sort?:       (ctx: Red.Context, sender: Sender, a?: SortOptions)                              => Red.RawSeries;
+		$$skip?:       (ctx: Red.Context, sender: Sender, a: number)                                    => Red.RawSeries;
+		$$swap?:       (ctx: Red.Context, sender: Sender, a: Red.RawSeries)                             => Red.RawSeries;
+		$$tail?:       (ctx: Red.Context, sender: Sender)                                               => Red.RawSeries;
+		$$tail_q?:     (ctx: Red.Context, sender: Sender)                                               => Red.RawLogic;
+		$$take?:       (ctx: Red.Context, sender: Sender, a?: TakeOptions)                              => Red.AnyType;
+		$$trim?:       (ctx: Red.Context, sender: Sender, a?: TrimOptions)                              => Red.RawSeries;
 		// create
 		// close
 		// delete
@@ -620,9 +620,10 @@ module RedActions {
 		} = {}
 	): Red.RawString {
 		const builder = new StringBuilder();
-		const ml = valueSendAction("$$form", ctx, value, builder, _.part && _.part[0].value);
 		
-		return Red.RawString.fromRedString(builder.str, ml); // change to js string later
+		valueSendAction("$$form", ctx, value, builder, _.part && _.part[0].value);
+		
+		return Red.RawString.fromRedString(builder.str); // change to js string later
 	}
 
 	export function $$mold(
@@ -643,9 +644,9 @@ module RedActions {
 		if(_.flat !== undefined) __.flat = true;
 		if(_.part !== undefined) __.part = _.part[0].value;
 
-		const ml = valueSendAction("$$mold", ctx, value, builder, 1, __);
+		valueSendAction("$$mold", ctx, value, builder, 1, __);
 		
-		return Red.RawString.fromJsString(builder.str, ml);
+		return Red.RawString.fromJsString(builder.str);
 	}
 
 	/*

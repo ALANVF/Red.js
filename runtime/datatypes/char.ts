@@ -38,9 +38,8 @@ export function $$form(
 	value:   Red.RawChar,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(value.toJsChar());
-	return false;
 }
 
 export function $$mold(
@@ -49,9 +48,8 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	builder.push(`#"${value.toRedChar()}"`);
-	return true;
 }
 
 export function $$add(

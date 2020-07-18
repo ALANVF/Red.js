@@ -27,9 +27,8 @@ export function $$form(
 	value:   Red.RawLogic,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(value.cond.toString());
-	return false;
 }
 
 export function $$mold(
@@ -38,14 +37,12 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	if(_.all === true) {
 		builder.push("#[" + value.cond.toString() + "]")
 	} else {
 		builder.push(value.cond.toString());
 	}
-	
-	return false;
 }
 
 export function $$and_t(

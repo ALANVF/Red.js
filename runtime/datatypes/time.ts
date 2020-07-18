@@ -8,7 +8,7 @@ export function $$form(
 	time:    Red.RawTime,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	const minutes = Math.abs(time.minutes);
 	const seconds = Math.abs(time.seconds);
 	
@@ -21,8 +21,6 @@ export function $$form(
 	builder.push((minutes < 10 ? "0" : "") + minutes.toString());
 	builder.push(":");
 	builder.push((seconds < 10 ? "0" : "") + seconds.toString());
-	
-	return false;
 }
 
 export function $$mold(
@@ -31,6 +29,6 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, time, builder, _.part);
+) {
+	$$form(ctx, time, builder, _.part);
 }

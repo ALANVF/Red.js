@@ -62,7 +62,7 @@ export function $$mold(
 	builder: StringBuilder,
 	indent:  number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	const blk = paren.values.slice(paren.index-1);
 
 	if(blk.length == 0) {
@@ -79,6 +79,4 @@ export function $$mold(
 
 		builder.push(")");
 	}
-
-	return false;
 }

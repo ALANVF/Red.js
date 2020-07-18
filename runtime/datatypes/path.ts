@@ -41,7 +41,7 @@ export function $$form(
 	value:   Red.RawPath,
 	builder: StringBuilder,
 	part?:   number
-): boolean {
+) {
 	const [head, ...rest] = value.path.slice(value.index - 1);
 
 	RedActions.valueSendAction("$$form", ctx, head, builder, part);
@@ -49,8 +49,6 @@ export function $$form(
 		builder.push("/");
 		RedActions.valueSendAction("$$form", ctx, val, builder, part);
 	}
-
-	return false;
 }
 
 export function $$mold(
@@ -59,7 +57,7 @@ export function $$mold(
 	builder: StringBuilder,
 	indent:  number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	const [head, ...rest] = value.path.slice(value.index - 1);
 	
 	RedActions.valueSendAction("$$mold", ctx, head, builder, indent, _);
@@ -67,8 +65,6 @@ export function $$mold(
 		builder.push("/");
 		RedActions.valueSendAction("$$mold", ctx, val, builder, indent, _);
 	}
-
-	return false;
 }
 
 // ...

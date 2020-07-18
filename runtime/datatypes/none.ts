@@ -47,9 +47,8 @@ export function $$form(
 	_value:  Red.RawNone,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push("none");
-	return false;
 }
 
 export function $$mold(
@@ -58,12 +57,12 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	if(_.all !== undefined) {
 		builder.push("#[none]");
-		return false;
+		false;
 	} else {
-		return $$form(ctx, value, builder, _.part);
+		$$form(ctx, value, builder, _.part);
 	}
 }
 

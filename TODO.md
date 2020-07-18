@@ -8,7 +8,7 @@ Finish very soon:
 - Add the `error!` type.
 - Fix relative paths when loading files.
 - Add `compare` action for all datatypes.
-- Remove the "multiline" property from `string!`s because it's not actually needed.
+- Add `am`/`pm` suffixes for `time!` values.
 
 Finish somewhat soon:
 - Add some tests.
@@ -18,6 +18,7 @@ Finish somewhat soon:
 - Switch from using unions to interfaces for the type system.
 - Reimplement `money!`.
 - Add Red's newly implemented `ref!` type.
+- Improve help functions.
 
 Finish sometime:
 - Finish all natives.
@@ -84,3 +85,5 @@ Things already done:
 - Change `form` and `mold` to use a string ref instead of a string array.
 - Fix any quoting bugs (should be *all* quoting bugs, as many exist for function arguments).
 	- Quoting specs: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#741-function-type
+- Remove the "multiline" property from `string!`s because it's not actually needed.
+	- `form` and `mold` implementations need to be changed accordingly.

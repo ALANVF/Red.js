@@ -10,9 +10,8 @@ export function $$form(
 	email:   Red.RawEmail,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(email.email.ref.slice(email.index - 1));
-	return false;
 }
 
 export function $$mold(
@@ -21,8 +20,8 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, email, builder, _.part);
+) {
+	$$form(ctx, email, builder, _.part);
 }
 
 // ...

@@ -139,7 +139,7 @@ export function $$form(
 	vector:  Red.RawVector,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	const blk = vector.values.repr.slice(vector.index-1);
 	
 	let mapping: (v: number) => string;
@@ -157,8 +157,6 @@ export function $$form(
 		builder.push(" ");
 		builder.push(mapping(val));
 	}
-
-	return false;
 }
 
 export function $$mold(
@@ -167,7 +165,7 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	const blk = vector.values.repr.slice(vector.index-1);
 	const isntDefault = !isDefaultSize(vector.values);
 	
@@ -200,6 +198,4 @@ export function $$mold(
 	if(isntDefault) {
 		builder.push("]");
 	}
-
-	return false;
 }

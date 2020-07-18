@@ -20,7 +20,7 @@ export function $$mold(
 	builder: StringBuilder,
 	indent:  number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	const lastIndent = " ".repeat((indent-1)*4);
 	const thisIndent = " ".repeat(indent*4);
 	const value = op.func;
@@ -53,10 +53,8 @@ export function $$mold(
 
 	if(value.arity == 0 && value.refines.length == 0) {
 		builder.push("]]");
-		return false;
 	} else {
 		builder.push("\n" + lastIndent + "]]");
-		return true;
 	}
 }
 
@@ -65,7 +63,6 @@ export function $$form(
 	_op:     Red.Op,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push("?op?");
-	return false;
 }

@@ -80,7 +80,7 @@ export function $$form(
 	obj:     Red.RawObject,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	for(let i = 0; i < obj.words.length; i++) {
 		builder.push(obj.words[i]);
 		builder.push(" ");
@@ -90,8 +90,6 @@ export function $$form(
 			builder.push("^/");
 		}
 	}
-	
-	return false;
 }
 
 export function $$mold(
@@ -100,7 +98,7 @@ export function $$mold(
 	builder: StringBuilder,
 	indent:  number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	builder.push("make object! [");
 	
 	if(obj.words.length > 0) {
@@ -119,6 +117,4 @@ export function $$mold(
 
 	builder.push(" ".repeat((indent-1)*4));
 	builder.push("]");
-	
-	return obj.words.length > 0;
 }

@@ -44,9 +44,8 @@ export function $$form(
 	value:   Red.RawGetWord,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(value.name);
-	return false;
 }
 
 export function $$mold(
@@ -55,7 +54,6 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
+) {
 	builder.push(":" + value.name);
-	return false;
 }

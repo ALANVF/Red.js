@@ -11,12 +11,10 @@ export function $$form(
 	binary:  Red.RawBinary,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push("#{");
 	builder.push(binary.bytes.ref.slice(binary.index - 1).toString("hex").toUpperCase());
 	builder.push("}");
-	
-	return false;
 }
 
 export function $$mold(
@@ -25,6 +23,6 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, binary, builder, _.part);
+) {
+	$$form(ctx, binary, builder, _.part);
 }

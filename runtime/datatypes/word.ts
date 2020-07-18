@@ -99,9 +99,8 @@ export function $$form(
 	value:   Red.RawWord,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push(value.name);
-	return false;
 }
 
 export function $$mold(
@@ -110,6 +109,6 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, value, builder, _.part);
+) {
+	$$form(ctx, value, builder, _.part);
 }

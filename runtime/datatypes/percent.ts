@@ -7,9 +7,8 @@ export function $$form(
 	value:   Red.RawPercent,
 	builder: StringBuilder,
 	_part?:  number
-): boolean {
+) {
 	builder.push((value.value * 100).toString() + "%");
-	return false;
 }
 
 export function $$mold(
@@ -18,6 +17,6 @@ export function $$mold(
 	builder: StringBuilder,
 	_indent: number,
 	_: RedActions.MoldOptions = {}
-): boolean {
-	return $$form(ctx, value, builder, _.part);
+) {
+	$$form(ctx, value, builder, _.part);
 }
