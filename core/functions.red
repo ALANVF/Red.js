@@ -92,7 +92,7 @@ fifth:	func ["Returns the fifth value in a series"  s [series! tuple! date!]] [p
 last: func ["Returns the last value in a series" s [series! tuple!]] [pick s length? s]
 
 ;-- temporary for now
-make-type-funcs: has [list to-list test-list _name docstring][
+make-type-funcs: has [list to-list test-list docstring][
 	list: copy []
 	to-list: [
 		bitset! binary! block! char! email! file! float! get-path! get-word! hash!
@@ -114,7 +114,7 @@ make-type-funcs: has [list to-list test-list _name docstring][
 		values "Returns the list of values of a value that supports reflection"
 	][
 		append list reduce [
-			to set-word! append form name "-of" to word! 'func reduce [desc to word! 'value] compose [
+			to set-word! append form name "-of" 'func reduce [desc 'value] compose [
 				reflect :value (to lit-word! name)
 			] off
 		]
@@ -123,11 +123,8 @@ make-type-funcs: has [list to-list test-list _name docstring][
 	;-- Generates all type testing functions (action?, bitset?, binary?,...)
 
 	foreach name test-list [
-		_name: form name
-		poke back tail _name 1 #"?"
-
 		append list reduce [
-			to set-word! _name to word! 'func
+			to set-word! head change back tail form name "?" 'func
 			copy ["Returns true if the value is this type" value [any-type!]] ;@@ FIX: this breaks without copy
 			compose [(name) = type? :value]
 		]
@@ -140,12 +137,9 @@ make-type-funcs: has [list to-list test-list _name docstring][
 		any-list! any-block! any-function! any-object! any-path! any-string! any-word!
 		series! number! immediate! scalar! all-word!
 	][
-		_name: form name
-		poke back tail _name 1 #"?"
-		
 		append list reduce [
-			to set-word! _name to word! 'func
-			compose [(poke back tail _name 1 #"."  append copy docstring _name) value [any-type!]]
+			to set-word! head change back tail form name "?" 'func
+			compose [(append copy docstring head clear back tail form name) value [any-type!]]
 			;compose [find (name) type? :value]
 			compose [foreach type to block! (name) [if type = type? :value [return true]] false]
 		]
@@ -153,13 +147,13 @@ make-type-funcs: has [list to-list test-list _name docstring][
 	
 	;-- Generates all conversion wrapper functions (to-bitset, to-binary, to-block,...)
 
-	;foreach name to-list [
-	;	repend list [
-	;		to set-word! join "to-" head remove back tail form name 'func
-	;		reduce [reform ["Convert to" name "value"] 'value]
-	;		compose [to (name) :value]
-	;	]
-	;]
+	foreach name to-list [
+		append list reduce [
+			to set-word! append copy "to-" head remove back tail form name 'func
+			reduce [form reduce ["Convert to" name "value"] 'value]
+			compose [to (name) :value]
+		]
+	]
 	
 	do list
 ]
@@ -351,7 +345,7 @@ average: func [
 last?: func [
 	"Returns TRUE if the series length is 1"
 	series [series!]
-] [
+][
 	1 = length? series
 ]
 

@@ -7,6 +7,7 @@
 - Fixed `lit-word!` and `lit-path!` behavior.
 - Removed multiline property from `string!`s because it wasn't needed.
 - Fixed file error bug.
+- Added `to-` helper functions.
 
 
 # Version 0.1.3
