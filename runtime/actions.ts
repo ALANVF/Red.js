@@ -336,7 +336,7 @@ module RedActions {
 		"ACT_PERCENT":    [ACT_percent, ACT_float],
 		"ACT_TUPLE":      [ACT_tuple],
 		"ACT_MAP":        [ACT_map],
-		"ACT_BINARY":     [ACT_binary, ACT_string, ACT_series],
+		"ACT_BINARY":     [ACT_binary, /*ACT_string,*/ ACT_series],
 		"ACT_SERIES":     [ACT_series],
 		"ACT_TIME":       [ACT_time],
 		"ACT_TAG":        [ACT_tag, ACT_string, ACT_series],
@@ -900,7 +900,7 @@ module RedActions {
 			deep?:  [],
 			types?: [Red.RawDatatype|Red.RawTypeset]
 		} = {}
-	): Red.RawSeries|Red.Context|Red.RawObject|Red.RawBitset|Red.RawMap {
+	): typeof value {
 		const __: CopyOptions = {};
 
 		if(_.part !== undefined) {
@@ -945,6 +945,45 @@ module RedActions {
 		#get-definition ACT_FIND
 	]
 	*/
+	export function $$find(
+		ctx:    Red.Context,
+		series: Red.RawSeries|Red.RawBitset|Red.RawTypeset|Red.Context|Red.RawObject|Red.RawMap|Red.RawNone,
+		value:  Red.AnyType,
+		_: {
+			part?:    [Red.RawNumber|Red.RawSeries],
+			only?:    [],
+			case?:    [],
+			same?:    [],
+			any?:     [],
+			with?:    [Red.RawString],
+			skip?:    [Red.RawInteger],
+			last?:    [],
+			reverse?: [],
+			tail?:    [],
+			match?:   []
+		} = {}
+	): Red.AnyType {
+		const __: FindOptions = {};
+		
+		if(_.part !== undefined) {
+			const [length] = _.part;
+			
+			if(Red.isNumber(length)) {
+				__.part = Math.floor(length.value);
+			} else if(Red.isSeries(value) && Red.sameSeries(value, length)) {
+				__.part = length.index - value.index;
+			} else {
+				throw new Error("Error!");
+			}
+		}
+		if(_.with !== undefined) __.with = _.with[0].toJsString();
+		if(_.skip !== undefined) __.skip = _.skip[0].value;
+		for(const refine of ["only", "case", "same", "any", "last", "reverse", "tail", "match"]) {
+			if(_[<keyof typeof _>refine] !== undefined) (<any>__)[refine] = true; // gotta love how bad TS' type inference is
+		}
+		
+		return valueSendAction("$$find", ctx, series, value, __);
+	}
 
 	export function $$head(
 		ctx:    Red.Context,

@@ -8,6 +8,7 @@
 - Removed multiline property from `string!`s because it wasn't needed.
 - Fixed file error bug.
 - Added `to-` helper functions.
+- Added `find` action for `string!`s.
 
 
 # Version 0.1.3

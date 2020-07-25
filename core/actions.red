@@ -286,7 +286,6 @@ copy: make action! [[
 	copy
 ]
 
-'TODO [
 find: make action! [[
 		"Returns the series where a value is found, or NONE"
 		series	 [series! bitset! typeset! port! map! none!]
@@ -307,7 +306,6 @@ find: make action! [[
 		/match "Match at current index only and return tail of match"
 	]
 	find
-]
 ]
 
 head: make action! [[

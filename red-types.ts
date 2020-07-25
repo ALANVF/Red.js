@@ -299,9 +299,17 @@ export class RawChar extends RawValue {
 		}
 	}
 
-	get lowerChar() {
+	get upperChar() {
 		if(97 <= this.char && this.char <= 122) {
 			return this.char - 32;
+		} else {
+			return this.char;
+		}
+	}
+	
+	get lowerChar() {
+		if(65 <= this.char && this.char <= 90) {
+			return this.char + 32;
 		} else {
 			return this.char;
 		}
@@ -401,6 +409,10 @@ export class RawString extends RawValue implements SeriesOf<RawChar> {
 
 	get length() {
 		return this.values.length - (this.index - 1);
+	}
+	
+	get absLength() {
+		return this.values.length;
 	}
 }
 
