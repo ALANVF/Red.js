@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"moduleResolution": "node",
-		"target": "esnext",
+		"target": "ES6",
 		"lib": ["es6", "dom", "esnext.array"],
 		"strict": true,
 		"allowJs": true,
