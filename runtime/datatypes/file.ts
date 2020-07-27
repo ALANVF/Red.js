@@ -1,6 +1,6 @@
 import * as Red from "../../red-types";
 import RedActions from "../actions";
-import {append, insert, change} from "./string-ref";
+import {find, append, insert, change} from "./string-ref";
 import {$$skip} from "./series";
 import {StringBuilder} from "../../helper-types";
 
@@ -42,6 +42,16 @@ export function $$mold(
 }
 
 // ...
+
+export function $$find(
+	ctx:   Red.Context,
+	file:  Red.RawFile,
+	value: Red.AnyType,
+	_: RedActions.FindOptions = {}
+): Red.RawFile|Red.RawNone {
+	const res = find(ctx, file.name, file.index, value, _);
+	return typeof res == "number" ? $$skip(ctx, file, res) : res;
+}
 
 export function $$append(
 	ctx:   Red.Context,

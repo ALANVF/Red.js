@@ -149,12 +149,10 @@ export function $$find(
 ): Red.RawString|Red.RawNone {
 	let str1 = str.toJsString();
 	const isPart = _.part !== undefined;
-	//const isOnly = _.only !== undefined;
 	let isCase = _.case !== undefined;
 	const isSame = _.same !== undefined;
 	const isAny = _.any !== undefined;
 	const isWith = _.with !== undefined;
-	//const isSkip = _.skip !== undefined;
 	const isLast = _.last !== undefined;
 	let isReverse = _.reverse !== undefined;
 	const isTail = _.tail !== undefined;
