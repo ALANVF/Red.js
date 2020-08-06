@@ -6,7 +6,7 @@ Red [
 ;-- This won't be implemented the way it is in normal Red for now.
 ;-- Actual implementation: https://github.com/red/red/blob/master/environment/console/help.red
 
-help-ctx: make object! [
+help-ctx: context [
 	HELP-USAGE:
 {Use HELP or ? to view built-in docs for functions, values 
 for contexts, or all values of a given datatype:
@@ -33,10 +33,7 @@ Other useful functions:
 		/pre "Prepend to str"
 		/local tmp
 	][
-		;@@ need to implement the find action before this can work
-		;tmp: either find "aeiou" str/1 ["an"] ["a"]
-		;either pre [rejoin [tmp #" " str]][tmp]
-		tmp: either any [#"a" = str/1 #"e" = str/1 #"i" = str/1 #"o" = str/1 #"u" = str/1] ["an"]["a"]
+		tmp: either find "aeiou" str/1 ["an"] ["a"]
 		either pre [rejoin [tmp #" " str]][tmp]
 	]
 

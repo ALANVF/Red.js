@@ -124,4 +124,15 @@ export function $$xor_t(
 	}
 }
 
-// $$find
+export function $$find(
+	_ctx:    Red.Context,
+	typeset: Red.RawTypeset,
+	value:   Red.AnyType,
+	_: RedActions.FindOptions = {}
+): Red.RawLogic {
+	if(value instanceof Red.RawDatatype) {
+		return Red.RawLogic.from(typeset.types.some(dt => dt.equals(value)));
+	} else {
+		throw new TypeError(`${Red.typeName(value)} is not allowed here!`);
+	}
+}

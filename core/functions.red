@@ -140,8 +140,7 @@ make-type-funcs: has [list to-list test-list docstring][
 		append list reduce [
 			to set-word! head change back tail form name "?" 'func
 			compose [(append copy docstring head clear back tail form name) value [any-type!]]
-			;compose [find (name) type? :value]
-			compose [foreach type to block! (name) [if type = type? :value [return true]] false]
+			compose [find (name) type? :value]
 		]
 	]
 	

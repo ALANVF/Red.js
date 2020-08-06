@@ -8,7 +8,7 @@
 - Removed multiline property from `string!`s because it wasn't needed.
 - Fixed file error bug.
 - Added `to-` helper functions.
-- Added `find` action for `any-string!`.
+- Added `find` action for `any-string!` and `typeset!`.
 
 
 # Version 0.1.3
