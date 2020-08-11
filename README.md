@@ -59,7 +59,7 @@ Alternativly, you can `cd` to the project directory and do `npm install`.
 ## In a browser
 I have yet to actually test Red.js using browser js, but it should be fine as long as you aren't using IE/Edge.
 
-You can also run the Red.js REPL (currently version 0.1.3) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
+You can also run the Red.js REPL (currently version 0.1.4) in your browser [right here](https://redjs-compiled-repl.theangryepicbanana.repl.run), although it will not always be up-to-date with the most recent version of Red.js immediately. This is currently hosted on [repl.it](https://repl.it/).
 
 
 # Current limitations
@@ -95,7 +95,7 @@ I already answered that.
 I also already answered that.
 
 ## Why TypeScript?
-I would have much rather used something like TypedCoffeeScript, but it's dead and doesn't really have any tooling. In the end, this is still better than using something like Flow.
+I would have much rather used something like TypedCoffeeScript, but it's dead and doesn't really have any tooling. Haxe is also a decent language, but it comes with a considerable amount of overhead, which is not preferred for this kind of thing. In the end, this is still better than using something worse like Flow.
 
 ## What can I do to help with development?
 Anything helps!

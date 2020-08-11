@@ -4,6 +4,7 @@ TL;DR:
 - Finish implementing features.
 
 Finish very soon:
+- Finish implementing `find`.
 - Add more `series!` actions.
 - Add the `error!` type.
 - Fix relative paths when loading files.
