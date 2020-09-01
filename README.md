@@ -2,6 +2,15 @@
 
 Red.js is a web runtime for the [Red programming language](https://www.red-lang.org/) that allows you use Red right in your browser. Although it's currently very incomplete, the end goal is to make it as similar to regular Red as possible. While I highly doubt it can happen, it'd also be cool for it to also includes features like web equivalents for Red's View, Draw, Rich-Text, and VID dialects and a version of Red/System that can be compiled to WebAssembly.
 
+# STATUS UPDATE
+Red.js is currently being converted from TypeScript to Haxe due to a variety of reasons:
+- I can't stand TypeScript's type system and poor Babel support. I'd love to use stuff like the do-expressions Babel plugin, but the IDE itself doesn't even support it (I did fix the highlighting mode (locally) just for fun though). Haxe is strictly-typed, doesn't require polyfill, and has the benefits of do-expressions builtin.
+- [It's been pointed out to me](https://gitter.im/red/red.js?at=5f38e2acb7818b3998fdef69) that I did not implement contexts correctly, and it'd be really hard to reimplement them at this point with the existing code (see below).
+- Despite my efforts, the codebase is pretty messy, cluttered, and poorly-organized. A fresh start means that it can be completely restructured.
+- Although the focus of Red.js is to be able to run Red in JavaScript, Haxe can compile to more targets outside of JS, which could prove to be helpful at some point.
+
+I may put the in-progress Haxe version of Red.js up on github while I'm working on it, but it will eventually be moved to this repository once it's done.
+
 
 # Example usage
 
@@ -94,7 +103,7 @@ I already answered that.
 ## Will Red.js be able to compile to WebAssembly?
 I also already answered that.
 
-## Why TypeScript?
+## Why TypeScript? (currently irrelevant)
 I would have much rather used something like TypedCoffeeScript, but it's dead and doesn't really have any tooling. Haxe is also a decent language, but it comes with a considerable amount of overhead, which is not preferred for this kind of thing. In the end, this is still better than using something worse like Flow.
 
 ## What can I do to help with development?
