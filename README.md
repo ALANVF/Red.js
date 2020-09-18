@@ -9,7 +9,7 @@ Red.js is currently being converted from TypeScript to Haxe due to a variety of 
 - Despite my efforts, the codebase is pretty messy, cluttered, and poorly-organized. A fresh start means that it can be completely restructured.
 - Although the focus of Red.js is to be able to run Red in JavaScript, Haxe can compile to more targets outside of JS, which could prove to be helpful at some point.
 
-I may put the in-progress Haxe version of Red.js up on github while I'm working on it, but it will eventually be moved to this repository once it's done.
+I have put the [in-progress Haxe version of Red.js up on github](https://github.com/ALANVF/Red.js-haxe) while I'm working on it, but it will eventually be moved to this repository once it's done.
 
 
 # Example usage
