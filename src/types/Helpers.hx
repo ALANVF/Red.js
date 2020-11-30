@@ -31,7 +31,7 @@ class Helpers {
 
 	public static macro function as<T: Value>(value: haxe.macro.Expr.ExprOf<Value>, type: haxe.macro.Expr.ExprOf<Class<T>>): haxe.macro.Expr.ExprOf<T> {
 		final ttype = {
-			final t = @:privateAccess types.base.Options.typePathFromExpr(type);
+			final t = util.MacroTools.typePathFromExpr(type);
 			final t2 = haxe.macro.Context.getType(t.value().join("."));
 			final t3 = haxe.macro.Context.toComplexType(t2);
 			if(t3 != null) (t3 : haxe.macro.Expr.ComplexType) else throw "error!";
@@ -41,7 +41,7 @@ class Helpers {
 
 	public static macro function is<T: Value>(value: haxe.macro.Expr.ExprOf<Value>, type: haxe.macro.Expr.ExprOf<Class<T>>): haxe.macro.Expr.ExprOf<Option<T>> {
 		final ttype = {
-			final t = @:privateAccess types.base.Options.typePathFromExpr(type);
+			final t = util.MacroTools.typePathFromExpr(type);
 			final t2 = haxe.macro.Context.getType(t.value().join("."));
 			final t3 = haxe.macro.Context.toComplexType(t2);
 			if(t3 != null) (t3 : haxe.macro.Expr.ComplexType) else throw "error!";

@@ -1,47 +1,34 @@
 package types.base;
 
-import haxe.ds.Option;
+import util.MacroTools;
 import haxe.macro.Type;
-import haxe.macro.Type.TypedExprDef;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
 using util.OptionTools;
+using util.NullTools;
+using StringTools;
+using haxe.macro.TypeTools;
 
 class Options {
-	static function typePathFromExpr(expr: Expr): Option<Array<std.String>> {
-		return switch expr.expr {
-			case haxe.macro.ExprDef.EConst(haxe.macro.Constant.CIdent(name)): Some([name]);
-			case haxe.macro.ExprDef.EField(e, f): typePathFromExpr(e).map(path -> path.concat([f]));
-			default: None;
-		}
-	}
-
 	// TODO: clean up this code
-	public static macro function defaultFor(typeExpr: Expr) {
-		final type = Context.getType(typePathFromExpr(typeExpr).value().join("."));
+	public static macro function defaultFor(typeExpr) {
+		final type = Context.getType(MacroTools.typePathFromExpr(typeExpr).value().join("."));
 
 		switch type {
-			case Type.TType(_.get().type => haxe.macro.Type.TAnonymous(_.get() => t), _) | haxe.macro.Type.TAnonymous(_.get() => t):
+			case TType(_.get().type => TAnonymous(_.get() => t), _) | TAnonymous(_.get() => t):
 				final a = {
-					expr: TypedExprDef.TObjectDecl(t.fields.map(f -> {
+					expr: TObjectDecl(t.fields.map(f -> {
 						return {
 							name: f.name,
-							expr: switch f.type {
-								case TAbstract(_.get().name => "Bool", _):
-									{
-										expr: TypedExprDef.TConst(TConstant.TBool(false)),
-										pos: Context.currentPos(),
-										t: f.type
-									};
-								case TEnum(_.get() => t, _) if(t.name == "Option"):
-									{
-										expr: TypedExprDef.TIdent("None"),
-										pos: Context.currentPos(),
-										t: f.type
-									};
-								default:
-									throw "error";
+							expr: {
+								expr: switch f.type {
+									case TAbstract(_.get().name => "Bool", _): TConst(TBool(false));
+									case TEnum(_.get().name => "Option", _): TIdent("None");
+									default: throw "error";
+								},
+								pos: Context.currentPos(),
+								t: f.type
 							}
 						};
 					})),
@@ -50,6 +37,73 @@ class Options {
 				};
 
 				return Context.getTypedExpr(a);
+			default:
+				throw "error";
+		}
+	}
+
+	public static macro function optionsFromRefines(typeExpr, refines: ExprOf<haxe.ds.Map<std.String, Value>>) {
+		final type = Context.getType(MacroTools.typePathFromExpr(typeExpr).value().join("."));
+
+		switch type {
+			case TType(_.get().type => TAnonymous(_.get() => t), _) | TAnonymous(_.get() => t):
+				final fields = [];
+			
+				for(field in t.fields) {
+					final name = field.name.startsWith("_") ? field.name.substr(1) : field.name;
+
+					fields.push({
+						name: field.name,
+						expr: switch field.type {
+							case TAbstract(_.get().name => "Bool", _): Context.typeExpr(macro $refines.exists('$name'));
+							case TEnum(_.get().name => "Option", [param]):
+								Context.typeExpr(macro {
+									switch $refines.get('$name') {
+										case null: haxe.ds.Option.None;
+										case args: haxe.ds.Option.Some(${
+											switch param {
+												case TAnonymous(_.get() => p):
+													final obj = [];
+													for(i => f in p.fields) {
+														final cft = {
+															final t = Context.toComplexType(f.type);
+															if(t != null) (t : ComplexType) else throw "error!";
+														};
+														final expr = if(f.name == "Value") {
+															macro args[$v{i}];
+														} else {
+															macro {
+																if(Std.isOfType(args[$v{i}], $p{f.type.toString().split(".")})) {
+																	cast(args[$v{i}], $cft);
+																} else {
+																	throw "type error!";
+																}
+															};
+														};
+														obj.push({name: f.name, expr: Context.typeExpr(expr)});
+													}
+													Context.getTypedExpr({
+														expr: TObjectDecl(obj),
+														pos: Context.currentPos(),
+														t: param
+													});
+												default:
+													throw "error!";
+											}
+										});
+									}
+								});
+							default:
+								throw "error";
+						}
+					});
+				}
+
+				return Context.getTypedExpr({
+					expr: TObjectDecl(fields),
+					pos: Context.currentPos(),
+					t: type
+				});
 			default:
 				throw "error";
 		}
