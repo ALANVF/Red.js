@@ -1,0 +1,6 @@
+-cp src
+-D analyzer-optimize
+--dce std
+-main Main
+--js bin/main.js
+--cmd node bin/main.js
