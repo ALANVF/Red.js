@@ -88,5 +88,3 @@ class Get {
 		}
 	}
 }
-
-// get: make native! [["Returns the value a word refers to" word [any-word! any-path! object!] /any "If word has no value, return UNSET rather than causing an error" /case "Use case-sensitive comparison (path only)" return: [any-type!]] #get-definition NAT_GET]
