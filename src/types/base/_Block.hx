@@ -20,9 +20,9 @@ class _Block extends _SeriesOf<Value> {
 		return this.cloneBlock(
 			this.values,
 			Std.int(
-				Math.min(
+				Math.max(
 					0,
-					Math.max(
+					Math.min(
 						this.absLength - 1,
 						this.index + (index <= 0 ? index : index - 1)
 					)
@@ -36,9 +36,9 @@ class _Block extends _SeriesOf<Value> {
 		return this.cloneBlock(
 			this.values,
 			Std.int(
-				Math.min(
+				Math.max(
 					0,
-					Math.max(
+					Math.min(
 						this.absLength - 1,
 						this.index + index
 					)

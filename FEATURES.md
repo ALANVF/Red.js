@@ -86,7 +86,7 @@
 | `do`                | P      |
 | `reduce`            | N      |
 | `compose`           | N      |
-| `get`               | N      |
+| `get`               | Y      |
 | `set`               | N      |
 | `print`             | N      |
 | `prin`              | N*     |

@@ -35,22 +35,17 @@ enum GroupedExpr {
 class Do {
 	public static final defaultOptions = Options.defaultFor(NDoOptions);
 
-	static function _doesBecomeFunction(value: Value, values: Array<Value>) {
-		return if((value is IFunction)) {
-			Some({fn: cast(value, IFunction), rest: values});
-		} else if((value is IGetPath) && values.length > 0) {
-			switch cast(value, IGetPath).getPath(values.shift()) {
-				case Some(v): _doesBecomeFunction(v, values);
-				case None: None;
-			}
-		} else {
-			None;
+	static function _doesBecomeFunction(value: Value, values: Iterator<Value>) {
+		return switch value {
+			case _.is(IFunction) => Some(fn): Some({fn: fn, rest: [for(v in values) v]});
+			case _.is(IGetPath) => Some(g) if(values.hasNext()): g.getPath(values.next()).flatMap(_doesBecomeFunction.bind(_, values));
+			default: None;
 		}
 	}
 
 	static function doesBecomeFunction(path: Path) {
-		return switch path.pick(0).map(v -> v.KIND) {
-			case Some(KWord(_.getValue() => head)): _doesBecomeFunction(head, [for(v in path.skip(1)) v]);
+		return switch path.pick(0) {
+			case Some(_.is(Word) => Some(head)): _doesBecomeFunction(head.getValue(), path.skip(1).iterator());
 			default: None;
 		}
 	}
@@ -58,8 +53,8 @@ class Do {
 	static function checkForOp(tokens: Array<ValueKind>) {
 		return if(tokens.length >= 2) {
 			switch tokens[0] {
-				case KWord(_.getValue(true).KIND => KOp(o)): Some(o);
-				case KPath(doesBecomeFunction(_) => Some({fn: _.KIND => KOp(o)})): Some(o);
+				case KWord(_.getValue(true).is(Op) => Some(o)): Some(o);
+				case KPath(doesBecomeFunction(_) => Some({fn: _.is(Op) => Some(o)})): Some(o);
 				default: None;
 			}
 		} else {
@@ -108,7 +103,7 @@ class Do {
 									case {name: n, args: args}:
 										refines[n] = groupArgs(tokens, args);
 								}
-							default: throw "error!";
+							default: throw "Invalid refinement!";
 						}
 					}
 

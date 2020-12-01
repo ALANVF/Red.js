@@ -21,15 +21,11 @@ class Options {
 					expr: TObjectDecl(t.fields.map(f -> {
 						return {
 							name: f.name,
-							expr: {
-								expr: switch f.type {
-									case TAbstract(_.get().name => "Bool", _): TConst(TBool(false));
-									case TEnum(_.get().name => "Option", _): TIdent("None");
-									default: throw "error";
-								},
-								pos: Context.currentPos(),
-								t: f.type
-							}
+							expr: Context.typeExpr(switch f.type {
+								case TAbstract(_.get().name => "Bool", _): macro false;
+								case TEnum(_.get().name => "Option", _): macro haxe.ds.Option.None;
+								default: throw "error";
+							})
 						};
 					})),
 					pos: Context.currentPos(),

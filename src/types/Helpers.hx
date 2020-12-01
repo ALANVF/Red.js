@@ -1,6 +1,7 @@
 package types;
 
 import haxe.ds.Option;
+import types.base.IValue;
 
 using util.OptionTools;
 using util.ContextTools;
@@ -29,7 +30,7 @@ class Helpers {
 
 	public static inline function getValue(vk: ValueKind) return _getValueKindValue(vk);
 
-	public static macro function as<T: Value>(value: haxe.macro.Expr.ExprOf<Value>, type: haxe.macro.Expr.ExprOf<Class<T>>): haxe.macro.Expr.ExprOf<T> {
+	public static macro function as<T: IValue>(value: haxe.macro.Expr.ExprOf<IValue>, type: haxe.macro.Expr.ExprOf<Class<T>>): haxe.macro.Expr.ExprOf<T> {
 		final ttype = {
 			final t = util.MacroTools.typePathFromExpr(type);
 			final t2 = haxe.macro.Context.getType(t.value().join("."));
@@ -39,7 +40,7 @@ class Helpers {
 		return macro cast($value, $ttype);
 	}
 
-	public static macro function is<T: Value>(value: haxe.macro.Expr.ExprOf<Value>, type: haxe.macro.Expr.ExprOf<Class<T>>): haxe.macro.Expr.ExprOf<Option<T>> {
+	public static macro function is<T: IValue>(value: haxe.macro.Expr.ExprOf<IValue>, type: haxe.macro.Expr.ExprOf<Class<T>>): haxe.macro.Expr.ExprOf<Option<T>> {
 		final ttype = {
 			final t = util.MacroTools.typePathFromExpr(type);
 			final t2 = haxe.macro.Context.getType(t.value().join("."));

@@ -6,7 +6,7 @@ import types.base.Options;
 import types.base._NativeOptions;
 
 class Transcode {
-	public static final defaultOptions: NTranscodeOptions = Options.defaultFor(NTranscodeOptions);
+	public static final defaultOptions = Options.defaultFor(NTranscodeOptions);
 
 	public static function call(src: Value, options: NTranscodeOptions) {
 		return switch options {

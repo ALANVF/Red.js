@@ -17,8 +17,8 @@ class Regexps {
 	public static final pair = ~/^([+-]?\d+)[xX]([+-]?\d+)/;
 	public static final tuple = ~/^(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?/;
 	public static final tag = ~/^<([^=><\[\](){}l^"\s](?:"[^"]*"|'[^']*'|[^>])*)>/;
-	public static final ref = ~/^@([^#$',=>@\\^"();<\[\]{}]*)/;
-	public static final refinement = ~/^\/([^\/\\^,\[\](){}"#$%@:;]+)/;
+	public static final ref = ~/^@([^#$',=>@\\^"();<\[\]{}\s]*)/;
+	public static final refinement = ~/^\/([^\/\\^,\[\](){}"#$%@:;\s]+)/;
 	public static final beginParen = "(";
 	public static final beginBlock = "[";
 	public static final beginMultiString = "{";
