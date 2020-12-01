@@ -42,7 +42,7 @@ class Options {
 		}
 	}
 
-	public static macro function optionsFromRefines(typeExpr, refines: ExprOf<haxe.ds.Map<std.String, Value>>) {
+	public static macro function fromRefines(typeExpr, refines: ExprOf<haxe.ds.Map<std.String, Value>>) {
 		final type = Context.getType(MacroTools.typePathFromExpr(typeExpr).value().join("."));
 
 		switch type {
