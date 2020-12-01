@@ -258,4 +258,12 @@ abstract ArrayTools<T>(Array<T>) from Array<T> to Array<T> {
 	public static function equals<T>(a1: Array<T>, a2: Array<T>) {
 		return everyi(a1, (v, i) -> v == a2[i]);
 	}
+
+	public static function zip<T, U, V>(a1: Array<T>, a2: Array<U>, callback: (e1: T, e2: U) -> V) {
+		if(a1.length != a2.length) {
+			throw "error!";
+		}
+
+		return [for(i => e1 in a1) callback(e1, a2[i])];
+	}
 }

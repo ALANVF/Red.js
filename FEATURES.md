@@ -87,7 +87,7 @@
 | `reduce`            | N      |
 | `compose`           | N      |
 | `get`               | Y      |
-| `set`               | N      |
+| `set`               | Y      |
 | `print`             | N      |
 | `prin`              | N*     |
 | `equal?`            | N      |

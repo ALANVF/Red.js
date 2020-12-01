@@ -11,10 +11,10 @@ class Natives {
 			case [NIf(f) | NUnless(f) | NWhile(f), [cond, _], [_, KBlock(b)]]: f(cond, b);
 			case [NEither(f), [cond, _, _], [_, KBlock(tb), KBlock(fb)]]: f(cond, tb, fb);
 			case [NDo(f), [v], _]: f(v, Options.fromRefines(NDoOptions, refines));
-			case [NGet(f), [v], _]: f(v, Options.fromRefines(NGetOptions, refines));
+			case [NGet(f), [w], _]: f(w, Options.fromRefines(NGetOptions, refines));
+			case [NSet(f), [w, v], _]: f(w, v, Options.fromRefines(NSetOptions, refines));
 			case [NTranscode(f), [v], _]: f(v, Options.fromRefines(NTranscodeOptions, refines));
-			default:
-				throw "NYI";
+			default: throw "NYI";
 		}
 	}
 }
