@@ -2,11 +2,6 @@
 - Y = Implemented.
 - N = Not implemented.
 - P = Partially implemented.
-- ~~IB = Implemented, but broken.~~
-- ~~PB = Partially implemented, but broken.~~
-- ~~BI = Broken because of inheritance.~~
-- ~~PI = Partially broken because of inheritance.~~
-- ~~B  = Just broken.~~
 
 # Datatypes
 |                          | datatype | syntax | `make`/`to` | `form`/`mold` | `compare` | other actions |
