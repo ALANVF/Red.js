@@ -50,7 +50,7 @@ class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 				Math.max(
 					0,
 					Math.min(
-						this.absLength - 1,
+						this.absLength,
 						this.index + (index <= 0 ? index : index - 1)
 					)
 				)
@@ -65,7 +65,7 @@ class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 				Math.max(
 					0,
 					Math.min(
-						this.absLength - 1,
+						this.absLength,
 						this.index + index
 					)
 				)
@@ -82,7 +82,7 @@ class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	}
 
 	public function tail() {
-		return this.clone(this.values, this.absLength - 1);
+		return this.clone(this.values, this.absLength);
 	}
 	
 	public function isHead() {
@@ -90,7 +90,7 @@ class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	}
 
 	public function isTail() {
-		return this.index == this.absLength - 1;
+		return this.index == this.absLength;
 	}
 
 	public function iterator(): Iterator<T> {

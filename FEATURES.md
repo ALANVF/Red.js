@@ -67,8 +67,8 @@
 | `if`                | Y      |
 | `unless`            | Y      |
 | `either`            | Y      |
-| `any`               | N      |
-| `all`               | N      |
+| `any`               | Y      |
+| `all`               | Y      |
 | `while`             | N      |
 | `until`             | N      |
 | `loop`              | N      |

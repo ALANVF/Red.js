@@ -23,7 +23,7 @@ class _Block extends _SeriesOf<Value> {
 				Math.max(
 					0,
 					Math.min(
-						this.absLength - 1,
+						this.absLength,
 						this.index + (index <= 0 ? index : index - 1)
 					)
 				)
@@ -39,7 +39,7 @@ class _Block extends _SeriesOf<Value> {
 				Math.max(
 					0,
 					Math.min(
-						this.absLength - 1,
+						this.absLength,
 						this.index + index
 					)
 				)
@@ -69,7 +69,7 @@ class _Block extends _SeriesOf<Value> {
 	override public function tail() {
 		return this.cloneBlock(
 			this.values,
-			this.absLength - 1,
+			this.absLength,
 			this.newlines
 		);
 	}
