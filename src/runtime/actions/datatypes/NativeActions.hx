@@ -32,6 +32,7 @@ class NativeActions extends ValueActions {
 						case "NAT_EITHER": NEither(runtime.natives.Either.call);
 						case "NAT_ANY": NAny(runtime.natives.Any.call);
 						case "NAT_ALL": NAll(runtime.natives.All.call);
+						case "NAT_WHILE": NWhile(runtime.natives.While.call);
 						case "NAT_DO": NDo(runtime.natives.Do.call);
 						case "NAT_GET": NGet(runtime.natives.Get.call);
 						case "NAT_SET": NSet(runtime.natives.Set.call);

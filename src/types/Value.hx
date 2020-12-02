@@ -17,7 +17,7 @@ class _ValueBuilder {
 			case TInst(_.get() => t, _): t;
 			default: throw "error!";
 		};
-
+		
 		if(cls.meta.has(":processed")) {
 			return null;
 		} else {

@@ -30,10 +30,16 @@ private typedef CreateSpec = {
 }
 
 class Error extends Object {
+	public var type(get, never): std.String;
+	function get_type() return cast(ctx.values[1], Word).name.toLowerCase();
+	
+	public var id(get, never): std.String;
+	function get_id() return cast(ctx.values[2], Word).name.toLowerCase();
+
 	override public function new(
 		code:  Value,
-		type:  Value,
-		id:    Value,
+		type:  Word,
+		id:    Word,
 		arg1:  Value,
 		arg2:  Value,
 		arg3:  Value,
@@ -49,7 +55,7 @@ class Error extends Object {
 		super(ctx, 1);
 	}
 
-	public static function create(spec: CreateSpec) {
+	static function _create(spec: CreateSpec) {
 		return new Error(
 			spec.code.map(c -> new Integer(c)).orElse(types.None.NONE),
 			new Word(spec.type),
@@ -63,8 +69,8 @@ class Error extends Object {
 		);
 	}
 
-	public static function fromSpec(spec: Spec) {
-		return create({
+	public static function create(spec: Spec) {
+		return _create({
 			code:  Option.fromNull(spec.code),
 			type:  spec.type,
 			id:    spec.id,

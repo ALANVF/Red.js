@@ -69,7 +69,7 @@
 | `either`            | Y      |
 | `any`               | Y      |
 | `all`               | Y      |
-| `while`             | N      |
+| `while`             | Y      |
 | `until`             | N      |
 | `loop`              | N      |
 | `repeat`            | N      |

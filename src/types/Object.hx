@@ -11,15 +11,15 @@ class Object extends Value implements IGetPath implements ISetPath {
 	public static var maxID: Int = 0;
 
 	public final ctx: Context;
-	public final id: Int;
+	public final classID: Int;
 
-	public function new(?ctx: Context, ?id: Int) {
+	public function new(?ctx: Context, ?classID: Int) {
 		this.ctx = if(ctx == null) new Context() else new Context(ctx.symbols, ctx.values);
-		this.id = id.getOrElse(++maxID);
+		this.classID = classID.getOrElse(++maxID);
 	}
 
 	public static inline function fromObject(obj: Object) {
-		return new Object(obj.ctx, obj.id);
+		return new Object(obj.ctx, obj.classID);
 	}
 
 	public function getPath(access: Value, ?ignoreCase = true) {
@@ -37,5 +37,13 @@ class Object extends Value implements IGetPath implements ISetPath {
 			default:
 				false;
 		}
+	}
+
+	public function get(word, ?ignoreCase = true) {
+		return ctx.get(word, ignoreCase);
+	}
+
+	public function set(word, newValue, ?ignoreCase = true) {
+		return ctx.set(word, newValue, ignoreCase);
 	}
 }

@@ -19,7 +19,7 @@ enum NativeFn {
 	NEither(fn: (cond: Value, trueBlk: Block, falseBlk: Block) -> Value);
 	NAny(fn: (conds: Block) -> Value);
 	NAll(fn: (conds: Block) -> Value);
-	NWhile(fn: (cond: Value, body: Block) -> Value);
+	NWhile(fn: (cond: Block, body: Block) -> Value);
 	NUntil(fn: (body: Block) -> Value);
 	NLoop(fn: (count: Integer, body: Block) -> Value);
 	NRepeat(fn: (word: Word, value: Integer, body: Block) -> Value);
