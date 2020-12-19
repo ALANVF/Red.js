@@ -3,6 +3,7 @@ package runtime.natives;
 import types.None;
 import types.Block;
 
+@:build(runtime.NativeBuilder.build())
 class Any {
 	public static function call(conds: Block) {
 		while(!conds.isTail()) {

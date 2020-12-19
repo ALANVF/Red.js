@@ -15,6 +15,7 @@ import haxe.ds.Option;
 using util.OptionTools;
 using types.Helpers;
 
+@:build(runtime.NativeBuilder.build())
 class Get {
 	public static final defaultOptions = Options.defaultFor(NGetOptions);
 

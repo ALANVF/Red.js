@@ -14,7 +14,6 @@ import types.base.ISetPath;
 import types.Value;
 import types.Word;
 import haxe.ds.Option;
-import haxe.ds.Either;
 
 using util.OptionTools;
 using util.ArrayTools;

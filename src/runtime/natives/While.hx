@@ -4,6 +4,7 @@ import types.None;
 import types.Error;
 import types.Block;
 
+@:build(runtime.NativeBuilder.build())
 class While {
 	public static function call(cond: Block, body: Block) {
 		while({

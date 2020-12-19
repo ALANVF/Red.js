@@ -266,4 +266,16 @@ abstract ArrayTools<T>(Array<T>) from Array<T> to Array<T> {
 
 		return [for(i => e1 in a1) callback(e1, a2[i])];
 	}
+
+	public static function findMap<T, U>(array: Array<T>, callback: (element: T) -> Null<U>) {
+		for(value in array) {
+			final found = callback(value);
+
+			if(found != null) {
+				return found;
+			}
+		}
+
+		return null;
+	}
 }

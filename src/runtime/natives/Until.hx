@@ -3,6 +3,7 @@ package runtime.natives;
 import types.Error;
 import types.Block;
 
+@:build(runtime.NativeBuilder.build())
 class Until {
 	public static function call(body: Block) {
 		var res;

@@ -5,6 +5,7 @@ import types.Value;
 import types.base.Options;
 import types.base._NativeOptions;
 
+@:build(runtime.NativeBuilder.build())
 class Transcode {
 	public static final defaultOptions = Options.defaultFor(NTranscodeOptions);
 

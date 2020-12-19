@@ -4,6 +4,7 @@ import types.Value;
 import types.None;
 import types.Block;
 
+@:build(runtime.NativeBuilder.build())
 class All {
 	public static function call(conds: Block): Value {
 		var result: Value = None.NONE;

@@ -15,6 +15,12 @@ using types.Helpers;
 using Lambda;
 
 class NativeActions extends ValueActions {
+	public static var MAPPINGS: Map<String, NativeFn>;
+
+	static function __init__() {
+		MAPPINGS = [];
+	}
+
 	override public function make(_, spec: Value) {
 		extract(spec.as(Block).array(), [
 			_.is(Block) => Some(s),
@@ -26,7 +32,7 @@ class NativeActions extends ValueActions {
 					args,
 					refines,
 					ret,
-					switch name {
+					/*switch name {
 						case "NAT_IF": NIf(runtime.natives.If.call);
 						case "NAT_UNLESS": NUnless(runtime.natives.Unless.call);
 						case "NAT_EITHER": NEither(runtime.natives.Either.call);
@@ -39,6 +45,11 @@ class NativeActions extends ValueActions {
 						case "NAT_SET": NSet(runtime.natives.Set.call);
 						case "NAT_TRANSCODE": NTranscode(runtime.natives.Transcode.call);
 						default: throw "NYI";
+					}*/
+					if(MAPPINGS.exists(name)) {
+						MAPPINGS[name];
+					} else {
+						throw "NYI";
 					}
 				)
 			)
