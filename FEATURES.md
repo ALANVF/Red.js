@@ -70,7 +70,7 @@
 | `any`               | Y      |
 | `all`               | Y      |
 | `while`             | Y      |
-| `until`             | N      |
+| `until`             | Y      |
 | `loop`              | N      |
 | `repeat`            | N      |
 | `forever`           | N      |
