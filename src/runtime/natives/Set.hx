@@ -15,7 +15,6 @@ import types.Value;
 import types.Word;
 import haxe.ds.Option;
 
-using util.OptionTools;
 using util.ArrayTools;
 using types.Helpers;
 using Lambda;

@@ -5,7 +5,6 @@ import haxe.ds.Option;
 import haxe.ds.Either;
 
 using DateTools;
-using util.OptionTools;
 
 class Date extends Value implements IGetPath {
 	public static final ACCESSORS = [

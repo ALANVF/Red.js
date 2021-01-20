@@ -71,8 +71,8 @@
 | `all`               | Y      |
 | `while`             | Y      |
 | `until`             | Y      |
-| `loop`              | N      |
-| `repeat`            | N      |
+| `loop`              | Y      |
+| `repeat`            | Y      |
 | `forever`           | N      |
 | `foreach`           | N      |
 | `forall`            | N      |

@@ -1,9 +1,8 @@
 #if (php || neko || cpp || macro || java || lua || python || hl)
 	import sys.io.File;
-#elseif js
-//	import js;
 #end
 
+import haxe.ds.Option;
 
 using StringTools;
 using util.NullTools;
@@ -87,7 +86,7 @@ class Util {
 				case $pattern: $expr;
 				default: ${otherwise != null ? otherwise : macro $b{[]}};
 			}
-		}
+		};
 	}
 
 	public static macro function extract(value, pattern, expr) {
@@ -96,6 +95,12 @@ class Util {
 				case $pattern: $expr;
 				default: throw "Match error!";
 			}
-		}
+		};
 	}
+
+#if js
+	public static inline function tryCast<T: {}, S: T>(value: T, c: Class<S>): Option<S> {
+		return if(@:privateAccess js.Boot.__downcastCheck(value, c)) Some(cast value) else None;
+	}
+#end
 }

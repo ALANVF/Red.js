@@ -23,7 +23,7 @@ class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		this.index = index.getOrElse(0);
 	}
 
-	function clone(values: Array<T>, ?index: Null<Int>): _SeriesOf<T> { // ugh, can't wait for polymorphic `this` types
+	function clone(values: Array<T>, ?index: Int): _SeriesOf<T> { // ugh, can't wait for polymorphic `this` types
 		throw "must be implemented by subclasses!";
 	}
 

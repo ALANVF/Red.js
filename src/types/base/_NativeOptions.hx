@@ -2,7 +2,6 @@ package types.base;
 
 import haxe.ds.Option;
 
-using util.OptionTools;
 
 typedef NFunctionOptions = {
 	_extern: Bool

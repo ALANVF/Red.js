@@ -16,7 +16,6 @@ import types.Path;
 import types.ValueKind;
 
 using util.NullTools;
-using util.OptionTools;
 using util.ArrayTools;
 using types.Helpers;
 
@@ -28,7 +27,7 @@ enum GroupedExpr {
 	GSetWord(s: SetWord, e: GroupedExpr);
 	GSetPath(s: SetPath, e: GroupedExpr);
 	GOp(l: GroupedExpr, op: Op, r: GroupedExpr);
-	GCall(f: IFunction, args: Array<GroupedExpr>, refines: Map<String, Array<GroupedExpr>>);
+	GCall(f: IFunction, args: Array<GroupedExpr>, refines: Dict<String, Array<GroupedExpr>>);
 	GUnset;
 }
 
@@ -91,7 +90,7 @@ class Do {
 				if(rest.length == 0) {
 					GCall(fn, args, []);
 				} else {
-					final refines: Map<String, Array<GroupedExpr>> = [];
+					final refines = new Dict();//: Dict<String, Array<GroupedExpr>> = [];
 
 					for(value in rest) {
 						switch value.KIND {
@@ -99,7 +98,7 @@ class Do {
 								switch fn.refines.find(ref -> w.equalsString(ref.name)) {
 									case null:
 										throw 'Unknown refinement `/${w.name}`!';
-									case {name: n} if(refines.exists(n)):
+									case {name: n} if(refines.has(n)):
 										throw 'Duplicate refinement `/${w.name}`!';
 									case {name: n, args: args}:
 										refines[n] = groupArgs(tokens, args);

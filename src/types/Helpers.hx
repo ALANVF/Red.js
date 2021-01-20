@@ -3,7 +3,6 @@ package types;
 import haxe.ds.Option;
 import types.base.IValue;
 
-using util.OptionTools;
 using util.ContextTools;
 using util.NullTools;
 

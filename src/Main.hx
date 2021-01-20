@@ -46,6 +46,20 @@ class Main {
 			)
 		);
 
+		types.base.Context.GLOBAL.add(
+			"loop",
+			new types.Native(
+				None,
+				[
+					{name: "count", quoting: types.base.IFunction.QuotingKind.QVal},
+					{name: "body", quoting: types.base.IFunction.QuotingKind.QVal},
+				],
+				[],
+				null,
+				NLoop(runtime.natives.Loop.call)
+			)
+		);
+
 		js.Syntax.code("
 var readline = require('readline');
 var io = readline.createInterface({

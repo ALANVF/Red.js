@@ -9,7 +9,6 @@ import types.base.IFunction;
 import haxe.ds.Option;
 import Util.match;
 
-using util.OptionTools;
 using util.EnumValueTools;
 using types.Helpers;
 

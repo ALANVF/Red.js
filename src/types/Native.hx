@@ -21,8 +21,8 @@ enum NativeFn {
 	NAll(fn: (conds: Block) -> Value);
 	NWhile(fn: (cond: Block, body: Block) -> Value);
 	NUntil(fn: (body: Block) -> Value);
-	NLoop(fn: (count: Integer, body: Block) -> Value);
-	NRepeat(fn: (word: Word, value: Integer, body: Block) -> Value);
+	NLoop(fn: (count: _Number, body: Block) -> Value);
+	NRepeat(fn: (word: Word, value: _Number, body: Block) -> Value);
 	NForever(fn: (body: Block) -> Value);
 	NForeach(fn: (word: Value, series: Value, body: Block) -> Value);
 	NForall(fn: (word: Word, body: Block) -> Value);
@@ -121,7 +121,7 @@ enum NativeFn {
 }
 
 class Native extends _Function {
-	//public static final NATIVE_FUNCS: std.Map<std.String, NativeFn> = [];
+	//public static final NATIVE_FUNCS: Dict<std.String, NativeFn> = [];
 
 	public final fn: NativeFn;
 

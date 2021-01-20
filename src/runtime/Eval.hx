@@ -9,7 +9,7 @@ class Eval {
 		return runtime.natives.Do.evalValues(Tokenizer.parse(input));
 	}
 
-	public static function callFunction(fn: IFunction, args: Array<Value>, refines: Map<String, Array<Value>>) {
+	public static function callFunction(fn: IFunction, args: Array<Value>, refines: Dict<String, Array<Value>>) {
 		return switch fn.KIND {
 			case KNative(n): Natives.callNative(n, args, refines);
 			case KAction(a): Actions.callAction(a, args, refines);

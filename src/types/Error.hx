@@ -3,7 +3,6 @@ package types;
 import haxe.ds.Option;
 import types.base.Context;
 
-using util.OptionTools;
 
 private typedef Spec = {
 	?code:  Int,

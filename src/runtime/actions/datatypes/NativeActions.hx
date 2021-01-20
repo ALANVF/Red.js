@@ -9,13 +9,12 @@ import haxe.ds.Option;
 import Util.match;
 import Util.extract;
 
-using util.OptionTools;
 using util.EnumValueTools;
 using types.Helpers;
 using Lambda;
 
 class NativeActions extends ValueActions {
-	public static var MAPPINGS: Map<String, NativeFn>;
+	public static var MAPPINGS: haxe.ds.Map<String, NativeFn>;
 
 	static function __init__() {
 		MAPPINGS = [];

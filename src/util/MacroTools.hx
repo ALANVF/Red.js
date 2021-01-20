@@ -3,7 +3,6 @@ package util;
 import haxe.macro.Expr;
 import haxe.ds.Option;
 
-using util.OptionTools;
 
 class MacroTools {
 	public static function typePathFromExpr(expr: Expr): Option<Array<String>> {

@@ -88,7 +88,7 @@ enum ActionFn {
 }
 
 class Action extends _Function {
-	public static final ACTION_FUNCS: std.Map<std.String, ActionFn> = [];
+	//public static final ACTION_FUNCS: Dict<std.String, ActionFn> = [];
 
 	public final fn: ActionFn;
 

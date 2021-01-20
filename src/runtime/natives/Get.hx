@@ -12,7 +12,6 @@ import types.Value;
 import types.Word;
 import haxe.ds.Option;
 
-using util.OptionTools;
 using types.Helpers;
 
 @:build(runtime.NativeBuilder.build())

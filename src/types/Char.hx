@@ -1,9 +1,8 @@
 package types;
 
-import Util;
-
 class Char extends Value {
-	static var chars: std.Map<Int, Char> = [for(c in 0...256) c => new Char(c)];
+	// DCE bug here
+	static var chars: Dict<Int, Char> = cast [for(c in 0...256) c => new Char(c)];
 
 	public var code: Int;
 
@@ -12,7 +11,7 @@ class Char extends Value {
 	}
 
 	public static inline function fromCode(code: Int): Char {
-		return if(chars[code] != null) {
+		return if(chars.has(code)) {
 			chars[code];
 		} else {
 			chars[code] = new Char(code);

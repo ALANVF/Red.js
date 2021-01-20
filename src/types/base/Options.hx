@@ -5,7 +5,6 @@ import haxe.macro.Type;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
-using util.OptionTools;
 using util.NullTools;
 using StringTools;
 using haxe.macro.TypeTools;
@@ -38,7 +37,7 @@ class Options {
 		}
 	}
 
-	public static macro function fromRefines(typeExpr, refines: ExprOf<haxe.ds.Map<std.String, Value>>) {
+	public static macro function fromRefines(typeExpr, refines: ExprOf<Dict<std.String, Value>>) {
 		final type = Context.getType(MacroTools.typePathFromExpr(typeExpr).value().join("."));
 
 		switch type {
@@ -51,10 +50,10 @@ class Options {
 					fields.push({
 						name: field.name,
 						expr: switch field.type {
-							case TAbstract(_.get().name => "Bool", _): Context.typeExpr(macro $refines.exists('$name'));
+							case TAbstract(_.get().name => "Bool", _): Context.typeExpr(macro $refines['$name']);
 							case TEnum(_.get().name => "Option", [param]):
 								Context.typeExpr(macro {
-									switch $refines.get('$name') {
+									switch $refines['$name'] {
 										case null: haxe.ds.Option.None;
 										case args: haxe.ds.Option.Some(${
 											switch param {
