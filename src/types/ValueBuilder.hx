@@ -2,7 +2,6 @@ package types;
 
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import haxe.macro.Type;
 
 using util.ArrayTools;
 using Lambda;
@@ -27,17 +26,7 @@ class ValueBuilder {
 		var name = cls.name;
 		var vname = "K" + name;
 		var dname = "D" + name;
-		/*var valueKind = switch Context.getType("types.ValueKind") {
-			case haxe.macro.Type.TEnum(_.get() => t, _): t;
-			default: throw "error!";
-		};
-		var typeKind = switch Context.getType("types.TypeKind") {
-			case haxe.macro.Type.TAbstract(_.get() => t, _) if(t.meta.has(":enum")): t;
-			default: throw "error!";
-		};*/
 
-		//if(valueKind.names.contains(vname) && fields.every(f -> f.name != "get_KIND")) {
-		//if(!cls.isAbstract) {
 		if(!cls.isAbstract && name != "Context" && fields.every(f -> f.name != "get_KIND")) {
 			fields.push({
 				name: "get_KIND",
@@ -54,9 +43,6 @@ class ValueBuilder {
 			});
 		}
 
-		//var cases = typeKind.impl.get().statics.get().filter(f -> f.meta.has(":enum") && f.meta.has(":impl"));
-		//if(cases.some(f -> f.name == dname) && fields.every(f -> f.name != "get_TYPE_KIND")) {
-		//if(!cls.isAbstract) {
 		if(!cls.isAbstract && name != "Context" && fields.every(f -> f.name != "get_TYPE_KIND")) {
 			fields.push({
 				name: "get_TYPE_KIND",
@@ -114,20 +100,14 @@ class ValueBuilder {
 										};
 
 										{
-											args: fn.args.mapi((i, arg) -> ({
+											args: fn.args.mapi((i, arg) -> {
 												name: args[i].name,
 												opt: args[i].opt,
 												type: Context.toComplexType(args[i].t),
 												meta: arg.v.meta.get(),
 												value: Context.getTypedExpr(arg.value)
-											} : FunctionArg)),
+											}),
 											ret: Context.toComplexType(ret),
-											/*Context.toComplexType(switch ret {
-												case TInst(_.get().name => n) if(n == sc.name):
-													Context.getLocalType();
-												default:
-													ret;
-											})*/
 										};
 
 									default: throw "Error!";
@@ -156,7 +136,7 @@ class ValueBuilder {
 
 					if(!cfield.type.match(TFun(_, _))) continue;
 
-					final f = @:privateAccess haxe.macro.TypeTools.toField(cfield);//@:privateAccess field.toField();
+					final f = @:privateAccess haxe.macro.TypeTools.toField(cfield);
 					switch f {
 						case {kind: FFun(fn = {ret: TPath(p)})} if(p.name == sc.name && (switch p.pack {
 							case [] | ["types"] | ["types", "base"]: true;
@@ -176,58 +156,6 @@ class ValueBuilder {
 								pos: Context.currentPos()
 							});
 						
-						default:
-					}
-				}
-			}
-
-			return fields;
-
-			//if(["_Block", "_SeriesOf", "_Path", "_String", "_Function", "Symbol"].contains(sc.name)) {
-			if(sc.isAbstract && !cls.isAbstract && cls.name != "Context") {
-				for(f in o.concat(sc.fields.get().filter(fl -> o.every(ov -> ov.name != fl.name)))) {
-					final e = f.expr();
-					final n = f.name;
-
-					if(fields.find(f->f.name==n) != null || f.kind.match(FVar(_, _)) || !f.isPublic || f.isAbstract
-					|| e == null || e.expr.match(TThrow(_)) || e.expr.match(TBlock(_[0] => {expr: TThrow(_), pos: _, t: _}))) {
-						continue;
-					}
-					
-					switch e.t {
-						case TFun(args, ret) | TLazy(_() => TFun(args, ret)):
-							switch ret {
-								case TInst(_.get() => t, _) if(util.ArrayTools.equals(t.pack, sc.pack) && t.name == sc.name):
-									final fn = switch e.expr {
-										case TFunction(fn): fn;
-										default: throw "error";
-									};
-
-									fields.push({
-										name: f.name,
-										pos: Context.currentPos(),
-										access: [APublic, AOverride],
-										kind: FFun({
-											args: fn.args.mapi((i, a) -> {
-												return {
-													name: args[i].name,
-													opt: args[i].opt,
-													type: Context.toComplexType(args[i].t),
-													meta: a.v.meta.get(),
-													value: Context.getTypedExpr(a.value)/*switch a.v {
-														case {extra: null | {expr: null}}: null;
-														case {extra: {expr: expr}}: Context.getTypedExpr(expr);
-													}*/
-												};
-											}),
-											ret: Context.toComplexType(Context.getLocalType()),
-											expr: macro {
-												return cast super.$n($a{${[for(a in args) macro $i{a.name}]}});
-											}
-										})
-									});
-								default:
-							}
 						default:
 					}
 				}

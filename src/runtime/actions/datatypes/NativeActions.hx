@@ -31,20 +31,6 @@ class NativeActions extends ValueActions {
 					args,
 					refines,
 					ret,
-					/*switch name {
-						case "NAT_IF": NIf(runtime.natives.If.call);
-						case "NAT_UNLESS": NUnless(runtime.natives.Unless.call);
-						case "NAT_EITHER": NEither(runtime.natives.Either.call);
-						case "NAT_ANY": NAny(runtime.natives.Any.call);
-						case "NAT_ALL": NAll(runtime.natives.All.call);
-						case "NAT_WHILE": NWhile(runtime.natives.While.call);
-						case "NAT_UNTIL": NUntil(runtime.natives.Until.call);
-						case "NAT_DO": NDo(runtime.natives.Do.call);
-						case "NAT_GET": NGet(runtime.natives.Get.call);
-						case "NAT_SET": NSet(runtime.natives.Set.call);
-						case "NAT_TRANSCODE": NTranscode(runtime.natives.Transcode.call);
-						default: throw "NYI";
-					}*/
 					if(MAPPINGS.has(name)) {
 						MAPPINGS[name];
 					} else {
