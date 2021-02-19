@@ -5,7 +5,7 @@ import haxe.macro.Type;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
-using util.NullTools;
+//using util.NullTools;
 using StringTools;
 using haxe.macro.TypeTools;
 
@@ -50,10 +50,10 @@ class Options {
 					fields.push({
 						name: field.name,
 						expr: switch field.type {
-							case TAbstract(_.get().name => "Bool", _): Context.typeExpr(macro $refines['$name']);
+							case TAbstract(_.get().name => "Bool", _): Context.typeExpr(macro $refines[$v{name}]);
 							case TEnum(_.get().name => "Option", [param]):
 								Context.typeExpr(macro {
-									switch $refines['$name'] {
+									switch $refines[$v{name}] {
 										case null: haxe.ds.Option.None;
 										case args: haxe.ds.Option.Some(${
 											switch param {

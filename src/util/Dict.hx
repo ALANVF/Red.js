@@ -85,13 +85,13 @@ abstract Dict<K, V>(JsMap<K, V>) {
 
 	@:from
 	static function fromAnyMap<K, V>(map: Map<K, V>): Dict<K, V> {
-		return if((map is IntMap)) {
+		return if(map is IntMap) {
 			(untyped from_IntMap(untyped map) : Dict<K, V>);
-		} else if((map is StringMap)) {
+		} else if(map is StringMap) {
 			(untyped from_StringMap(untyped map) : Dict<K, V>);
-		} else if((map is ObjectMap)) {
+		} else if(map is ObjectMap) {
 			(untyped fromObjectMap(untyped map) : Dict<K, V>);
-		} else if((map is EnumValueMap)) {
+		} else if(map is EnumValueMap) {
 			(untyped from_EnumValueMap(untyped map) : Dict<K, V>);
 		} else {
 			throw "???";
@@ -118,20 +118,20 @@ abstract Dict<K, V>(Map<K, V>) {
 
 	@:op([])
 	function get(key): V {
-		throw "Why am I in a macro";
+		return this[key];
 	}
 
 	@:op([])
 	inline function setKey(key, value): V {
-		throw "Why am I in a macro";
+		return this[key] = value;
 	}
 
 	public inline function remove(key): Bool {
-		throw "Why am I in a macro";
+		return this.remove(key);
 	}
 
 	public inline function has(key): Bool {
-		throw "Why am I in a macro";
+		return this.exists(key);
 	}
 
 	public inline function forEach(callback: (value: V, key: K) -> Void) {

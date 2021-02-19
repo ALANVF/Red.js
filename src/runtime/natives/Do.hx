@@ -81,7 +81,7 @@ class Do {
 		return switch tokens.shift().notNull() {
 			case KSetWord(s): GSetWord(s, groupNextExpr(tokens));
 			case KSetPath(s): GSetPath(s, groupNextExpr(tokens));
-			case KWord(_.getValue() => _fn) if((_fn is IFunction)):
+			case KWord(_.getValue() => _fn) if(_fn is IFunction):
 				final fn = cast(_fn, IFunction); // I want flow-typing :'(
 				GCall(fn, groupArgs(tokens, fn.args), []);
 			case KPath(doesBecomeFunction(_) => Some({fn: fn, rest: rest})):

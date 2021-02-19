@@ -53,6 +53,6 @@ enum ValueKind {
 	//KImage(v: Image);
 	//KEvent(v: Event);
 	//KClosure(v: Closure);
-	//KMoney(v: Money);
+	KMoney(v: Money);
 	KRef(v: Ref);
 }

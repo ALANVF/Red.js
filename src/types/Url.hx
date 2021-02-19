@@ -7,7 +7,7 @@ class Url extends _String {
 		return new Url(_String.charsFromRed(str));
 	}
 
-	override function clone(values: Array<Char>, ?index: Int) {
+	function clone(values: Array<Char>, ?index: Int) {
 		return new Url(values, index);
 	}
 }

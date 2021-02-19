@@ -1,6 +1,6 @@
 package types.base;
 
-class _Name extends Value {
+abstract class _Name extends Value {
 	public final name: std.String;
 
 	public function new(name: std.String) this.name = name;

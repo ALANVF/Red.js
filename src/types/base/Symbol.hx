@@ -1,15 +1,13 @@
 package types.base;
 
-using util.NullTools;
-
-class Symbol extends Value {
+abstract class Symbol extends Value {
 	public final name: std.String;
 	public var context: Context;
 	public var offset: Int;
 
 	public function new(name: std.String, ?context: Context, ?offset: Int) {
 		this.name = name;
-		this.context = context.getOrElse(Context.GLOBAL);
+		this.context = context == null ? Context.GLOBAL : context;
 		if(offset == null) {
 			this.context.addSymbol(this);
 		} else {

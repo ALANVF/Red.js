@@ -28,10 +28,10 @@ class OptionTools {
 		};
 	}
 
-	public static function orElse<T, U: T, V: T>(opt: Option<U>, other: V): T {
+	public static function orElse<T, U/*: T*/, V/*: T*/>(opt: Option<U>, other: V): T {
 		return switch opt {
-			case Some(v): v;
-			case None: other;
+			case Some(v): cast v;
+			case None: cast other;
 		};
 	}
 

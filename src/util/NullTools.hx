@@ -1,9 +1,9 @@
 package util;
 
-using util.ContextTools;
+/*using util.ContextTools;
 
 import haxe.macro.Context;
-import haxe.macro.Expr;
+import haxe.macro.Expr;*/
 
 /*abstract NullTools<T>(Null<T>) from Null<T> to Null<T> {
 	@:op(A!)
@@ -17,10 +17,10 @@ import haxe.macro.Expr;
 */
 
 class NullTools {
-	public static macro function getOrElse<T>(
-		value: haxe.macro.ExprOf<haxe.extern.EitherType<{}, Null<T>>>,
-		other: haxe.macro.ExprOf<T>
-	): haxe.macro.ExprOf<T> {
+	/*public static macro function getOrElse<T>(
+		value: ExprOf<Null<T>>,
+		other: ExprOf<T>
+	): ExprOf<T> {
 		final tmp = Context.newTempVar();
 		final type = ECheckType(
 			(macro $i{tmp}),
@@ -34,11 +34,11 @@ class NullTools {
 			final $tmp = $value;
 			if($i{tmp} != null) ${{expr: type, pos: Context.currentPos()}} else $other;
 		}
-	}
+	}*/
 
-	public static macro function notNull<T>(
-		value: haxe.macro.ExprOf<haxe.extern.EitherType<{}, Null<T>>>
-	): haxe.macro.ExprOf<T> {
+	/*public static macro function notNull<T>(
+		value: ExprOf<Null<T>>
+	): ExprOf<T> {
 		final tmp = Context.newTempVar();
 		final type = ECheckType(
 			(macro $i{tmp}),
@@ -58,5 +58,12 @@ class NullTools {
 				throw "Error: Value was null!";
 			}
 		]};
+	}*/
+	public static inline function notNull<T>(value: Null<T>): T {
+		if(value == null) {
+			throw "Value was null!";
+		} else {
+			return value;
+		}
 	}
 }

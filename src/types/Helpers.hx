@@ -1,16 +1,18 @@
 package types;
 
-import haxe.ds.Option;
 import types.base.IValue;
+import haxe.ds.Option;
+import haxe.macro.Expr;
+import haxe.macro.Context;
+import haxe.macro.Type;
 
 using util.ContextTools;
-using util.NullTools;
 
 class Helpers {
-	static macro function _getValueKindValue(vk: haxe.macro.Expr.ExprOf<ValueKind>): haxe.macro.Expr.ExprOf<Value> {
-		switch haxe.macro.Context.getType("types.ValueKind") {
-			case haxe.macro.Type.TEnum(_.get() => t, _):
-				var cases: Array<haxe.macro.Expr.Case> = [];
+	/*static macro function _getValueKindValue(vk: ExprOf<ValueKind>): ExprOf<Value> {
+		switch Context.getType("types.ValueKind") {
+			case TEnum(_.get() => t, _):
+				var cases: Array<Case> = [];
 
 				for(n => _ in t.constructs) {
 					cases.push({
@@ -20,36 +22,48 @@ class Helpers {
 				}
 
 				return {
-					expr: haxe.macro.ExprDef.ESwitch(vk, cases, null),
-					pos: haxe.macro.Context.currentPos()
+					expr: ESwitch(vk, cases, null),
+					pos: Context.currentPos()
 				};
 			default: throw "error!";
 		}
-	}
+	}*/
 
-	public static inline function getValue(vk: ValueKind) return _getValueKindValue(vk);
+	public static inline function getValue(vk: ValueKind):Value return vk.getParameters()[0]; //return _getValueKindValue(vk);
 
-	public static macro function as<T: IValue>(value: haxe.macro.Expr.ExprOf<IValue>, type: haxe.macro.Expr.ExprOf<Class<T>>): haxe.macro.Expr.ExprOf<T> {
-		final ttype = {
+	public static macro function as<T: IValue>(value: ExprOf<IValue>, type: ExprOf<Class<T>>): ExprOf<T> {
+		/*final ttype = {
 			final t = util.MacroTools.typePathFromExpr(type);
-			final t2 = haxe.macro.Context.getType(t.value().join("."));
-			final t3 = haxe.macro.Context.toComplexType(t2);
-			if(t3 != null) (t3 : haxe.macro.Expr.ComplexType) else throw "error!";
-		};
+			final t2 = Context.getType(t.value().join("."));
+			final t3 = Context.toComplexType(t2);
+			if(t3 != null) (t3 : ComplexType) else throw "error!";
+		};*/
+
+		final path = haxe.macro.ExprTools.toString(type).split(".");
+		final ttype = TPath({
+			pack: path.slice(0, path.length - 2),
+			name: path[path.length - 1]
+		});
 		return macro cast($value, $ttype);
 	}
 
-	public static macro function is<T: IValue>(value: haxe.macro.Expr.ExprOf<IValue>, type: haxe.macro.Expr.ExprOf<Class<T>>): haxe.macro.Expr.ExprOf<Option<T>> {
-		final ttype = {
+	public static macro function is<T: IValue>(value: ExprOf<IValue>, type: ExprOf<Class<T>>): ExprOf<Option<T>> {
+		/*final ttype = {
 			final t = util.MacroTools.typePathFromExpr(type);
-			final t2 = haxe.macro.Context.getType(t.value().join("."));
-			final t3 = haxe.macro.Context.toComplexType(t2);
-			if(t3 != null) (t3 : haxe.macro.Expr.ComplexType) else throw "error!";
-		};
-		final tmp = haxe.macro.Context.newTempVar();
+			final t2 = Context.getType(t.value().join("."));
+			final t3 = Context.toComplexType(t2);
+			if(t3 != null) (t3 : ComplexType) else throw "error!";
+		};*/
+		//final ttype = TPath(util.MacroTools.typePathFromExpr(type).value());
+		final path = haxe.macro.ExprTools.toString(type).split(".");
+		final ttype = TPath({
+			pack: path.slice(0, path.length - 2),
+			name: path[path.length - 1]
+		});
+		final tmp = Context.newTempVar();
 		return macro {
 			final $tmp = $value;
-			if(($i{tmp} is $type)) {
+			if(Std.isOfType($i{tmp}, ${type})) {
 				Some(cast($value, $ttype));
 			} else {
 				None;

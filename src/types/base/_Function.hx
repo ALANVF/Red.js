@@ -10,7 +10,7 @@ import haxe.ds.Option;
 	public final refines: _Refines;
 	public final returnSpec: Null<Block>;
 }*/
-class _Function extends Value implements IFunction {
+abstract class _Function extends Value implements IFunction {
 	var _doc: Option<std.String>;
 	public var doc(get, set): Option<std.String>;
 	function get_doc() return _doc;
@@ -32,7 +32,7 @@ class _Function extends Value implements IFunction {
 	function set_retSpec(v: Option<Block>) return _retSpec = v;
 
 	public var arity(get, never): Int;
-	function get_arity() return this.args.length;
+	function get_arity() return this._args.length;
 
 	public function new(doc: Option<std.String>, args: _Args, refines: _Refines, retSpec: Option<Block>) {
 		this.doc = doc;

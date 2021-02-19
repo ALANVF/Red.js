@@ -25,12 +25,12 @@ class Set {
 	static function _getPathUptoEnd(value: Value, path: _Path, ignoreCase: Bool) {
 		inline function evalNext() {
 			final v = path.pick(0).value();
-			return (v is Word) ? v : Do.evalValue(v);
+			return v is Word ? v : Do.evalValue(v);
 		}
 
 		if(path.length == 1) {
 			return {value: value, access: evalNext()};
-		} else if((value is IGetPath)) {
+		} else if(value is IGetPath) {
 			final access = evalNext();
 			final value_ = cast(value, IGetPath);
 			return _getPathUptoEnd(value_.getPath(access, ignoreCase).value(), path.skip(1), ignoreCase);

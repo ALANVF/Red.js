@@ -1,21 +1,21 @@
 package types.base;
 
-using util.NullTools;
-
 import util.Set;
 
-class _Block extends _SeriesOf<Value> {
+abstract class _Block extends _SeriesOf<Value> {
 	public var newlines: Set<Int>;
 	
 	override public function new(values: Array<Value>, ?index: Int, ?newlines: Set<Int>) {
 		super(values, index);
-		this.newlines = newlines.getOrElse(new Set());
+		this.newlines = newlines == null ? new Set() : newlines;
 	}
 
-	function cloneBlock(values: Array<Value>, ?index: Int, ?newlines: Set<Int>): _Block { // ugh, can't wait for polymorphic `this` types
-		throw "must be implemented by subclasses!";
-	}
+	abstract function cloneBlock(values: Array<Value>, ?index: Int, ?newlines: Set<Int>): _Block; // ugh, can't wait for polymorphic `this` types
 	
+	function clone(values, ?index) {
+		return this.cloneBlock(values, index);
+	}
+
 	override public function at(index: Int) {
 		return this.cloneBlock(
 			this.values,

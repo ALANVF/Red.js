@@ -14,4 +14,8 @@ class Binary extends Value implements ISeriesOf<Integer> {
 		
 	}
 }*/
-class Binary extends _SeriesOf<Integer> {}
+class Binary extends _SeriesOf<Integer> {
+	function clone(values, ?index) {
+		return new Binary(values, index);
+	}
+}

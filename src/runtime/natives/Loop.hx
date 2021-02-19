@@ -10,7 +10,7 @@ import types.base._Number;
 @:build(runtime.NativeBuilder.build())
 class Loop {
 	public static function call(times: _Number, body: Block) {
-		final n = if((times is _Integer)) {
+		final n = if(times is _Integer) {
 			cast(times, _Integer).int;
 		} else {
 			Std.int(cast(times, _Float).float);

@@ -7,7 +7,7 @@ class File extends _String {
 		return new File(_String.charsFromRed(str));
 	}
 
-	override function clone(values: Array<Char>, ?index: Int) {
+	function clone(values: Array<Char>, ?index: Int) {
 		return new File(values, index);
 	}
 }

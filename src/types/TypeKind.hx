@@ -52,7 +52,7 @@ enum abstract TypeKind(Int) {
 	//var DImage;
 	//var DEvent;
 	//var DClosure;
-	//var DMoney;
+	var DMoney;
 	var DRef;
 
 	public inline function isAnyFunction() {

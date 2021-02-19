@@ -5,8 +5,6 @@ import types.base.IGetPath;
 import types.base.Context;
 import haxe.ds.Option;
 
-using util.NullTools;
-
 class Object extends Value implements IGetPath implements ISetPath {
 	public static var maxID: Int = 0;
 
@@ -15,7 +13,7 @@ class Object extends Value implements IGetPath implements ISetPath {
 
 	public function new(?ctx: Context, ?classID: Int) {
 		this.ctx = if(ctx == null) new Context() else new Context(ctx.symbols, ctx.values);
-		this.classID = classID.getOrElse(++maxID);
+		this.classID = if(classID == null) ++maxID else classID;
 	}
 
 	public static inline function fromObject(obj: Object) {

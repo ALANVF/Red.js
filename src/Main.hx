@@ -41,7 +41,7 @@ class Main {
 					{name: "else-blk", quoting: types.base.IFunction.QuotingKind.QVal}
 				],
 				[],
-				null,
+				None,
 				NEither(runtime.natives.Either.call)
 			)
 		);
@@ -55,7 +55,7 @@ class Main {
 					{name: "body", quoting: types.base.IFunction.QuotingKind.QVal},
 				],
 				[],
-				null,
+				None,
 				NLoop(runtime.natives.Loop.call)
 			)
 		);

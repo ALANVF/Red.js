@@ -1,3 +1,3 @@
 package types.base;
 
-class _Number extends Value {}
+abstract class _Number extends Value {}

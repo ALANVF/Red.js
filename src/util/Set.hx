@@ -38,7 +38,7 @@ private class _Set<T> {
 		#elseif neko
 			untyped __dollar__hcount(@:privateAccess (cast this.repr : haxe.ds.ObjectMap<{}, Bool>).h);
 		#elseif hl
-			/*if((this.repr is haxe.ds.ObjectMap<T, Bool>)) {
+			/*if(this.repr is haxe.ds.ObjectMap<T, Bool>) {
 				return @:privateAccess (cast this.repr : haxe.ds.ObjectMap<{}, Bool>).h.valuesArray().length;
 			}*/
 			@:privateAccess (cast this.repr.iterator() : hl.NativeArray.NativeArrayIterator<Bool>).length;

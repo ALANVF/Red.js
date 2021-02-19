@@ -2,9 +2,7 @@ package types.base;
 
 import haxe.ds.Option;
 
-using util.NullTools;
-
-class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
+abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	public var index: Int;
 	public var values: Array<T>;
 	
@@ -20,12 +18,10 @@ class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 
 	public function new(values: Array<T>, ?index: Int) {
 		this.values = values;
-		this.index = index.getOrElse(0);
+		this.index = index == null ? 0 : index;
 	}
 
-	function clone(values: Array<T>, ?index: Int): _SeriesOf<T> { // ugh, can't wait for polymorphic `this` types
-		throw "must be implemented by subclasses!";
-	}
+	abstract function clone(values: Array<T>, ?index: Int): _SeriesOf<T>; // ugh, can't wait for polymorphic `this` types
 
 	public function pick(index: Int) {
 		return if(index >= this.length) {

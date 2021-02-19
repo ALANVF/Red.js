@@ -1,7 +1,7 @@
 package runtime;
 
 //#if macro
-import haxe.macro.Type.TypedExpr;
+import haxe.macro.Type;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 
@@ -10,7 +10,7 @@ using util.ArrayTools;
 
 class NativeBuilder {
 //#if macro
-	public static var natives: Array<{name: String, nativeName: String, call: Function}> = [];
+	//public static var natives: Array<{name: String, nativeName: String, call: Function}> = [];
 
 	public static macro function build(?nativeName: String): Array<Field> {
 		final cls = switch Context.getLocalType() {
@@ -44,7 +44,7 @@ class NativeBuilder {
 		final enumName = "N" + cls.name;
 
 		final init = macro {
-			runtime.actions.datatypes.NativeActions.MAPPINGS.set($v{name}, types.Native.NativeFn.$enumName(call));
+			runtime.actions.datatypes.NativeActions.MAPPINGS[$v{name}] = types.Native.NativeFn.$enumName(call);
 		};
 
 		fields.push({

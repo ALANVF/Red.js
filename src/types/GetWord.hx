@@ -7,6 +7,6 @@ import types.base.Context;
 
 class GetWord extends Symbol {
 	override function copyWith(?context: Context, ?offset: Int): GetWord {
-		return new GetWord(this.name, context.getOrElse(this.context), offset);
+		return new GetWord(this.name, context != null ? context : this.context, offset);
 	}
 }

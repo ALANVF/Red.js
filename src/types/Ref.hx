@@ -7,7 +7,7 @@ class Ref extends _String {
 		return new Ref(_String.charsFromRed(str));
 	}
 
-	override function clone(values: Array<Char>, ?index: Int) {
+	function clone(values: Array<Char>, ?index: Int) {
 		return new Ref(values, index);
 	}
 }

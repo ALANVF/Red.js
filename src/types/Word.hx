@@ -10,6 +10,6 @@ class Word extends Symbol {
 	override public function new(name: std.String, ?context: Context, ?offset: Int) super(name, context, offset);
 
 	override public function copyWith(?context: Context, ?offset: Int): Word {
-		return new Word(this.name, context.getOrElse(this.context), offset);
+		return new Word(this.name, context != null ? context : this.context, offset);
 	}
 }

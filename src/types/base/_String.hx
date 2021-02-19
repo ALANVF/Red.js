@@ -3,21 +3,22 @@ package types.base;
 using StringTools;
 using util.NullTools;
 
-class _String extends _SeriesOf<Char> {
+abstract class _String extends _SeriesOf<Char> {
 	public static function charsFromRed(str: std.String) {
 		return [while(str.length > 0) {
-			final cc = if(str.charCodeAt(0) == "^".code) {
+			var code = 0, len = 0;
+			if(str.charCodeAt(0) == "^".code) {
 				switch(str.charCodeAt(1).notNull()) {
-					case c = "\"".code | "^".code: {code: c, len: 2};
-					case "\\".code: {code: 28, len: 2};
-					case "]".code:  {code: 29, len: 2};
-					case "_".code:  {code: 31, len: 2};
+					case c = "\"".code | "^".code: code = c; len = 2;
+					case "\\".code: code = 28; len = 2;
+					case "]".code:  code = 29; len = 2;
+					case "_".code:  code = 31; len = 2;
 
-					case "@".code: {code: 0, len: 2};
-					case "-".code: {code: 9, len: 2};
-					case "/".code: {code: 10, len: 2};
-					case "[".code: {code: 27, len: 2};
-					case "~".code: {code: 127, len: 2};
+					case "@".code: code = 0; len = 2;
+					case "-".code: code = 9; len = 2;
+					case "/".code: code = 10; len = 2;
+					case "[".code: code = 27; len = 2;
+					case "~".code: code = 127; len = 2;
 
 					case "(".code:
 						final nstr = str.substr(2).toUpperCase();
@@ -35,7 +36,7 @@ class _String extends _SeriesOf<Char> {
 						
 						for(k => v in mappings) {
 							if(nstr.startsWith(k)) {
-								res = {code: v, len: 2 + k.length};
+								res = code = v; len = 2 + k.length;
 								break;
 							}
 						}
@@ -45,7 +46,7 @@ class _String extends _SeriesOf<Char> {
 						} else {
 							final rx = ~/^([A-F\d]+)\)/i;
 							if(rx.match(nstr)) {
-								{code: Util.mustParseInt("0x" + rx.matched(0)), len: 2 + rx.matchedPos().len};
+								code = Util.mustParseInt("0x" + rx.matched(0)); len = 2 + rx.matchedPos().len;
 							} else {
 								throw 'Invalid string! escape "^${str.charAt(1)}"!';
 							}
@@ -53,19 +54,19 @@ class _String extends _SeriesOf<Char> {
 
 					case esc:
 						if("A".code <= esc && esc <= "Z".code) {
-							{code: esc - 64, len: 2};
+							code = esc - 64; len = 2;
 						} else if("a".code <= esc && esc <= "z".code) {
-							{code: esc - 32 - 64, len: 2};
+							code = esc - 32 - 64; len = 2;
 						} else {
 							throw 'Invalid string! escape "^${str.charAt(1)}"!';
 						}
 				}
 			} else {
-				{code: str.charCodeAt(0), len: 1};
+				code = str.charCodeAt(0); len = 1;
 			};
 
-			str = str.substr(cc.len);
-			Char.fromCode(cc.code);
+			str = str.substr(len);
+			Char.fromCode(code);
 		}];
 	}
 }

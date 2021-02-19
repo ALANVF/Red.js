@@ -39,7 +39,7 @@ private extern interface _ArrayProto<T> {
 #end
 
 
-abstract ArrayTools<T>(Array<T>) from Array<T> to Array<T> {
+class ArrayTools {
 #if (js && js_es >= 5)
 
 	public inline static function every<T>(array: Array<T>, callback: (currentValue: T) -> Bool, ?thisArg: Any): Bool

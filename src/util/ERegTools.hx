@@ -1,6 +1,6 @@
 package util;
 
-abstract ERegTools(EReg) from EReg to EReg {
+class ERegTools {
 	public static function matchedGroups(rx: EReg): Array<String> {
 #if js
 		return @:privateAccess [for(v in rx.r.m) v];

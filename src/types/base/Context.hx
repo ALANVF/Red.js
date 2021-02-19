@@ -110,7 +110,7 @@ class Context extends Value {
 	}
 }
 
-abstract _ContextHelper(Context) from Context to Context {
+/*abstract _ContextHelper(Context) from Context to Context {
 	@:arrayAccess
 	public inline function getAt(word: std.String) {
 		return this.get(word);
@@ -130,4 +130,4 @@ abstract _ContextHelper(Context) from Context to Context {
 	public inline function setSymbolAt(sym: Symbol, value: Value) {
 		return this.setSymbol(sym, value);
 	}
-}
+}*/

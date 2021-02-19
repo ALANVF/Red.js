@@ -5,11 +5,22 @@
 import haxe.ds.Option;
 
 using StringTools;
+
+#if !macro
 using util.NullTools;
+#end
+
+#if macro
+import haxe.macro.Expr;
+#end
 
 class Util {
 	public static function mustParseInt(str: String) {
-		return Std.parseInt(str).notNull();
+		//return Std.parseInt(str).notNull();
+		switch Std.parseInt(str) {
+			case null: throw "Value was null!";
+			case int: return (int : Int);
+		}
 	}
 
 	public static function readFile(path: String): String {
@@ -31,7 +42,7 @@ class Util {
 		final thisLevel = "".lpad("\t", indent);
 		final nextLevel = "".lpad("\t", indent + 1);
 		
-		return if((value is Array)) {
+		return if(value is Array) {
 			final array = (value : Array<Any>);
 
 			if(array.length == 0) {
@@ -72,7 +83,7 @@ class Util {
 		return _pretty(value, 0);
 	}
 
-	public static macro function assert(expr: haxe.macro.Expr) {
+	public static macro function assert(expr) {
 		return macro {
 			if(!($expr)) {
 				throw 'Assertion failed: ${haxe.macro.ExprTools.toString(expr)}';
@@ -98,7 +109,7 @@ class Util {
 		};
 	}
 
-#if js
+#if (!macro && js)
 	public static inline function tryCast<T: {}, S: T>(value: T, c: Class<S>): Option<S> {
 		return if(@:privateAccess js.Boot.__downcastCheck(value, c)) Some(cast value) else None;
 	}
