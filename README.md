@@ -22,7 +22,7 @@ NYI
 
 ## Locally
 In order to run this locally, you'll need:
-- Haxe 4.1.4 (or higher)
+- Haxe 4.2 (or higher)
 - Some version of Node
 
 
