@@ -31,7 +31,9 @@ enum GroupedExpr {
 	GUnset;
 }
 
+#if macro
 @:build(runtime.NativeBuilder.build())
+#end
 class Do {
 	public static final defaultOptions = Options.defaultFor(NDoOptions);
 
