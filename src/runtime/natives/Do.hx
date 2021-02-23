@@ -31,10 +31,13 @@ enum GroupedExpr {
 	GUnset;
 }
 
-#if macro
 @:build(runtime.NativeBuilder.build())
-#end
 class Do {
+	// Hack to fix "maybe loop in static generation of runtime.natives.Do" bug
+	static function __init__() {
+		runtime.actions.datatypes.NativeActions.MAPPINGS["NAT_DO"] = types.Native.NativeFn.NDo(js.Syntax.code("{0}.call", Do));
+	}
+
 	public static final defaultOptions = Options.defaultFor(NDoOptions);
 
 	static function _doesBecomeFunction(value: Value, values: Iterator<Value>) {
@@ -51,7 +54,7 @@ class Do {
 			default: None;
 		}
 	}
-
+	
 	static function checkForOp(tokens: Array<ValueKind>) {
 		return if(tokens.length >= 2) {
 			switch tokens[0] {
@@ -200,7 +203,7 @@ class Do {
 			};
 		}
 	}
-
+	
 	public static function call(value: Value, options: NDoOptions) {
 		return switch options {
 			case {expand: true} | {args: Some(_)}: throw 'NYI';

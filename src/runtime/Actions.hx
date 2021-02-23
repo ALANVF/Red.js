@@ -13,7 +13,9 @@ class Actions {
 		DNative => new NativeActions()
 	];
 
-	public static inline function get(kind) return ACTIONS[kind].notNull();
+	public static inline function get(kind: TypeKind) {
+		return ACTIONS[kind].notNull();
+	}
 
 	public static inline function getFor(value: Value) return ACTIONS[value.TYPE_KIND].notNull();
 

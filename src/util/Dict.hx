@@ -9,11 +9,10 @@ import haxe.ds.EnumValueMap;
 import js.lib.Object;
 import js.lib.Map as JsMap;
 
-@:forward(set, has, clear, size)
+@:forward(has, clear, size)
 abstract Dict<K, V>(JsMap<K, V>) {
-	public inline function new(?values: Any) {
-		this = new JsMap(values);
-	}
+	public overload extern inline function new() this = new JsMap();
+	public overload extern inline function new(values: Any) this = new JsMap(values);
 
 	@:op([])
 	inline function get(key) {
@@ -21,7 +20,7 @@ abstract Dict<K, V>(JsMap<K, V>) {
 	}
 
 	@:op([])
-	inline function setKey(key, value) {
+	inline function set(key, value) {
 		this.set(key, value);
 		return value;
 	}
@@ -42,20 +41,40 @@ abstract Dict<K, V>(JsMap<K, V>) {
 		return this.keyValueIterator();
 	}
 
-	@:from
+	/*@:from
 	static inline function fromIntMap<V>(map: IntMap<V>): Dict<Int, V> {
-		return new Dict(Object.entries(@:privateAccess map.h));
-	}
+		final dict = new Dict();
+
+		js.Syntax.code(
+			"for(const key in {0}) {
+				{1}.set(+key, {0}[key]);
+			}",
+			@:privateAccess map.h,
+			dict
+		);
+
+		return dict;
+	}*/
 
 	@:from
 	static inline function from_IntMap<K: Int, V>(map: Map<K, V>): Dict<K, V> {
-		return new Dict(Object.entries(@:privateAccess (map : IntMap<V>).h));
+		final dict = new Dict();
+
+		js.Syntax.code(
+			"for(const key in {0}) {
+				{1}.set(+key, {0}[key]);
+			}",
+			@:privateAccess (map : IntMap<V>).h,
+			dict
+		);
+
+		return dict;
 	}
 
-	@:from
+	/*@:from
 	static inline function fromStringMap<V>(map: StringMap<V>): Dict<String, V> {
 		return new Dict(Object.entries(@:privateAccess map.h));
-	}
+	}*/
 
 	@:from
 	static inline function from_StringMap<K: String, V>(map: Map<K, V>): Dict<K, V> {
@@ -67,7 +86,7 @@ abstract Dict<K, V>(JsMap<K, V>) {
 		throw "Please don't use this. This is implemented so badly in Haxe that I don't even know where to start.";
 	}
 
-	@:from
+	/*@:from
 	static function fromEnumValueMap<K: EnumValue, V>(map: EnumValueMap<K, V>): Dict<K, V> {
 		final dict = new Dict();
 		
@@ -76,11 +95,17 @@ abstract Dict<K, V>(JsMap<K, V>) {
 		}
 
 		return dict;
-	}
+	}*/
 
 	@:from
 	static function from_EnumValueMap<K: EnumValue, V>(map: Map<K, V>): Dict<K, V> {
-		return fromEnumValueMap((map : EnumValueMap<K, V>));
+		final dict = new Dict();
+		
+		for(k => v in map) {
+			dict[k] = v;
+		}
+
+		return dict;
 	}
 
 	@:from

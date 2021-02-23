@@ -23,7 +23,7 @@ class NativeBuilder {
 		} else {
 			cls.meta.add(":processed", [], cls.pos);
 		}
-		
+
 		final fields = Context.getBuildFields();
 
 		final name = if(nativeName != null) {
@@ -47,16 +47,18 @@ class NativeBuilder {
 			runtime.actions.datatypes.NativeActions.MAPPINGS[$v{name}] = types.Native.NativeFn.$enumName(call);
 		};
 
-		fields.push({
-			name: "__init__",
-			access: [AStatic],
-			pos: Context.currentPos(),
-			kind: FFun({
-				args: [],
-				ret: null,
-				expr: init
-			})
-		});
+		if(fields.find(f -> f.name == "__init__") == null) {
+			fields.push({
+				name: "__init__",
+				access: [AStatic],
+				pos: Context.currentPos(),
+				kind: FFun({
+					args: [],
+					ret: null,
+					expr: init
+				})
+			});
+		}
 
 		/*if(natives.some(n -> n.name == cls.name)) {
 			trace(":thonk:");
