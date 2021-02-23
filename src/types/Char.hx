@@ -1,8 +1,14 @@
 package types;
 
 class Char extends Value {
-	// DCE bug here
-	static var chars: Dict<Int, Char> = cast [for(c in 0...256) c => new Char(c)];
+	// Optimization bug here
+	static var chars: Dict<Int, Char>;
+
+	static function __init__() {
+		#if !macro
+		chars = [for(c in 0...256) c => new Char(c)];
+		#end
+	}
 
 	public var code: Int;
 

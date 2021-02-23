@@ -59,17 +59,17 @@ class Main {
 				NLoop(runtime.natives.Loop.call)
 			)
 		);
-		trace(runtime.natives.Do);
-		trace(runtime.Eval.evalCode("do: make native! [[
-			value [any-type!]
-			/expand
-			/args
-				arg
-			/next
-				position [word!]
-		]
-		#get-definition NAT_DO
-	]"));
+		
+		runtime.Eval.evalCode("do: make native! [[
+				value [any-type!]
+				/expand
+				/args
+					arg
+				/next
+					position [word!]
+			]
+			#get-definition NAT_DO
+		]");
 
 		js.Syntax.code("
 var readline = require('readline');
