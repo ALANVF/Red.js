@@ -73,7 +73,7 @@
 | `until`             | Y      |
 | `loop`              | Y      |
 | `repeat`            | Y      |
-| `forever`           | N      |
+| `forever`           | Y      |
 | `foreach`           | N      |
 | `forall`            | N      |
 | `remove-each`       | N      |
