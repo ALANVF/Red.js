@@ -11,7 +11,7 @@ class Natives {
 		return switch [native.fn, args, args.map(a -> a.KIND)] {
 			case [NIf(f) | NUnless(f), [cond, _], [_, KBlock(b)]]: f(cond, b);
 			case [NEither(f), [cond, _, _], [_, KBlock(tb), KBlock(fb)]]: f(cond, tb, fb);
-			case [NAny(f) | NAll(f) | NUntil(f), _, [KBlock(b)]]: f(b);
+			case [NAny(f) | NAll(f) | NUntil(f) | NForever(f), _, [KBlock(b)]]: f(b);
 			case [NWhile(f), _, [KBlock(cond), KBlock(body)]]: f(cond, body);
 			case [NLoop(f), [Util.tryCast(_, _Number) => Some(n), _], [_, KBlock(b)]]: f(n, b);
 			case [NRepeat(f), [_, Util.tryCast(_, _Number) => Some(n), _], [KWord(w), _, KBlock(b)]]: f(w, n, b);

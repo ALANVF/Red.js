@@ -1,22 +1,13 @@
 package runtime.natives;
 
+import types.None;
 import types.Error;
 import types.Block;
-import types.None;
-import types.base._Float;
-import types.base._Integer;
-import types.base._Number;
 
 @:build(runtime.NativeBuilder.build())
-class Loop {
-	public static function call(times: _Number, body: Block) {
-		final n = if(times is _Integer) {
-			cast(times, _Integer).int;
-		} else {
-			Std.int(cast(times, _Float).float);
-		};
-
-		for(_ in 0...n) {
+class Forever {
+	public static function call(body: Block) {
+		while(true) {
 			try {
 				Do.evalValues(body).isTruthy();
 			} catch(e: Error) {

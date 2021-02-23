@@ -21,9 +21,9 @@ class While {
 			try {
 				Do.evalValues(body).isTruthy();
 			} catch(e: Error) {
-				if(e.type == "throw" && e.id == "continue") {
+				if(e.isContinue()) {
 					continue;
-				} else if(e.type == "throw" && e.id == "break") {
+				} else if(e.isBreak()) {
 					return e.get("arg1");
 				} else {
 					throw e;

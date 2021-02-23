@@ -81,4 +81,12 @@ class Error extends Object {
 			stack: Option.fromNull(spec.stack),
 		});
 	}
+
+	public function isBreak() {
+		return type == "throw" && id == "break";
+	}
+
+	public function isContinue() {
+		return type == "throw" && id == "continue";
+	}
 }
