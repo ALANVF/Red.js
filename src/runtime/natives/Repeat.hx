@@ -21,7 +21,7 @@ class Repeat {
 		for(i in 0...n) {
 			try {
 				word.setValue(new Integer(i));
-				Do.evalValues(body).isTruthy();
+				Do.evalValues(body);
 			} catch(e: Error) {
 				if(e.isContinue()) {
 					continue;

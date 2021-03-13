@@ -9,6 +9,9 @@ class Map extends Value {
 		this.values = values;
 	}
 
+	public var size(get, never): Int;
+	inline function get_size() return keys.length;
+
 	//public static function fromIter(iter: KeyValueIterable<Value, Value>) {}
 
 	public static function fromPairs(pairs: Iterable<{k: Value, v: Value}>) {

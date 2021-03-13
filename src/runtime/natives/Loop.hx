@@ -18,7 +18,7 @@ class Loop {
 
 		for(_ in 0...n) {
 			try {
-				Do.evalValues(body).isTruthy();
+				Do.evalValues(body);
 			} catch(e: Error) {
 				if(e.isContinue()) {
 					continue;

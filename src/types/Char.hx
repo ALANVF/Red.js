@@ -5,7 +5,7 @@ class Char extends Value {
 	static var chars: Dict<Int, Char>;
 
 	static function __init__() {
-		#if !macro
+		#if !(macro || display)
 		chars = [for(c in 0...256) c => new Char(c)];
 		#end
 	}

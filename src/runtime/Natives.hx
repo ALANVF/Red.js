@@ -15,9 +15,11 @@ class Natives {
 			case [NWhile(f), _, [KBlock(cond), KBlock(body)]]: f(cond, body);
 			case [NLoop(f), [Util.tryCast(_, _Number) => Some(n), _], [_, KBlock(b)]]: f(n, b);
 			case [NRepeat(f), [_, Util.tryCast(_, _Number) => Some(n), _], [KWord(w), _, KBlock(b)]]: f(w, n, b);
+			case [NForeach(f), [word, series, _], [_, _, KBlock(b)]]: f(word, series, b);
 			case [NDo(f), [v], _]: f(v, Options.fromRefines(NDoOptions, refines));
 			case [NGet(f), [w], _]: f(w, Options.fromRefines(NGetOptions, refines));
 			case [NSet(f), [w, v], _]: f(w, v, Options.fromRefines(NSetOptions, refines));
+			case [NPrint(f) | NPrin(f), [v], _]: f(v);
 			case [NTranscode(f), [v], _]: f(v, Options.fromRefines(NTranscodeOptions, refines));
 			default: throw "NYI";
 		}

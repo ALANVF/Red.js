@@ -29,47 +29,39 @@ class Main {
 			)
 		);
 
-		types.base.Context.GLOBAL.add(
-			"either",/*
-			types.Unset.UNSET
-		).setValue(*/
-			new types.Native(
-				None,
-				[
-					{name: "cond", quoting: types.base.IFunction.QuotingKind.QVal},
-					{name: "true-blk", quoting: types.base.IFunction.QuotingKind.QVal},
-					{name: "else-blk", quoting: types.base.IFunction.QuotingKind.QVal}
-				],
-				[],
-				None,
-				NEither(runtime.natives.Either.call)
-			)
-		);
-
-		types.base.Context.GLOBAL.add(
-			"loop",
-			new types.Native(
-				None,
-				[
-					{name: "count", quoting: types.base.IFunction.QuotingKind.QVal},
-					{name: "body", quoting: types.base.IFunction.QuotingKind.QVal},
-				],
-				[],
-				None,
-				NLoop(runtime.natives.Loop.call)
-			)
-		);
-		
-		runtime.Eval.evalCode("do: make native! [[
-				value [any-type!]
-				/expand
-				/args
-					arg
-				/next
-					position [word!]
+		runtime.Eval.evalCode("
+			either: make native! [[
+					cond     [logic!]
+					true-blk [block!]
+					else-blk [block!]
+				]
+				#get-definition NAT_EITHER
 			]
-			#get-definition NAT_DO
-		]");
+
+			loop: make native! [[
+					count [integer!]
+					body  [block!]
+				]
+				#get-definition NAT_LOOP
+			]
+			
+			do: make native! [[
+					value [any-type!]
+					/expand
+					/args
+						arg
+					/next
+						position [word!]
+				]
+				#get-definition NAT_DO
+			]
+
+			print: make native! [[
+					value [any-type!]
+				]
+				#get-definition NAT_PRINT
+			]
+		");
 
 		js.Syntax.code("
 var readline = require('readline');

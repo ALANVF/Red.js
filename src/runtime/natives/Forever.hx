@@ -9,7 +9,7 @@ class Forever {
 	public static function call(body: Block) {
 		while(true) {
 			try {
-				Do.evalValues(body).isTruthy();
+				Do.evalValues(body);
 			} catch(e: Error) {
 				if(e.isContinue()) {
 					continue;

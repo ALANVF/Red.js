@@ -74,7 +74,7 @@
 | `loop`              | Y      |
 | `repeat`            | Y      |
 | `forever`           | Y      |
-| `foreach`           | N      |
+| `foreach`           | Y      |
 | `forall`            | N      |
 | `remove-each`       | N      |
 | `func`              | N      |
@@ -88,8 +88,8 @@
 | `compose`           | N      |
 | `get`               | Y      |
 | `set`               | Y      |
-| `print`             | N      |
-| `prin`              | N*     |
+| `print`             | Y*     |
+| `prin`              | N**    |
 | `equal?`            | N      |
 | `not-equal?`        | N      |
 | `strict-equal?`     | N      |
@@ -167,4 +167,5 @@
 | `recycle`           | N      |
 | `transcode`         | P      |
 
-\* This can't be used in browsers.
+\* For debugging use for now.
+\*\* This can't be used in browsers.
