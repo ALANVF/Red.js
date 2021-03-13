@@ -37,6 +37,8 @@ class Tokenizer {
 			Token.TLitWord(match[1]);
 		} else if((match = rdr.tryMatchRx(Regexps.setDiv)) != null) {
 			Token.TSetWord(match[1]);
+		} else if((match = matchRxWithGuard(rdr, RegexpChecks.ref, Regexps.ref)) != null) {
+			Token.TRef(match[1]);
 		} else if((match = matchRxWithGuard(rdr, RegexpChecks.refinement, Regexps.refinement)) != null) { // [_, refine]
 			Token.TRefinement(match[1]);
 		} else if((match = rdr.tryMatchRx(Regexps.hexa)) != null) { // [_, hexa]
