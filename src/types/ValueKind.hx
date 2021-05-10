@@ -1,5 +1,6 @@
 package types;
 
+@:using(types.ValueKind.Helper)
 enum ValueKind {
 	//KValue(v: Value);
 	KDatatype(v: Datatype);
@@ -55,4 +56,10 @@ enum ValueKind {
 	//KClosure(v: Closure);
 	KMoney(v: Money);
 	KRef(v: Ref);
+}
+
+class Helper {
+	public static inline function typeKind(vk: ValueKind): TypeKind {
+		return untyped vk.getIndex();
+	}
 }

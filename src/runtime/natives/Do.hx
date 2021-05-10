@@ -133,10 +133,9 @@ class Do {
 			case QLit:
 				final k = tokens.shift().notNull();
 				final v = k.getValue();
-				if(k.match(KParen(_) | KGetWord(_) | KGetPath(_))) { // That's a bruh moment
-					GValue(v);
-				} else {
-					GNoEval(v);
+				switch k {
+					case KParen(_) | KGetWord(_) | KGetPath(_): GValue(v);
+					default: GNoEval(v);
 				}
 		}
 	}

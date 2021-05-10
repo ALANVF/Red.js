@@ -1,7 +1,10 @@
 -cp src
 -D analyzer-optimize
 --dce std
+-D js-enums-as-arrays
+-D js-es=6
 --macro include("runtime.natives")
 --macro include("types")
+--macro exclude("haxe.macro")
 -main Main
 --js bin/main.js
