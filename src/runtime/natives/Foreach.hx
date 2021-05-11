@@ -41,7 +41,7 @@ class Foreach {
 					}
 				}
 
-			case [[word], _.is(ISeriesOf) => Some((untyped _ : ISeriesOf<Value>) => series)]:
+			case [[word], _.isISeries() => Some(series)]:
 				for(value in series) {
 					word.setValue(value);
 
@@ -58,7 +58,7 @@ class Foreach {
 					}
 				}
 			
-			case [_, _.is(ISeriesOf) => Some((untyped _ : ISeriesOf<Value>) => series)] if(words.length > 0):
+			case [_, _.isISeries() => Some(series)] if(words.length > 0):
 				while(!series.isTail()) {
 					for(word in words) {
 						word.setValue(series.pick(0).orElse(types.None.NONE));

@@ -45,6 +45,13 @@ class Main {
 				#get-definition NAT_LOOP
 			]
 			
+			forall: make native! [[
+					'word [word!]
+					body  [block!]
+				]
+				#get-definition NAT_FORALL
+			]
+			
 			do: make native! [[
 					value [any-type!]
 					/expand

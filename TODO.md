@@ -20,6 +20,3 @@ Natives:
 Parser:
 - raw-string! literals
 - date! literals
-
-Internal:
-- Fix the `maybe loop in static generation of runtime.natives.Do` warning caused by the fancy build macros

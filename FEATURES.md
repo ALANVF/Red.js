@@ -75,7 +75,7 @@
 | `repeat`            | Y      |
 | `forever`           | Y      |
 | `foreach`           | Y      |
-| `forall`            | N      |
+| `forall`            | Y      |
 | `remove-each`       | N      |
 | `func`              | N      |
 | `function`          | N      |
