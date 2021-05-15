@@ -76,6 +76,62 @@ class Main {
 				]
 				#get-definition NAT_PRINT
 			]
+			
+			equal?: make native! [[
+					value1 [any-type!]
+					value2 [any-type!]
+				]
+				#get-definition NAT_EQUAL?
+			]
+			
+			not-equal?: make native! [[
+					value1 [any-type!]
+					value2 [any-type!]
+				]
+				#get-definition NAT_NOT_EQUAL?
+			]
+			
+			strict-equal?: make native! [[
+					value1 [any-type!]
+					value2 [any-type!]
+				]
+				#get-definition NAT_STRICT_EQUAL?
+			]
+			
+			lesser?: make native! [[
+					value1 [any-type!]
+					value2 [any-type!]
+				]
+				#get-definition NAT_LESSER?
+			]
+			
+			greater?: make native! [[
+					value1 [any-type!]
+					value2 [any-type!]
+				]
+				#get-definition NAT_GREATER?
+			]
+			
+			lesser-or-equal?: make native! [[
+					value1 [any-type!]
+					value2 [any-type!]
+				]
+				#get-definition NAT_LESSER_OR_EQUAL?
+			]
+			
+			greater-or-equal?: make native! [[
+					value1 [any-type!]
+					value2 [any-type!]
+				]
+				#get-definition NAT_GREATER_OR_EQUAL?
+			]
+			
+			same?: make native! [[
+					value1 [any-type!]
+					value2 [any-type!]
+				]
+				#get-definition NAT_SAME?
+			]
 		");
 
 		js.Syntax.code("

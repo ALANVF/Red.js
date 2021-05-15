@@ -1,29 +1,61 @@
 package runtime;
 
+import types.base.ComparisonOp;
 import types.Value;
+import types.Logic;
 import types.Action;
 import types.TypeKind;
 import runtime.actions.datatypes.*;
 
 using util.NullTools;
 
+@:publicFields
 class Actions {
-	static final ACTIONS: Dict<TypeKind, ValueActions> = [
+	private static final ACTIONS: Dict<TypeKind, ValueActions> = [
 		DUnset => new UnsetActions(),
-		DNative => new NativeActions()
+		DNative => new NativeActions(),
+		DAction => new ActionActions(),
+		DInteger => new IntegerActions()
 	];
 
-	public static inline function get(kind: TypeKind) {
+	static inline function get(kind: TypeKind) {
 		return ACTIONS[kind].notNull();
 	}
 
-	public static inline function getFor(value: Value) return ACTIONS[value.TYPE_KIND].notNull();
+	static inline function getFor(value: Value) return ACTIONS[value.TYPE_KIND].notNull();
 
-	public static function callAction(action: Action, args: Array<Value>, refines: Dict<String, Array<Value>>) {
+	static function callAction(action: Action, args: Array<Value>, refines: Dict<String, Array<Value>>) {
 		return switch [action.fn, args] {
 			case [AMake(f), [type, spec]]: f(type, spec);
-			default:
-				throw "NYI";
+			// ...
+			case [ACompare(_), _]: throw "this can't be called directly!";
+			// ...
+			default: throw "NYI";
 		}
+	}
+	
+	static function compare(value1: Value, value2: Value, op: ComparisonOp) {
+		final cmp = getFor(value1).compare(value1, value2, op);
+		
+		if(cmp == IsInvalid &&
+			!( op == CEqual
+			|| op == CSame
+			|| op == CStrictEqual
+			|| op == CStrictEqualWord
+			|| op == CNotEqual
+			|| op == CFind)
+		) {
+			throw 'Invalid comparison: $value1, $op, $value2';
+		}
+		
+		return Logic.fromCond(switch op {
+			case CEqual | CFind | CSame | CStrictEqual | CStrictEqualWord: cmp == IsSame;
+			case CNotEqual: cmp != IsSame;
+			case CLesser: cmp == IsLess;
+			case CLesserEqual: cmp != IsMore;
+			case CGreater: cmp == IsMore;
+			case CGreaterEqual: cmp != IsLess;
+			default: throw "error!";
+		});
 	}
 }

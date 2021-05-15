@@ -29,7 +29,15 @@ class NativeBuilder {
 		final name = if(nativeName != null) {
 			(nativeName : String);
 		} else {
-			"NAT_" + ~/([a-z])([A-Z])/g.replace(cls.name, "$1_$2").toUpperCase();
+			"NAT_" + (
+				~/_q$/g.replace(
+					~/([a-z])([A-Z])/g.replace(
+						cls.name,
+						"$1_$2"
+					),
+					"?"
+				)
+			).toUpperCase();
 		};
 
 		final callFn = switch fields.findMap(f -> switch f {

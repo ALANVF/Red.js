@@ -10,7 +10,7 @@ class Time extends Value implements IGetPath {
 	public var signed: Bool;
 
 	public var sign(get, never): Int;
-	function get_sign() return signed ? -1 : 1;
+	inline function get_sign() return signed ? -1 : 1;
 	
 	public function new(hours: Int, minutes: Int, seconds: StdTypes.Float, signed: Bool = false) {
 		this.hours = hours;
@@ -23,8 +23,12 @@ class Time extends Value implements IGetPath {
 		return switch access.KIND {
 			case KInteger(_.int => 1) | KWord(_.equalsString("hour", ignoreCase) => true): Some(new Integer(hours * sign));
 			case KInteger(_.int => 2) | KWord(_.equalsString("minute", ignoreCase) => true): Some(new Integer(minutes));
-			case KInteger(_.int => 1) | KWord(_.equalsString("second", ignoreCase) => true): Some(new types.Float(seconds * sign));
+			case KInteger(_.int => 3) | KWord(_.equalsString("second", ignoreCase) => true): Some(new types.Float(seconds * sign));
 			default: None;
 		};
+	}
+	
+	public function toFloat() {
+		return this.sign * (seconds + minutes*60 + hours*3600);
 	}
 }
