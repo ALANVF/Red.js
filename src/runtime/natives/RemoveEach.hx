@@ -1,16 +1,14 @@
 package runtime.natives;
 
-import types.Error;
 import types.Word;
+import types.Error;
 import types.Block;
 import types.Value;
-import types.Map;
-import types.base.ISeriesOf;
 import haxe.ds.Option;
 
 @:build(runtime.NativeBuilder.build())
-class Foreach {
-	public static function call(word: Value, series: Value, body: Block) {
+class RemoveEach {
+	public static function call(word: Value, data: Value, body: Block) {
 		final words = switch word {
 			case _.is(Word) => Some(word): [word];
 			case _.is(Block) => Some(block):
@@ -21,32 +19,17 @@ class Foreach {
 				}
 			default: throw "error!";
 		};
+		var series = data.asISeries();
 
-		switch [words, series] {
-			case [[key, value], _.is(Map) => Some(map)]:
-				for(i in 0...map.size) {
-					key.setValue(map.keys[i]);
-					value.setValue(map.values[i]);
-
-					try {
-						Do.evalValues(body);
-					} catch(e: Error) {
-						if(e.isContinue()) {
-							continue;
-						} else if(e.isBreak()) {
-							return e.get("arg1");
-						} else {
-							throw e;
-						}
-					}
-				}
-
-			case [[word], _.isISeries() => Some(series)]:
+		switch words {
+			case [word]:
 				for(value in series) {
 					word.setValue(value);
 
 					try {
-						Do.evalValues(body);
+						if(Do.evalValues(body).isTruthy()) {
+							series.remove();
+						}
 					} catch(e: Error) {
 						if(e.isContinue()) {
 							continue;
@@ -58,15 +41,20 @@ class Foreach {
 					}
 				}
 			
-			case [_, _.isISeries() => Some(series)] if(words.length > 0):
+			default:
 				while(!series.isTail()) {
+					var count = 0;
 					for(word in words) {
-						word.setValue(series.pick(0).orElse(types.None.NONE));
-						series = series.skip(1);
+						word.setValue(series.pick(count).orElse(types.None.NONE));
+						count++;
 					}
 
 					try {
-						Do.evalValues(body);
+						if(Do.evalValues(body).isTruthy()) {
+							series.removePart(count);
+						} else {
+							series = series.skip(count);
+						}
 					} catch(e: Error) {
 						if(e.isContinue()) {
 							continue;
@@ -77,8 +65,6 @@ class Foreach {
 						}
 					}
 				}
-
-			case [_, _]: throw "error!";
 		}
 
 		return types.None.NONE;

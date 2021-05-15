@@ -76,7 +76,7 @@
 | `forever`           | Y      |
 | `foreach`           | Y      |
 | `forall`            | Y      |
-| `remove-each`       | N      |
+| `remove-each`       | Y      |
 | `func`              | N      |
 | `function`          | N      |
 | `does`              | N      |

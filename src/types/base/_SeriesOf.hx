@@ -39,6 +39,18 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		}
 	}
 	
+	public function remove() {
+		if(this.isTail()) {
+			throw "out of bounds!";
+		} else {
+			return this.values.splice(this.index, 1)[0];
+		}
+	}
+	
+	public function removePart(count: Int) {
+		return this.values.splice(this.index, count);
+	}
+	
 	public function at(index: Int) {
 		return this.clone(
 			this.values,

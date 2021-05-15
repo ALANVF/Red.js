@@ -52,6 +52,14 @@ class Main {
 				#get-definition NAT_FORALL
 			]
 			
+			remove-each: make native! [[
+					'word [word! block!]
+					data [series!]
+					body [block!]
+				]
+				#get-definition NAT_REMOVE_EACH
+			]
+			
 			do: make native! [[
 					value [any-type!]
 					/expand

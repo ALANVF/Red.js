@@ -11,6 +11,10 @@ interface ISeriesOf<T: Value> extends IGetPath extends ISetPath {
 	
 	public function poke(index: Int, value: T): T;
 	
+	public function remove(): T;
+	
+	public function removePart(count: Int): Array<T>;
+	
 	public function at(index: Int): ISeriesOf<T>;
 	
 	public function skip(offset: Int): ISeriesOf<T>;

@@ -15,7 +15,7 @@ class Natives {
 			case [NWhile(f), _, [KBlock(cond), KBlock(body)]]: f(cond, body);
 			case [NLoop(f), [Util.tryCast(_, _Number) => Some(n), _], [_, KBlock(b)]]: f(n, b);
 			case [NRepeat(f), [_, Util.tryCast(_, _Number) => Some(n), _], [KWord(w), _, KBlock(b)]]: f(w, n, b);
-			case [NForeach(f), [word, series, _], [_, _, KBlock(b)]]: f(word, series, b);
+			case [NForeach(f) | NRemoveEach(f), [word, series, _], [_, _, KBlock(b)]]: f(word, series, b);
 			case [NForall(f), _, [KWord(word), KBlock(body)]]: f(word, body);
 			case [NDo(f), [v], _]: f(v, Options.fromRefines(NDoOptions, refines));
 			case [NGet(f), [w], _]: f(w, Options.fromRefines(NGetOptions, refines));
