@@ -1,5 +1,6 @@
 package util;
 
+#if macro
 import haxe.macro.Expr;
 
 private typedef Ctx = {
@@ -21,3 +22,4 @@ class ContextTools {
 		};
 	}
 }
+#end

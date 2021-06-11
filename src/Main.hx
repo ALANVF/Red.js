@@ -70,6 +70,14 @@ class Main {
 				]
 				#get-definition NAT_DO
 			]
+			
+			reduce: make native! [[
+					value [any-type!]
+					/into
+						out [any-block!]
+				]
+				#get-definition NAT_REDUCE
+			]
 
 			print: make native! [[
 					value [any-type!]

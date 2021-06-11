@@ -6,6 +6,10 @@ class OptionTools {
 	public static inline function fromNull<T>(c: Enum<Option<T>>, value: Null<T>) {
 		return (value == null) ? None : Some(value);
 	}
+	
+	public static inline function isSome<T>(opt: Option<T>) {
+		return opt != None;
+	}
 
 	public static function value<T>(opt: Option<T>) {
 		return switch opt {

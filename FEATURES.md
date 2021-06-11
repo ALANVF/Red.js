@@ -84,7 +84,7 @@
 | `switch`            | N      |
 | `case`              | N      |
 | `do`                | P      |
-| `reduce`            | N      |
+| `reduce`            | P      |
 | `compose`           | N      |
 | `get`               | Y      |
 | `set`               | Y      |
