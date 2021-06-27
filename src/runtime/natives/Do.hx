@@ -1,22 +1,28 @@
 package runtime.natives;
 
+import types.Value;
+import types.Op;
+import types.Path;
+import types.GetPath;
+import types.SetPath;
+import types.LitPath;
+import types.Word;
+import types.GetWord;
+import types.SetWord;
+import types.LitWord;
+import types.Block;
+import types.Paren;
+import types.Unset;
+import types.File;
+import types.Url;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.base._Path;
-import types.Unset;
-import types.Word;
 import types.base.IGetPath;
 import types.base.IFunction;
 import haxe.ds.Option;
-import types.Value;
-import types.SetWord;
-import types.SetPath;
-import types.Op;
-import types.Path;
-import types.ValueKind;
 
-using util.NullTools;
-using util.ArrayTools;
+//using util.NullTools;
 using types.Helpers;
 
 // THING: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#423-atomiccomposite-types
@@ -40,38 +46,38 @@ class Do {
 
 	public static final defaultOptions = Options.defaultFor(NDoOptions);
 
-	static function _doesBecomeFunction(value: Value, values: Iterator<Value>) {
-		return switch value {
-			case _.is(IFunction) => Some(fn): Some({fn: fn, rest: [for(v in values) v]});
-			case _.is(IGetPath) => Some(g) if(values.hasNext()): g.getPath(values.next()).flatMap(_doesBecomeFunction.bind(_, values));
-			default: None;
-		}
+	static function _doesBecomeFunction(value: Value, values: Iterator<Value>):Option<{fn: IFunction, rest: Array<Value>}> {
+		return value._match(
+			at(fn is IFunction) => Some({fn: fn, rest: [for(v in values) v]}),
+			at(g is IGetPath, when(values.hasNext())) => g.getPath(values.next()).flatMap(_doesBecomeFunction.bind(_, values)),
+			_ => None
+		);
 	}
 
 	static function doesBecomeFunction(path: Path) {
-		return switch path.pick(0) {
-			case Some(_.is(Word) => Some(head)): _doesBecomeFunction(head.getValue(), path.skip(1).iterator());
-			default: None;
-		}
+		return path.pick(0)._match(
+			at(Some(head is Word)) => _doesBecomeFunction(head.getValue(), path.skip(1).iterator()),
+			_ => None
+		);
 	}
 	
-	static function checkForOp(tokens: Array<ValueKind>) {
+	static function checkForOp(tokens: Array<Value>) {
 		return if(tokens.length >= 2) {
-			switch tokens[0] {
-				case KWord(_.getValue(true).is(Op) => Some(o)): Some(o);
-				case KPath(doesBecomeFunction(_) => Some({fn: _.is(Op) => Some(o)})): Some(o);
-				default: None;
-			}
+			tokens[0]._match(
+				at((_.getValue(true) => o is Op) is Word) => Some(o),
+				at((doesBecomeFunction(_) => Some({fn: o is Op})) is Path) => Some(o),
+				_ => None
+			);
 		} else {
 			None;
 		}
 	}
 
-	static inline function groupArgs(tokens: Array<ValueKind>, args: Array<_Arg>) {
+	static inline function groupArgs(tokens: Array<Value>, args: Array<_Arg>) {
 		return [for(arg in args) groupNextExprForArg(tokens, arg)];
 	}
 
-	public static function groupNextExpr(tokens: Array<ValueKind>) {
+	public static function groupNextExpr(tokens: Array<Value>) {
 		// look-ahead in case there's an op! after the value with a lit-word! or get-word! LHS
 		if(tokens.length >= 3) {
 			switch checkForOp(tokens.slice(1)) {
@@ -83,13 +89,12 @@ class Do {
 			}
 		}
 
-		return switch tokens.shift().notNull() {
-			case KSetWord(s): GSetWord(s, groupNextExpr(tokens));
-			case KSetPath(s): GSetPath(s, groupNextExpr(tokens));
-			case KWord(_.getValue() => _fn) if(_fn is IFunction):
-				final fn = cast(_fn, IFunction); // I want flow-typing :'(
-				GCall(fn, groupArgs(tokens, fn.args), []);
-			case KPath(doesBecomeFunction(_) => Some({fn: fn, rest: rest})):
+		return tokens.shift().nonNull()._match(
+			at(s is SetWord) => GSetWord(s, groupNextExpr(tokens)),
+			at(s is SetPath) => GSetPath(s, groupNextExpr(tokens)),
+			at((_.getValue() => fn is IFunction) is Word) => // WE HAS DA FLOW TYPING!!!
+				GCall(fn, groupArgs(tokens, fn.args), []),
+			at((doesBecomeFunction(_) => Some({fn: fn, rest: rest})) is Path) => {
 				final args = groupArgs(tokens, fn.args);
 
 				if(rest.length == 0) {
@@ -98,45 +103,39 @@ class Do {
 					final refines = new Dict();//: Dict<String, Array<GroupedExpr>> = [];
 
 					for(value in rest) {
-						switch value.KIND {
-							case KWord(w):
-								switch fn.refines.find(ref -> w.equalsString(ref.name)) {
-									case null:
-										throw 'Unknown refinement `/${w.name}`!';
-									case {name: n} if(refines.has(n)):
-										throw 'Duplicate refinement `/${w.name}`!';
-									case {name: n, args: args}:
-										refines[n] = groupArgs(tokens, args);
-								}
-							default: throw "Invalid refinement!";
-						}
+						value._match(
+							at(w is Word) => switch fn.refines.find(ref -> w.equalsString(ref.name)) {
+								case null: throw 'Unknown refinement `/${w.name}`!';
+								case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.name}`!';
+								case {name: n, args: args}: refines[n] = groupArgs(tokens, args);
+							},
+							_ => throw "Invalid refinement!"
+						);
 					}
 
 					GCall(fn, args, refines);
 				}
-			case _.getValue() => v:
-				switch checkForOp(tokens) {
-					case Some(o):
-						tokens.shift();
-						GOp(GValue(v), o, groupNextExprForArg(tokens, o.args[1]));
-					case None:
-						GValue(v);
-				}
-		}
+			},
+			at(v) => switch checkForOp(tokens) {
+				case Some(o):
+					tokens.shift();
+					GOp(GValue(v), o, groupNextExprForArg(tokens, o.args[1]));
+				case None:
+					GValue(v);
+			}
+		);
 	}
 
-	public static function groupNextExprForArg(tokens: Array<ValueKind>, arg: _Arg) {
+	public static function groupNextExprForArg(tokens: Array<Value>, arg: _Arg) {
 		return switch arg.quoting {
 			case QVal: groupNextExpr(tokens);
 			case QGet if(tokens.length == 0): GUnset;
-			case QGet: GNoEval(tokens.shift().notNull().getValue());
+			case QGet: GNoEval(tokens.shift().nonNull());
 			case QLit:
-				final k = tokens.shift().notNull();
-				final v = k.getValue();
-				switch k {
-					case KParen(_) | KGetWord(_) | KGetPath(_): GValue(v);
-					default: GNoEval(v);
-				}
+				tokens.shift().nonNull()._match(
+					at(v is Paren | v is GetWord | v is GetPath) => GValue(v),
+					at(v) => GNoEval(v)
+				);
 		}
 	}
 
@@ -164,19 +163,19 @@ class Do {
 	}
 
 	public static function evalValue(value: Value) {
-		return switch value.KIND {
-			case KParen(p): evalValues(p);
-			case KPath((_ : _Path) => p) | KGetPath(p): Get.getPath(p);
-			case KLitPath(l): new Path(l.values, l.index);
-			case KWord(w): w.getValue();
-			case KGetWord(g): g.getValue(true);
-			case KLitWord(l): new Word(l.name, l.context, l.offset);
-			default: value;
-		}
+		return value._match(
+			at(p is Paren) => evalValues(p),
+			at(p is Path | p is GetPath) => Get.getPath(p),
+			at(l is LitPath) => new Path(l.values, l.index),
+			at(w is Word) => w.getValue(),
+			at(g is GetWord) => g.getValue(true),
+			at(l is LitWord) => new Word(l.name, l.context, l.offset),
+			_ => value
+		);
 	}
 
 	public static function evalValues(values: Iterable<Value>) {
-		final tokens = [for(v in values) v.KIND];
+		final tokens = [for(v in values) v];
 		var result: Value = Unset.UNSET;
 		
 		while(tokens.length != 0) {
@@ -193,7 +192,7 @@ class Do {
 				offset: 0
 			};
 		} else {
-			final values_ = [for(v in values) v.KIND];
+			final values_ = [for(v in values) v];
 			final value = groupNextExpr(values_);
 			
 			return {
@@ -206,14 +205,14 @@ class Do {
 	public static function call(value: Value, options: NDoOptions) {
 		return switch options {
 			case {expand: true} | {args: Some(_)}: throw 'NYI';
-			case {next: Some({position: word})}: switch value.KIND {
-				case KBlock((_ : types.base._Block) => b) | KParen(b):
+			case {next: Some({position: word})}: value._match(
+				at(b is Block | b is Paren) =>
 					switch doNextValue(b) {
 						case {value: v, offset: o}:
 							word.setValue(b.skip(o));
 							return v;
-					}
-				case KString(s):
+					},
+				at(s is types.String) => {
 					final values = Transcode.call(s, Transcode.defaultOptions);
 					
 					switch doNextValue(values) {
@@ -221,15 +220,16 @@ class Do {
 							word.setValue(values.skip(o));
 							return v;
 					}
-				case KFile(_) | KUrl(_): throw 'NYI';
-				default: evalValue(value);
-			}
-			default: switch value.KIND {
-				case KBlock((_ : types.base._Block) => body) | KParen(body): evalValues(body);
-				case KString(s): evalValues(Transcode.call(s, Transcode.defaultOptions));
-				case KFile(_) | KUrl(_): throw 'NYI';
-				default: evalValue(value);
-			}
+				},
+				at(_ is File | _ is Url) => throw 'NYI',
+				_ => evalValue(value)
+			);
+			default: value._match(
+				at(body is Block | body is Paren) => evalValues(body),
+				at(s is types.String) => evalValues(Transcode.call(s, Transcode.defaultOptions)),
+				at(_ is File | _ is Url) => throw 'NYI',
+				_ => evalValue(value)
+			);
 		}
 	}
 }

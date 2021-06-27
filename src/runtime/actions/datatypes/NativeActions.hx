@@ -6,10 +6,8 @@ import types.Value;
 import types.Issue;
 import types.Word;
 import haxe.ds.Option;
-import Util.match;
-import Util.extract;
+import Util.ifMatch;
 
-using util.EnumValueTools;
 using Lambda;
 
 class NativeActions extends ValueActions {
@@ -20,11 +18,12 @@ class NativeActions extends ValueActions {
 	}
 
 	override public function make(_, spec: Value) {
-		return extract(spec.as(Block).array(), [
-			_.is(Block) => Some(s),
-			_.is(Issue) => Some(_.name => "get-definition"),
-			_.is(Word) => Some(_.name => name)],
-			match(runtime.natives.Func.parseSpec(s), {doc: doc, args: args, refines: refines, ret: ret},
+		return Util._match(cast(spec, Block).array(),
+			at([
+				s is Block,
+				{name: "get-definition"} is Issue,
+				{name: name} is Word
+			]) => ifMatch(runtime.natives.Func.parseSpec(s), {doc: doc, args: args, refines: refines, ret: ret},
 				new Native(
 					doc,
 					args,
@@ -36,7 +35,8 @@ class NativeActions extends ValueActions {
 						throw "NYI";
 					}
 				)
-			)
+			),
+			_ => throw "Match error!"
 		);
 	}
 }

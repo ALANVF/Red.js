@@ -5,12 +5,10 @@ import types.Action;
 import types.Value;
 import types.Issue;
 import types.Word;
-import haxe.ds.Option;
-import Util.match;
-import Util.extract;
+import Util.ifMatch;
 
-using util.EnumValueTools;
 using Lambda;
+using Util;
 
 class ActionActions extends ValueActions {
 	public static var MAPPINGS: #if macro haxe.ds.Map<String, ActionFn> #else Dict<String, ActionFn> #end;
@@ -20,11 +18,12 @@ class ActionActions extends ValueActions {
 	}
 
 	override public function make(_, spec: Value) {
-		return extract(spec.as(Block).array(), [
-			_.is(Block) => Some(s),
-			_.is(Issue) => Some(_.name => "get-definition"),
-			_.is(Word) => Some(_.name => name)],
-			match(runtime.natives.Func.parseSpec(s), {doc: doc, args: args, refines: refines, ret: ret},
+		return Util._match(cast(spec, Block).array(),
+			at([
+				s is Block,
+				{name: "get-definition"} is Issue,
+				{name: name} is Word,
+			]) => ifMatch(runtime.natives.Func.parseSpec(s), {doc: doc, args: args, refines: refines, ret: ret},
 				new Action(
 					doc,
 					args,
@@ -36,7 +35,8 @@ class ActionActions extends ValueActions {
 						throw "NYI";
 					}
 				)
-			)
+			),
+			_ => throw "Match error!"
 		);
 	}
 }

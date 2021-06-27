@@ -7,11 +7,8 @@ import types.base.IDatatype;
 @:autoBuild(types.ValueBuilder.build())
 #end
 abstract class Value implements IValue {
-	// Can't make get_KIND and get_TYPE_KIND abstract functions due to a macro bug
+	// Can't make get_TYPE_KIND an abstract function due to a macro bug
 	
-	public var KIND(get, never): ValueKind;
-	function get_KIND(): ValueKind throw new NotImplementedException();
-
 	public var TYPE_KIND(get, never): TypeKind;
 	function get_TYPE_KIND(): TypeKind throw new NotImplementedException();
 

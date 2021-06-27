@@ -3,27 +3,27 @@
 #end
 
 import haxe.ds.Option;
+using util.OptionTools;
 
 using StringTools;
 
-#if !macro
-using util.NullTools;
-#end
-
-#if macro
+import haxe.macro.Context;
 import haxe.macro.Expr;
-#end
+import haxe.macro.ExprTools;
+import haxe.macro.Expr.ComplexType;
 
+@:publicFields
 class Util {
-	public static function mustParseInt(str: String) {
-		//return Std.parseInt(str).notNull();
+	static function mustParseInt(str: String) {
+		//return Std.parseInt(str).nonNull();
 		switch Std.parseInt(str) {
 			case null: throw "Value was null!";
 			case int: return (int : Int);
 		}
 	}
 
-	public static function readFile(path: String): String {
+	@:noUsing
+	static function readFile(path: String): String {
 #if (php || neko || cpp || macro || java || lua || python || hl)
 		return File.getContent(path);
 #elseif js
@@ -38,7 +38,7 @@ class Util {
 #end
 	}
 
-	static function _pretty(value: Any, indent: Int): String {
+	private static function _pretty(value: Any, indent: Int): String {
 		final thisLevel = "".lpad("\t", indent);
 		final nextLevel = "".lpad("\t", indent + 1);
 		
@@ -79,19 +79,22 @@ class Util {
 		}
 	}
 
-	public static function pretty(value: Any): String {
+	@:noUsing
+	static function pretty(value: Any): String {
 		return _pretty(value, 0);
 	}
 
-	public static macro function assert(expr) {
+	@:noUsing
+	static macro function assert(expr) {
 		return macro {
 			if(!($expr)) {
-				throw 'Assertion failed: ${haxe.macro.ExprTools.toString(expr)}';
+				throw 'Assertion failed: ${ExprTools.toString(expr)}';
 			}
 		};
 	}
 
-	public static macro function match(value, pattern, expr, ?otherwise) {
+	@:noUsing
+	static macro function ifMatch(value, pattern, expr, ?otherwise) {
 		return macro {
 			switch($value) {
 				case $pattern: $expr;
@@ -100,7 +103,8 @@ class Util {
 		};
 	}
 
-	public static macro function extract(value, pattern, expr) {
+	@:noUsing
+	static macro function extract(value, pattern, expr) {
 		return macro {
 			switch($value) {
 				case $pattern: $expr;
@@ -108,9 +112,229 @@ class Util {
 			}
 		};
 	}
+	
+	/*=== FROM STAR UTIL ===*/
+	
+	static inline function nonNull<T>(value: Null<T>): T {
+		if(value != null)
+			return value;
+		else
+			throw new NullException();
+	}
+	
+	@:noCompletion @:noUsing
+	static inline function _unsafeNonNull<T>(value: Null<T>) return (value : T);
+	
+	#if macro
+	static function removeDisp(expr: Expr): Expr return switch expr {
+		case {expr: EDisplay(expr2, k)}: removeDisp(expr2);
+		default: ExprTools.map(expr, removeDisp);
+	}
+	#end
+	
+	static macro function _match(value: Expr, cases: Array<Expr>): Expr {
+		var defaultExpr = None;
+		var caseExprs: Array<Case> = [];
+		
+		for(_case in cases) {
+			switch _case {
+				case macro at($pattern, when($cond)) => $expr: caseExprs.push({
+					values: [pattern],
+					guard: cond,
+					expr: expr
+				});
 
+				case macro at($pattern) => $expr: caseExprs.push({
+					values: [pattern],
+					expr: expr
+				});
+
+				case macro _ => $expr: defaultExpr = Some(expr);
+
+				default: Context.error("error!", _case.pos);
+			};
+		}
+
+		for(_case in caseExprs) {
+			if(_case.values.length > 1) Context.error("wtf", _case.values[0].pos);
+			
+			var didChange = false;
+			var anons = 0;
+			var conds: Array<Expr> = [];
+			var newVars: Array<{n: String, a: String, t: Null<{t: ComplexType, d: ComplexType}>}> = [];
+			
+			final pattern = _case.values[0];
+			
+			function collect(e: Expr): Expr return switch removeDisp(e) {
+				case macro [$a{values}]: macro $a{values.map(collect)};
+				
+				case {expr: EIs(lhs, type), pos: pos}:
+					final itype = switch type {
+						case TPath({pack: p, name: n, params: _.length => l, sub: s}) if(l != 0):
+							TPath({pack: p, name: n, sub: s});
+						default: type;
+					};
+					final dtype = switch type {
+						case TPath({pack: p, name: n, params: _.length => l, sub: s}) if(l != 0):
+							TPath({pack: p, name: n, params: [for(_ in 0...l) TypeParam.TPType(macro:Dynamic)], sub: s});
+						default: type;
+					};
+					
+					switch lhs {
+						case macro _:
+							if(!didChange) didChange = true;
+							macro $e => true;
+						
+						case macro $i{name}:
+							if(!didChange) didChange = true;
+							final anon = switch newVars.find(v -> v.n == name) {
+								case null: '__anon${anons++}__$name';
+								case v: v.a;
+							};
+							newVars.push({n: name, a: anon, t: {t: type, d: dtype}});
+							macro ($i{anon} = ${{expr: EIs(macro _, itype), pos: pos}} => true);
+						
+						
+						case macro ($l => $r):
+							if(!didChange) didChange = true;
+							macro (_ is $itype ? _ : null) => {a: _ != null, b: _} => {a: true, b: Util._unsafeNonNull(_) => (cast(_, $dtype) : $type) => $l => ${collect(r)}};
+						
+						default:
+							if(!didChange) didChange = true;
+							macro (_ is $itype ? (cast(_, $dtype) : $type) : null) => $lhs;
+					}
+				
+				case macro ${{expr: EIs(_, _)}} => ${_}: e;
+				
+				case {expr: EUnop(OpNot, true, lhs), pos: pos}:
+					switch lhs {
+						case macro _:
+							if(!didChange) didChange = true;
+							macro _ != null => true;
+						
+						case macro $i{name}:
+							if(!didChange) didChange = true;
+							final anon = '__anon${anons++}__$name';
+							newVars.push({
+								n: name,
+								a: anon,
+								t: null
+							});
+							macro $i{anon} = _ != null => true;
+						
+						default: Context.error("NYI", pos);
+					}
+				
+				case {expr: EBinop(OpInterval, begin, end)}:
+					if(!didChange) didChange = true;
+				
+					final beginExcl = switch begin {
+						case {expr: EUnop(OpNot, true, b)}:
+							begin = b;
+							true;
+						default: false;
+					};
+					final endExcl = switch end {
+						case {expr: EUnop(OpNot, false, e2)}:
+							end = e2;
+							true;
+						default: false;
+					};
+					
+					var beginVal = switch begin {
+						case {expr: EField({expr: EConst(CString(str, k))}, "code")}: nonNull(str.charCodeAt(0));
+						default: ExprTools.getValue(begin);
+					}
+					var endVal = switch end {
+						case {expr: EField({expr: EConst(CString(str, k))}, "code")}: nonNull(str.charCodeAt(0));
+						default: ExprTools.getValue(end);
+					};
+					
+					if(beginExcl) beginVal++;
+					if(endExcl) endVal--;
+					
+					var res = macro $v{beginVal};
+					
+					while(beginVal <= endVal) {
+						res = macro $res | $v{++beginVal};
+					}
+					
+					res;
+				
+				case {expr: EDisplay(e2, k)}: collect(e2);
+				
+				default: ExprTools.map(e, collect);
+			}
+			
+			final newPattern = collect(pattern);
+			
+			if(didChange) {
+				_case.values = [newPattern];
+			}
+			
+			if(newVars.length != 0) {
+				final vars = new Array<Var>();
+				
+				for(v in newVars) {
+					switch vars.find(v2 -> v2.name == v.n) {
+						case null: vars.push({
+							name: v.n,
+							expr: if(v.t == null) {
+								macro Util._unsafeNonNull($i{v.a});
+							} else {
+								final vt = _unsafeNonNull(v.t).t;
+								final vd = _unsafeNonNull(v.t).d;
+								macro (untyped cast($i{v.a}, $vd) : $vt);
+							}
+						});
+						
+						case (_ : Var) => v2:
+							if(v.t == null) {
+								Context.error("NYI", Context.currentPos());
+							} else switch v2.expr {
+								case macro (untyped cast($ve, $cd2) : $ct2):
+									final ct1 = _unsafeNonNull(v.t).t;
+									final t = Context.typeof(macro [(null : $ct1), (null : $ct2)][0]);
+									final ct = Context.toComplexType(t).nonNull();
+									final cd1 = _unsafeNonNull(v.t).d;
+									final d = Context.typeof(macro [(null : $cd1), (null : $cd2)][0]);
+									final cd = Context.toComplexType(t).nonNull();
+									
+									v2.expr = macro (untyped cast($ve, $ct) : $cd);
+									
+								default: Context.error("error!", Context.currentPos());
+							}
+					}
+				}
+				
+				_case.expr = macro {
+					${{
+						expr: EVars(vars),
+						pos: Context.currentPos()
+					}}
+					${_case.expr}
+				};
+			}
+		}
+
+		return {
+			expr: ESwitch(value, caseExprs, defaultExpr.toNull()),
+			pos: Context.currentPos()
+		};
+	}
+
+#if macro
+	private static function mapPattern(pattern: Expr, isOuter = false) return switch pattern {
+		case {expr: EDisplay(e, _)}: macro ${mapPattern(e, isOuter)};
+		case macro [$a{values}]: macro $a{values.map(v -> mapPattern(v))};
+		case macro $l | $r: macro ${mapPattern(l)} | ${mapPattern(r)};
+		default: pattern;
+	}
+#end
+	
 #if (!macro && js)
-	public static inline function tryCast<T: {}, S: T>(value: T, c: Class<S>): Option<S> {
+	@:noUsing
+	static inline function tryCast<T: {}, S: T>(value: T, c: Class<S>): Option<S> {
 		return if(@:privateAccess js.Boot.__downcastCheck(value, c)) Some(cast value) else None;
 	}
 #end

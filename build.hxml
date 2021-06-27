@@ -1,10 +1,13 @@
 -cp src
 -D analyzer-optimize
---dce std
+--dce full
 -D js-enums-as-arrays
 -D js-es=6
---macro include("runtime.natives")
+--macro keep("runtime")
+--macro include("tokenizer")
+--macro include("util")
 --macro include("types")
+--macro include("runtime")
 --macro exclude("haxe.macro")
 -main Main
 --js bin/main.js

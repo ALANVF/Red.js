@@ -21,20 +21,20 @@ class Object extends Value implements IGetPath implements ISetPath {
 	}
 
 	public function getPath(access: Value, ?ignoreCase = true) {
-		return switch access.KIND {
-			case KWord(_.name => n) if(ctx.contains(n, ignoreCase)): Some(ctx.get(n, ignoreCase));
-			default: None;
-		};
+		return Util._match(access,
+			at({name: n} is Word, when(ctx.contains(n, ignoreCase))) => Some(ctx.get(n, ignoreCase)),
+			_ => None
+		);
 	}
 
 	public function setPath(access: Value, newValue: Value, ?ignoreCase = true) {
-		return switch access.KIND {
-			case KWord(_.name => n) if(ctx.contains(n, ignoreCase)):
+		return Util._match(access,
+			at({name: n} is Word, when(ctx.contains(n, ignoreCase))) => {
 				ctx.set(n, newValue, ignoreCase);
 				true;
-			default:
-				false;
-		}
+			},
+			_ => false
+		);
 	}
 
 	public function get(word, ?ignoreCase = true) {

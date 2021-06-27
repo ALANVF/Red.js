@@ -2,6 +2,7 @@ package runtime.natives;
 
 import types.Block;
 import types.Value;
+import types.Binary;
 import types.base.Options;
 import types.base._NativeOptions;
 
@@ -18,11 +19,11 @@ class Transcode {
 				| {part: Some(_)}
 				| {into: Some(_)}
 				| {trace: Some(_)}: throw "NYI";
-			default: switch src.KIND {
-				case KBinary(_): throw "NYI";
-				case KString(s): new Block(Tokenizer.parse(s.form()));
-				default: throw "error!";
-			}
+			default: src._match(
+				at(_ is Binary) => throw "NYI",
+				at(s is types.String) => new Block(Tokenizer.parse(s.form())),
+				_ => throw "error!"
+			);
 		}
 	}
 }

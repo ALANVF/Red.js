@@ -6,13 +6,10 @@ import types.base.IValue;
 import haxe.ds.Option;
 import haxe.macro.Expr;
 import haxe.macro.Context;
-import haxe.macro.Type;
 
 using util.ContextTools;
 
 class Helpers {
-	public static inline function getValue(vk: ValueKind): Value return vk.getParameters()[0];
-
 	public static macro function as<T: IValue>(value: ExprOf<IValue>, type: ExprOf<Class<T>>): ExprOf<T> {
 		final tpath = haxe.macro.ExprTools.toString(type);
 		final path = tpath.split(".");
@@ -23,7 +20,7 @@ class Helpers {
 		final ttype = TPath({
 			pack: path.slice(0, path.length - 2),
 			name: path[path.length - 1],
-			params: [for(_ in 0...nparams) TPType(macro:Dynamic)]//[TPType(TPath({pack: [], name: "Dynamic"}))]
+			params: [for(_ in 0...nparams) TPType(macro:Dynamic)]
 		});
 		return macro cast($value, $ttype);
 	}

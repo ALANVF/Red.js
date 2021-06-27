@@ -59,11 +59,11 @@ class NullTools {
 			}
 		]};
 	}*/
-	public static inline function notNull<T>(value: Null<T>): T {
+	/*public static inline function notNull<T>(value: Null<T>): T {
 		if(value == null) {
 			throw "Value was null!";
 		} else {
 			return value;
 		}
-	}
+	}*/
 }

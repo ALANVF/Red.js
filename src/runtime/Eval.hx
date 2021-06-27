@@ -1,6 +1,9 @@
 package runtime;
 
 import types.Native;
+import types.Action;
+import types.Function;
+import types.Op;
 import types.base.IFunction;
 import types.Value;
 
@@ -10,11 +13,11 @@ class Eval {
 	}
 
 	public static function callFunction(fn: IFunction, args: Array<Value>, refines: Dict<String, Array<Value>>) {
-		return switch fn.KIND {
-			case KNative(n): Natives.callNative(n, args, refines);
-			case KAction(a): Actions.callAction(a, args, refines);
-			case KFunction(_) | KOp(_): throw "NYI";
-			default: throw "error!";
-		}
+		return fn._match(
+			at(n is Native) => Natives.callNative(n, args, refines),
+			at(a is Action) => Actions.callAction(a, args, refines),
+			at(_ is Function | _ is Op) => throw "NYI",
+			_ => throw "error!"
+		);
 	}
 }

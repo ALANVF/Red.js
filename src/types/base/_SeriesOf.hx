@@ -106,18 +106,19 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	}
 
 	public function getPath(access: Value, ?ignoreCase = true) {
-		return switch access.KIND {
-			case KInteger(_.int - 1 => i) if(0 <= i): cast this.pick(i);
-			default: None;
-		}
+		return Util._match(access,
+			at((_.int - 1 => i) is Integer, when(0 <= i)) => cast this.pick(i),
+			_ => None
+		);
 	}
 
 	public function setPath(access: Value, newValue: Value, ?ignoreCase = true) {
-		return switch access.KIND {
-			case KInteger(_.int - 1 => i) if(0 <= i): // TODO: somehow typecheck against T
+		return Util._match(access,
+			at((_.int - 1 => i) is Integer, when(0 <= i)) => { // TODO: somehow typecheck against T
 				this.poke(i, cast newValue);
 				true;
-			default: false;
-		}
+			},
+			_ => false
+		);
 	}
 }

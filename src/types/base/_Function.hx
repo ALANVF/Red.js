@@ -1,7 +1,5 @@
 package types.base;
 
-using util.ArrayTools;
-
 import types.base.IFunction;
 import haxe.ds.Option;
 

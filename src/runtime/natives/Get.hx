@@ -56,8 +56,8 @@ class Get {
 	}
 
 	public static function call(word: Value, options: NGetOptions) {
-		return switch word {
-			case _.is(Symbol) => Some(s):
+		return word._match(
+			at(s is Symbol) => {
 				if(options.any && options._case) {
 					if(s.context.contains(s.name, false)) {
 						s.context.get(s.name, false);
@@ -72,19 +72,16 @@ class Get {
 				} else {
 					s.getValue(options.any);
 				}
-
-			case _.is(_Path) => Some(p):
+			},
+			at(p is _Path) => {
 				if(options.any) {
 					tryGetPath(p, options._case).orElse(Unset.UNSET);
 				} else {
 					getPath(p, options._case);
 				}
-			
-			case _.is(Object) => Some(o):
-				new Block(o.ctx.values.copy());
-			
-			default:
-				throw "Invalid type!";
-		}
+			},
+			at(o is Object) => new Block(o.ctx.values.copy()),
+			_ => throw "Invalid type!"
+		);
 	}
 }

@@ -19,10 +19,10 @@ class Actions {
 	];
 
 	static inline function get(kind: TypeKind) {
-		return ACTIONS[kind].notNull();
+		return ACTIONS[kind].nonNull();
 	}
 
-	static inline function getFor(value: Value) return ACTIONS[value.TYPE_KIND].notNull();
+	static inline function getFor(value: Value) return ACTIONS[value.TYPE_KIND].nonNull();
 
 	static function callAction(action: Action, args: Array<Value>, refines: Dict<String, Array<Value>>) {
 		return switch [action.fn, args] {

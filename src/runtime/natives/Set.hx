@@ -15,7 +15,6 @@ import types.Value;
 import types.Word;
 import haxe.ds.Option;
 
-using util.ArrayTools;
 using types.Helpers;
 using Lambda;
 
@@ -40,16 +39,16 @@ class Set {
 	}
 
 	public static function setPath(path: _Path, newValue: Value, ignoreCase = true) {
-		switch _getPathUptoEnd(Do.evalValue(path.pick(0).value()), path.skip(1), ignoreCase) {
-			case {value: _.is(ISetPath) => Some(value), access: access}:
+		_getPathUptoEnd(Do.evalValue(path.pick(0).value()), path.skip(1), ignoreCase)._match(
+			at({value: value is ISetPath, access: access}) => {
 				if(value.setPath(access, newValue, ignoreCase)) {
 					return newValue;
 				} else {
 					throw "error!";
 				}
-			default:
-				throw "error!";
-		}
+			},
+			_ => throw "error!"
+		);
 	}
 
 	static function _setMany(symbols: Iterable<Symbol>, values: Iterable<Value>, any, some) {
@@ -105,13 +104,13 @@ class Set {
 	}
 
 	public static function setMany(symbols: Iterable<Symbol>, value: Value, any, only, some) {
-		switch value {
-			case types.None.NONE if(some): return;
-			case _.is(_Block) => Some(b) if(!only): _setMany(symbols, b, any, some);
-			case _.is(_Path) => Some(p) if(!only): _setMany(symbols, p, any, some);
-			case _.is(Map) => Some(m) if(!only): _setMany(symbols, m.keys.zip(m.values, (k, v) -> [k, v]).flatten(), any, some);
-			default: for(s in symbols) s.setValue(value);
-		}
+		value._match(
+			at(types.None.NONE, when(some)) => return,
+			at(b is _Block, when(!only)) => _setMany(symbols, b, any, some),
+			at(p is _Path, when(!only)) => _setMany(symbols, p, any, some),
+			at(m is Map, when(!only)) => _setMany(symbols, m.keys.zip(m.values, (k, v) -> [k, v]).flatten(), any, some),
+			_ => for(s in symbols) s.setValue(value)
+		);
 	}
 
 	public static function call(word: Value, value: Value, options: NSetOptions) {
@@ -119,13 +118,13 @@ class Set {
 			throw "Expected a value!";
 		}
 
-		switch word {
-			case _.is(Symbol) => Some(s): s.setValue(value);
-			case _.is(_Path) => Some(p): setPath(p, value, options._case);
-			case _.is(Block) => Some(b): setMany([for(s in b) s.as(Symbol)], value, options.any, options.only, options.some);
-			case _.is(Object) => Some(o): setMany(o.ctx.symbols, value, options.any, options.only, options.some);
-			default: throw "Invalid type!";
-		}
+		word._match(
+			at(s is Symbol) => s.setValue(value),
+			at(p is _Path) => setPath(p, value, options._case),
+			at(b is Block) => setMany([for(s in b) cast(s, Symbol)], value, options.any, options.only, options.some),
+			at(o is Object) => setMany(o.ctx.symbols, value, options.any, options.only, options.some),
+			_ => throw "Invalid type!"
+		);
 
 		return value;
 	}

@@ -1,5 +1,7 @@
 package runtime;
 
+import types.Word;
+import types.Block;
 import types.base._NativeOptions;
 import types.base.Options;
 import types.base._Number;
@@ -8,21 +10,21 @@ import types.Native;
 
 class Natives {
 	public static function callNative(native: Native, args: Array<Value>, refines: Dict<String, Array<Value>>) {
-		return switch [native.fn, args, args.map(a -> a.KIND)] {
-			case [NIf(f) | NUnless(f), [cond, _], [_, KBlock(b)]]: f(cond, b);
-			case [NEither(f), [cond, _, _], [_, KBlock(tb), KBlock(fb)]]: f(cond, tb, fb);
-			case [NAny(f) | NAll(f) | NUntil(f) | NForever(f), _, [KBlock(b)]]: f(b);
-			case [NWhile(f), _, [KBlock(cond), KBlock(body)]]: f(cond, body);
-			case [NLoop(f), [Util.tryCast(_, _Number) => Some(n), _], [_, KBlock(b)]]: f(n, b);
-			case [NRepeat(f), [_, Util.tryCast(_, _Number) => Some(n), _], [KWord(w), _, KBlock(b)]]: f(w, n, b);
-			case [NForeach(f) | NRemoveEach(f), [word, series, _], [_, _, KBlock(b)]]: f(word, series, b);
-			case [NForall(f), _, [KWord(word), KBlock(body)]]: f(word, body);
-			case [NDo(f), [v], _]: f(v, Options.fromRefines(NDoOptions, refines));
-			case [NReduce(f), [v], _]: f(v, Options.fromRefines(NReduceOptions, refines));
-			case [NGet(f), [w], _]: f(w, Options.fromRefines(NGetOptions, refines));
-			case [NSet(f), [w, v], _]: f(w, v, Options.fromRefines(NSetOptions, refines));
-			case [NPrint(f) | NPrin(f), [v], _]: f(v);
-			case [NEqual_q(f)
+		return Util._match([native.fn, args],
+			at([NIf(f) | NUnless(f), [cond, b is Block]]) => f(cond, b),
+			at([NEither(f), [cond, tb is Block, fb is Block]]) => f(cond, tb, fb),
+			at([NAny(f) | NAll(f) | NUntil(f) | NForever(f), [b is Block]]) => f(b),
+			at([NWhile(f), [cond is Block, body is Block]]) => f(cond, body),
+			at([NLoop(f), [n is _Number, b is Block]]) => f(n, b),
+			at([NRepeat(f), [w is Word, n is _Number, b is Block]]) => f(w, n, b),
+			at([NForeach(f) | NRemoveEach(f), [word, series, b is Block]]) => f(word, series, b),
+			at([NForall(f), [word is Word, body is Block]]) => f(word, body),
+			at([NDo(f), [v]]) => f(v, Options.fromRefines(NDoOptions, refines)),
+			at([NReduce(f), [v]]) => f(v, Options.fromRefines(NReduceOptions, refines)),
+			at([NGet(f), [w]]) => f(w, Options.fromRefines(NGetOptions, refines)),
+			at([NSet(f), [w, v]]) => f(w, v, Options.fromRefines(NSetOptions, refines)),
+			at([NPrint(f) | NPrin(f), [v]]) => f(v),
+			at([NEqual_q(f)
 				| NNotEqual_q(f)
 				| NStrictEqual_q(f)
 				| NLesser_q(f)
@@ -30,9 +32,9 @@ class Natives {
 				| NLesserOrEqual_q(f)
 				| NGreaterOrEqual_q(f)
 				| NSame_q(f)
-			, [v1, v2], _]: f(v1, v2);
-			case [NTranscode(f), [v], _]: f(v, Options.fromRefines(NTranscodeOptions, refines));
-			default: throw "NYI";
-		}
+			, [v1, v2]]) => f(v1, v2),
+			at([NTranscode(f), [v]]) => f(v, Options.fromRefines(NTranscodeOptions, refines)),
+			_ => throw "NYI"
+		);
 	}
 }

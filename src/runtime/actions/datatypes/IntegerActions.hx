@@ -3,6 +3,10 @@ package runtime.actions.datatypes;
 import types.base.ComparisonOp;
 import types.base.CompareResult;
 import types.Integer;
+import types.Char;
+import types.Money;
+import types.Time;
+import types.Percent;
 import types.Value;
 
 class IntegerActions extends ValueActions {
@@ -11,15 +15,15 @@ class IntegerActions extends ValueActions {
 			return IsMore;
 		}
 		
-		final int = value1.as(Integer).int;
-		final other = switch value2.KIND {
-			case KInteger(i): i.int;
-			case KChar(c): c.code;
-			case KMoney(_): throw "todo!";
-			case KFloat({float: f}) | KPercent({float: f}): f;
-			case KTime(t): t.toFloat();
-			default: return IsInvalid;
-		};
+		final int = cast(value1, Integer).int;
+		final other = value2._match(
+			at(i is Integer) => i.int,
+			at(c is Char) => c.code,
+			at(_ is Money) => throw "todo!",
+			at(f is types.Float | f is Percent) => f.float,
+			at(t is Time) => t.toFloat(),
+			_ => return IsInvalid
+		);
 		
 		return cast js.lib.Math.sign(int - other);
 	}

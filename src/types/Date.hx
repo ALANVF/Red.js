@@ -51,12 +51,12 @@ class Date extends Value implements IGetPath {
 	// isoweek
 
 	public function getPath(access: Value, ?ignoreCase = true) {
-		return (switch access.KIND {
-			case KInteger(_.int => i): Some(Left(i));
-			case KWord(_.name.toLowerCase() => n) if(ignoreCase && ACCESSORS.contains(n)): Some(Right(n));
-			case KWord(_.name => n) if(!ignoreCase && ACCESSORS.contains(n)): Some(Right(n));
-			default: None;
-		}).flatMap(v -> (switch v {
+		return Util._match(access,
+			at({int: i} is Integer) => Some(Left(i)),
+			at((_.name.toLowerCase() => n) is Word, when(ignoreCase && ACCESSORS.contains(n))) => Some(Right(n)),
+			at({name: n} is Word, when(!ignoreCase && ACCESSORS.contains(n))) => Some(Right(n)),
+			_ => None
+		).flatMap(v -> (switch v {
 			case Left(1) | Right("date"): Some(getDate());
 			case Left(2) | Right("year"): Some(new Integer(getYear()));
 			case Left(3) | Right("month"): Some(new Integer(getMonth()));

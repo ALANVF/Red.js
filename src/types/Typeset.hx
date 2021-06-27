@@ -10,15 +10,11 @@ class Typeset extends Value implements IDatatype {
 		this.types = new Set();
 
 		for(type in types) {
-			switch type.KIND {
-				case KDatatype(dt):
-					this.types.add(dt);
-				case KTypeset(ts):
-					for(type_ in ts.types) {
-						this.types.add(type_);
-					}
-				default:
-			}
+			Util._match(type,
+				at(dt is Datatype) => this.types.add(dt),
+				at(ts is Typeset) => for(type_ in ts.types) this.types.add(type_),
+				_ => {}
+			);
 		}
 	}
 

@@ -4,8 +4,6 @@ package runtime;
 import haxe.macro.Type;
 import haxe.macro.Context;
 import haxe.macro.Expr;
-
-using util.ArrayTools;
 //#end
 
 class NativeBuilder {

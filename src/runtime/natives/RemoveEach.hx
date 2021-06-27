@@ -4,21 +4,21 @@ import types.Word;
 import types.Error;
 import types.Block;
 import types.Value;
-import haxe.ds.Option;
 
 @:build(runtime.NativeBuilder.build())
 class RemoveEach {
 	public static function call(word: Value, data: Value, body: Block) {
-		final words = switch word {
-			case _.is(Word) => Some(word): [word];
-			case _.is(Block) => Some(block):
+		final words = word._match(
+			at(word is Word) => [word],
+			at(block is Block) => {
 				if(block.length == 0) {
 					throw "block length must not be zero!";
 				} else {
-					[for(value in block) value.as(Word)];
+					[for(value in block) cast(value, Word)];
 				}
-			default: throw "error!";
-		};
+			},
+			_ => throw "error!"
+		);
 		var series = data.asISeries();
 
 		switch words {

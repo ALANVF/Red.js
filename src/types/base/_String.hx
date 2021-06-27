@@ -8,7 +8,7 @@ abstract class _String extends _SeriesOf<Char> {
 		return [while(str.length > 0) {
 			var code = 0, len = 0;
 			if(str.charCodeAt(0) == "^".code) {
-				switch(str.charCodeAt(1).notNull()) {
+				switch(str.charCodeAt(1).nonNull()) {
 					case c = "\"".code | "^".code: code = c; len = 2;
 					case "\\".code: code = 28; len = 2;
 					case "]".code:  code = 29; len = 2;

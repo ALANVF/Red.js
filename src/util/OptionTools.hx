@@ -2,41 +2,78 @@ package util;
 
 import haxe.ds.Option;
 
+@:publicFields
 class OptionTools {
-	public static inline function fromNull<T>(c: Enum<Option<T>>, value: Null<T>) {
-		return (value == null) ? None : Some(value);
+	static inline function fromNull<T>(t: Enum<Option<T>>, value: Null<T>) {
+		return if(value == null) {
+			None;
+		} else {
+			Some((value : T));
+		}
+	}
+
+	static inline function toNull<T>(opt: Option<T>) {
+		return switch opt {
+			case None: null;
+			case Some(v): v;
+		}
 	}
 	
-	public static inline function isSome<T>(opt: Option<T>) {
-		return opt != None;
-	}
-
-	public static function value<T>(opt: Option<T>) {
+	static inline function value<T>(opt: Option<T>) {
 		return switch opt {
 			case Some(v): v;
-			case None: throw 'Expected a value!';
-		};
+			case None: throw "Value was empty!";
+		}
 	}
 
-	public static function map<T, U>(opt: Option<T>, fn: T -> U) {
+	static inline function map<T, U>(opt: Option<T>, fn: T -> U) {
 		return switch opt {
-			case Some(v): Some(fn(v));
 			case None: None;
-		};
+			case Some(v): Some(fn(v));
+		}
 	}
 
-	public static function flatMap<T, U>(opt: Option<T>, fn: T -> Option<U>) {
+	static inline function flatMap<T, U>(opt: Option<T>, fn: T -> Option<U>) {
+		return switch opt {
+			case None: None;
+			case Some(v): fn(v);
+		}
+	}
+
+	static inline function filter<T>(opt: Option<T>, fn: T -> Bool) {
+		return switch opt {
+			case Some(v) if(fn(v)): Some(v);
+			case _: None;
+		}
+	}
+
+	static inline function every<T>(opt: Option<T>, fn: T -> Bool) {
 		return switch opt {
 			case Some(v): fn(v);
-			case None: None;
-		};
+			case _: false;
+		}
+	}
+	
+	static inline function forEach<T>(opt: Option<T>, fn: T -> Void): Void {
+		switch opt {
+			case Some(v): fn(v);
+			case None:
+		}
 	}
 
-	public static function orElse<T, U/*: T*/, V/*: T*/>(opt: Option<U>, other: V): T {
+	static inline function orElse<T, U: T, V: T>(opt: Option<U>, other: V) {
 		return switch opt {
-			case Some(v): cast v;
-			case None: cast other;
+			case Some(v): v;
+			case None: other;
 		};
+	}
+	
+	static inline function isNone<T>(opt: Option<T>) {
+		return opt.getIndex() == 0;
+	}
+	
+	static inline function isSome<T>(opt: Option<T>) {
+		return opt.getIndex() == 1;
 	}
 
 	public static macro function extractMap<T>(value: ExprOf<Option<T>>, pattern, expr) {

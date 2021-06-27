@@ -97,19 +97,19 @@ class Bitset extends Value implements IGetPath implements ISetPath {
 	}
 
 	public function getPath(access: Value, ?ignoreCase = false): Option<Value> {
-		return switch access.KIND {
-			case KChar(_.code => c) | KInteger(_.int => c) if(0 <= c): Some(Logic.fromCond(this.hasBit(c)));
-			default: None;
-		}
+		return Util._match(access,
+			at((_.code => c) is Char | (_.int => c) is Integer, when(0 <= c)) => Some(Logic.fromCond(this.hasBit(c))),
+			_ => None
+		);
 	}
 
 	public function setPath(access: Value, newValue: Value, ?ignoreCase = false) {
-		return switch [access.KIND, newValue.KIND] {
-			case [KChar(_.code => c) | KInteger(_.int => c), KLogic(_.cond => status)] if(0 <= c):
+		return Util._match([access, newValue],
+			at([(_.code => c) is Char | (_.int => c) is Integer, {cond: status} is Logic], when(0 <= c)) => {
 				this.setBit(c, status);
 				true;
-			default:
-				false;
-		}
+			},
+			_ => false
+		);
 	}
 }

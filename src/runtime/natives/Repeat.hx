@@ -12,11 +12,10 @@ import types.base._Number;
 @:build(runtime.NativeBuilder.build())
 class Repeat {
 	public static function call(word: Word, times: _Number, body: Block) {
-		final n = if(times is _Integer) {
-			cast(times, _Integer).int;
-		} else {
-			Std.int(cast(times, _Float).float);
-		};
+		final n = times._match(
+			at({int: i} is _Integer) => i,
+			at({float: f} is _Float) => Std.int(f)
+		);
 
 		for(i in 0...n) {
 			try {

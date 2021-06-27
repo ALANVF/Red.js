@@ -20,12 +20,12 @@ class Time extends Value implements IGetPath {
 	}
 
 	public function getPath(access: Value, ?ignoreCase = true): Option<Value> {
-		return switch access.KIND {
-			case KInteger(_.int => 1) | KWord(_.equalsString("hour", ignoreCase) => true): Some(new Integer(hours * sign));
-			case KInteger(_.int => 2) | KWord(_.equalsString("minute", ignoreCase) => true): Some(new Integer(minutes));
-			case KInteger(_.int => 3) | KWord(_.equalsString("second", ignoreCase) => true): Some(new types.Float(seconds * sign));
-			default: None;
-		};
+		return Util._match(access,
+			at({int: 1} is Integer | (_.equalsString("hour", ignoreCase) => true) is Word) => Some(new Integer(hours * sign)),
+			at({int: 2} is Integer | (_.equalsString("minute", ignoreCase) => true) is Word) => Some(new Integer(minutes)),
+			at({int: 3} is Integer | (_.equalsString("second", ignoreCase) => true) is Word) => Some(new types.Float(seconds * sign)),
+			_ => None
+		);
 	}
 	
 	public function toFloat() {

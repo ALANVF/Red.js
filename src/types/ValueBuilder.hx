@@ -3,7 +3,6 @@ package types;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
-using util.ArrayTools;
 using Lambda;
 using haxe.macro.ComplexTypeTools;
 using haxe.macro.TypeTools;
@@ -24,24 +23,7 @@ class ValueBuilder {
 
 		var fields = Context.getBuildFields();
 		var name = cls.name;
-		var vname = "K" + name;
 		var dname = "D" + name;
-
-		if(!cls.isAbstract && name != "Context" && fields.every(f -> f.name != "get_KIND")) {
-			fields.push({
-				name: "get_KIND",
-				pos: Context.currentPos(),
-				access: [AOverride],
-				kind: FFun({
-					args: [],
-					ret: TPath({
-						pack: ["types"],
-						name: "ValueKind"
-					}),
-					expr: cls.isAbstract ? null : macro return $p{["ValueKind", vname]}(this)
-				})
-			});
-		}
 
 		if(!cls.isAbstract && name != "Context" && fields.every(f -> f.name != "get_TYPE_KIND")) {
 			fields.push({
