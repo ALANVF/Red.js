@@ -5,7 +5,6 @@ import types.Native;
 import types.Value;
 import types.Issue;
 import types.Word;
-import haxe.ds.Option;
 import Util.ifMatch;
 
 using Lambda;

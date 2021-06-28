@@ -10,7 +10,7 @@ abstract class Value implements IValue {
 	// Can't make get_TYPE_KIND an abstract function due to a macro bug
 	
 	public var TYPE_KIND(get, never): TypeKind;
-	function get_TYPE_KIND(): TypeKind throw new NotImplementedException();
+	@:pure function get_TYPE_KIND(): TypeKind throw new NotImplementedException();
 
 	public function isTruthy() {
 		return true;

@@ -30,6 +30,7 @@ class ValueBuilder {
 				name: "get_TYPE_KIND",
 				pos: Context.currentPos(),
 				access: [AOverride],
+				meta: [{name: ":pure", pos: Context.currentPos()}],
 				kind: FFun({
 					args: [],
 					ret: TPath({

@@ -7,8 +7,6 @@ import types.Action;
 import types.TypeKind;
 import runtime.actions.datatypes.*;
 
-using util.NullTools;
-
 @:publicFields
 class Actions {
 	private static final ACTIONS: Dict<TypeKind, ValueActions> = [

@@ -3,6 +3,8 @@ import types.base.Context;
 
 class Runtime {
 	static function registerDatatypes(ctx: Context) {
+		js.Syntax.code("void 0", runtime.NativeBuilder.dumbFixForDCE());
+		
 		inline function register(name, kind) ctx.add(name, new Datatype(name, kind));
 
 		register("datatype!", DDatatype);

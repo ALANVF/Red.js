@@ -7,9 +7,27 @@ import haxe.macro.Expr;
 //#end
 
 class NativeBuilder {
-//#if macro
-	//public static var natives: Array<{name: String, nativeName: String, call: Function}> = [];
-
+	// I hope that this name is self-explanatory
+	public static macro function dumbFixForDCE() {
+		return macro $a{(
+			haxe.macro.TypeTools.getEnum(
+				haxe.macro.ComplexTypeTools.toType((macro: types.Native.NativeFn))
+			).names.map(name -> {
+				return name.substring(1);
+			}).map(name -> {
+				var path = 'runtime.natives.$name';
+				try {
+					Context.getType(path);
+				} catch(_: String) try {
+					Context.getType(path = 'runtime.natives.Compare.$name');
+				} catch(_: String) {
+					return null;
+				}
+				return path;
+			}).filter(path -> path != null).map(path -> path.split("."))
+		).map(na -> macro $p{na})};
+	}
+	
 	public static macro function build(?nativeName: String): Array<Field> {
 		final cls = switch Context.getLocalType() {
 			case TInst(_.get() => t, _): t;
@@ -39,7 +57,9 @@ class NativeBuilder {
 		};
 
 		final callFn = switch fields.findMap(f -> switch f {
-			case {name: "call", kind: FFun(fn), access: acc} if(acc != null && acc.contains(AStatic)): fn;
+			case {name: "call", kind: FFun(fn), access: acc} if(acc != null && acc.contains(AStatic)):
+				if(!f.meta.some(m -> m.name == ":keep")) f.meta.push({name: ":keep", pos: f.pos});
+				fn;
 			default: null;
 		}) {
 			case null: trace("??? " + cls.name); return null;
@@ -48,7 +68,7 @@ class NativeBuilder {
 
 		final className = cls.name;
 		final enumName = "N" + cls.name;
-
+		
 		final init = macro {
 			runtime.actions.datatypes.NativeActions.MAPPINGS[$v{name}] = types.Native.NativeFn.$enumName(call);
 		};
@@ -62,7 +82,21 @@ class NativeBuilder {
 					args: [],
 					ret: null,
 					expr: init
-				})
+				}),
+				meta: [
+					{
+						name: ":used",
+						pos: Context.currentPos()
+					},
+					{
+						name: ":directlyUsed",
+						pos: Context.currentPos()
+					},
+					{
+						name: ":keep",
+						pos: Context.currentPos()
+					}
+				]
 			});
 		}
 
