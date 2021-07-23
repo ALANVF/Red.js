@@ -6,8 +6,11 @@ import types.base.IValue;
 import haxe.ds.Option;
 import haxe.macro.Expr;
 import haxe.macro.Context;
+import haxe.macro.Type;
 
 using util.ContextTools;
+using haxe.macro.ComplexTypeTools;
+using haxe.macro.TypeTools;
 
 class Helpers {
 	public static macro function as<T: IValue>(value: ExprOf<IValue>, type: ExprOf<Class<T>>): ExprOf<T> {

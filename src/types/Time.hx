@@ -1,34 +1,39 @@
 package types;
 
 import types.base.IGetPath;
+import types.base._Float;
 import haxe.ds.Option;
 
-class Time extends Value implements IGetPath {
-	public var hours: Int;
-	public var minutes: Int;
-	public var seconds: StdTypes.Float;
-	public var signed: Bool;
-
-	public var sign(get, never): Int;
-	inline function get_sign() return signed ? -1 : 1;
-	
-	public function new(hours: Int, minutes: Int, seconds: StdTypes.Float, signed: Bool = false) {
-		this.hours = hours;
-		this.minutes = minutes;
-		this.seconds = seconds;
-		this.signed = signed;
+class Time extends _Float implements IGetPath {
+	public var hours(get, never): Int;
+	inline function get_hours() {
+		return float < 0 ? Math.ceil(float / 3600) : Math.floor(float / 3600);
 	}
-
+	
+	public var minutes(get, never): Int;
+	inline function get_minutes() {
+		return Math.floor(Math.abs(float) / 60);
+	}
+	
+	public var seconds(get, never): Float;
+	inline function get_seconds() {
+		return float % 60;
+	}
+	
+	public static inline function fromHMS(h: Int, m: Int, s: StdTypes.Float) {
+		return new Time(h*3600 + m*60 + s);
+	}
+	
+	function make(value: StdTypes.Float): Time {
+		return new Time(value);
+	}
+	
 	public function getPath(access: Value, ?ignoreCase = true): Option<Value> {
-		return Util._match(access,
-			at({int: 1} is Integer | (_.equalsString("hour", ignoreCase) => true) is Word) => Some(new Integer(hours * sign)),
+		return access._match(
+			at({int: 1} is Integer | (_.equalsString("hour", ignoreCase) => true) is Word) => Some(new Integer(hours)),
 			at({int: 2} is Integer | (_.equalsString("minute", ignoreCase) => true) is Word) => Some(new Integer(minutes)),
-			at({int: 3} is Integer | (_.equalsString("second", ignoreCase) => true) is Word) => Some(new types.Float(seconds * sign)),
+			at({int: 3} is Integer | (_.equalsString("second", ignoreCase) => true) is Word) => Some(new types.Float(seconds)),
 			_ => None
 		);
-	}
-	
-	public function toFloat() {
-		return this.sign * (seconds + minutes*60 + hours*3600);
 	}
 }

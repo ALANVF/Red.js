@@ -9,14 +9,14 @@ import Util.ifMatch;
 
 using Lambda;
 
-class NativeActions extends ValueActions {
-	public static var MAPPINGS: #if macro haxe.ds.Map<String, NativeFn> #else Dict<String, NativeFn> #end;
+class NativeActions extends ValueActions<Native> {
+	static var MAPPINGS: #if macro haxe.ds.Map<String, NativeFn> #else Dict<String, NativeFn> #end;
 
 	static function __init__() {
 		MAPPINGS = [];
 	}
 
-	override public function make(_, spec: Value) {
+	override function make(_, spec: Value) {
 		return Util._match(cast(spec, Block).array(),
 			at([
 				s is Block,

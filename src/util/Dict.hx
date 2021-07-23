@@ -13,6 +13,20 @@ import js.lib.Map as JsMap;
 abstract Dict<K, V>(JsMap<K, V>) {
 	public overload extern inline function new() this = new JsMap();
 	public overload extern inline function new(values: Any) this = new JsMap(values);
+	
+	public static macro function of(map) {
+		switch map {
+			case macro [$a{pairs}]:
+				return macro new Dict(untyped [$a{
+					pairs.map(p -> switch p {
+						case macro $k => $v: macro untyped [$k, $v];
+						default: throw "error!";
+					})
+				}]);
+				
+			default: throw "error!";
+		}
+	}
 
 	@:op([])
 	inline function get(key) {
@@ -137,8 +151,26 @@ import haxe.ds.EnumValueMap;
 
 @:forward(clear)
 abstract Dict<K, V>(Map<K, V>) {
-	public inline function new(?values: Any) {
+	public overload extern inline function new() {
 		throw "Why am I in a macro";
+	}
+	
+	public overload extern inline function new(values: Any) {
+		throw "Why am I in a macro";
+	}
+	
+	public static macro function of(map) {
+		switch map {
+			case macro [$a{pairs}]:
+				return macro new Dict(untyped [$a{
+					pairs.map(p -> switch p {
+						case macro $k => $v: macro untyped [$k, $v];
+						default: throw "error!";
+					})
+				}]);
+				
+			default: throw "error!";
+		}
 	}
 
 	@:op([])

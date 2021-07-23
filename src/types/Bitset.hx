@@ -22,7 +22,7 @@ class Bitset extends Value implements IGetPath implements ISetPath {
 	}
 
 	public static function fromChars(chars: Iterable<Char>, negated: Bool = false) {
-		return _fromOrds(new Set([for(char in chars) char.code]), negated);
+		return _fromOrds(new Set([for(char in chars) char.int]), negated);
 	}
 
 	public static function fromIntegers(integers: Iterable<Integer>, negated: Bool = false) {
@@ -98,14 +98,14 @@ class Bitset extends Value implements IGetPath implements ISetPath {
 
 	public function getPath(access: Value, ?ignoreCase = false): Option<Value> {
 		return Util._match(access,
-			at((_.code => c) is Char | (_.int => c) is Integer, when(0 <= c)) => Some(Logic.fromCond(this.hasBit(c))),
+			at({int: c} is Char | {int: c} is Integer, when(0 <= c)) => Some(Logic.fromCond(this.hasBit(c))),
 			_ => None
 		);
 	}
 
 	public function setPath(access: Value, newValue: Value, ?ignoreCase = false) {
 		return Util._match([access, newValue],
-			at([(_.code => c) is Char | (_.int => c) is Integer, {cond: status} is Logic], when(0 <= c)) => {
+			at([{int: c} is Char | {int: c} is Integer, {cond: status} is Logic], when(0 <= c)) => {
 				this.setBit(c, status);
 				true;
 			},

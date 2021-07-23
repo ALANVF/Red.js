@@ -25,9 +25,26 @@ class Main {
 				],
 				[],
 				None,
-				AMake(runtime.actions.Make.call)
+				runtime.actions.datatypes.ActionActions.MAPPINGS["ACT_MAKE"]
 			)
 		);
+		
+		runtime.Eval.evalCode("
+			absolute: make action! [[
+					value	[number! money! char! pair! time!]
+					return: [number! money! char! pair! time!]
+				]
+				#get-definition ACT_ABSOLUTE
+			]
+			
+			add: make action! [[
+					value1	[scalar! vector!]
+					value2	[scalar! vector!]
+					return: [scalar! vector!]
+				]
+				#get-definition ACT_ADD
+			]
+		");
 
 		runtime.Eval.evalCode("
 			either: make native! [[

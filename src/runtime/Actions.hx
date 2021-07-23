@@ -9,12 +9,12 @@ import runtime.actions.datatypes.*;
 
 @:publicFields
 class Actions {
-	private static final ACTIONS: Dict<TypeKind, ValueActions> = [
+	private static final ACTIONS: Dict<TypeKind, ValueActions<Value>> = Dict.of([
 		DUnset => new UnsetActions(),
 		DNative => new NativeActions(),
 		DAction => new ActionActions(),
-		DInteger => new IntegerActions()
-	];
+		DInteger => new IntegerActions<types.Integer>()
+	]);
 
 	static inline function get(kind: TypeKind) {
 		return ACTIONS[kind].nonNull();
@@ -27,6 +27,9 @@ class Actions {
 			case [AMake(f), [type, spec]]: f(type, spec);
 			// ...
 			case [ACompare(_), _]: throw "this can't be called directly!";
+			// ...
+			case [AAbsolute(f), [v]]: f(v);
+			case [AAdd(f), [v1, v2]]: f(v1, v2);
 			// ...
 			default: throw "NYI";
 		}

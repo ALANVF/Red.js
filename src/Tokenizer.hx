@@ -450,7 +450,7 @@ class Tokenizer {
 		return out;
 	}
 
-	static function tokenToValue(token: Token) {
+	static function tokenToValue(token: Token): types.Value {
 		return switch token {
 			case TWord(word): new types.Word(word);
 			case TGetWord(word): new types.GetWord(word);
@@ -462,7 +462,7 @@ class Tokenizer {
 			case TLitPath(path): new types.LitPath(path.map(tokenToValue));
 			case TInteger(int): new types.Integer(int);
 			case TFloat(float): new types.Float(float);
-			case TPercent(percent): new types.Percent(percent);
+			case TPercent(percent): new types.Percent(percent / 100);
 			case TMoney(_, _): throw 'NYI';
 			case TChar(char): types.Char.fromRed(char);
 			case TString(str): types.String.fromRed(str);
@@ -480,7 +480,7 @@ class Tokenizer {
 			case TTuple(tuple): new types.Tuple(haxe.io.UInt8Array.fromArray(tuple));
 			case TPair(x, y): new types.Pair(x, y);
 			case TDate(_, _, _): throw 'NYI';
-			case TTime(h, m, s): new types.Time(Math.iabs(h), m, s, h < 0);
+			case TTime(h, m, s): types.Time.fromHMS(h, m, s);
 			case TConstruct([TWord("true")]): types.Logic.TRUE;
 			case TConstruct([TWord("false")]): types.Logic.FALSE;
 			case TConstruct([TWord("none" | "none!")]): types.None.NONE;

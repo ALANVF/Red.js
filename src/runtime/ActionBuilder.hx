@@ -6,20 +6,18 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 //#end
 
-class NativeBuilder {
+class ActionBuilder {
 	// I hope that this name is self-explanatory
 	public static macro function dumbFixForDCE() {
 		return macro $a{(
 			haxe.macro.TypeTools.getEnum(
-				haxe.macro.ComplexTypeTools.toType((macro: types.Native.NativeFn))
+				haxe.macro.ComplexTypeTools.toType((macro: types.Action.ActionFn))
 			).names.map(name -> {
 				return name.substring(1);
 			}).map(name -> {
-				var path = 'runtime.natives.$name';
+				var path = 'runtime.actions.$name';
 				try {
 					Context.getType(path);
-				} catch(_: String) try {
-					Context.getType(path = 'runtime.natives.Compare.$name');
 				} catch(_: String) {
 					return null;
 				}
@@ -28,7 +26,7 @@ class NativeBuilder {
 		).map(na -> macro $p{na})};
 	}
 	
-	public static macro function build(?nativeName: String): Array<Field> {
+	public static macro function build(?actionName: String): Array<Field> {
 		final cls = switch Context.getLocalType() {
 			case TInst(_.get() => t, _): t;
 			default: throw "error!";
@@ -42,10 +40,10 @@ class NativeBuilder {
 
 		final fields = Context.getBuildFields();
 
-		final name = if(nativeName != null) {
-			(nativeName : String);
+		final name = if(actionName != null) {
+			(actionName : String);
 		} else {
-			"NAT_" + (
+			"ACT_" + (
 				~/_q$/g.replace(
 					~/([a-z])([A-Z])/g.replace(
 						cls.name,
@@ -67,10 +65,10 @@ class NativeBuilder {
 		};
 
 		final className = cls.name;
-		final enumName = "N" + cls.name;
+		final enumName = "A" + cls.name;
 		
 		final init = macro {
-			runtime.actions.datatypes.NativeActions.MAPPINGS[$v{name}] = types.Native.NativeFn.$enumName(call);
+			runtime.actions.datatypes.ActionActions.MAPPINGS[$v{name}] = types.Action.ActionFn.$enumName(call);
 		};
 
 		if(!fields.some(f -> f.name == "__init__")) {

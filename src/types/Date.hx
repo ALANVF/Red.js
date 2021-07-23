@@ -62,18 +62,18 @@ class Date extends Value implements IGetPath {
 			case Left(3) | Right("month"): Some(new Integer(getMonth()));
 			case Left(4) | Right("day"): Some(new Integer(getDay()));
 			case Left(5) | Right("zone"): Some(zone);
-			case Left(6) | Right("time"): Some(new Time(getHour(), getMinute(), getSecond()));
+			case Left(6) | Right("time"): Some(new Time(date.getTime() / 1000));
 			case Left(7) | Right("hour"): Some(new Integer(getHour()));
 			case Left(8) | Right("minute"): Some(new Integer(getMinute()));
 			case Left(9) | Right("second"): Some({
 				final sec = getSecond();
 				if(sec % 1 == 0) {
-					new Integer(Std.int(sec));
+					new Integer(cast sec);
 				} else {
 					new types.Float(sec);
 				}
 			});
-			case Left(10) | Right("weekday"): throw "NYI!";
+			case Left(10) | Right("weekday"): Some(new Integer(getWeekday()));
 			case Left(11) | Right("yearday" | "julian"): throw "NYI!";
 			case Left(12) | Right("timezone"): throw "NYI!";
 			case Left(13) | Right("week"): throw "NYI!";

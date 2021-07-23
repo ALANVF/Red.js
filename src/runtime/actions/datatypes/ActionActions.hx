@@ -10,14 +10,14 @@ import Util.ifMatch;
 using Lambda;
 using Util;
 
-class ActionActions extends ValueActions {
-	public static var MAPPINGS: #if macro haxe.ds.Map<String, ActionFn> #else Dict<String, ActionFn> #end;
+class ActionActions extends ValueActions<Action> {
+	static var MAPPINGS: #if macro haxe.ds.Map<String, ActionFn> #else Dict<String, ActionFn> #end;
 
 	static function __init__() {
 		MAPPINGS = [];
 	}
 
-	override public function make(_, spec: Value) {
+	override function make(_, spec: Value) {
 		return Util._match(cast(spec, Block).array(),
 			at([
 				s is Block,

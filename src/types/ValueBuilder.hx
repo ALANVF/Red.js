@@ -11,7 +11,7 @@ using haxe.macro.TypeTools;
 class ValueBuilder {
 	public static macro function build(): Array<Field> {
 		var cls = switch Context.getLocalType() {
-			case TInst(_.get() => t, _): t;
+			case TInst(_.get() => t, p): t;
 			default: throw "error!";
 		};
 		

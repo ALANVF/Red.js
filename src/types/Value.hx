@@ -19,4 +19,8 @@ abstract class Value implements IValue {
 	public inline function isA(type: IDatatype) {
 		return type.matchesTypeOfValue(this);
 	}
+	
+	public inline function thisType() {
+		return (untyped this.constructor : Class<Value>);
+	}
 }

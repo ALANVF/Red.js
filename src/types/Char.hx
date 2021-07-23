@@ -1,19 +1,28 @@
 package types;
 
-class Char extends Value {
+import types.base._Integer;
+
+class Char extends _Integer {
 	// Optimization bug here
 	static var chars: Dict<Int, Char>;
+	
+	private static macro function genChars() {
+		final thing = [for(c in 0...256) macro untyped [$v{c}, new Char($v{c})]];
+		return macro $a{thing};
+	}
 
 	static function __init__() {
 		#if !(macro || display)
-		chars = [for(c in 0...256) c => new Char(c)];
+		chars = new Dict(genChars());
 		#end
 	}
 
-	public var code: Int;
-
-	function new(code: Int) {
-		this.code = code;
+	private function new(code: Int) {
+		super(code);
+	}
+	
+	function make(value: Int): Char {
+		return fromCode(value);
 	}
 
 	public static inline function fromCode(code: Int): Char {
@@ -63,7 +72,7 @@ class Char extends Value {
 	}
 
 	public function toRed() {
-		return switch(this.code) {
+		return switch(this.int) {
 			case 34:  "^\"";
 			case 94:  "^^";
 			case 28:  "^\\";
@@ -81,35 +90,35 @@ class Char extends Value {
 			case 30:  "^(1E)";
 
 			default:
-				if(1 <= this.code && this.code <= 26) {
-					"^" + std.String.fromCharCode(this.code + 64);
+				if(1 <= this.int && this.int <= 26) {
+					"^" + std.String.fromCharCode(this.int + 64);
 				} else {
-					std.String.fromCharCode(this.code);
+					std.String.fromCharCode(this.int);
 				}
 		}
 	}
 
 	public function toUpperCase() {
 		return Char.fromCode(
-			if("a".code <= this.code && this.code <= 'z'.code) {
-				this.code - 32;
+			if("a".code <= this.int && this.int <= 'z'.code) {
+				this.int - 32;
 			} else {
-				this.code;
+				this.int;
 			}
 		);
 	}
 
 	public function toLowerCase() {
 		return Char.fromCode(
-			if("A".code <= this.code && this.code <= 'Z'.code) {
-				this.code + 32;
+			if("A".code <= this.int && this.int <= 'Z'.code) {
+				this.int + 32;
 			} else {
-				this.code;
+				this.int;
 			}
 		);
 	}
 
 	public function equalsChar(other: Char) {
-		return (inline this.toUpperCase()).code == (inline other.toUpperCase()).code;
+		return (inline this.toUpperCase()).int == (inline other.toUpperCase()).int;
 	}
 }

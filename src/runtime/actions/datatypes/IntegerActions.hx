@@ -2,6 +2,8 @@ package runtime.actions.datatypes;
 
 import types.base.ComparisonOp;
 import types.base.CompareResult;
+import types.base._Integer;
+import types.base._Float;
 import types.Integer;
 import types.Char;
 import types.Money;
@@ -9,22 +11,45 @@ import types.Time;
 import types.Percent;
 import types.Value;
 
-class IntegerActions extends ValueActions {
-	override public function compare(value1: Value, value2: Value, op: ComparisonOp) {
-		if((op == CFind || op == CStrictEqual) && !(value2 is Integer)) {
+import runtime.actions.datatypes.ValueActions.invalid;
+
+class IntegerActions<This: _Integer> extends ValueActions<This> {
+	private function makeThis(i: Int): This {
+		return untyped new Integer(i);
+	}
+	
+	
+	override function compare(value1: This, value2: Value, op: ComparisonOp) {
+		trace(makeThis(1));
+		if((op == CFind || op == CStrictEqual) && !(value2.thisType() == value1.thisType())) {
 			return IsMore;
 		}
 		
-		final int = cast(value1, Integer).int;
 		final other = value2._match(
-			at(i is Integer) => i.int,
-			at(c is Char) => c.code,
+			at(i is _Integer) => i.int,
 			at(_ is Money) => throw "todo!",
-			at(f is types.Float | f is Percent) => f.float,
-			at(t is Time) => t.toFloat(),
+			at(f is _Float) => f.float,
+			// ...
 			_ => return IsInvalid
 		);
 		
-		return cast js.lib.Math.sign(int - other);
+		return cast js.lib.Math.sign(value1.int - other);
+	}
+	
+	
+	/*-- Scalar actions --*/
+	
+	override function absolute(value: This) {
+		return makeThis(Math.iabs(value.int));
+	}
+	
+	override function add(value1: This, value2: Value) {
+		return value2._match(
+			at(i is _Integer) => makeThis(value1.int + i.int),
+			at(_ is Money) => throw "todo!",
+			at(f is _Float) => f.make(value1.int + f.float),
+			// ...
+			_ => untyped invalid()
+		);
 	}
 }
