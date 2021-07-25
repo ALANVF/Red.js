@@ -4,12 +4,14 @@ import types.base.ComparisonOp;
 import types.base.CompareResult;
 import types.base._Integer;
 import types.base._Float;
+import types.Value;
 import types.Integer;
 import types.Char;
 import types.Money;
 import types.Time;
 import types.Percent;
-import types.Value;
+import types.Pair;
+import types.Tuple;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
@@ -44,10 +46,15 @@ class IntegerActions<This: _Integer> extends ValueActions<This> {
 	}
 	
 	override function add(value1: This, value2: Value) {
+		final int = value1.int;
 		return value2._match(
-			at(i is _Integer) => makeThis(value1.int + i.int),
+			at(i is _Integer) => makeThis(int + i.int),
 			at(_ is Money) => throw "todo!",
-			at(f is _Float) => f.make(value1.int + f.float),
+			at(f is _Float) => f.make(int + f.float),
+			at({x: x, y: y} is Pair) => new Pair(int + x, int + y),
+			at(t is Tuple) => new Tuple(t.values.map(i -> i + int)),
+			// Vector
+			// Date
 			// ...
 			_ => untyped invalid()
 		);

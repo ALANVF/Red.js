@@ -1,10 +1,10 @@
 package tokenizer;
 
 class RegexpChecks {
-	public static final word = ~/^[a-zA-Z_*=&|!?~`^]|(?:\.|[+-]\.?)(?!\d)/;
+	public static final word = ~/^(?:[a-zA-Z_*=&|!?~`^]|(?:\.|[+-]\.?)(?!\d))/;
 	public static final hexa = ~/^([A-F\d]{2,})h/;
 	public static final integer = ~/^[+-]?\d+(?![\.xX]|#\{)/;
-	public static final float = ~/^[+-]?(?:\d*\.\d+(?!\.)|\d+\.)/;
+	public static final float = ~/^[+-]?(?:\d*\.\d+(?![\.\d])|\d+\.(?!\d+\.))/;
 	public static final money = ~/^[+-]?[a-zA-Z]{0,3}\$\d/;
 	public static final string = '"';
 	public static final file = ~/^%(?![\s%:;()\[\]{}])/;
@@ -12,7 +12,7 @@ class RegexpChecks {
 	public static final url = ~/^[a-zA-Z_]+:[^\s]/; // very lazy for now
 	public static final char = '#"';
 	public static final issue = ~/^#(?!["\/()\[\]{}:;@\s])/;
-	public static final specialWord = ~/^<[<=>]|>>>|>[>=]|[%<](?=[\s()\[\]<>:]|$)|>/;
+	public static final specialWord = ~/^(?:<[<=>]|>>>|>[>=]|[%<](?=[\s()\[\]<>:]|$)|>)/;
 	public static final time = ~/^[+-]?\d+:\d/;
 	public static final pair = ~/^[+-]?\d+[xX]/;
 	public static final tuple = ~/^(?:\d+\.){2}/;

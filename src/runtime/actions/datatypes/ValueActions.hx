@@ -48,7 +48,7 @@ class ValueActions<This: Value> {
 	
 	/*-- Series actions --*/
 	function append(series: This, value: Value, options: AAppendOptions): Value invalid();
-	function at(series: This): Value invalid();
+	@:noCompletion function at(series: This): Value invalid();
 	function back(series: This): Value invalid();
 	function change(series: This, value: Value, options: AChangeOptions): Value invalid();
 	function clear(series: This): Value invalid();

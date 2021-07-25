@@ -1,15 +1,24 @@
 package types;
 
-import haxe.io.UInt8Array;
+import haxe.ds.Option;
+import util.UInt8ClampedArray;
+import types.base.IGetPath;
 
-class Tuple extends Value {
-	public final values: UInt8Array;
+class Tuple extends Value implements IGetPath {
+	public var values: UInt8ClampedArray; // TODO: use bitpacked int(s)
 
-	public function new(values: UInt8Array) {
-		if(values.length < 2 || values.length > 12) {
+	public function new(values: UInt8ClampedArray) {
+		if(values.length < 3 || values.length > 12) {
 			throw "Invalid tuple!";
 		} else {
 			this.values = values;
 		}
+	}
+	
+	public function getPath(access:Value, ?_) {
+		return access._match(
+			at({int: i} is Integer, when(1 <= i && i <= values.length)) => Some(cast new Integer(values[i - 1])),
+			_ => None
+		);
 	}
 }

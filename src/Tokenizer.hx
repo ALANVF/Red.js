@@ -139,7 +139,8 @@ class Tokenizer {
 				Token.TInteger(integer);
 			}
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.tuple, Regexps.tuple)) != null) { // match if(match != null)
-			Token.TTuple(match.slice(1).map(Util.mustParseInt));
+			final end = match.indexOf(js.Lib.undefined);
+			Token.TTuple(match.slice(1, end == -1 ? null : end).map(Util.mustParseInt));
 		} else if((match = matchRxWithGuard(rdr, RegexpChecks.char, Regexps.char)) != null) { // [_, char]
 			Token.TChar(match[1]);
 		} else if((match = matchRxWithGuard(rdr, RegexpChecks.string, Regexps.string)) != null) { // [_, string]
@@ -477,7 +478,7 @@ class Tokenizer {
 			case TBlock(block): new types.Block(block.map(tokenToValue));
 			case TParen(paren): new types.Paren(paren.map(tokenToValue));
 			case TMap(map): types.Map.fromPairs([for(i => k in map) if(i % 2 == 0) {k: tokenToValue(k), v: tokenToValue(map[i + 1])}]);
-			case TTuple(tuple): new types.Tuple(haxe.io.UInt8Array.fromArray(tuple));
+			case TTuple(tuple): new types.Tuple(new util.UInt8ClampedArray(tuple));
 			case TPair(x, y): new types.Pair(x, y);
 			case TDate(_, _, _): throw 'NYI';
 			case TTime(h, m, s): types.Time.fromHMS(h, m, s);
