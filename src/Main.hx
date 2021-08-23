@@ -166,6 +166,19 @@ class Main {
 				]
 				#get-definition NAT_SAME?
 			]
+
+			not: make native! [[
+					value [any-type!]
+				]
+				#get-definition NAT_NOT
+			]
+			
+			type?: make native! [[
+					value [any-type!]
+					/word
+				]
+				#get-definition NAT_TYPE?
+			]
 		");
 
 		js.Syntax.code("

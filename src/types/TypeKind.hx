@@ -61,4 +61,18 @@ enum abstract TypeKind(Int) {
 			default: false;
 		}
 	}
+
+	static macro function _maxValue() {
+		switch haxe.macro.Context.typeof(macro DRef) {
+			case TAbstract(_.get() => t, _): {
+				final cases = t.impl.get().statics.get()
+					.filter(s -> s.name.charAt(0) == "D");
+				
+				return macro $p{["types", "TypeKind", cases[cases.length-1].name]};
+					//.reduce((s1, s2) -> s1.pos.max > s2.pos.max ? s1 : s2)
+			}
+			case t: trace(t); throw "bad";
+		}
+	}
+	public static inline function maxValue(): TypeKind return _maxValue();
 }

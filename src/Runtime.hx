@@ -1,12 +1,23 @@
+import types.Word;
+import types.TypeKind;
 import types.Datatype;
 import types.base.Context;
 
+@:publicFields
 class Runtime {
-	static function registerDatatypes(ctx: Context) {
+	static final DATATYPES: Array<util.Tuple2<Word, Datatype>> = [];
+
+	private static function registerDatatypes(ctx: Context) {
 		js.Syntax.code("void 0", runtime.NativeBuilder.dumbFixForDCE());
 		js.Syntax.code("void 0", runtime.ActionBuilder.dumbFixForDCE());
 		
-		inline function register(name, kind) ctx.add(name, new Datatype(name, kind));
+		inline function register(name, kind: TypeKind) {
+			final datatype = new Datatype(name, kind);
+			final word = ctx.add(name, datatype);
+			DATATYPES[cast kind] = new util.Tuple2(word, datatype);
+		}
+
+		DATATYPES.resize(cast TypeKind.maxValue());
 
 		register("datatype!", DDatatype);
 		register("unset!", DUnset);

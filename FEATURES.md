@@ -98,8 +98,8 @@
 | `lesser-or-equal?`  | Y      |
 | `greater-or-equal?` | Y      |
 | `same?`             | Y      |
-| `not`               | N      |
-| `type?`             | N      |
+| `not`               | Y      |
+| `type?`             | Y      |
 | `stats`             | N      |
 | `bind`              | N      |
 | `in`                | N      |

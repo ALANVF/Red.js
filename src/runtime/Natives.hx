@@ -23,8 +23,11 @@ class Natives {
 			at([NReduce(f), [v]]) => f(v, Options.fromRefines(NReduceOptions, refines)),
 			at([NGet(f), [w]]) => f(w, Options.fromRefines(NGetOptions, refines)),
 			at([NSet(f), [w, v]]) => f(w, v, Options.fromRefines(NSetOptions, refines)),
-			at([NPrint(f) | NPrin(f), [v]]) => f(v),
-			at([NEqual_q(f)
+			at([( NPrint((_ : (Value) -> Value) => f)
+				| NPrin(f)
+				| NNot(f)
+			), [v]]) => f(v),
+			at([( NEqual_q(f)
 				| NNotEqual_q(f)
 				| NStrictEqual_q(f)
 				| NLesser_q(f)
@@ -32,7 +35,8 @@ class Natives {
 				| NLesserOrEqual_q(f)
 				| NGreaterOrEqual_q(f)
 				| NSame_q(f)
-			, [v1, v2]]) => f(v1, v2),
+			), [v1, v2]]) => f(v1, v2),
+			at([NType_q(f), [v]]) => f(v, Options.fromRefines(NType_qOptions, refines)),
 			at([NTranscode(f), [v]]) => f(v, Options.fromRefines(NTranscodeOptions, refines)),
 			_ => throw "NYI"
 		);
