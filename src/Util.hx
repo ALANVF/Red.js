@@ -112,8 +112,39 @@ class Util {
 			}
 		};
 	}
+
+	@:noUsing
+	static macro function deepIf(stmt) {
+		var cond;
+		function deepCopyF(expr: Expr) return switch expr {
+			case macro @if ($_cond ? $then : $_else):
+				cond = _cond;
+				_else;
+			case macro @if($_cond) $then:
+				cond = _cond;
+				macro {};
+			case macro @unless($_cond) $then:
+				cond = _cond;
+				then;
+			default: ExprTools.map(expr, deepCopyF);
+		}
+		function deepCopyT(expr: Expr) return switch expr {
+			case macro @if ($_cond ? $then : $_else):
+				then;
+			case macro @if($_cond) $then:
+				then;
+			case macro @unless($_cond) $then:
+				macro {};
+			default: ExprTools.map(expr, deepCopyT);
+		}
+
+		final thenStmt = deepCopyT(stmt);
+		final elseStmt = deepCopyF(stmt);
+
+		return if(cond == null) thenStmt else macro if($cond) $thenStmt else $elseStmt;
+	}
 	
-	/*=== FROM STAR UTIL ===*/
+	/*=== FROM STAR UTIL (mostly) ===*/
 	
 	static inline function nonNull<T>(value: Null<T>): T {
 		if(value != null)
@@ -129,6 +160,13 @@ class Util {
 	static function removeDisp(expr: Expr): Expr return switch expr {
 		case {expr: EDisplay(expr2, k)}: removeDisp(expr2);
 		default: ExprTools.map(expr, removeDisp);
+	}
+
+	@:noUsing
+	public static function unify(ct1: ComplexType, ct2: ComplexType) {
+		final t = Context.typeof(macro ([(null : $ct1), (null : $ct2)])[0]);
+		final ct = Context.toComplexType(t).nonNull();
+		return ct;
 	}
 	#end
 	
@@ -196,11 +234,11 @@ class Util {
 						
 						case macro ($l => $r):
 							if(!didChange) didChange = true;
-							macro (_ is $itype ? _ : null) => {a: _ != null, b: _} => {a: true, b: Util._unsafeNonNull(_) => (cast(_, $dtype) : $type) => $l => ${collect(r)}};
+							macro (_ is $itype ? _ : null) => {a: _ != null, b: _} => {a: true, b: Util._unsafeNonNull(_) => ((untyped _ : $dtype) : $type) => $l => ${collect(r)}};
 						
 						default:
 							if(!didChange) didChange = true;
-							macro (_ is $itype ? (cast(_, $dtype) : $type) : null) => $lhs;
+							macro (_ is $itype ? ((untyped _ : $dtype) : $type) : null) => $lhs;
 					}
 				
 				case macro ${{expr: EIs(_, _)}} => ${_}: e;
@@ -283,7 +321,8 @@ class Util {
 							} else {
 								final vt = _unsafeNonNull(v.t).t;
 								final vd = _unsafeNonNull(v.t).d;
-								macro (cast cast($i{v.a}, $vd) : $vt);
+								//macro (cast cast($i{v.a}, $vd) : $vt);
+								macro (untyped (untyped $i{v.a} : $vd) : $vt);
 							}
 						});
 						
@@ -291,7 +330,8 @@ class Util {
 							if(v.t == null) {
 								Context.error("NYI", Context.currentPos());
 							} else switch v2.expr {
-								case macro (cast cast($ve, $cd2) : $ct2):
+								//case macro (cast cast($ve, $cd2) : $ct2):
+								case macro (untyped (untyped $ve : $cd2) : $ct2):
 									final ct1 = _unsafeNonNull(v.t).t;
 									final t = Context.typeof(macro [(null : $ct1), (null : $ct2)][0]);
 									final ct = Context.toComplexType(t).nonNull();
@@ -299,7 +339,8 @@ class Util {
 									final d = Context.typeof(macro [(null : $cd1), (null : $cd2)][0]);
 									final cd = Context.toComplexType(t).nonNull();
 									
-									v2.expr = macro (cast cast($ve, $ct) : $cd);
+									//v2.expr = macro (cast cast($ve, $ct) : $cd);
+									v2.expr = macro (untyped (untyped $ve : $ct) : $cd);
 									
 								default: Context.error("error!", Context.currentPos());
 							}

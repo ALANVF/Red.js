@@ -45,6 +45,23 @@ abstract class Symbol extends Value {
 		return this;
 	}
 
+	public function boundToContext(ctx: Context) {
+		if(this.context == ctx) {
+			return this;
+		} else {
+			final value = this.getValue(true);
+			switch ctx.offsetOf(this.name) {
+				case -1:
+					// should this fail?
+					final sym = ctx.addSymbol(this, true);
+					ctx.setSymbol(sym, value);
+					return sym;
+				case offset:
+					return ctx.getOffsetSymbol(offset);
+			}
+		}
+	}
+
 	public function getValue(?optional: Bool = false) {
 		switch this.context.getSymbol(this) {
 			case Unset.UNSET if(!optional):

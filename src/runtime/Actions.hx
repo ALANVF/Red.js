@@ -1,5 +1,7 @@
 package runtime;
 
+import types.base.Options;
+import types.base._ActionOptions;
 import types.base.ComparisonOp;
 import types.Value;
 import types.Logic;
@@ -9,12 +11,12 @@ import runtime.actions.datatypes.*;
 
 @:publicFields
 class Actions {
-	private static final ACTIONS: Dict<TypeKind, ValueActions<Value>> = Dict.of([
+	private static final ACTIONS = Dict.of(([
 		DUnset => new UnsetActions(),
 		DNative => new NativeActions(),
 		DAction => new ActionActions(),
 		DInteger => new IntegerActions<types.Integer>()
-	]);
+	] : Dict<TypeKind, ValueActions<Value>>));
 
 	static inline function get(kind: TypeKind) {
 		return ACTIONS[kind].nonNull();
@@ -30,6 +32,8 @@ class Actions {
 			// ...
 			case [AAbsolute(f), [v]]: f(v);
 			case [AAdd(f), [v1, v2]]: f(v1, v2);
+			// ...
+			case [ACopy(f), [v]]: f(v, Options.fromRefines(ACopyOptions, refines));
 			// ...
 			default: throw "NYI";
 		}

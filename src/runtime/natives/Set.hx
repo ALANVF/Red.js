@@ -18,6 +18,7 @@ import haxe.ds.Option;
 using types.Helpers;
 using Lambda;
 
+@:build(runtime.NativeBuilder.build())
 class Set {
 	public static final defaultOptions = Options.defaultFor(NSetOptions);
 

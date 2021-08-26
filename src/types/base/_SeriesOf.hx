@@ -31,12 +31,20 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		}
 	}
 
+	public inline function fastPick(index: Int) {
+		return this.values[this.index + index];
+	}
+
 	public function poke(index: Int, value: T) {
 		if(index >= this.length) {
 			throw "out of bounds!";
 		} else {
 			return this.values[this.index + index] = value;
 		}
+	}
+
+	public inline function fastPoke(index: Int, value: T) {
+		return this.values[this.index + index] = value;
 	}
 	
 	public function remove() {

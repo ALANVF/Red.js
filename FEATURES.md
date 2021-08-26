@@ -81,8 +81,8 @@
 | `function`          | N      |
 | `does`              | N      |
 | `has`               | N      |
-| `switch`            | N      |
-| `case`              | N      |
+| `switch`            | Y      |
+| `case`              | Y      |
 | `do`                | P      |
 | `reduce`            | P      |
 | `compose`           | N      |
@@ -101,8 +101,8 @@
 | `not`               | Y      |
 | `type?`             | Y      |
 | `stats`             | N      |
-| `bind`              | N      |
-| `in`                | N      |
+| `bind`              | Y      |
+| `in`                | Y      |
 | `parse`             | N      |
 | `union`             | N      |
 | `unique`            | N      |

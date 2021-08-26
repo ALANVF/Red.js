@@ -149,6 +149,9 @@ import haxe.ds.StringMap;
 import haxe.ds.ObjectMap;
 import haxe.ds.EnumValueMap;
 
+import haxe.macro.Context;
+import haxe.macro.Expr.ComplexType;
+
 @:forward(clear)
 abstract Dict<K, V>(Map<K, V>) {
 	public overload extern inline function new() {
@@ -162,12 +165,27 @@ abstract Dict<K, V>(Map<K, V>) {
 	public static macro function of(map) {
 		switch map {
 			case macro [$a{pairs}]:
-				return macro new Dict(untyped [$a{
+				final mapT = Context.toComplexType(Context.typeof(map));
+				var keyT: ComplexType;
+				var valT: ComplexType;
+				switch mapT {
+					case TPath({params: [TPType(k), TPType(v)]}): keyT = k; valT = v;
+					default: throw "error!";
+				}
+				return macro (untyped new js.lib.Map(untyped [$a{
 					pairs.map(p -> switch p {
 						case macro $k => $v: macro untyped [$k, $v];
 						default: throw "error!";
 					})
-				}]);
+				}]) : Dict<$keyT, $valT>);
+			
+			case macro ([$a{pairs}] : $t):
+				return macro (untyped new js.lib.Map(untyped [$a{
+					pairs.map(p -> switch p {
+						case macro $k => $v: macro untyped [$k, $v];
+						default: throw "error!";
+					})
+				}]) : $t);
 				
 			default: throw "error!";
 		}

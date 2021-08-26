@@ -1,5 +1,6 @@
 // testing things
 
+import types.Object;
 import Tokenizer;
 
 class Main {
@@ -12,8 +13,8 @@ class Main {
 		for(token in tokens) trace(Util.pretty(token));*/
 		
 		//trace(Do.call(types.String.fromRed("123 [456 #abc] \"banana\""), Do.defaultOptions));
-
-		@:privateAccess Runtime.registerDatatypes(types.base.Context.GLOBAL);
+		
+		@:privateAccess Runtime.registerDatatypes();
 
 		types.base.Context.GLOBAL.add(
 			"make",
@@ -85,6 +86,22 @@ class Main {
 				]
 				#get-definition NAT_REMOVE_EACH
 			]
+
+			switch: make native! [[
+					value [any-type!]
+					cases [block!]
+					/default
+						case [block!]
+				]
+				#get-definition NAT_SWITCH
+			]
+			
+			case: make native! [[
+					cases [block!]
+					/all
+				]
+				#get-definition NAT_CASE
+			]
 			
 			do: make native! [[
 					value [any-type!]
@@ -105,6 +122,26 @@ class Main {
 				#get-definition NAT_REDUCE
 			]
 
+			get: make native! [[
+					word	[any-word! any-path! object!]
+					/any
+					/case
+					return: [any-type!]
+				] 
+				#get-definition NAT_GET
+			]
+			
+			set: make native! [[
+					word	[any-word! block! object! any-path!]
+					value	[any-type!]
+					/any
+					/case
+					/only
+					/some
+					return: [any-type!]
+				]
+				#get-definition NAT_SET
+			]
 			print: make native! [[
 					value [any-type!]
 				]
@@ -179,8 +216,26 @@ class Main {
 				]
 				#get-definition NAT_TYPE?
 			]
-		");
 
+			;stats
+
+			bind: make native! [[
+					word 	[block! any-word!]
+					context [any-word! any-object! function!]
+					/copy
+					return: [block! any-word!]
+				]
+				#get-definition NAT_BIND
+			]
+			
+			in: make native! [[
+					object [any-object!]
+					word   [any-word!]
+				]
+				#get-definition NAT_IN
+			]
+		");
+		
 		js.Syntax.code("
 var readline = require('readline');
 var io = readline.createInterface({

@@ -52,7 +52,7 @@ enum NativeFn {
 	NCompose(fn: (value: Block, options: NComposeOptions) -> Value);
 	NStats(fn: (options: NStatsOptions) -> Value);
 	NBind(fn: (word: Value, context: Value, options: NBindOptions) -> Value);
-	NIn(fn: (object: /*any-object!*/Object, word: Symbol) -> Value);
+	NIn(fn: (object: Object, word: Symbol) -> Value);
 	NParse(fn: (input: Value, rules: Block, options: NParseOptions) -> Value);
 	NUnion(fn: SetOpFn);
 	NIntersect(fn: SetOpFn);

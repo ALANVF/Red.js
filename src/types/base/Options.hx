@@ -68,7 +68,14 @@ class Options {
 															macro args[$v{i}];
 														} else {
 															macro {
-																if(Std.isOfType(args[$v{i}], $p{f.type.toString().split(".")})) {
+																//if(Std.isOfType(args[$v{i}], $p{f.type.toString().split(".")})) {
+																if(${{
+																	expr: EIs(
+																		(macro args[$v{i}]),
+																		f.type.toComplexType()
+																	),
+																	pos: Context.currentPos()
+																}}) {
 																	cast(args[$v{i}], $cft);
 																} else {
 																	throw "type error!";

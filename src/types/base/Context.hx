@@ -24,6 +24,14 @@ class Context extends Value {
 		}
 	}
 
+	public function offsetOfSymbol(sym: Symbol, ignoreCase: Bool = true) {
+		if(sym.context == this) {
+			return sym.offset;
+		} else {
+			return this.symbols.map(w -> w.equalsString(sym.name, ignoreCase)).indexOf(true);
+		}
+	}
+
 	public function get(word: std.String, ignoreCase: Bool = true) {
 		switch this.offsetOf(word, ignoreCase) {
 			case -1:
@@ -39,6 +47,14 @@ class Context extends Value {
 		} else {
 			throw 'Word `${sym.name}` doesn\'t exist!';
 		}
+	}
+
+	public inline function getOffset(offset: Int) {
+		return this.values[offset];
+	}
+
+	public inline function getOffsetSymbol(offset: Int) {
+		return this.symbols[offset];
 	}
 
 	public function set(word: std.String, value: Value, ignoreCase: Bool = true) {
@@ -58,6 +74,10 @@ class Context extends Value {
 		} else {
 			throw 'Word `${sym.name}` doesn\'t exist!';
 		}
+	}
+
+	public inline function setOffset(offset: Int, value: Value) {
+		return this.values[offset] = value;
 	}
 	
 	public function add(word: std.String, value: Value, ignoreCase: Bool = true) {

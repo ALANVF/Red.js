@@ -49,7 +49,7 @@ class Do {
 	static function _doesBecomeFunction(value: Value, values: Iterator<Value>):Option<{fn: IFunction, rest: Array<Value>}> {
 		return value._match(
 			at(fn is IFunction) => Some({fn: fn, rest: [for(v in values) v]}),
-			at(g is IGetPath, when(values.hasNext())) => g.getPath(values.next()).flatMap(_doesBecomeFunction.bind(_, values)),
+			at(g is IGetPath, when(values.hasNext())) => g.getPath(values.next()).flatMap(v -> _doesBecomeFunction(v, values)),
 			_ => None
 		);
 	}

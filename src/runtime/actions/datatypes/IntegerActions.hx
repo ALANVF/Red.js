@@ -22,7 +22,6 @@ class IntegerActions<This: _Integer> extends ValueActions<This> {
 	
 	
 	override function compare(value1: This, value2: Value, op: ComparisonOp) {
-		trace(makeThis(1));
 		if((op == CFind || op == CStrictEqual) && !(value2.thisType() == value1.thisType())) {
 			return IsMore;
 		}
