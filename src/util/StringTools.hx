@@ -1,7 +1,7 @@
 package util;
 
 class StringTools {
-	public static function fromCharCodes(c: Class<String>, chars: Array<Int>) {
+	public static #if js inline #end function fromCharCodes(c: Class<String>, chars: Array<Int>) {
 		#if js
 			return js.Syntax.code("String.fromCharCode(...{0})", chars);
 		#else

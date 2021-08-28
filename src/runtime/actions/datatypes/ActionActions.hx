@@ -18,11 +18,11 @@ class ActionActions extends ValueActions<Action> {
 	}
 
 	override function make(_, spec: Value) {
-		return Util._match(cast(spec, Block).array(),
+		return Util._match(cast(spec, Block).values,
 			at([
 				s is Block,
 				{name: "get-definition"} is Issue,
-				{name: name} is Word,
+				{name: name} is Word
 			]) => ifMatch(runtime.natives.Func.parseSpec(s), {doc: doc, args: args, refines: refines, ret: ret},
 				new Action(
 					doc,

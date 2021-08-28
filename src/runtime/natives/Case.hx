@@ -9,44 +9,38 @@ class Case {
 	public static final defaultOptions = Options.defaultFor(NCaseOptions);
 
 	public static function call(cases: Block, options: NCaseOptions): Value {
-		final len = cases.length;
 		final all = options.all;
 		var res: Value = None.NONE;
+		var tokens: Series<Value> = cases;
 
-		var i = 0;
 		Util.deepIf({
-			while(i < len) {
-				final r = Do.doNextValue(cases);
+			@if(all) var trueAtLeastOnce = false;
 
-				i += r.offset;
-				
-				if(r.value.isTruthy()) {
-					if(i >= len) {
-						return @if (all ? r.value : None.NONE);
-					} else {
-						cases = cases.skip(r.offset);
+			while(tokens.isNotTail()) {
+				Util.set([@var cond, tokens], Do.doNextValue(tokens));
+
+				if(cond.isTruthy()) {
+					if(tokens.isTail()) {
+						return @if (all ? (trueAtLeastOnce ? cond : None.NONE) : None.NONE);
 					}
 					
-					res = cases.fastPick(0)._match(
+					res = tokens[0]._match(
 						at(b is Block) => {
-							i++;
-							cases = cases.skip(1);
+							tokens++;
 							Do.evalValues(b);
 						},
 						_ => {
-							final r2 = Do.doNextValue(cases);
-							i += r2.offset;
-							cases = cases.skip(r2.offset);
-							r2.value;
+							Util.set([@var value, tokens], Do.doNextValue(tokens));
+							value;
 						}
 					);
+					@if(all) if(!trueAtLeastOnce) trueAtLeastOnce = true;
 					@unless(all) return res;
 				} else {
-					if(i >= len) {
+					if(tokens.isTail()) {
 						return @if (all ? res : None.NONE);
 					} else {
-						i++;
-						cases = cases.skip(r.offset + 1);
+						tokens++;
 					}
 				}
 			}

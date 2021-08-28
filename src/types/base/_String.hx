@@ -1,28 +1,59 @@
 package types.base;
 
 using StringTools;
-using util.NullTools;
+
+macro function inlineMap(kIdent, vIdent, mapExpr, body) {
+	final kName = switch kIdent { case macro $i{n}: n; default: throw "error!"; };
+	final vName = switch vIdent { case macro $i{n}: n; default: throw "error!"; };
+	final map = switch mapExpr { case macro [$a{m}]: m; default: throw "error!"; };
+
+	function mapBody(k, kv, v, vv, e: haxe.macro.Expr) return switch e {
+		case macro $i{name} if(name == k): macro $kv;
+		case macro $i{name} if(name == v): macro $vv;
+		default: haxe.macro.ExprTools.map(e, mapBody.bind(k, kv, v, vv, _));
+	}
+
+	function mapCases(pairs: Array<haxe.macro.Expr>) {
+		return if(pairs.length == 0) {
+			macro {};
+		} else switch pairs[0] {
+			case macro $k => $v:
+				final b = mapBody(kName, k, vName, v, body);
+				if(pairs.length == 1) {
+					macro if(nstr.startsWith($k)) $b;
+				} else {
+					macro if(nstr.startsWith($k)) $b else ${mapCases(pairs.slice(1))};
+				}
+
+			default: haxe.macro.Context.error("error!", pairs[0].pos);
+		}
+	}
+
+	return mapCases(map);
+}
 
 abstract class _String extends _SeriesOf<Char> {
 	public static function charsFromRed(str: std.String) {
 		return [while(str.length > 0) {
 			var code = 0, len = 0;
 			if(str.charCodeAt(0) == "^".code) {
-				switch(str.charCodeAt(1).nonNull()) {
-					case c = "\"".code | "^".code: code = c; len = 2;
-					case "\\".code: code = 28; len = 2;
-					case "]".code:  code = 29; len = 2;
-					case "_".code:  code = 31; len = 2;
+				Util._match(str.charCodeAt(1).nonNull(),
+					at(c = ("\"".code | "^".code)) => {code = c; len = 2;},
+					at("\\".code) => {code = 28; len = 2;},
+					at("]".code) => {code = 29; len = 2;},
+					at("_".code) => {code = 31; len = 2;},
 
-					case "@".code: code = 0; len = 2;
-					case "-".code: code = 9; len = 2;
-					case "/".code: code = 10; len = 2;
-					case "[".code: code = 27; len = 2;
-					case "~".code: code = 127; len = 2;
+					at("@".code) => {code = 0; len = 2;},
+					at("-".code) => {code = 9; len = 2;},
+					at("/".code) => {code = 10; len = 2;},
+					at("[".code) => {code = 27; len = 2;},
+					at("~".code) => {code = 127; len = 2;},
 
-					case "(".code:
+					at("(".code) => {
 						final nstr = str.substr(2).toUpperCase();
-						final mappings = [
+						var res = null;
+
+						inlineMap(k, v, [
 							"NULL)" => 0,
 							"BACK)" => 8,
 							"TAB)" => 9,
@@ -30,16 +61,10 @@ abstract class _String extends _SeriesOf<Char> {
 							"PAGE)" => 12,
 							"ESC)" => 27,
 							"DEL)" => 127
-						];
-						
-						var res = null;
-						
-						for(k => v in mappings) {
-							if(nstr.startsWith(k)) {
-								res = code = v; len = 2 + k.length;
-								break;
-							}
-						}
+						], {
+							res = code = v;
+							len = 2 + k.length;
+						});
 
 						if(res != null) {
 							res;
@@ -51,16 +76,13 @@ abstract class _String extends _SeriesOf<Char> {
 								throw 'Invalid string! escape "^${str.charAt(1)}"!';
 							}
 						}
+					},
 
-					case esc:
-						if("A".code <= esc && esc <= "Z".code) {
-							code = esc - 64; len = 2;
-						} else if("a".code <= esc && esc <= "z".code) {
-							code = esc - 32 - 64; len = 2;
-						} else {
-							throw 'Invalid string! escape "^${str.charAt(1)}"!';
-						}
-				}
+					at(esc = ("A".code ... "Z".code)) => {code = esc - 64; len = 2;},
+					at(esc = ("a".code ... "z".code)) => {code = esc - 32 - 64; len = 2;},
+
+					_ => throw 'Invalid string! escape "^${str.charAt(1)}"!'
+				);
 			} else {
 				code = str.charCodeAt(0); len = 1;
 			};

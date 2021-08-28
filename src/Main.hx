@@ -1,8 +1,3 @@
-// testing things
-
-import types.Object;
-import Tokenizer;
-
 class Main {
 	static function main() {
 		/*for(token in Tokenizer.tokenize(Util.readFile("./parse-tests/test1.red"))) trace(Std.string(token));
@@ -237,22 +232,22 @@ class Main {
 		");
 		
 		js.Syntax.code("
-var readline = require('readline');
-var io = readline.createInterface({
+const readline = require('readline');
+const io = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout,
 	prompt: '> '
 });
 io.prompt(true);
-io.on('line', function(input) {
+io.on('line', (input) => {
 	if(input === 'quit') {
 		io.close();
 		return;
 	} else {
 		({0})(input);
+		console.log();
+		io.prompt(true);
 	}
-	console.log();
-	io.prompt(true);
 });",
 			(input: String) -> {
 				try {

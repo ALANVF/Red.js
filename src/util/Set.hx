@@ -1,7 +1,5 @@
 package util;
 
-using util.NullTools;
-
 private typedef _SetRepr<T> =
 	#if js
 		js.lib.Set<T>
@@ -13,118 +11,114 @@ private typedef _SetRepr<T> =
 		Array<T>
 	#end;
 
-private class _Set<T> {
-	var repr: _SetRepr<T>;
-	public var length(get, default): Int;
+private abstract _Set<T>(_SetRepr<T>) {
+	public var length(get, never): Int;
 	
-	function new(?repr: _SetRepr<T>) {if(repr != null) this.repr = repr;}
+	inline function new(?repr: _SetRepr<T>) this = Util._or(repr, new _SetRepr<T>());
 
-	function init(values: Iterable<T>) {
+	static inline function init<T>(values: Iterable<T>) {
 		#if (js || python)
-			this.repr = new _SetRepr<T>(values);
+			return new _Set<T>(new _SetRepr<T>(values));
 		#elseif (neko || hl)
-			this.repr = [for(val in values) val => true];
+			return new _Set<T>([for(val in values) val => true]);
 		#else
-			this.repr = [for(val in values) val]; // FIX: this allows repeated values
+			return new _Set<T>([for(val in values) val]); // FIX: this allows repeated values
 		#end
-
-		return this;
 	}
 
 	#if !(neko || hl) inline #end
 	function get_length() {
 		return #if js
-			this.repr.size;
+			this.size;
 		#elseif neko
-			untyped __dollar__hcount(@:privateAccess (cast this.repr : haxe.ds.ObjectMap<{}, Bool>).h);
+			untyped __dollar__hcount(@:privateAccess (cast this : haxe.ds.ObjectMap<{}, Bool>).h);
 		#elseif hl
 			/*if(this.repr is haxe.ds.ObjectMap<T, Bool>) {
 				return @:privateAccess (cast this.repr : haxe.ds.ObjectMap<{}, Bool>).h.valuesArray().length;
 			}*/
-			@:privateAccess (cast this.repr.iterator() : hl.NativeArray.NativeArrayIterator<Bool>).length;
+			@:privateAccess (cast this.iterator() : hl.NativeArray.NativeArrayIterator<Bool>).length;
 		#else
-			this.repr.length;
+			this.length;
 		#end
 	}
 
-	public function add(value: T) {
+	public inline function add(value: T) {
 		#if (js || python)
-			this.repr.add(value);
+			this.add(value);
 		#elseif (neko || hl)
-			this.repr[value] = true;
+			this[value] = true;
 		#else
-			if(!this.repr.contains(value)) {
-				this.repr.push(value);
+			if(!this.contains(value)) {
+				this.push(value);
 			}
 		#end
 
-		return this;
+		return (cast this : _Set<T>);
 	}
 
 	public inline function has(value: T) {
 		return #if (js || python)
-			this.repr.has(value);
+			this.has(value);
 		#elseif (neko || hl)
-			this.repr.exists(value);
+			this.exists(value);
 		#else
-			this.repr.contains(value);
+			this.contains(value);
 		#end
 	}
 
 	public inline function remove(value: T) {
 		return #if js
-			this.repr.delete(value);
+			this.delete(value);
 		#elseif (neko || hl)
-			this.repr.remove(value);
+			this.remove(value);
 		#else
 			throw "todo!";
 		#end
 	}
 
 	public function filter(cond: T -> Bool) {
-		return new _Set<T>().init(
+		return _Set.init(
 			#if (js || python)
-				[for(v in this.repr) if(cond(v)) v]
+				[for(v in this) if(cond(v)) v]
 			#elseif (neko || hl)
-				[for(k in this.repr.keys()) if(cond(k)) k]
+				[for(k in this.keys()) if(cond(k)) k]
 			#else
-				this.repr.filter(cond)
+				this.filter(cond)
 			#end
 		);
 	}
 
 	public function map<U>(fn: T -> U) {
-		return new _Set<U>().init([for(v in this.iterator()) fn(v)]);
+		return _Set.init([for(v in iterator()) fn(v)]);
 	}
 
 	public inline function iterator(): Iterator<T> {
 		return #if (neko || hl)
-			this.repr.keys();
+			this.keys();
 		#else
-			this.repr.iterator();
+			this.iterator();
 		#end
 	}
 
 	// ...
 
-	public function copy() {
+	public inline function copy() {
 		return new _Set<T>(
 			#if js
-				new _SetRepr<T>(this.repr)
+				new _SetRepr<T>(this)
 			#else
-				this.repr.copy()
+				this.copy()
 			#end
 		);
 	}
 }
 
-abstract Set<T>(_Set<T>) from _Set<T> to Iterable<T> {
+abstract Set<T>(_Set<T>) from _Set<T> {
 	public var length(get, never): Int;
 	inline function get_length() return this.length;
 
-	public function new(?values: Iterable<T>) {
-		@:privateAccess
-		this = new _Set<T>().init((values == null) ? [] : values);
+	public inline function new(?values: Iterable<T>) {
+		this = @:privateAccess inline _Set.init((values == null) ? [] : values);
 	}
 
 	@:op([])

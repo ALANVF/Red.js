@@ -102,6 +102,15 @@ class Util {
 			}
 		};
 	}
+	
+	@:noUsing
+	static macro function get(value, pattern, expr) {
+		return macro {
+			switch($value) {
+				case $pattern: $expr;
+			}
+		}
+	}
 
 	@:noUsing
 	static macro function extract(value, pattern, expr) {
@@ -111,6 +120,66 @@ class Util {
 				default: throw "Match error!";
 			}
 		};
+	}
+
+	@:noUsing
+	static macro function set(lhs, rhs) {
+		final rhsT = Context.follow(Context.typeof(rhs));
+		switch rhsT {
+			case TAbstract(_.get() => {pack: ["util"], name: "Tuple2"}, [ta, tb]):
+				final cta = Context.toComplexType(ta);
+				final ctb = Context.toComplexType(tb);
+
+				switch lhs {
+					case macro @var [${a = macro $i{ia}}, ${b = macro $i{ib}}]:
+						return macro @:mergeBlock {
+							js.Syntax.code("/*");
+							var
+								$ia: $cta = js.Syntax.code(""),
+								$ib: $ctb = js.Syntax.code("");
+							js.Syntax.code("*/ //");
+							//js.Syntax.code('let [$ia, $ib] = {0}', $rhs);
+							js.Syntax.code('let [{0}, {1}] = {2}', $a, $b, $rhs);
+						};
+
+					case macro [$a, $b]:
+						final stmts = [];
+						
+						switch a {
+							case macro @var ${ea = macro $i{ia}}:
+								a = ea;
+								stmts.push(macro var $ia: $cta);
+								stmts.push(macro {
+									js.Syntax.code("/*");
+									$a = js.Syntax.code("*/ //");
+								});
+							default:
+						}
+						
+						switch b {
+							case macro @var ${eb = macro $i{ib}}:
+								b = eb;
+								stmts.push(macro var $ib: $ctb);
+								stmts.push(macro {
+									js.Syntax.code("/*");
+									$b = js.Syntax.code("*/ //");
+								});
+							default:
+						}
+						
+						stmts.push(
+							macro js.Syntax.code("[{0}, {1}] = {2}", $a, $b, $rhs)
+						);
+
+						return macro @:mergeBlock $b{stmts};
+					
+					default:
+						return Context.error("NYI!", lhs.pos);
+				}
+			
+			default:
+				return Context.error("NYI!", rhs.pos);
+		}
 	}
 
 	@:noUsing
@@ -145,6 +214,44 @@ class Util {
 	}
 	
 	/*=== FROM STAR UTIL (mostly) ===*/
+
+	@:nullSafety(Strict)
+	static macro function _and<T, U>(value: ExprOf<Null<T>>, and): ExprOf<Null<U>> {
+		switch and { case macro $i{n} => $v:
+			var dv = switch v {
+				case {expr: EDisplay(v2, _)}: v2;
+				default: v;
+			};
+			return macro switch($value) {
+				case null: null;
+				case Util._unsafeNonNull(_) => $i{n}: $dv;
+			};
+			
+		default: throw "error!"; }
+	}
+	
+	@:nullSafety(Strict)
+	static macro function _or<T, U, V: T & U>(value: ExprOf<Null<T>>, or: ExprOf<U>): ExprOf<V> {
+		return macro switch($value) {
+			case null: $or;
+			case Util._unsafeNonNull(_) => __anon__nonnull: __anon__nonnull;
+		};
+	}
+	
+	@:nullSafety(Strict)
+	static macro function _andOr<T, U>(value: ExprOf<Null<T>>, and, or: ExprOf<U>): ExprOf<U> {
+		switch and { case macro $i{n} => $v:
+			var dv = switch v {
+				case {expr: EDisplay(v2, _)}: v2;
+				default: v;
+			};
+			return macro switch($value) {
+				case null: $or;
+				case Util._unsafeNonNull(_) => $i{n}: $dv;
+			};
+			
+		default: throw "error!"; }
+	}
 	
 	static inline function nonNull<T>(value: Null<T>): T {
 		if(value != null)
@@ -249,6 +356,10 @@ class Util {
 							if(!didChange) didChange = true;
 							macro _ != null => true;
 						
+						case {expr: EUnop(OpNot, true, lhs2)}:
+							if(!didChange) didChange = true;
+							macro Util._unsafeNonNull(_) => $lhs2;
+						
 						case macro $i{name}:
 							if(!didChange) didChange = true;
 							final anon = '__anon${anons++}__$name';
@@ -257,6 +368,22 @@ class Util {
 								a: anon,
 								t: null
 							});
+							if(_case.guard != null) {
+								var found = false;
+								function findVar(expr: Expr) {
+									if(!found) switch expr {
+										case macro $i{n} if(n == name): found = true;
+										default: ExprTools.iter(expr, findVar);
+									}
+								}
+
+								if({findVar(_case.guard); found;}) {
+									_case.guard = macro {
+										var $name = @:privateAccess Util._unsafeNonNull($i{anon});
+										${_case.guard}
+									};
+								}
+							}
 							macro $i{anon} = _ != null => true;
 						
 						default: Context.error("NYI", pos);
@@ -292,7 +419,7 @@ class Util {
 					
 					var res = macro $v{beginVal};
 					
-					while(beginVal <= endVal) {
+					while(beginVal < endVal) {
 						res = macro $res | $v{++beginVal};
 					}
 					

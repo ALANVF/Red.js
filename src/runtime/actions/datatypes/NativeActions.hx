@@ -17,7 +17,7 @@ class NativeActions extends ValueActions<Native> {
 	}
 
 	override function make(_, spec: Value) {
-		return Util._match(cast(spec, Block).array(),
+		return Util._match(cast(spec, Block).values,
 			at([
 				s is Block,
 				{name: "get-definition"} is Issue,

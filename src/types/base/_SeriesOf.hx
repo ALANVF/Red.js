@@ -89,6 +89,28 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		);
 	}
 
+	public function skipHead(index: Int) {
+		return this.clone(
+			this.values,
+			Std.int(
+				Math.max(
+					0,
+					Math.min(
+						this.absLength,
+						index
+					)
+				)
+			)
+		);
+	}
+
+	public function fastSkipHead(index: Int) {
+		return this.clone(
+			this.values,
+			index
+		);
+	}
+
 	public function copy() {
 		return this.clone(this.values.slice(this.index), 0);
 	}
@@ -109,7 +131,7 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		return this.index == this.absLength;
 	}
 
-	public function iterator(): Iterator<T> {
+	public inline function iterator(): Iterator<T> {
 		return values.slice(index).iterator();
 	}
 

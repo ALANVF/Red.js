@@ -3,11 +3,11 @@ package types.base;
 import util.Set;
 
 abstract class _Block extends _SeriesOf<Value> {
-	public var newlines: Set<Int>;
+	public var newlines: Null<Set<Int>>;
 	
 	override public function new(values: Array<Value>, ?index: Int, ?newlines: Set<Int>) {
 		super(values, index);
-		this.newlines = newlines == null ? new Set() : newlines;
+		this.newlines = newlines;
 	}
 
 	abstract function cloneBlock(values: Array<Value>, ?index: Int, ?newlines: Set<Int>): _Block; // ugh, can't wait for polymorphic `this` types
@@ -48,13 +48,38 @@ abstract class _Block extends _SeriesOf<Value> {
 		);
 	}
 
+	override public function skipHead(index: Int) {
+		return this.cloneBlock(
+			this.values,
+			Std.int(
+				Math.max(
+					0,
+					Math.min(
+						this.absLength,
+						index
+					)
+				)
+			),
+			this.newlines
+		);
+	}
+
+	override public function fastSkipHead(index: Int) {
+		return this.cloneBlock(
+			this.values,
+			index,
+			this.newlines
+		);
+	}
+
 	override public function copy() {
 		return this.cloneBlock(
 			this.values.slice(this.index),
 			0,
-			this.newlines
+			this.newlines._and(n => n
 				.filter(nl -> nl >= this.index)
 				.map(nl -> nl - this.index)
+			)
 		);
 	}
 
@@ -71,6 +96,24 @@ abstract class _Block extends _SeriesOf<Value> {
 			this.values,
 			this.absLength,
 			this.newlines
+		);
+	}
+
+	public function addNewline(index: Int) {
+		newlines._andOr(
+			n => n.add(index),
+			newlines = new Set([index])
+		);
+	}
+
+	public function removeNewline(index: Int) {
+		newlines._and(n => n.remove(index));
+	}
+
+	public function hasNewline(index: Int) {
+		return newlines._andOr(
+			n => n.has(index),
+			false
 		);
 	}
 }

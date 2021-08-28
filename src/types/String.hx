@@ -18,6 +18,6 @@ class String extends _String {
 	}
 
 	public function form() {
-		return std.String.fromCharCodes([for(c in values) c.int]);
+		return std.String.fromCharCodes(values.map(c -> c.int));
 	}
 }

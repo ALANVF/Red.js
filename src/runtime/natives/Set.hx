@@ -16,7 +16,6 @@ import types.Word;
 import haxe.ds.Option;
 
 using types.Helpers;
-using Lambda;
 
 @:build(runtime.NativeBuilder.build())
 class Set {
@@ -52,26 +51,10 @@ class Set {
 		);
 	}
 
-	static function _setMany(symbols: Iterable<Symbol>, values: Iterable<Value>, any, some) {
+	@:generic
+	static function _setMany<Syms: Iterable<Symbol>, Vals: Iterable<Value>>(symbols: Syms, values: Vals, any, some) {
 		final syms = symbols.iterator();
 		final vals = values.iterator();
-
-		/*while(syms.hasNext() && vals.hasNext()) {
-			final sym = syms.next();
-			final val = vals.next();
-
-			if(val == Unset.UNSET && !any) {
-				throw "Expected a value!";
-			}
-
-			if(!(val == types.None.NONE && !some)) {
-				sym.setValue(val);
-			}
-		}
-
-		if(syms.hasNext() && !some) {
-			for(sym in syms) sym.setValue(types.None.NONE);
-		}*/
 
 		switch [any, some] {
 			case [true, true]:
@@ -104,14 +87,20 @@ class Set {
 		}
 	}
 
-	public static function setMany(symbols: Iterable<Symbol>, value: Value, any, only, some) {
-		value._match(
-			at(types.None.NONE, when(some)) => return,
-			at(b is _Block, when(!only)) => _setMany(symbols, b, any, some),
-			at(p is _Path, when(!only)) => _setMany(symbols, p, any, some),
-			at(m is Map, when(!only)) => _setMany(symbols, m.keys.zip(m.values, (k, v) -> [k, v]).flatten(), any, some),
-			_ => for(s in symbols) s.setValue(value)
-		);
+	@:generic
+	public static function setMany<Iter: Iterable<Symbol>>(symbols: Iter, value: Value, any, only, some) {
+		if(!(value == types.None.NONE && some)) {
+			if(!only) {
+				value._match(
+					at(b is _Block) => _setMany(symbols, b, any, some),
+					at(p is _Path) => _setMany(symbols, p, any, some),
+					at(m is Map) => _setMany(symbols, m.keys.flatMap((k, i) -> [k, m.values[i]]), any, some),
+					_ => for(s in symbols) s.setValue(value)
+				);
+			} else {
+				for(s in symbols) s.setValue(value);
+			}
+		}
 	}
 
 	public static function call(word: Value, value: Value, options: NSetOptions) {

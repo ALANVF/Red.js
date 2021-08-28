@@ -1,4 +1,5 @@
 import util.Dict;
+import util.Series;
 import util.errors.NullException;
 
 using types.Helpers;

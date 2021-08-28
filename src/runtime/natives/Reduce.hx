@@ -13,10 +13,11 @@ class Reduce {
 		final result = value._match(
 			at(block is Block) => {
 				final values = [];
-				final tokens = [for(v in block) v];
+				final tokens: Series<Value> = block;
 				
-				while(tokens.length != 0) {
-					values.push(Do.evalGroupedExpr(Do.groupNextExpr(tokens)));
+				while(tokens.isNotTail()) {
+					Util.set([@var g, tokens], Do.groupNextExpr(tokens));
+					values.push(Do.evalGroupedExpr(g));
 				}
 
 				new Block(values);

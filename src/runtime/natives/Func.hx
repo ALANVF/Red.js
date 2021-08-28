@@ -10,6 +10,7 @@ import types.SetWord;
 import types.base.IFunction;
 import haxe.ds.Option;
 
+// TODO: improve this
 class Func {
 	public static function parseSpec(spec: Block) {
 		final res = {

@@ -8,13 +8,14 @@ import types.Block;
 class All {
 	public static function call(conds: Block): Value {
 		var result: Value = None.NONE;
+		var tokens: Series<Value> = conds;
 		
-		while(!conds.isTail()) {
-			switch Do.doNextValue(conds) {
-				case {value: _.isTruthy() => false}: return None.NONE;
-				case {value: v, offset: o}:
+		while(tokens.isNotTail()) {
+			switch Do.doNextValue(tokens) {
+				case {_1: _.isTruthy() => false}: return None.NONE;
+				case {_1: v, _2: rest}:
 					result = v;
-					conds = conds.skip(o);
+					tokens = rest;
 			}
 		}
 		

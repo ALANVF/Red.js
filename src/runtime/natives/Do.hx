@@ -1,5 +1,7 @@
 package runtime.natives;
 
+import types.Tuple;
+import util.Tuple2;
 import types.Value;
 import types.Op;
 import types.Path;
@@ -27,6 +29,8 @@ using types.Helpers;
 
 // THING: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#423-atomiccomposite-types
 
+private typedef Values = Series<Value>;
+
 enum GroupedExpr {
 	GValue(v: Value);
 	GNoEval(v: Value);
@@ -37,6 +41,20 @@ enum GroupedExpr {
 	GUnset;
 }
 
+@:using(runtime.natives.Do.ResultTools)
+typedef Result<T> = Tuple2<T, Values>;
+
+@:publicFields
+class ResultTools {
+	static inline function map<T, U>(self: Result<T>, func: (T) -> U): Result<U> {
+		return new Result<U>(func(self._1), self._2);
+	}
+}
+
+inline function mkResult<T>(value: T, values: Values): Result<T> {
+	return new Result(value, values);
+}
+
 @:build(runtime.NativeBuilder.build())
 class Do {
 	// Hack to fix "maybe loop in static generation of runtime.natives.Do" bug
@@ -45,96 +63,114 @@ class Do {
 	}
 
 	public static final defaultOptions = Options.defaultFor(NDoOptions);
-
-	static function _doesBecomeFunction(value: Value, values: Iterator<Value>):Option<{fn: IFunction, rest: Array<Value>}> {
+	
+	static function _doesBecomeFunction(value: Value, values: Values) {
 		return value._match(
-			at(fn is IFunction) => Some({fn: fn, rest: [for(v in values) v]}),
-			at(g is IGetPath, when(values.hasNext())) => g.getPath(values.next()).flatMap(v -> _doesBecomeFunction(v, values)),
-			_ => None
+			at(fn is IFunction) => mkResult(fn, values),
+			at(g is IGetPath, when(values.isNotTail())) => switch g.getPath(values++[0]) {
+				case Some(v): _doesBecomeFunction(v, values);
+				case None: null;
+			},
+			_ => null
 		);
 	}
 
 	static function doesBecomeFunction(path: Path) {
 		return path.pick(0)._match(
-			at(Some(head is Word)) => _doesBecomeFunction(head.getValue(), path.skip(1).iterator()),
-			_ => None
+			at(Some(head is Word)) => _doesBecomeFunction(head.getValue(), (path : Values).next()),
+			_ => null
 		);
 	}
-	
-	static function checkForOp(tokens: Array<Value>) {
-		return if(tokens.length >= 2) {
-			tokens[0]._match(
-				at((_.getValue(true) => o is Op) is Word) => Some(o),
-				at((doesBecomeFunction(_) => Some({fn: o is Op})) is Path) => Some(o),
-				_ => None
+
+	static function checkForOp(values: Values) {
+		return if(values.length >= 2) {
+			values[0]._match(
+				at((_.getValue(true) => o is Op) is Word) => o,
+				at((doesBecomeFunction(_) => {_1: o is Op}) is Path) => o,
+				_ => null
 			);
 		} else {
-			None;
+			null;
 		}
 	}
 
-	static inline function groupArgs(tokens: Array<Value>, args: Array<_Arg>) {
-		return [for(arg in args) groupNextExprForArg(tokens, arg)];
+	static function groupArgs(values: Values, args: Array<_Arg>): Result<Array<GroupedExpr>> {
+		return mkResult(
+			{
+				final res = Array.ofLength(args.length);
+				for(i in 0...args.length) {
+					Util.set([res[i], values], groupNextExprForArg(values, args[i]));
+				}
+				res;
+			},
+			values
+		);
 	}
 
-	public static function groupNextExpr(tokens: Array<Value>) {
+	public static function groupNextExpr(values: Values) {
 		// look-ahead in case there's an op! after the value with a lit-word! or get-word! LHS
-		if(tokens.length >= 3) {
-			switch checkForOp(tokens.slice(1)) {
-				case Some(o) if(o.args[0].quoting != QVal):
-					final left = groupNextExprForArg(tokens, o.args[0]);
-					tokens.shift();
-					return GOp(left, o, groupNextExprForArg(tokens, o.args[0]));
-				default:
-			}
+		if(values.length >= 3) {
+			checkForOp(values.next())._match(
+				at(o!, when(o.args[0].quoting != QVal)) => {
+					Util.set(@var [left, values2], groupNextExprForArg(values, o.args[0]));
+					return groupNextExprForArg(values2, o.args[0]).map(r -> GOp(left, o, r));
+				},
+				_ => {}
+			);
 		}
 
-		return tokens.shift().nonNull()._match(
-			at(s is SetWord) => GSetWord(s, groupNextExpr(tokens)),
-			at(s is SetPath) => GSetPath(s, groupNextExpr(tokens)),
+		return values++[0].nonNull()._match(
+			at(s is SetWord) => groupNextExpr(values).map(e -> GSetWord(s, e)),
+			at(s is SetPath) => groupNextExpr(values).map(e -> GSetPath(s, e)),
 			at((_.getValue() => fn is IFunction) is Word) => // WE HAS DA FLOW TYPING!!!
-				GCall(fn, groupArgs(tokens, fn.args), []),
-			at((doesBecomeFunction(_) => Some({fn: fn, rest: rest})) is Path) => {
-				final args = groupArgs(tokens, fn.args);
+				groupArgs(values, fn.args).map(args -> GCall(fn, args, [])),
+			at((doesBecomeFunction(_) => {_1: fn, _2: rest}) is Path) => {
+				final args = groupArgs(values, fn.args);
 
 				if(rest.length == 0) {
-					GCall(fn, args, []);
+					args.map(a -> GCall(fn, a, []));
 				} else {
 					final refines = new Dict();//: Dict<String, Array<GroupedExpr>> = [];
+
+					values = args._2;
 
 					for(value in rest) {
 						value._match(
 							at(w is Word) => switch fn.refines.find(ref -> w.equalsString(ref.name)) {
 								case null: throw 'Unknown refinement `/${w.name}`!';
 								case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.name}`!';
-								case {name: n, args: args}: refines[n] = groupArgs(tokens, args);
+								case {name: n, args: args2}:
+									Util.set([@var refine, values], groupArgs(values, args2));
+									refines[n] = refine;
 							},
 							_ => throw "Invalid refinement!"
 						);
 					}
-
-					GCall(fn, args, refines);
+					
+					new Result(GCall(fn, args._1, refines), values);
 				}
 			},
-			at(v) => switch checkForOp(tokens) {
-				case Some(o):
-					tokens.shift();
-					GOp(GValue(v), o, groupNextExprForArg(tokens, o.args[1]));
-				case None:
-					GValue(v);
-			}
+			at(v) => checkForOp(values)._match(
+				at(null) => mkResult(GValue(v), values),
+				at(o!!) => groupNextExprForArg(++values, o.args[1]).map(e -> GOp(GValue(v), o, e))
+			)
 		);
+
+		return new Result(GUnset, values);
 	}
 
-	public static function groupNextExprForArg(tokens: Array<Value>, arg: _Arg) {
+	public static function groupNextExprForArg(values: Values, arg: _Arg): Result<GroupedExpr> {
 		return switch arg.quoting {
-			case QVal: groupNextExpr(tokens);
-			case QGet if(tokens.length == 0): GUnset;
-			case QGet: GNoEval(tokens.shift().nonNull());
+			case QVal: groupNextExpr(values);
+			case QGet if(values.isTail()): mkResult(GUnset, values);
+			case QGet: mkResult(GNoEval(values++[0].nonNull()), values);
 			case QLit:
-				tokens.shift().nonNull()._match(
-					at(v is Paren | v is GetWord | v is GetPath) => GValue(v),
-					at(v) => GNoEval(v)
+				mkResult(
+					values++[0].nonNull()._match(
+						at(v is Paren | v is GetWord | v is GetPath) => GValue(v),
+						at(v) => GNoEval(v)
+					),
+					values
 				);
 		}
 	}
@@ -155,8 +191,8 @@ class Do {
 			case GCall(fn, args, refines):
 				Eval.callFunction(
 					fn,
-					args.map(evalGroupedExpr),
-					[for(k => v in refines) k => v.map(evalGroupedExpr)]
+					args.map(a -> evalGroupedExpr(a)),
+					[for(k => v in refines) k => v.map(a -> evalGroupedExpr(a))] // TODO: fix bad codegen
 				);
 			case GUnset: throw "Unexpected unset!";
 		}
@@ -174,52 +210,40 @@ class Do {
 		);
 	}
 
-	public static function evalValues(values: Iterable<Value>) {
-		final tokens = [for(v in values) v];
+	public static function evalValues(values: Values) {
 		var result: Value = Unset.UNSET;
 		
-		while(tokens.length != 0) {
-			result = evalGroupedExpr(groupNextExpr(tokens));
+		while(values.isNotTail()) {
+			Util.set([@var expr, values], groupNextExpr(values));
+			result = evalGroupedExpr(expr);
 		}
 
 		return result;
 	}
 
-	public static function doNextValue(values: Iterable<Value> & {var length(get, never): Int;}) {
+	public static function doNextValue(values: Values): Result<Value> {
 		if(values.length == 0) {
-			return {
-				value: (Unset.UNSET : Value),
-				offset: 0
-			};
+			return mkResult(cast Unset.UNSET, values);
 		} else {
-			final values_ = [for(v in values) v];
-			final value = groupNextExpr(values_);
-			
-			return {
-				value: evalGroupedExpr(value),
-				offset: values.length - values_.length
-			};
+			return groupNextExpr(values).map(value -> evalGroupedExpr(value));
 		}
 	}
-	
+
 	public static function call(value: Value, options: NDoOptions) {
 		return switch options {
 			case {expand: true} | {args: Some(_)}: throw 'NYI';
 			case {next: Some({position: word})}: value._match(
-				at(b is Block | b is Paren) =>
-					switch doNextValue(b) {
-						case {value: v, offset: o}:
-							word.setValue(b.skip(o));
-							return v;
-					},
+				at(b is Block | b is Paren) => {
+					Util.set(@var [v, rest], doNextValue(b));
+					word.setValue(b.fastSkipHead(rest.offset));
+					return v;
+				},
 				at(s is types.String) => {
 					final values = Transcode.call(s, Transcode.defaultOptions);
 					
-					switch doNextValue(values) {
-						case {value: v, offset: o}:
-							word.setValue(values.skip(o));
-							return v;
-					}
+					Util.set(@var [v, rest], doNextValue(values));
+					word.setValue(values.fastSkipHead(rest.offset));
+					return v;
 				},
 				at(_ is File | _ is Url) => throw 'NYI',
 				_ => evalValue(value)

@@ -18,9 +18,9 @@ class Context extends Value {
 
 	public function offsetOf(word: std.String, ignoreCase: Bool = true) {
 		return if(ignoreCase) {
-			this.symbols.map(w -> w.equalsString(word)).indexOf(true);
+			this.symbols.findIndex(w -> w.equalsString(word));
 		} else {
-			this.symbols.map(w -> w.name).indexOf(word);
+			this.symbols.findIndex(w -> w.name == word);
 		}
 	}
 
