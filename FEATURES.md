@@ -85,7 +85,7 @@
 | `case`              | Y      |
 | `do`                | P      |
 | `reduce`            | P      |
-| `compose`           | N      |
+| `compose`           | P      |
 | `get`               | Y      |
 | `set`               | Y      |
 | `print`             | Y*     |

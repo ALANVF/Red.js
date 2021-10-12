@@ -8,7 +8,7 @@ typedef NFunctionOptions = {
 }
 
 typedef NSwitchOptions = {
-	_default: Option<{_case: Block}>
+	?_default: {_case: Block}
 }
 
 typedef NCaseOptions = {
@@ -17,18 +17,18 @@ typedef NCaseOptions = {
 
 typedef NDoOptions = {
 	expand: Bool,
-	args:   Option<{arg: Value}>,
-	next:   Option<{position: Word}>
+	?args:  {arg: Value},
+	?next:  {position: Word}
 }
 
 typedef NReduceOptions = {
-	into: Option<{out: Value}>
+	?into: {out: Value}
 }
 
 typedef NComposeOptions = {
 	deep: Bool,
 	only: Bool,
-	into: Option<{out: Value}>
+	?into: {out: Value}
 }
 
 typedef NGetOptions = {
@@ -57,14 +57,14 @@ typedef NBindOptions = {
 }
 
 typedef NParseOptions = {
-	_case: Bool,
-	part:  Option<{length: Value}>,
-	trace: Option<{callback: Function}>
+	_case:  Bool,
+	?part:  {length: Value},
+	?trace: {callback: Function}
 }
 
 typedef NSetOpOptions = {
 	_case: Bool,
-	skip:  Option<{size: Integer}>
+	?skip: {size: Integer}
 }
 
 typedef NShiftOptions = {
@@ -73,7 +73,7 @@ typedef NShiftOptions = {
 }
 
 typedef NToHexOptions = {
-	size: Option<{length: Integer}>
+	?size: {length: Integer}
 }
 
 typedef NTrigOptions = {
@@ -81,8 +81,8 @@ typedef NTrigOptions = {
 }
 
 typedef NConstructOptions = {
-	with: Option<{object: Object}>,
-	only: Bool
+	?with: {object: Object},
+	only:  Bool
 }
 
 typedef NTryOptions = {
@@ -90,19 +90,19 @@ typedef NTryOptions = {
 }
 
 typedef NChangeCaseOptions = {
-	part: Option<{limit: Value}>
+	?part: {limit: Value}
 }
 
 typedef NBreakOptions = {
-	_return: Option<{value: Value}>
+	?_return: {value: Value}
 }
 
 typedef NThrowOptions = {
-	name: Option<{word: Word}>
+	?name: {word: Word}
 }
 
 typedef NCatchOptions = {
-	name: Option<{word: Value}>
+	?name: {word: Value}
 }
 
 typedef NExtendOptions = {
@@ -110,7 +110,7 @@ typedef NExtendOptions = {
 }
 
 typedef NBaseOptions = {
-	base: Option<{baseValue: Integer}>
+	?base: {baseValue: Integer}
 }
 
 typedef NToLocalFileOptions = {
@@ -122,12 +122,12 @@ typedef NWaitOptions = {
 }
 
 typedef NChecksumOptions = {
-	with: Option<{spec: Value}>
+	?with: {spec: Value}
 }
 
 typedef NNewLineOptions = {
-	all:  Bool,
-	skip: Option<{size: Integer}>
+	all:   Bool,
+	?skip: {size: Integer}
 }
 
 typedef NNowOptions = {
@@ -148,9 +148,9 @@ typedef NCallOptions = {
 	show:    Bool,
 	console: Bool,
 	shell:   Bool,
-	input:   Option<{_in: Value}>,
-	output:  Option<{out: Value}>,
-	error:   Option<{err: Value}>
+	?input:  {_in: Value},
+	?output: {out: Value},
+	?error:  {err: Value}
 }
 
 typedef NCompressOptions = {
@@ -159,8 +159,8 @@ typedef NCompressOptions = {
 }
 
 typedef NDecompressOptions = {
-	zlib:    Option<{size: Integer}>,
-	deflate: Option<{size: Integer}>
+	?zlib:    {size: Integer},
+	?deflate: {size: Integer}
 }
 
 typedef NRecycleOptions = {
@@ -173,9 +173,9 @@ typedef NTranscodeOptions = {
 	one:     Bool,
 	prescan: Bool,
 	scan:    Bool,
-	part:    Option<{length: Value}>,
-	into:    Option<{dst: Value}>,
-	trace:   Option<{callback: Function}>
+	?part:    {length: Value},
+	?into:    {dst: Value},
+	?trace:   {callback: Function}
 }
 
 typedef _NativeOptions = {}

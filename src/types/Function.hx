@@ -7,7 +7,7 @@ import haxe.ds.Option;
 class Function extends _Function {
 	public final body: Block;
 
-	public function new(doc: Option<std.String>, args: _Args, refines: _Refines, retSpec: Option<Block>, body: Block) {
+	public function new(doc: Null<std.String>, args: _Args, refines: _Refines, retSpec: Null<Block>, body: Block) {
 		super(doc, args, refines, retSpec);
 		this.body = body;
 	}

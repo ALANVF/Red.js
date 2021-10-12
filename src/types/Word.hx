@@ -1,7 +1,5 @@
 package types;
 
-using util.NullTools;
-
 import types.base.Symbol;
 import types.base.Context;
 

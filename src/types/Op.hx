@@ -5,7 +5,7 @@ import types.base._Function;
 import haxe.ds.Option;
 
 class Op extends Value implements IFunction {
-	public var doc(get, set): Option<std.String>;
+	public var doc(get, set): Null<std.String>;
 	function get_doc() return fn.doc;
 	function set_doc(v) return fn.doc = v;
 
@@ -17,9 +17,9 @@ class Op extends Value implements IFunction {
 	function get_refines(): _Refines return [];
 	function set_refines(v: _Refines) return v;
 	
-	public var retSpec(get, set): Option<Block>;
+	public var retSpec(get, set): Null<Block>;
 	function get_retSpec() return fn.retSpec;
-	function set_retSpec(v: Option<Block>) return fn.retSpec = v;
+	function set_retSpec(v: Null<Block>) return fn.retSpec = v;
 
 	public var arity(get, never): Int;
 	function get_arity() return 2;

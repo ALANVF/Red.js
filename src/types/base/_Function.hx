@@ -1,16 +1,10 @@
 package types.base;
 
 import types.base.IFunction;
-import haxe.ds.Option;
 
-/*abstract class _Function extends Value {
-	public final args: _Args;
-	public final refines: _Refines;
-	public final returnSpec: Null<Block>;
-}*/
 abstract class _Function extends Value implements IFunction {
-	var _doc: Option<std.String>;
-	public var doc(get, set): Option<std.String>;
+	var _doc: Null<std.String>;
+	public var doc(get, set): Null<std.String>;
 	function get_doc() return _doc;
 	function set_doc(v) return _doc = v;
 
@@ -24,15 +18,15 @@ abstract class _Function extends Value implements IFunction {
 	function get_refines() return _refines;
 	function set_refines(v: _Refines) return _refines = v;
 
-	var _retSpec: Option<Block>;
-	public var retSpec(get, set): Option<Block>;
+	var _retSpec: Null<Block>;
+	public var retSpec(get, set): Null<Block>;
 	function get_retSpec() return _retSpec;
-	function set_retSpec(v: Option<Block>) return _retSpec = v;
+	function set_retSpec(v: Null<Block>) return _retSpec = v;
 
 	public var arity(get, never): Int;
 	function get_arity() return this._args.length;
 
-	public function new(doc: Option<std.String>, args: _Args, refines: _Refines, retSpec: Option<Block>) {
+	public function new(doc: Null<std.String>, args: _Args, refines: _Refines, retSpec: Null<Block>) {
 		this.doc = doc;
 		this.args = args;
 		this.refines = refines;

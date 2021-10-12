@@ -11,6 +11,8 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.ExprTools;
 import haxe.macro.Expr.ComplexType;
+import haxe.macro.ExprTools;
+import haxe.macro.TypeTools;
 
 @:publicFields
 class Util {
@@ -123,7 +125,7 @@ class Util {
 	}
 
 	@:noUsing
-	static macro function set(lhs, rhs) {
+	static macro function detuple(lhs, rhs) {
 		final rhsT = Context.follow(Context.typeof(rhs));
 		switch rhsT {
 			case TAbstract(_.get() => {pack: ["util"], name: "Tuple2"}, [ta, tb]):
@@ -277,7 +279,7 @@ class Util {
 	}
 	#end
 	
-	static macro function _match(value: Expr, cases: Array<Expr>): Expr {
+	static macro function _match<T>(value: ExprOf<T>, cases: Array<Expr>): Expr {
 		var defaultExpr = None;
 		var caseExprs: Array<Case> = [];
 		
@@ -405,25 +407,71 @@ class Util {
 						default: false;
 					};
 					
-					var beginVal = switch begin {
-						case {expr: EField({expr: EConst(CString(str, k))}, "code")}: nonNull(str.charCodeAt(0));
-						default: ExprTools.getValue(begin);
+					switch begin {
+						case {expr: EField({expr: EConst(CIdent(_))}, _) | EConst(CIdent(_)) | ECall(_)}: {
+							final t = TypeTools.getEnum(switch begin {
+								case macro $ec($a{_}): switch Context.typeExpr(ec).t {
+									case TFun(_, t1): t1;
+									default: Context.error("error!", begin.pos);
+								}
+								default: Context.typeExpr(begin).t;
+							});
+							
+							function caseName(e: Expr) return switch e.expr {
+								case ECall(e2, _): caseName(e2);
+								case EField(_, n) | EConst(CIdent(n)): n;
+								default: Context.error("error!", e.pos);
+							}
+							
+							var start = t.names.indexOf(caseName(begin));
+							var stop = t.names.indexOf(caseName(end));
+							
+							if(start == -1) Context.error("error!", begin.pos);
+							if(stop == -1) Context.error("error!", end.pos);
+							
+							if(beginExcl) start++;
+							if(endExcl) stop--;
+							
+							if(stop <= start) Context.error("error!", end.pos);
+							
+							function makeCase(i: Int) {
+								return switch t.constructs[t.names[i]] {
+									case {name: n, type: TFun(args, _)}: macro $i{n}($a{args.map(_ -> macro _)});
+									case {name: n, type: _}: macro $i{n};
+								}
+							}
+							
+							var res = beginExcl ? makeCase(start) : begin;
+							
+							for(i in (start + 1)...(stop + 1)) {
+								res = macro $res | ${makeCase(i)};
+							}
+							
+							return res;
+						}
+						
+						default: {
+							var beginVal = switch begin {
+								case {expr: EField({expr: EConst(CString(str, k))}, "code")}: nonNull(str.charCodeAt(0));
+								default: ExprTools.getValue(begin);
+							}
+							var endVal = switch end {
+								case {expr: EField({expr: EConst(CString(str, k))}, "code")}: nonNull(str.charCodeAt(0));
+								default: ExprTools.getValue(end);
+							};
+							
+							if(beginExcl) beginVal++;
+							if(endExcl) endVal--;
+							
+							var res = macro $v{beginVal};
+							
+							while(beginVal < endVal) {
+								res = macro $res | $v{++beginVal};
+							}
+							
+							res;
+						}
 					}
-					var endVal = switch end {
-						case {expr: EField({expr: EConst(CString(str, k))}, "code")}: nonNull(str.charCodeAt(0));
-						default: ExprTools.getValue(end);
-					};
-					
-					if(beginExcl) beginVal++;
-					if(endExcl) endVal--;
-					
-					var res = macro $v{beginVal};
-					
-					while(beginVal < endVal) {
-						res = macro $res | $v{++beginVal};
-					}
-					
-					res;
 				
 				case {expr: EDisplay(e2, k)}: collect(e2);
 				

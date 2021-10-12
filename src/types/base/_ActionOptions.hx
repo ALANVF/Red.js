@@ -9,14 +9,14 @@ typedef ARandomOptions = {
 }
 
 typedef AFormOptions = {
-	part: Option<{limit: Integer}>
+	?part: {limit: Integer}
 }
 
 typedef AMoldOptions = {
-	only: Bool,
-	all:  Bool,
-	flat: Bool,
-	part: Option<{limit: Integer}>
+	only:  Bool,
+	all:   Bool,
+	flat:  Bool,
+	?part: {limit: Integer}
 }
 
 typedef AModifyOptions = {
@@ -24,7 +24,7 @@ typedef AModifyOptions = {
 }
 
 typedef ARoundOptions = {
-	to:          Option<{scale: Value}>,
+	?to:         {scale: Value},
 	even:        Bool,
 	down:        Bool,
 	halfDown:    Bool,
@@ -34,31 +34,31 @@ typedef ARoundOptions = {
 }
 
 typedef AAppendOptions = {
-	part: Option<{length: Value}>,
-	only: Bool,
-	dup:  Option<{count: Integer}>
+	?part: {length: Value},
+	only:  Bool,
+	?dup:  {count: Integer}
 }
 
 typedef AChangeOptions = {
-	part: Option<{range: Value}>,
-	only: Bool,
-	dup:  Option<{count: _Number}>
+	?part: {range: Value},
+	only:  Bool,
+	?dup:  {count: _Number}
 }
 
 typedef ACopyOptions = {
-	part:  Option<{length: Value}>,
-	deep:  Bool,
-	types: Option<{kind: IDatatype}>
+	?part:  {length: Value},
+	deep:   Bool,
+	?types: {kind: IDatatype}
 }
 
 typedef AFindOptions = {
-	part:    Option<{length: Value}>,
+	?part:   {length: Value},
 	only:    Bool,
 	_case:   Bool,
 	same:    Bool,
 	any:     Bool,
-	with:    Option<{wild: String}>,
-	skip:    Option<{size: Integer}>,
+	?with:   {wild: String},
+	?skip:   {size: Integer},
 	last:    Bool,
 	reverse: Bool,
 	tail:    Bool,
@@ -66,13 +66,13 @@ typedef AFindOptions = {
 }
 
 typedef AInsertOptions = {
-	part: Option<{length: Value}>,
-	only: Bool,
-	dup:  Option<{count: Integer}>
+	?part: {length: Value},
+	only:  Bool,
+	?dup:  {count: Integer}
 }
 
 typedef AMoveOptions = {
-	part: Option<{length: Integer}>
+	?part: {length: Integer}
 }
 
 typedef APutOptions = {
@@ -80,41 +80,41 @@ typedef APutOptions = {
 }
 
 typedef ARemoveOptions = {
-	part: Option<{length: Value}>,
-	key:  Option<{keyArg: Value}>
+	?part: {length: Value},
+	?key:  {keyArg: Value}
 }
 
 typedef AReverseOptions = {
-	part: Option<{length: Value}>,
-	skip: Option<{size: Integer}>
+	?part: {length: Value},
+	?skip: {size: Integer}
 }
 
 typedef ASelectOptions = {
-	part:    Option<{length: Value}>,
+	?part:   {length: Value},
 	only:    Bool,
 	_case:   Bool,
 	same:    Bool,
 	any:     Bool,
-	with:    Option<{wild: String}>,
-	skip:    Option<{size: Integer}>,
+	?with:   {wild: String},
+	?skip:   {size: Integer},
 	last:    Bool,
 	reverse: Bool
 }
 
 typedef ASortOptions = {
-	_case:   Bool,
-	skip:    Option<{size: Integer}>,
-	compare: Option<{comparator: Value}>,
-	part:    Option<{length: Value}>,
-	all:     Bool,
-	reverse: Bool,
-	stable:  Bool
+	_case:    Bool,
+	?skip:    {size: Integer},
+	?compare: {comparator: Value},
+	?part:    {length: Value},
+	all:      Bool,
+	reverse:  Bool,
+	stable:   Bool
 }
 
 typedef ATakeOptions = {
-	part: Option<{length: Value}>,
-	deep: Bool,
-	last: Bool
+	?part: {length: Value},
+	deep:  Bool,
+	last:  Bool
 }
 
 typedef ATrimOptions = {
@@ -123,24 +123,24 @@ typedef ATrimOptions = {
 	auto:  Bool,
 	lines: Bool,
 	all:   Bool,
-	with:  Option<{str: Value}>
+	?with: {str: Value}
 }
 
 typedef AOpenOptions = {
-	_new:  Bool,
-	read:  Bool,
-	write: Bool,
-	seek:  Bool,
-	allow: Option<{access: Block}>
+	_new:   Bool,
+	read:   Bool,
+	write:  Bool,
+	seek:   Bool,
+	?allow: {access: Block}
 }
 
 typedef AReadOptions = {
-	part:   Option<{length: _Number}>,
-	seek:   Option<{index: _Number}>,
+	?part:  {length: _Number},
+	?seek:  {index: _Number},
 	binary: Bool,
 	lines:  Bool,
 	info:   Bool,
-	as:     Option<{encoding: Word}>
+	?as:    {encoding: Word}
 }
 
 typedef AWriteOptions = {
@@ -148,10 +148,10 @@ typedef AWriteOptions = {
 	lines:  Bool,
 	info:   Bool,
 	append: Bool,
-	part:   Option<{length: _Number}>,
-	seek:   Option<{index: _Number}>,
-	allow:  Option<{access: Block}>,
-	as:     Option<{encoding: Word}>
+	?part:  {length: _Number},
+	?seek:  {index: _Number},
+	?allow: {access: Block},
+	?as:    {encoding: Word}
 }
 
 typedef _ActionOptions = {}

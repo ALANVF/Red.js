@@ -40,8 +40,7 @@ class Bind {
 				if(options.copy) {
 					b = cast runtime.actions.Copy.call(b, {
 						deep: true,
-						types: Some({kind: copyTypeset}),
-						part: None
+						types: {kind: copyTypeset}
 					});
 				}
 

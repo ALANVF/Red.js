@@ -38,7 +38,7 @@ abstract class _String extends _SeriesOf<Char> {
 			var code = 0, len = 0;
 			if(str.charCodeAt(0) == "^".code) {
 				Util._match(str.charCodeAt(1).nonNull(),
-					at(c = ("\"".code | "^".code)) => {code = c; len = 2;},
+					at(c = ('"'.code | "^".code)) => {code = c; len = 2;},
 					at("\\".code) => {code = 28; len = 2;},
 					at("]".code) => {code = 29; len = 2;},
 					at("_".code) => {code = 31; len = 2;},

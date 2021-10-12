@@ -14,13 +14,13 @@ class Main {
 		types.base.Context.GLOBAL.add(
 			"make",
 			new types.Action(
-				None,
+				null,
 				[
 					{name: "type", quoting: QVal},
 					{name: "spec", quoting: QVal}
 				],
 				[],
-				None,
+				null,
 				runtime.actions.datatypes.ActionActions.MAPPINGS["ACT_MAKE"]
 			)
 		);
@@ -115,6 +115,16 @@ class Main {
 						out [any-block!]
 				]
 				#get-definition NAT_REDUCE
+			]
+
+			compose: make native! [[
+					value [block!]
+					/deep
+					/only
+					/into
+						out [any-block!]
+				]
+				#get-definition NAT_COMPOSE
 			]
 
 			get: make native! [[

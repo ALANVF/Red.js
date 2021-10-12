@@ -4,19 +4,25 @@ import types.base.Options;
 import types.base._NativeOptions;
 import types.Value;
 import types.Block;
+import Util.detuple;
 
 @:build(runtime.NativeBuilder.build())
 class Reduce {
 	public static final defaultOptions = Options.defaultFor(NReduceOptions);
 	
 	public static function call(value: Value, options: NReduceOptions): Value {
-		final result = value._match(
+		options._match(
+			at({into: _!}) => throw "NYI!",
+			_ => {}
+		);
+
+		return value._match(
 			at(block is Block) => {
 				final values = [];
 				final tokens: Series<Value> = block;
 				
 				while(tokens.isNotTail()) {
-					Util.set([@var g, tokens], Do.groupNextExpr(tokens));
+					detuple([@var g, tokens], Do.groupNextExpr(tokens));
 					values.push(Do.evalGroupedExpr(g));
 				}
 
@@ -24,13 +30,5 @@ class Reduce {
 			},
 			_ => Do.evalValue(value)
 		);
-		
-		switch options {
-			case {into: Some(_)}:
-				throw "NYI!";
-			
-			default:
-				return result;
-		}
 	}
 }

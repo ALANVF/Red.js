@@ -17,7 +17,7 @@ class String extends _String {
 		return new String(values, index);
 	}
 
-	public function form() {
+	public function form(): std.String {
 		return std.String.fromCharCodes(values.map(c -> c.int));
 	}
 }

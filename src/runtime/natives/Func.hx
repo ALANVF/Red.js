@@ -8,16 +8,15 @@ import types.LitWord;
 import types.GetWord;
 import types.SetWord;
 import types.base.IFunction;
-import haxe.ds.Option;
 
 // TODO: improve this
 class Func {
 	public static function parseSpec(spec: Block) {
 		final res = {
-			doc: None,
+			doc: null,
 			args: [],
 			refines: [],
-			ret: None
+			ret: null
 		};
 
 		spec = spec.copy();
@@ -38,16 +37,16 @@ class Func {
 							spec: spec.pick(0)._match(
 								at(Some(b is Block)) => {
 									spec.index++;
-									Some(b.copy());
+									b.copy();
 								},
-								_ => None
+								_ => null
 							),
 							doc: spec.pick(0)._match(
-								at(s is types.String) => {
+								at(Some(s is types.String)) => {
 									spec.index++;
-									Some(s.form());
+									s.form();
 								},
-								_ => None
+								_ => null
 							)
 						});
 					},
@@ -63,7 +62,7 @@ class Func {
 					spec.pick(0)._match(
 						at(Some(b is Block)) => {
 							spec.index++;
-							res.ret = Some(b.copy());
+							res.ret = b.copy();
 						},
 						_ => throw "Missing return spec!"
 					);
@@ -75,7 +74,7 @@ class Func {
 		spec.pick(0)._match(
 			at(Some(s is types.String)) => {
 				spec.index++;
-				res.doc = Some(s.form());
+				res.doc = s.form();
 			},
 			_ => {}
 		);
@@ -94,9 +93,9 @@ class Func {
 						doc: spec.pick(0)._match(
 							at(Some(s is types.String)) => {
 								spec.index++;
-								Some(s.form());
+								s.form();
 							},
-							_ => None
+							_ => null
 						)
 					};
 
@@ -108,7 +107,7 @@ class Func {
 			);
 		}
 		
-		if(res.ret == None) {
+		if(res.ret == null) {
 			getRet();
 		}
 

@@ -5,7 +5,6 @@ import haxe.macro.Type;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
-//using util.NullTools;
 using StringTools;
 using haxe.macro.TypeTools;
 
@@ -22,7 +21,7 @@ class Options {
 							name: f.name,
 							expr: Context.typeExpr(switch f.type {
 								case TAbstract(_.get().name => "Bool", _): macro false;
-								case TEnum(_.get().name => "Option", _): macro haxe.ds.Option.None;
+								case TAbstract(_.get().name => "Null", _): macro null;
 								default: throw "error";
 							})
 						};
@@ -51,11 +50,11 @@ class Options {
 						name: field.name,
 						expr: switch field.type {
 							case TAbstract(_.get().name => "Bool", _): Context.typeExpr(macro $refines[$v{name}]);
-							case TEnum(_.get().name => "Option", [param]):
+							case TAbstract(_.get().name => "Null", [param]):
 								Context.typeExpr(macro {
 									switch $refines[$v{name}] {
-										case null: haxe.ds.Option.None;
-										case args: haxe.ds.Option.Some(${
+										case null: null;
+										case args: ${
 											switch param {
 												case TAnonymous(_.get() => p):
 													final obj = [];
@@ -92,7 +91,7 @@ class Options {
 												default:
 													throw "error!";
 											}
-										});
+										};
 									}
 								});
 							default:

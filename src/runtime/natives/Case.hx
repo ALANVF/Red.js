@@ -3,6 +3,7 @@ package runtime.natives;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.*;
+import Util.detuple;
 
 @:build(runtime.NativeBuilder.build())
 class Case {
@@ -17,7 +18,7 @@ class Case {
 			@if(all) var trueAtLeastOnce = false;
 
 			while(tokens.isNotTail()) {
-				Util.set([@var cond, tokens], Do.doNextValue(tokens));
+				detuple([@var cond, tokens], Do.doNextValue(tokens));
 
 				if(cond.isTruthy()) {
 					if(tokens.isTail()) {
@@ -30,7 +31,7 @@ class Case {
 							Do.evalValues(b);
 						},
 						_ => {
-							Util.set([@var value, tokens], Do.doNextValue(tokens));
+							detuple([@var value, tokens], Do.doNextValue(tokens));
 							value;
 						}
 					);

@@ -72,30 +72,27 @@ class Char extends _Integer {
 	}
 
 	public function toRed() {
-		return switch(this.int) {
-			case 34:  "^\"";
-			case 94:  "^^";
-			case 28:  "^\\";
-			case 29:  "^]";
-			case 31:  "^_";
+		return Util._match(this.int,
+			at(34)  => "^\"",
+			at(94)  => "^^",
+			at(28)  => "^\\",
+			at(29)  => "^]",
+			at(31)  => "^_",
 
-			case 0:   "^@";
-			case 8:   "^(back)";
-			case 9:   "^-";
-			case 10:  "^/";
-			case 12:  "^(page)";
-			case 27:  "^[";
-			case 127: "^~";
+			at(0)   => "^@",
+			at(8)   => "^(back)",
+			at(9)   => "^-",
+			at(10)  => "^/",
+			at(12)  => "^(page)",
+			at(27)  => "^[",
+			at(127) => "^~",
 
-			case 30:  "^(1E)";
+			at(30)  => "^(1E)",
 
-			default:
-				if(1 <= this.int && this.int <= 26) {
-					"^" + std.String.fromCharCode(this.int + 64);
-				} else {
-					std.String.fromCharCode(this.int);
-				}
-		}
+			at((1 ... 7) | 11 | (13 ... 26)) => "^" + std.String.fromCharCode(this.int + 64),
+
+			_ => std.String.fromCharCode(this.int)
+		);
 	}
 
 	public function toUpperCase() {

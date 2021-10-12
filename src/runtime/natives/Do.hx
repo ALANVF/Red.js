@@ -23,8 +23,8 @@ import types.base._Path;
 import types.base.IGetPath;
 import types.base.IFunction;
 import haxe.ds.Option;
+import Util.detuple;
 
-//using util.NullTools;
 using types.Helpers;
 
 // THING: https://github.com/meijeru/red.specs-public/blob/master/specs.adoc#423-atomiccomposite-types
@@ -99,7 +99,7 @@ class Do {
 			{
 				final res = Array.ofLength(args.length);
 				for(i in 0...args.length) {
-					Util.set([res[i], values], groupNextExprForArg(values, args[i]));
+					detuple([res[i], values], groupNextExprForArg(values, args[i]));
 				}
 				res;
 			},
@@ -112,7 +112,7 @@ class Do {
 		if(values.length >= 3) {
 			checkForOp(values.next())._match(
 				at(o!, when(o.args[0].quoting != QVal)) => {
-					Util.set(@var [left, values2], groupNextExprForArg(values, o.args[0]));
+					detuple(@var [left, values2], groupNextExprForArg(values, o.args[0]));
 					return groupNextExprForArg(values2, o.args[0]).map(r -> GOp(left, o, r));
 				},
 				_ => {}
@@ -140,7 +140,7 @@ class Do {
 								case null: throw 'Unknown refinement `/${w.name}`!';
 								case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.name}`!';
 								case {name: n, args: args2}:
-									Util.set([@var refine, values], groupArgs(values, args2));
+									detuple([@var refine, values], groupArgs(values, args2));
 									refines[n] = refine;
 							},
 							_ => throw "Invalid refinement!"
@@ -214,7 +214,7 @@ class Do {
 		var result: Value = Unset.UNSET;
 		
 		while(values.isNotTail()) {
-			Util.set([@var expr, values], groupNextExpr(values));
+			detuple([@var expr, values], groupNextExpr(values));
 			result = evalGroupedExpr(expr);
 		}
 
@@ -230,30 +230,30 @@ class Do {
 	}
 
 	public static function call(value: Value, options: NDoOptions) {
-		return switch options {
-			case {expand: true} | {args: Some(_)}: throw 'NYI';
-			case {next: Some({position: word})}: value._match(
+		return options._match(
+			at({expand: true} | {args: _!}) => throw 'NYI',
+			at({next: {position: word}}) => value._match(
 				at(b is Block | b is Paren) => {
-					Util.set(@var [v, rest], doNextValue(b));
+					detuple(@var [v, rest], doNextValue(b));
 					word.setValue(b.fastSkipHead(rest.offset));
 					return v;
 				},
 				at(s is types.String) => {
 					final values = Transcode.call(s, Transcode.defaultOptions);
 					
-					Util.set(@var [v, rest], doNextValue(values));
+					detuple(@var [v, rest], doNextValue(values));
 					word.setValue(values.fastSkipHead(rest.offset));
 					return v;
 				},
 				at(_ is File | _ is Url) => throw 'NYI',
 				_ => evalValue(value)
-			);
-			default: value._match(
+			),
+			_ => value._match(
 				at(body is Block | body is Paren) => evalValues(body),
 				at(s is types.String) => evalValues(Transcode.call(s, Transcode.defaultOptions)),
 				at(_ is File | _ is Url) => throw 'NYI',
 				_ => evalValue(value)
-			);
-		}
+			)
+		);
 	}
 }

@@ -40,8 +40,8 @@ class Switch {
 		}
 
 		return switch options._default {
-			case Some({_case: _case}): Do.evalValues(_case);
-			case None: None.NONE;
+			case {_case: _case}: Do.evalValues(_case);
+			case null: None.NONE;
 		}
 	}
 }
