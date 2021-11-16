@@ -22,7 +22,7 @@ NYI
 
 ## Locally
 In order to run this locally, you'll need:
-- Haxe 4.2 (or higher)
+- Haxe 4.2.3 (or higher)
 - Some version of Node
 
 
@@ -80,7 +80,6 @@ Haxe, on the other hand, is a very powerful language that not only compiles to J
 
 That being said, Haxe does have a few downsides:
 - requires more boilerplate due to its small standard library
-- no support for abstract classes (although it's supposedly available in the nightly builds)
 - null safety is essentially non-existent (and you can't overload postifx `!` without macros??)
 - no array splats (`...`)
 - no type refinement/narrowing
@@ -90,7 +89,7 @@ That being said, Haxe does have a few downsides:
 - no untagged unions
 
 Despite these issues, Haxe has been much nicer to work with, and gave me a chance to fix a lot of things that I had originally implemented incorrectly.
-I think that once Haxe 4.2 comes out though, most of the bigger issues will be resolved.
+I've made some macros to help with some of these things, and others have been accepted at the latest Haxe evolution meeting, so I'm hoping that will make the experience better at some point soon.
 
 
 ## What can I do to help with development?
