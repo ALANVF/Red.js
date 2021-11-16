@@ -187,7 +187,8 @@ class Do {
 					s.setValue(value);
 				}
 			case GSetPath(s, e): Set.setPath(s, evalGroupedExpr(e));
-			case GOp(left, op, right): throw "NYI";
+			case GOp(left, op, right):
+				Eval.callAnyFunction(op, [evalGroupedExpr(left), evalGroupedExpr(right)], null);
 			case GCall(fn, args, refines):
 				Eval.callAnyFunction(
 					fn,

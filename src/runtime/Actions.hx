@@ -15,6 +15,8 @@ class Actions {
 		DUnset => new UnsetActions(),
 		DNative => new NativeActions(),
 		DAction => new ActionActions(),
+		DOp => new OpActions(),
+		DFunction => new FunctionActions(),
 		DInteger => new IntegerActions<types.Integer>()
 	] : Dict<TypeKind, ValueActions<Value>>));
 

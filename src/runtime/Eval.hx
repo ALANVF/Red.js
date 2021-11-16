@@ -21,7 +21,7 @@ class Eval {
 			at(n is Native) => Natives.callNative(n, args, refines),
 			at(a is Action) => Actions.callAction(a, args, refines),
 			at(f is Function) => callFunction(f, args, refines),
-			at(_ is Op) => throw "NYI",
+			at(o is Op) => callAnyFunction(o.fn, args, refines),
 			_ => throw "error!"
 		);
 	}

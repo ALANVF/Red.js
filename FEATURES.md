@@ -4,56 +4,56 @@
 - P = Partially implemented.
 
 # Datatypes
-|                          | datatype | syntax | `make`/`to` | `form`/`mold` | `compare` | other actions |
-|--------------------------|----------|--------|-------------|---------------|-----------|---------------|
-| `datatype!`              | Y        | NA     | NA          | N             | N         | N             |
-| `unset!`                 | Y        | NA     | N           | N             | N         | N             |
-| `none!`                  | Y        | Y      | N           | N             | N         | N             |
-| `logic!`                 | Y        | Y      | N           | N             | N         | N             |
-| `block!`                 | Y        | Y      | N           | N             | N         | N             |
-| `paren!`                 | Y        | Y      | N           | N             | N         | N             |
-| `string!`                | Y        | P*     | N           | N             | N         | N             |
-| `file!`                  | Y        | Y      | N           | N             | N         | N             |
-| `url!`                   | Y        | Y      | N           | N             | N         | N             |
-| `char!`                  | Y        | Y      | N           | N             | N         | N             |
-| `integer!`               | Y        | Y      | N           | N             | N         | N             |
-| `float!`                 | Y        | P**    | N           | N             | N         | N             |
-| `word!`                  | Y        | Y      | N           | N             | N         | N             |
-| `set-word!`              | Y        | Y      | N           | N             | N         | N             |
-| `lit-word!`              | Y        | Y      | N           | N             | N         | N             |
-| `get-word!`              | Y        | Y      | N           | N             | N         | N             |
-| `refinement!`            | Y        | Y      | N           | N             | N         | N             |
-| `issue!`                 | Y        | Y      | N           | N             | N         | N             |
-| `native!`                | Y        | NA     | N           | N             | N         | N             |
-| `action!`                | Y        | NA     | N           | N             | N         | N             |
-| `op!`                    | Y        | NA     | N           | N             | N         | N             |
-| `function!`              | Y        | NA     | N           | N             | N         | N             |
-| `path!`                  | Y        | Y      | N           | N             | N         | N             |
-| `lit-path!`              | Y        | Y      | N           | N             | N         | N             |
-| `set-path!`              | Y        | Y      | N           | N             | N         | N             |
-| `get-path!`              | Y        | Y      | N           | N             | N         | N             |
-| `routine!`               | N        | NA     | N           | N             | N         | N             |
-| `bitset!`                | Y        | NA     | N           | N             | N         | N             |
-| `point!`                 | N        | NA     | N           | N             | N         | N             |
-| `object!`                | Y        | NA     | N           | N             | N         | N             |
-| `typeset!`               | Y        | NA     | N           | N             | N         | N             |
-| `error!`                 | N        | NA     | N           | N             | N         | N             |
-| `vector!`                | N        | NA     | N           | N             | N         | N             |
-| `hash!`                  | P        | NA     | N           | N             | N         | N             |
-| `pair!`                  | Y        | Y      | N           | N             | N         | N             |
-| `percent!`               | Y        | Y      | N           | N             | N         | N             |
-| `tuple!`                 | Y        | Y      | N           | N             | N         | N             |
-| `map!`                   | Y        | Y      | N           | N             | N         | N             |
-| `binary!`                | Y        | Y      | N           | N             | N         | N             |
-| `time!`                  | Y        | Y      | N           | N             | N         | N             |
-| `tag!`                   | Y        | Y      | N           | N             | N         | N             |
-| `email!`                 | Y        | N***   | N           | N             | N         | N             |
-| `handle!`                | N        | NA     | N           | N             | N         | N             |
-| `date!`                  | Y        | N      | N           | N             | N         | N             |
-| `port!`                  | N        | NA     | N           | N             | N         | N             |
-| `image!`                 | N        | NA     | N           | N             | N         | N             |
-| `money!`                 | N        | N      | N           | N             | N         | N             |
-| `ref!`                   | Y        | Y      | N           | N             | N         | N             |
+|                          | datatype | syntax | `make` | `to` | `form` | `mold` | `compare` | other actions |
+|--------------------------|----------|--------|--------|------|-----------------|-----------|---------------|
+| `datatype!`              | Y        | NA     | NA     | NA   | N      | N      | N         | N             |
+| `unset!`                 | Y        | NA     | Y      | Y    | Y      | Y      | N         | N             |
+| `none!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `logic!`                 | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `block!`                 | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `paren!`                 | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `string!`                | Y        | P*     | N      | N    | N      | N      | N         | N             |
+| `file!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `url!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `char!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `integer!`               | Y        | Y      | N      | N    | N      | N      | P         | P             |
+| `float!`                 | Y        | P**    | N      | N    | N      | N      | N         | N             |
+| `word!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `set-word!`              | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `lit-word!`              | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `get-word!`              | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `refinement!`            | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `issue!`                 | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `native!`                | Y        | NA     | Y      | N    | N      | N      | N         | N             |
+| `action!`                | Y        | NA     | Y      | N    | N      | N      | N         | N             |
+| `op!`                    | Y        | NA     | Y      | N    | N      | N      | N         | N             |
+| `function!`              | Y        | NA     | Y      | N    | N      | N      | N         | N             |
+| `path!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `lit-path!`              | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `set-path!`              | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `get-path!`              | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `routine!`               | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `bitset!`                | Y        | NA     | N      | N    | N      | N      | N         | N             |
+| `point!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `object!`                | Y        | NA     | N      | N    | N      | N      | N         | N             |
+| `typeset!`               | Y        | NA     | N      | N    | N      | N      | N         | N             |
+| `error!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `hash!`                  | P        | NA     | N      | N    | N      | N      | N         | N             |
+| `pair!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `percent!`               | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `tuple!`                 | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `map!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `binary!`                | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `time!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `tag!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `email!`                 | Y        | N***   | N      | N    | N      | N      | N         | N             |
+| `handle!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `date!`                  | Y        | N      | N      | N    | N      | N      | N         | N             |
+| `port!`                  | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `image!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `money!`                 | N        | N      | N      | N    | N      | N      | N         | N             |
+| `ref!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
 
 \* `raw-string!` literals are currently not supported.
 
