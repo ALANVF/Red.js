@@ -8,10 +8,10 @@ abstract class _Function extends Value implements IFunction {
 	function get_doc() return _doc;
 	function set_doc(v) return _doc = v;
 
-	var _args: _Args;
-	public var args(get, set): _Args;
-	function get_args() return _args;
-	function set_args(v: _Args) return _args = v;
+	var _params: _Params;
+	public var params(get, set): _Params;
+	function get_params() return _params;
+	function set_params(v: _Params) return _params = v;
 	
 	var _refines: _Refines;
 	public var refines(get, set): _Refines;
@@ -24,27 +24,27 @@ abstract class _Function extends Value implements IFunction {
 	function set_retSpec(v: Null<Block>) return _retSpec = v;
 
 	public var arity(get, never): Int;
-	function get_arity() return this._args.length;
+	function get_arity() return this._params.length;
 
-	public function new(doc: Null<std.String>, args: _Args, refines: _Refines, retSpec: Null<Block>) {
+	public function new(doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>) {
 		this.doc = doc;
-		this.args = args;
+		this.params = params;
 		this.refines = refines;
 		this.retSpec = retSpec;
 	}
 
 	public function arityWithRefines(refines: Iterable<std.String>) {
-		var nargs = this.arity;
+		var nparams = this.arity;
 		
 		for(refine in refines) {
 			final name = refine.toLowerCase();
 			switch this.refines.find(r -> r.name.toLowerCase() == name) {
 				case null: throw "Error!";
-				case {args: args}: nargs += args.length;
+				case {params: params}: nparams += params.length;
 				case _:
 			}
 		}
 
-		return nargs;
+		return nparams;
 	}
 }

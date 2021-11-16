@@ -125,8 +125,8 @@ class Native extends _Function {
 
 	public final fn: NativeFn;
 
-	public function new(doc: Null<std.String>, args: _Args, refines: _Refines, retSpec: Null<Block>, fn: NativeFn) {
-		super(doc, args, refines, retSpec);
+	public function new(doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>, fn: NativeFn) {
+		super(doc, params, refines, retSpec);
 		this.fn = fn;
 	}
 }

@@ -9,9 +9,9 @@ class Op extends Value implements IFunction {
 	function get_doc() return fn.doc;
 	function set_doc(v) return fn.doc = v;
 
-	public var args(get, set): _Args;
-	function get_args() return fn.args;
-	function set_args(v: _Args) return fn.args = v;
+	public var params(get, set): _Params;
+	function get_params() return fn.params;
+	function set_params(v: _Params) return fn.params = v;
 	
 	public var refines(get, set): _Refines;
 	function get_refines(): _Refines return [];
@@ -28,7 +28,7 @@ class Op extends Value implements IFunction {
 
 	public function new(fn: _Function) {
 		if(fn.arity != 2) {
-			throw "op! must take 2 arguments";
+			throw "op! must take 2 paramuments";
 		} else {
 			this.fn = fn;
 		}

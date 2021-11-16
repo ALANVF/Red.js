@@ -12,7 +12,7 @@ Types:
 - point!
 
 Actions:
-- all of 'em
+- most of 'em
 
 Natives:
 - most of 'em

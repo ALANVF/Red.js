@@ -22,10 +22,10 @@ class NativeActions extends ValueActions<Native> {
 				s is Block,
 				{name: "get-definition"} is Issue,
 				{name: name} is Word
-			]) => ifMatch(runtime.natives.Func.parseSpec(s), {doc: doc, args: args, refines: refines, ret: ret},
+			]) => ifMatch(runtime.natives.Func.parseSpec(s), {doc: doc, params: params, refines: refines, ret: ret},
 				new Native(
 					doc,
-					args,
+					params,
 					refines,
 					ret,
 					if(MAPPINGS.has(name)) {

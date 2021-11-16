@@ -30,6 +30,7 @@ class Bind {
 		final ctx = context._match(
 			at(sym is Symbol) => sym.context,
 			at(obj is Object) => obj.ctx,
+			at(ctx_ is Context) => ctx_,
 			at(func is Function) => throw "NYI!",
 			_ => throw "error!"
 		);

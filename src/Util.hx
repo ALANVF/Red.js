@@ -280,7 +280,7 @@ class Util {
 	#end
 	
 	static macro function _match<T>(value: ExprOf<T>, cases: Array<Expr>): Expr {
-		var defaultExpr = None;
+		var defaultExpr = null;
 		var caseExprs: Array<Case> = [];
 		
 		for(_case in cases) {
@@ -296,7 +296,7 @@ class Util {
 					expr: expr
 				});
 
-				case macro _ => $expr: defaultExpr = Some(expr);
+				case macro _ => $expr: defaultExpr = expr;
 
 				default: Context.error("error!", _case.pos);
 			};
@@ -311,7 +311,10 @@ class Util {
 			
 			final pattern = _case.values[0];
 			
-			function collect(e: Expr): Expr return switch removeDisp(e) {
+			function collect(e: Expr): Expr return switch e {
+				case {expr: EDisplay(expr2, k), pos: pos}:
+					{expr: EDisplay(collect(expr2), k), pos: pos};
+				
 				case macro [$a{values}]: macro $a{values.map(collect)};
 				
 				case {expr: EIs(lhs, type), pos: pos}:
@@ -347,7 +350,7 @@ class Util {
 						
 						default:
 							if(!didChange) didChange = true;
-							macro (_ is $itype ? ((untyped _ : $dtype) : $type) : null) => $lhs;
+							macro (_ is $itype ? ((untyped _ : $dtype) : $type) : null) => ${collect(lhs)};
 					}
 				
 				case macro ${{expr: EIs(_, _)}} => ${_}: e;
@@ -408,7 +411,7 @@ class Util {
 					};
 					
 					switch begin {
-						case {expr: EField({expr: EConst(CIdent(_))}, _) | EConst(CIdent(_)) | ECall(_)}: {
+						case {expr: EField({expr: EConst(CIdent(_)) | EField({expr: EConst(CIdent(_))}, _)}, _) | EConst(CIdent(_)) | ECall(_)}: {
 							final t = TypeTools.getEnum(switch begin {
 								case macro $ec($a{_}): switch Context.typeExpr(ec).t {
 									case TFun(_, t1): t1;
@@ -473,8 +476,6 @@ class Util {
 						}
 					}
 				
-				case {expr: EDisplay(e2, k)}: collect(e2);
-				
 				default: ExprTools.map(e, collect);
 			}
 			
@@ -533,7 +534,7 @@ class Util {
 		}
 
 		return {
-			expr: ESwitch(value, caseExprs, defaultExpr.toNull()),
+			expr: ESwitch(value, caseExprs, defaultExpr),
 			pos: Context.currentPos()
 		};
 	}

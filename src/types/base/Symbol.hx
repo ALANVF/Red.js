@@ -25,9 +25,7 @@ abstract class Symbol extends Value {
 		return this.name.toLowerCase() == sym.name.toLowerCase();
 	}
 
-	public function copyWith(?context: Context, ?offset: Int): Symbol {
-		throw "must be implemented by subclasses!";
-	}
+	public abstract function copyWith(?context: Context, ?offset: Int): Symbol;
 
 	public function bindToContext(ctx: Context) {
 		if(this.context != ctx) {
@@ -57,7 +55,7 @@ abstract class Symbol extends Value {
 					ctx.setSymbol(sym, value);
 					return sym;
 				case offset:
-					return ctx.getOffsetSymbol(offset);
+					return this.copyWith(ctx, offset);
 			}
 		}
 	}

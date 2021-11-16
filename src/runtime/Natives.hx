@@ -50,6 +50,9 @@ class Natives {
 			at([NStats(f), []]) => f(Options.fromRefines(NStatsOptions, refines)),
 			at([NBind(f), [w, c]]) => f(w, c, Options.fromRefines(NBindOptions, refines)),
 			at([NIn(f), [o is types.Object, s is types.base.Symbol]]) => f(o, s),
+			at([NBreak(f), []]) => f(Options.fromRefines(NBreakOptions, refines)),
+			at([NReturn(f), [v]]) => f(v),
+			at([NExit(f) | NContinue(f), []]) => f(),
 			at([NTranscode(f), [v]]) => f(v, Options.fromRefines(NTranscodeOptions, refines)),
 			_ => throw "NYI"
 		);

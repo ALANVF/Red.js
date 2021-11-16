@@ -11,7 +11,7 @@ class Until {
 		do {
 			try {
 				res = Do.evalValues(body);
-			} catch(e: Error) {
+			} catch(e: RedError) {
 				if(e.isContinue()) {
 					continue;
 				} else if(e.isBreak()) {

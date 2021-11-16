@@ -30,7 +30,7 @@ class RemoveEach {
 						if(Do.evalValues(body).isTruthy()) {
 							series.remove();
 						}
-					} catch(e: Error) {
+					} catch(e: RedError) {
 						if(e.isContinue()) {
 							continue;
 						} else if(e.isBreak()) {
@@ -55,7 +55,7 @@ class RemoveEach {
 						} else {
 							series = series.skip(count);
 						}
-					} catch(e: Error) {
+					} catch(e: RedError) {
 						if(e.isContinue()) {
 							continue;
 						} else if(e.isBreak()) {

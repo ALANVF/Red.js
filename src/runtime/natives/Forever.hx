@@ -10,7 +10,7 @@ class Forever {
 		while(true) {
 			try {
 				Do.evalValues(body);
-			} catch(e: Error) {
+			} catch(e: RedError) {
 				if(e.isContinue()) {
 					continue;
 				} else if(e.isBreak()) {

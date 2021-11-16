@@ -94,12 +94,12 @@ class Do {
 		}
 	}
 
-	static function groupArgs(values: Values, args: Array<_Arg>): Result<Array<GroupedExpr>> {
+	static function groupParams(values: Values, params: Array<_Param>): Result<Array<GroupedExpr>> {
 		return mkResult(
 			{
-				final res = Array.ofLength(args.length);
-				for(i in 0...args.length) {
-					detuple([res[i], values], groupNextExprForArg(values, args[i]));
+				final res = Array.ofLength(params.length);
+				for(i in 0...params.length) {
+					detuple([res[i], values], groupNextExprForParam(values, params[i]));
 				}
 				res;
 			},
@@ -111,9 +111,9 @@ class Do {
 		// look-ahead in case there's an op! after the value with a lit-word! or get-word! LHS
 		if(values.length >= 3) {
 			checkForOp(values.next())._match(
-				at(o!, when(o.args[0].quoting != QVal)) => {
-					detuple(@var [left, values2], groupNextExprForArg(values, o.args[0]));
-					return groupNextExprForArg(values2, o.args[0]).map(r -> GOp(left, o, r));
+				at(o!, when(o.params[0].quoting != QVal)) => {
+					detuple(@var [left, values2], groupNextExprForParam(values, o.params[0]));
+					return groupNextExprForParam(values2, o.params[0]).map(r -> GOp(left, o, r));
 				},
 				_ => {}
 			);
@@ -123,9 +123,9 @@ class Do {
 			at(s is SetWord) => groupNextExpr(values).map(e -> GSetWord(s, e)),
 			at(s is SetPath) => groupNextExpr(values).map(e -> GSetPath(s, e)),
 			at((_.getValue() => fn is IFunction) is Word) => // WE HAS DA FLOW TYPING!!!
-				groupArgs(values, fn.args).map(args -> GCall(fn, args, [])),
+				groupParams(values, fn.params).map(args -> GCall(fn, args, [])),
 			at((doesBecomeFunction(_) => {_1: fn, _2: rest}) is Path) => {
-				final args = groupArgs(values, fn.args);
+				final args = groupParams(values, fn.params);
 
 				if(rest.length == 0) {
 					args.map(a -> GCall(fn, a, []));
@@ -139,8 +139,8 @@ class Do {
 							at(w is Word) => switch fn.refines.find(ref -> w.equalsString(ref.name)) {
 								case null: throw 'Unknown refinement `/${w.name}`!';
 								case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.name}`!';
-								case {name: n, args: args2}:
-									detuple([@var refine, values], groupArgs(values, args2));
+								case {name: n, params: params2}:
+									detuple([@var refine, values], groupParams(values, params2));
 									refines[n] = refine;
 							},
 							_ => throw "Invalid refinement!"
@@ -152,15 +152,15 @@ class Do {
 			},
 			at(v) => checkForOp(values)._match(
 				at(null) => mkResult(GValue(v), values),
-				at(o!!) => groupNextExprForArg(++values, o.args[1]).map(e -> GOp(GValue(v), o, e))
+				at(o!!) => groupNextExprForParam(++values, o.params[1]).map(e -> GOp(GValue(v), o, e))
 			)
 		);
 
 		return new Result(GUnset, values);
 	}
 
-	public static function groupNextExprForArg(values: Values, arg: _Arg): Result<GroupedExpr> {
-		return switch arg.quoting {
+	public static function groupNextExprForParam(values: Values, param: _Param): Result<GroupedExpr> {
+		return switch param.quoting {
 			case QVal: groupNextExpr(values);
 			case QGet if(values.isTail()): mkResult(GUnset, values);
 			case QGet: mkResult(GNoEval(values++[0].nonNull()), values);
@@ -189,7 +189,7 @@ class Do {
 			case GSetPath(s, e): Set.setPath(s, evalGroupedExpr(e));
 			case GOp(left, op, right): throw "NYI";
 			case GCall(fn, args, refines):
-				Eval.callFunction(
+				Eval.callAnyFunction(
 					fn,
 					args.map(a -> evalGroupedExpr(a)),
 					[for(k => v in refines) k => v.map(a -> evalGroupedExpr(a))] // TODO: fix bad codegen

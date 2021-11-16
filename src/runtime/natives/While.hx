@@ -10,8 +10,8 @@ class While {
 		while({
 			try {
 				Do.evalValues(cond).isTruthy();
-			} catch(e: Error) {
-				if(e.type == "throw" && (e.id == "break" || e.id == "continue")) {
+			} catch(e: RedError) {
+				if(e.isBreak() || e.isContinue()) {
 					throw Error.create({type: "throw", id: "while-cond"});
 				} else {
 					throw e;
@@ -20,7 +20,7 @@ class While {
 		}) {
 			try {
 				Do.evalValues(body);
-			} catch(e: Error) {
+			} catch(e: RedError) {
 				if(e.isContinue()) {
 					continue;
 				} else if(e.isBreak()) {

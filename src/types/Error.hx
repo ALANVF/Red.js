@@ -82,11 +82,19 @@ class Error extends Object {
 		});
 	}
 
+	public function description(): std.String {
+		return '$type: $id';
+	}
+
 	public function isBreak() {
 		return type == "throw" && id == "break";
 	}
 
 	public function isContinue() {
 		return type == "throw" && id == "continue";
+	}
+
+	public function isReturn() {
+		return type == "throw" && id == "return";
 	}
 }

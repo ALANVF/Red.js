@@ -62,6 +62,8 @@ class Actions {
 
 		final out = [];
 		
+		rdr.trimSpace();
+
 		while(!rdr.matches(stop)) {
 			if(rdr.eof()) {
 				throw 'Error while parsing $name at ${rdr.getLocStr()}';
@@ -76,11 +78,11 @@ class Actions {
 	}
 
 	public static inline function block(rdr: Reader) {
-		return delim(rdr, "paren!", "[", "]");
+		return delim(rdr, "block!", "[", "]");
 	}
 	
 	public static inline function paren(rdr: Reader) {
-		return delim(rdr, "block!", "(", ")");
+		return delim(rdr, "paren!", "(", ")");
 	}
 
 	public static inline function map(rdr: Reader) {

@@ -25,7 +25,7 @@ class ValueBuilder {
 		var name = cls.name;
 		var dname = "D" + name;
 
-		if(!cls.isAbstract && name != "Context" && fields.every(f -> f.name != "get_TYPE_KIND")) {
+		if(!cls.isAbstract && name != "Context" && name != "FunctionContext" && fields.every(f -> f.name != "get_TYPE_KIND")) {
 			fields.push({
 				name: "get_TYPE_KIND",
 				pos: Context.currentPos(),

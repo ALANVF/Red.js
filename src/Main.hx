@@ -43,6 +43,20 @@ class Main {
 		");
 
 		runtime.Eval.evalCode("
+			if: make native! [[
+					cond  	 [any-type!]
+					then-blk [block!]
+				]
+				#get-definition NAT_IF
+			]
+			
+			unless: make native! [[
+					cond  	 [any-type!]
+					then-blk [block!]
+				]
+				#get-definition NAT_UNLESS
+			]
+
 			either: make native! [[
 					cond     [logic!]
 					true-blk [block!]
@@ -57,7 +71,20 @@ class Main {
 				]
 				#get-definition NAT_LOOP
 			]
-			
+
+			repeat: make native! [[
+					'word [word!]
+					value [integer! float!]
+					body  [block!]
+				]
+				#get-definition NAT_REPEAT
+			]
+
+			forever: make native! [[
+					body   [block!]
+				]
+				#get-definition NAT_FOREVER
+			]
 			
 			foreach: make native! [[
 					'word  [word! block!]
@@ -80,6 +107,26 @@ class Main {
 					body [block!]
 				]
 				#get-definition NAT_REMOVE_EACH
+			]
+
+			func: make native! [[
+					spec [block!]
+					body [block!]
+				]
+				#get-definition NAT_FUNC
+			]
+
+			does: make native! [[
+					body [block!]
+				]
+				#get-definition NAT_DOES
+			]
+			
+			has: make native! [[
+					vars [block!]
+					body [block!]
+				]
+				#get-definition NAT_HAS
 			]
 
 			switch: make native! [[
@@ -238,6 +285,31 @@ class Main {
 					word   [any-word!]
 				]
 				#get-definition NAT_IN
+			]
+
+			; ...
+
+			break: make native! [[
+					/return
+						value [any-type!]
+				]
+				#get-definition NAT_BREAK
+			]
+			
+			continue: make native! [[
+				]
+				#get-definition NAT_CONTINUE
+			]
+			
+			exit: make native! [[
+				]
+				#get-definition NAT_EXIT
+			]
+			
+			return: make native! [[
+					value [any-type!]
+				]
+				#get-definition NAT_RETURN
 			]
 		");
 		

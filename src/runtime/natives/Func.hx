@@ -7,27 +7,29 @@ import types.Word;
 import types.LitWord;
 import types.GetWord;
 import types.SetWord;
+import types.Function;
 import types.base.IFunction;
 
 // TODO: improve this
+@:build(runtime.NativeBuilder.build())
 class Func {
 	public static function parseSpec(spec: Block) {
 		final res = {
 			doc: null,
-			args: [],
+			params: [],
 			refines: [],
 			ret: null
 		};
 
 		spec = spec.copy();
 
-		inline function getArgs(args: _Args) {
+		inline function getParams(params: _Params) {
 			while(true) {
 				spec.pick(0)._match(
 					at(Some(w is Word | w is GetWord | w is LitWord)) => {
 						spec.index++;
 
-						args.push({
+						params.push({
 							name: w.name,
 							quoting: switch w.TYPE_KIND {
 								case DWord:    QVal;
@@ -79,7 +81,7 @@ class Func {
 			_ => {}
 		);
 
-		getArgs(res.args);
+		getParams(res.params);
 
 		getRet();
 
@@ -99,7 +101,7 @@ class Func {
 						)
 					};
 
-					getArgs(refine.args);
+					getParams(refine.params);
 
 					res.refines.push(refine);
 				},
@@ -116,5 +118,13 @@ class Func {
 		}
 
 		return res;
+	}
+
+	public static function call(spec: Block, body: Block): Function {
+		parseSpec(spec)._match(
+			at({doc: doc, params: params, refines: refines, ret: ret}) => {
+				return new Function(doc, params, refines, ret, body.copy());
+			}
+		);
 	}
 }

@@ -19,7 +19,7 @@ enum ActionFn {
 	ATo(fn: (type: Value, spec: Value) -> Value);
 	AForm(fn: (value: Value, options: AFormOptions) -> String);
 	AMold(fn: (value: Value, options: AMoldOptions) -> String);
-	AModify(fn: (target: Value, field: Word, value: Value, options: AModifyOptions) -> Value);
+	AModify(fn: (tparamet: Value, field: Word, value: Value, options: AModifyOptions) -> Value);
 	
 	AEvalPath(fn: (parent: Value, element: Value, value: Null<Value>, path: _Path, isCase: Bool) -> Value);
 	ACompare(fn: (value1: Value, value2: Value, op: ComparisonOp) -> Logic);
@@ -56,7 +56,7 @@ enum ActionFn {
 	AIndex_q(fn: (series: Value) -> Integer);
 	AInsert(fn: (series: Value) -> Value);
 	ALength_q(fn: (series: Value) -> Value);
-	AMove(fn: (origin: Value, target: Value, options: AMoveOptions) -> Value);
+	AMove(fn: (origin: Value, tparamet: Value, options: AMoveOptions) -> Value);
 	ANext(fn: (series: Value) -> Value);
 	APick(fn: (series: Value, index: Value) -> Value);
 	APoke(fn: (series: Value, index: Value, value: Value) -> Value);
@@ -78,7 +78,7 @@ enum ActionFn {
 	ADelete(fn: (file: Value) -> Value);
 	AOpen(fn: (port: Value, options: AOpenOptions) -> Value);
 	//AOpen_q(fn: (port: Port) -> Logic);
-	AQuery(fn: (target: Value) -> Value);
+	AQuery(fn: (tparamet: Value) -> Value);
 	ARead(fn: (source: Value, options: AReadOptions) -> Value);
 	ARename(fn: (from: Value, to: Value) -> Value);
 	//AUpdate(fn: (port: Port) -> Value);
@@ -92,8 +92,8 @@ class Action extends _Function {
 
 	public final fn: ActionFn;
 
-	public function new(doc: Null<std.String>, args: _Args, refines: _Refines, retSpec: Null<Block>, fn: ActionFn) {
-		super(doc, args, refines, retSpec);
+	public function new(doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>, fn: ActionFn) {
+		super(doc, params, refines, retSpec);
 		this.fn = fn;
 	}
 }
