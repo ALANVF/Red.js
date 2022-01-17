@@ -28,7 +28,7 @@ class ValueActions<This: Value> {
 	function compare(value1: This, value2: Value, op: ComparisonOp): CompareResult invalid();
 
 	/*-- Scalar actions --*/
-	function absolute(value: This): This invalid();
+	@:noCompletion function absolute(value: This): This invalid();
 	function add(value1: This, value2: Value): Value invalid();
 	function divide(value1: This, value2: Value): Value invalid();
 	function multiply(value1: This, value2: Value): Value invalid();

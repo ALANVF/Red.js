@@ -36,7 +36,7 @@
 | `bitset!`                | Y        | NA     | N      | N    | N      | N      | N         | N             |
 | `point!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `object!`                | Y        | NA     | N      | N    | N      | N      | N         | N             |
-| `typeset!`               | Y        | NA     | N      | N    | N      | N      | N         | N             |
+| `typeset!`               | Y        | NA     | Y      | N    | N      | N      | N         | N             |
 | `error!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `hash!`                  | P        | NA     | N      | N    | N      | N      | N         | N             |
@@ -104,7 +104,7 @@
 | `bind`              | Y      |
 | `in`                | Y      |
 | `parse`             | N      |
-| `union`             | N      |
+| `union`             | P      |
 | `unique`            | N      |
 | `intersect`         | N      |
 | `difference`        | N      |

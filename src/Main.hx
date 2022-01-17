@@ -289,6 +289,19 @@ class Main {
 
 			; ...
 
+			union: make native! [[
+					set1 [block! hash! string! bitset! typeset!]
+					set2 [block! hash! string! bitset! typeset!]
+					/case
+					/skip
+						size [integer!]
+					return: [block! hash! string! bitset! typeset!]
+				]
+				#get-definition NAT_UNION
+			]
+
+			; ...
+
 			break: make native! [[
 					/return
 						value [any-type!]
@@ -311,6 +324,35 @@ class Main {
 				]
 				#get-definition NAT_RETURN
 			]
+
+			+: make op! :add
+			=: make op! :equal?
+			<>: make op! :not-equal?
+			==: make op! :strict-equal?
+			=?: make op! :same?
+			<: make op! :lesser?
+			>: make op! :greater?
+			<=: make op! :lesser-or-equal?
+			>=: make op! :greater-or-equal?
+		");
+
+		runtime.Eval.evalCode("
+			internal!:		make typeset! [unset!]
+			external!:		make typeset! [] ;#if find config/modules 'view [event!]
+			number!:		make typeset! [integer! float! percent!]
+			scalar!:		union number! make typeset! [money! char! pair! tuple! time! date!]
+			any-word!:		make typeset! [word! set-word! get-word! lit-word!] ;-- any bindable word
+			all-word!:		union any-word! make typeset! [refinement! issue!]	;-- all types of word nature
+			any-list!:		make typeset! [block! paren! hash!]
+			any-path!:		make typeset! [path! set-path! get-path! lit-path!]
+			any-block!:		union any-path! any-list!
+			any-function!:	make typeset! [native! action! op! function!] ;routine!
+			any-object!:	make typeset! [object! error!] ;port!
+			any-string!:	make typeset! [string! file! url! tag! email! ref!]
+			series!:		union make typeset! [binary!] union any-block! any-string! ;image! vector!
+			immediate!:		union scalar! union all-word! make typeset! [none! logic! datatype! typeset! date!] ;handle!
+			default!:		union series! union immediate! union any-object! union external! union any-function! make typeset! [map! bitset!]
+			any-type!:		union default! internal!
 		");
 		
 		js.Syntax.code("

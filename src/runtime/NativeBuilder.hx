@@ -20,6 +20,8 @@ class NativeBuilder {
 					Context.getType(path);
 				} catch(_: String) try {
 					Context.getType(path = 'runtime.natives.Compare.$name');
+				} catch(_: String) try {
+					Context.getType(path = 'runtime.natives.SetOp.$name');
 				} catch(_: String) {
 					return null;
 				}

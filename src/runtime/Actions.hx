@@ -17,7 +17,8 @@ class Actions {
 		DAction => new ActionActions(),
 		DOp => new OpActions(),
 		DFunction => new FunctionActions(),
-		DInteger => new IntegerActions<types.Integer>()
+		DInteger => new IntegerActions<types.Integer>(),
+		DTypeset => new TypesetActions()
 	] : Dict<TypeKind, ValueActions<Value>>));
 
 	static inline function get(kind: TypeKind) {

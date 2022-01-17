@@ -48,110 +48,111 @@ private extern interface _ArrayProto<T> {
 #end
 */
 
+@:publicFields
 class ArrayTools {
 #if (js && js_es >= 5)
-	public static inline function ofLength<T>(c: Class<Array<T>>, length: Int): Array<T>
+	static inline function ofLength<T>(c: Class<Array<T>>, length: Int): Array<T>
 		return js.Syntax.construct(c, length);
 
-	public static overload extern inline function every<T>(array: Array<T>, callback: (currentValue: T) -> Bool): Bool
+	static overload extern inline function every<T>(array: Array<T>, callback: (currentValue: T) -> Bool): Bool
 		return (untyped array).every(callback);
 	
-	public static overload extern inline function everyi<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool): Bool
+	static overload extern inline function everyi<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool): Bool
 		return (untyped array).every(callback);
 	
-	public static overload extern inline function everyia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool): Bool
+	static overload extern inline function everyia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool): Bool
 		return (untyped array).every(callback);
 
 
-	public static overload extern inline function some<T>(array: Array<T>, callback: (currentValue: T) -> Bool): Bool
+	static overload extern inline function some<T>(array: Array<T>, callback: (currentValue: T) -> Bool): Bool
 		return (untyped array).some(callback);
 	
-	public static overload extern inline function somei<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool): Bool
+	static overload extern inline function somei<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool): Bool
 		return (untyped array).some(callback);
 	
-	public static overload extern inline function someia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool): Bool
+	static overload extern inline function someia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool): Bool
 		return (untyped array).some(callback);
 
 
-	public static overload extern inline function fill<T>(array: Array<T>, value: T): Array<T>
+	static overload extern inline function fill<T>(array: Array<T>, value: T): Array<T>
 		return (untyped array).fill(value);
-	public static overload extern inline function fill<T>(array: Array<T>, value: T, start: Int): Array<T>
+	static overload extern inline function fill<T>(array: Array<T>, value: T, start: Int): Array<T>
 		return (untyped array).fill(value, start);
-	public static overload extern inline function fill<T>(array: Array<T>, value: T, start: Int, end: Int): Array<T>
+	static overload extern inline function fill<T>(array: Array<T>, value: T, start: Int, end: Int): Array<T>
 		return (untyped array).fill(value, start, end);
 
 
-	public static overload extern inline function find<T>(array: Array<T>, callback: (element: T) -> Bool): Null<T>
+	static overload extern inline function find<T>(array: Array<T>, callback: (element: T) -> Bool): Null<T>
 		return (untyped array).find(callback);
 	
-	public static overload extern inline function findi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Null<T>
+	static overload extern inline function findi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Null<T>
 		return (untyped array).find(callback);
 	
-	public static overload extern inline function findia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Null<T>
+	static overload extern inline function findia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Null<T>
 		return (untyped array).find(callback);
 
 
-	public static overload extern inline function findIndex<T>(array: Array<T>, callback: (element: T) -> Bool): Int
+	static overload extern inline function findIndex<T>(array: Array<T>, callback: (element: T) -> Bool): Int
 		return (untyped array).findIndex(callback);
 	
-	public static overload extern inline function findIndexi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Int
+	static overload extern inline function findIndexi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Int
 		return (untyped array).findIndex(callback);
 	
-	public static overload extern inline function findIndexia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Int
+	static overload extern inline function findIndexia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Int
 		return (untyped array).findIndex(callback);
 
 
-	public static overload extern inline function forEach<T>(array: Array<T>, callback: (element: T) -> Void): Void
+	static overload extern inline function forEach<T>(array: Array<T>, callback: (element: T) -> Void): Void
 		(untyped array).forEach(callback);
 	
-	public static overload extern inline function forEachi<T>(array: Array<T>, callback: (element: T, index: Int) -> Void): Void
+	static overload extern inline function forEachi<T>(array: Array<T>, callback: (element: T, index: Int) -> Void): Void
 		(untyped array).forEach(callback);
 	
-	public static overload extern inline function forEachia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Void): Void
+	static overload extern inline function forEachia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Void): Void
 		(untyped array).forEach(callback);
 
-	public static inline function filter<T>(array: Array<T>, callback: (element: T) -> Bool): Array<T>
+	static inline function filter<T>(array: Array<T>, callback: (element: T) -> Bool): Array<T>
 		return (untyped array).filter(callback);
 
-	public static inline function filteri<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Array<T>
+	static inline function filteri<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Array<T>
 		return (untyped array).filter(callback);
 
-	public static inline function filteria<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Array<T>
+	static inline function filteria<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Array<T>
 		return (untyped array).filter(callback);
 
 
-	public static overload extern inline function flatMap<T, U>(array: Array<T>, callback: (element: T) -> Array<U>): Array<U>
+	static overload extern inline function flatMap<T, U>(array: Array<T>, callback: (element: T) -> Array<U>): Array<U>
 		return (untyped array).flatMap(callback);
-	public static overload extern inline function flatMap<T, U>(array: Array<T>, callback: (element: T, index: Int) -> Array<U>): Array<U>
+	static overload extern inline function flatMap<T, U>(array: Array<T>, callback: (element: T, index: Int) -> Array<U>): Array<U>
 		return (untyped array).flatMap(callback);
-	public static overload extern inline function flatMap<T, U>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Array<U>): Array<U>
+	static overload extern inline function flatMap<T, U>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Array<U>): Array<U>
 		return (untyped array).flatMap(callback);
 
 	
-	public static overload extern inline function copyWithin<T>(array: Array<T>, target: Int): Array<T>
+	static overload extern inline function copyWithin<T>(array: Array<T>, target: Int): Array<T>
 		return (untyped array).copyWithin(target);
-	public static overload extern inline function copyWithin<T>(array: Array<T>, target: Int, start: Int): Array<T>
+	static overload extern inline function copyWithin<T>(array: Array<T>, target: Int, start: Int): Array<T>
 		return (untyped array).copyWithin(target, start);
-	public static overload extern inline function copyWithin<T>(array: Array<T>, target: Int, start: Int, end: Int): Array<T>
+	static overload extern inline function copyWithin<T>(array: Array<T>, target: Int, start: Int, end: Int): Array<T>
 		return (untyped array).copyWithin(target, start, end);
 
 #else
 
-	public static function every<T>(array: Array<T>, callback: (currentValue: T) -> Bool) {
+	static function every<T>(array: Array<T>, callback: (currentValue: T) -> Bool) {
 		for(value in array)
 			if(!callback(value))
 				return false;
 		return true;
 	}
 	
-	public static function everyi<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool) {
+	static function everyi<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool) {
 		for(i => value in array)
 			if(!callback(value, i))
 				return false;
 		return true;
 	}
 
-	public static function everyia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool) {
+	static function everyia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool) {
 		for(i => value in array)
 			if(!callback(value, i, array))
 				return false;
@@ -159,21 +160,21 @@ class ArrayTools {
 	}
 
 
-	public static function some<T>(array: Array<T>, callback: (currentValue: T) -> Bool) {
+	static function some<T>(array: Array<T>, callback: (currentValue: T) -> Bool) {
 		for(value in array)
 			if(callback(value))
 				return true;
 		return false;
 	}
 	
-	public static function somei<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool) {
+	static function somei<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool) {
 		for(i => value in array)
 			if(callback(value, i))
 				return true;
 		return false;
 	}
 	
-	public static function someia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool) {
+	static function someia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool) {
 		for(i => value in array)
 			if(callback(value, i, array))
 				return true;
@@ -181,7 +182,7 @@ class ArrayTools {
 	}
 
 
-	public static function fill<T>(array: Array<T>, value: T, ?start: Int, ?end: Int) {
+	static function fill<T>(array: Array<T>, value: T, ?start: Int, ?end: Int) {
 		final len = array.length;
 
 		if(start == null) start = 1;
@@ -198,21 +199,21 @@ class ArrayTools {
 	}
 
 
-	public static function find<T>(array: Array<T>, callback: (element: T) -> Bool): Null<T> {
+	static function find<T>(array: Array<T>, callback: (element: T) -> Bool): Null<T> {
 		for(value in array)
 			if(callback(value))
 				return value;
 		return null;
 	}
 	
-	public static function findi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Null<T> {
+	static function findi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Null<T> {
 		for(i => value in array)
 			if(callback(value, i))
 				return array[i];
 		return null;
 	}
 
-	public static function findia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Null<T> {
+	static function findia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Null<T> {
 		for(i => value in array)
 			if(callback(value, i, array))
 				return array[i];
@@ -220,21 +221,21 @@ class ArrayTools {
 	}
 
 
-	public static function findIndex<T>(array: Array<T>, callback: (element: T) -> Bool) {
+	static function findIndex<T>(array: Array<T>, callback: (element: T) -> Bool) {
 		for(i => value in array)
 			if(callback(value))
 				return i;
 		return -1;
 	}
 	
-	public static function findIndexi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool) {
+	static function findIndexi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool) {
 		for(i => value in array)
 			if(callback(value, i))
 				return i;
 		return -1;
 	}
 
-	public static function findIndexia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool) {
+	static function findIndexia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool) {
 		for(i => value in array)
 			if(callback(value, i, array))
 				return i;
@@ -242,31 +243,42 @@ class ArrayTools {
 	}
 
 
-	public static function forEach<T>(array: Array<T>, callback: (element: T) -> Void) {
+	static function forEach<T>(array: Array<T>, callback: (element: T) -> Void) {
 		for(value in array)
 			callback(value);
 	}
 	
-	public static function forEachi<T>(array: Array<T>, callback: (element: T, index: Int) -> Void) {
+	static function forEachi<T>(array: Array<T>, callback: (element: T, index: Int) -> Void) {
 		for(i => value in array)
 			callback(value, i);
 	}
 
-	public static function forEachia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Void) {
+	static function forEachia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Void) {
 		for(i => value in array)
 			callback(value, i, array);
 	}
 
-	public static function filteri<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Array<T> {
+	static function filteri<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Array<T> {
 		return [for(i => value in array)
 			if(callback(value, i))
 				value];
 	}
 
-	public static function filteria<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Array<T> {
+	static function filteria<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Array<T> {
 		return [for(i => value in array)
 			if(callback(value, i, array))
 				value];
+	}
+
+
+	static inline function flatMap<T, U>(array: Array<T>, callback: (element: T) -> Array<U>) {
+		var result = [];
+
+		for(value in array) {
+			result = result.concat(callback(value));
+		}
+
+		return result;
 	}
 #end
 
@@ -286,11 +298,11 @@ class ArrayTools {
 		function reduceRight<T>(callback: (previousValue: T, currentValue: T, index: Int, array: Array<T>) -> T, initialValue: T): T;
 	*/
 
-	public static function equals<T>(a1: Array<T>, a2: Array<T>) {
+	static function equals<T>(a1: Array<T>, a2: Array<T>) {
 		return everyi(a1, (v, i) -> v == a2[i]);
 	}
 
-	public static function zip<T, U, V>(a1: Array<T>, a2: Array<U>, callback: (e1: T, e2: U) -> V) {
+	static function zip<T, U, V>(a1: Array<T>, a2: Array<U>, callback: (e1: T, e2: U) -> V) {
 		if(a1.length != a2.length) {
 			throw "error!";
 		}
@@ -298,7 +310,7 @@ class ArrayTools {
 		return [for(i => e1 in a1) callback(e1, a2[i])];
 	}
 
-	public static function findMap<T, U>(array: Array<T>, callback: (element: T) -> Null<U>) {
+	static function findMap<T, U>(array: Array<T>, callback: (element: T) -> Null<U>) {
 		for(value in array) {
 			final found = callback(value);
 
@@ -308,5 +320,41 @@ class ArrayTools {
 		}
 
 		return null;
+	}
+
+	static inline function last<T>(array: Array<T>): T {
+		return array[array.length - 1];
+	}
+	
+	static inline function setLast<T>(array: Array<T>, value: T) {
+		array[array.length - 1] = value;
+	}
+
+	static inline function pushAll<T>(array: Array<T>, values: Array<T>) {
+		#if js
+			js.Syntax.code("{0}.push(...{1})", array, values);
+		#else
+			for(i in 0...values.length) {
+				array.push(values[i]);
+			}
+		#end
+	}
+	
+	static function joinMap<T>(array: Array<T>, sep: String, fn: (T) -> String) {
+		return switch array {
+			case []: "";
+			case [v]: fn(v);
+			case [v1, v2]: fn(v1) + sep + fn(v2);
+			default: {
+				var res = fn(array[0]);
+				
+				for(i in 1...array.length) {
+					res += sep;
+					res += fn(array[i]);
+				}
+				
+				res;
+			}
+		}
 	}
 }
