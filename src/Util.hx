@@ -40,6 +40,18 @@ class Util {
 #end
 	}
 
+#if js
+	@:noUsing
+	static inline function encodeURIComponent(str: String): String {
+		return js.Syntax.code("encodeURIComponent({0})", str);
+	}
+
+	@:noUsing
+	static inline function decodeURIComponent(str: String): String {
+		return js.Syntax.code("decodeURIComponent({0})", str);
+	}
+#end
+
 	private static function _pretty(value: Any, indent: Int): String {
 		final thisLevel = "".lpad("\t", indent);
 		final nextLevel = "".lpad("\t", indent + 1);

@@ -104,7 +104,9 @@ abstract UInt8ClampedArray(UInt8ClampedArrayData) to js.lib.ArrayBufferView {
 	public overload extern inline function setAll(values: UInt8ClampedArray, ?offset: Int) this.set(values.getData(), offset);
 	public overload extern inline function setAll(values: Array<Int>, ?offset: Int) this.set(values, offset);
 	
-	public inline function slice(?start: Int, ?end: Int) return fromData(this.slice(start, end));
+	public overload extern inline function slice() return fromData(this.slice());
+	public overload extern inline function slice(?start: Int) return fromData(this.slice(start));
+	public overload extern inline function slice(?start: Int, ?end: Int) return fromData(this.slice(start, end));
 	
 	public overload extern inline function some(fn: (v: Int) -> Bool) return this.some(fn);
 	public overload extern inline function some(fn: (v: Int, i: Int) -> Bool) return this.some(fn);

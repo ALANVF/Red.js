@@ -6,7 +6,7 @@ class Logic extends Value {
 
 	public final cond: Bool;
 
-	public static function fromCond(cond: Bool) {
+	public static inline function fromCond(cond: Bool) {
 		return if(cond) TRUE else FALSE;
 	}
 

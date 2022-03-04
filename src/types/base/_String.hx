@@ -1,6 +1,7 @@
 package types.base;
 
 using StringTools;
+using util.StringTools;
 
 macro function inlineMap(kIdent, vIdent, mapExpr, body) {
 	final kName = switch kIdent { case macro $i{n}: n; default: throw "error!"; };
@@ -90,5 +91,9 @@ abstract class _String extends _SeriesOf<Char> {
 			str = str.substr(len);
 			Char.fromCode(code);
 		}];
+	}
+
+	public function toJs() {
+		return std.String.fromCharCodes((index == 0 ? values : values.slice(index)).map(c -> c.int));		
 	}
 }

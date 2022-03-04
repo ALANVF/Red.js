@@ -301,6 +301,17 @@ class Main {
 			]
 
 			; ...
+			
+			min: make native! [[value1 value2] #get-definition NAT_MIN]
+			max: make native! [[value1 value2] #get-definition NAT_MAX]
+
+			shift: make native! [[
+					data [integer!]
+					bits [integer!]
+					/left
+					/logical
+				] #get-definition NAT_SHIFT
+			]
 
 			break: make native! [[
 					/return

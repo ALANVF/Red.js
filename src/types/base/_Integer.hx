@@ -6,4 +6,7 @@ abstract class _Integer extends _Number {
 	public function new(int: Int) this.int = int;
 	
 	public abstract function make(value: Int): _Integer;
+
+	public function asFloat() return (int : Float);
+	public function asInt() return int;
 }

@@ -5,8 +5,11 @@ import types.Block;
 import types.base._NativeOptions;
 import types.base.Options;
 import types.base._Number;
+import types.base._String;
 import types.Value;
 import types.Native;
+import types.Bitset;
+import types.Integer;
 
 class Natives {
 	public static function callNative(native: Native, args: Array<Value>, refines: Dict<String, Array<Value>>) {
@@ -33,10 +36,8 @@ class Natives {
 			at([NCompose(f), [b is Block]]) => f(b, Options.fromRefines(NComposeOptions, refines)),
 			at([NGet(f), [w]]) => f(w, Options.fromRefines(NGetOptions, refines)),
 			at([NSet(f), [w, v]]) => f(w, v, Options.fromRefines(NSetOptions, refines)),
-			at([( NPrint((_ : (Value) -> Value) => f)
-				| NPrin(f)
-				| NNot(f)
-			), [v]]) => f(v),
+			at([NPrint(f) | NPrin(f), [v]]) => f(v),
+			at([NNot(f) | NNegative_q(f) | NPositive_q(f), [v]]) => f(v),
 			at([( NEqual_q(f)
 				| NNotEqual_q(f)
 				| NStrictEqual_q(f)
@@ -52,6 +53,11 @@ class Natives {
 			at([NIn(f), [o is types.Object, s is types.base.Symbol]]) => f(o, s),
 			at([NUnion(f) | NIntersect(f) | NExclude(f) | NDifference(f), [v1, v2]]) =>
 				f(v1, v2, Options.fromRefines(NSetOpOptions, refines)),
+			at([NComplement_q(f), [b is Bitset]]) => f(b),
+			at([NDehex(f) | NEnhex(f), [s is _String]]) => f(s),
+			at([NMin(f) | NMax(f), [v1, v2]]) => f(v1, v2),
+			at([NShift(f), [d is Integer, b is Integer]]) => f(d, b, Options.fromRefines(NShiftOptions, refines)),
+			at([NToHex(f), [i is Integer]]) => f(i, Options.fromRefines(NToHexOptions, refines)),
 			at([NBreak(f), []]) => f(Options.fromRefines(NBreakOptions, refines)),
 			at([NReturn(f), [v]]) => f(v),
 			at([NExit(f) | NContinue(f), []]) => f(),

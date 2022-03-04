@@ -61,7 +61,7 @@ enum NativeFn {
 	NExclude(fn: SetOpFn);
 	NComplement_q(fn: (bits: Bitset) -> Logic);
 	NDehex(fn: (value: _String) -> String);
-	//NEnhex(fn: (value: _String) -> String);
+	NEnhex(fn: (value: _String) -> String);
 	NNegative_q(fn: (number: Value) -> Logic);
 	NPositive_q(fn: (number: Value) -> Logic);
 	NMax(fn: (value1: Value, value2: Value) -> Value);
