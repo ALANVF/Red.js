@@ -7,7 +7,7 @@ import types.base._String;
 import types.base.Symbol;
 import types.base._Block;
 import types.base._NativeOptions;
-import haxe.ds.Option;
+import types.Float;
 
 private typedef CompareFn = (value1: Value, value2: Value) -> Logic;
 private typedef SetOpFn = (set1: Value, set2: Value, options: NSetOpOptions) -> Value;

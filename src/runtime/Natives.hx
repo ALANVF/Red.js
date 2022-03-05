@@ -37,7 +37,7 @@ class Natives {
 			at([NGet(f), [w]]) => f(w, Options.fromRefines(NGetOptions, refines)),
 			at([NSet(f), [w, v]]) => f(w, v, Options.fromRefines(NSetOptions, refines)),
 			at([NPrint(f) | NPrin(f), [v]]) => f(v),
-			at([NNot(f) | NNegative_q(f) | NPositive_q(f), [v]]) => f(v),
+			at([NNot(f) | NNegative_q(f) | NPositive_q(f) | NZero_q(f), [v]]) => f(v),
 			at([( NEqual_q(f)
 				| NNotEqual_q(f)
 				| NStrictEqual_q(f)
@@ -58,6 +58,12 @@ class Natives {
 			at([NMin(f) | NMax(f), [v1, v2]]) => f(v1, v2),
 			at([NShift(f), [d is Integer, b is Integer]]) => f(d, b, Options.fromRefines(NShiftOptions, refines)),
 			at([NToHex(f), [i is Integer]]) => f(i, Options.fromRefines(NToHexOptions, refines)),
+			at([( NSine(f)    | NCosine(f)    | NTangent(f)
+				| NArcsine(f) | NArccosine(f) | NArctangent(f)
+			), [n is _Number]]) => f(n, Options.fromRefines(NTrigOptions, refines)),
+			at([NArctangent2(f), [y is _Number, x is _Number]]) => f(y, x, Options.fromRefines(NTrigOptions, refines)),
+			at([NNan_q(f), [n is _Number]]) => f(n),
+			at([NLog2(f) | NLog10(f) | NLogE(f) | NExp(f) | NSquareRoot(f), [n is _Number]]) => f(n),
 			at([NBreak(f), []]) => f(Options.fromRefines(NBreakOptions, refines)),
 			at([NReturn(f), [v]]) => f(v),
 			at([NExit(f) | NContinue(f), []]) => f(),

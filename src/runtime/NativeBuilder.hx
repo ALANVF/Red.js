@@ -24,6 +24,10 @@ class NativeBuilder {
 					Context.getType(path = 'runtime.natives.SetOp.$name');
 				} catch(_: String) try {
 					Context.getType(path = 'runtime.natives.MinMax.$name');
+				} catch(_: String) try {
+					Context.getType(path = 'runtime.natives.Trig.$name');
+				} catch(_: String) try {
+					Context.getType(path = 'runtime.natives.Logs.$name');
 				} catch(_: String) {
 					return null;
 				}
@@ -46,17 +50,15 @@ class NativeBuilder {
 
 		final fields = Context.getBuildFields();
 
-		final name = if(nativeName != null) {
+		final name = "NAT_" + if(nativeName != null) {
 			(nativeName : String);
 		} else {
-			"NAT_" + (
-				~/_q$/g.replace(
-					~/([a-z])([A-Z])/g.replace(
-						cls.name,
-						"$1_$2"
-					),
-					"?"
-				)
+			~/_q$/g.replace(
+				~/([a-z])([A-Z])/g.replace(
+					cls.name,
+					"$1_$2"
+				),
+				"?"
 			).toUpperCase();
 		};
 

@@ -310,8 +310,20 @@ class Main {
 					bits [integer!]
 					/left
 					/logical
-				] #get-definition NAT_SHIFT
+				]
+				#get-definition NAT_SHIFT
 			]
+
+			; ...
+
+			zero?: make native! [[
+					value	[number! money! pair! time! char! tuple!]
+					return: [logic!]
+				]
+				#get-definition NAT_ZERO?
+			]
+			
+			; ...
 
 			break: make native! [[
 					/return

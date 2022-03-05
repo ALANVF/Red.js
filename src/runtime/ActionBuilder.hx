@@ -40,17 +40,15 @@ class ActionBuilder {
 
 		final fields = Context.getBuildFields();
 
-		final name = if(actionName != null) {
+		final name = "ACT_" + if(actionName != null) {
 			(actionName : String);
 		} else {
-			"ACT_" + (
-				~/_q$/g.replace(
-					~/([a-z])([A-Z])/g.replace(
-						cls.name,
-						"$1_$2"
-					),
-					"?"
-				)
+			~/_q$/g.replace(
+				~/([a-z])([A-Z])/g.replace(
+					cls.name,
+					"$1_$2"
+				),
+				"?"
 			).toUpperCase();
 		};
 
