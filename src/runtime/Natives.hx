@@ -69,6 +69,11 @@ class Natives {
 			at([NLog2(f) | NLog10(f) | NLogE(f) | NExp(f) | NSquareRoot(f), [n is _Number]]) => f(n),
 			at([NConstruct(f), [b is Block]]) => f(b, Options.fromRefines(NConstructOptions, refines)),
 			at([NTry(f), [b is Block]]) => f(b, Options.fromRefines(NTryOptions, refines)),
+			at([NUppercase(f) | NLowercase(f), [s]]) => f(s, Options.fromRefines(NChangeCaseOptions, refines)),
+			at([NAsPair(f), [
+				x is Integer | x is types.Float,
+				y is Integer | y is types.Float
+			]]) => f(x, y),
 			at([NBreak(f), []]) => f(Options.fromRefines(NBreakOptions, refines)),
 			at([NReturn(f), [v]]) => f(v),
 			at([NExit(f) | NContinue(f), []]) => f(),

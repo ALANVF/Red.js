@@ -131,6 +131,10 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		return this.index == this.absLength;
 	}
 
+	public inline function sameSeriesAs(other: _SeriesOf<T>) {
+		return this.values == other.values;
+	}
+
 	public inline function iterator(): Iterator<T> {
 		return values.slice(index).iterator();
 	}

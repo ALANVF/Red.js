@@ -18,18 +18,16 @@ class NativeBuilder {
 				var path = 'runtime.natives.$name';
 				try {
 					Context.getType(path);
-				} catch(_: String) try {
-					Context.getType(path = 'runtime.natives.Compare.$name');
-				} catch(_: String) try {
-					Context.getType(path = 'runtime.natives.SetOp.$name');
-				} catch(_: String) try {
-					Context.getType(path = 'runtime.natives.MinMax.$name');
-				} catch(_: String) try {
-					Context.getType(path = 'runtime.natives.Trig.$name');
-				} catch(_: String) try {
-					Context.getType(path = 'runtime.natives.Logs.$name');
 				} catch(_: String) {
-					return null;
+					var found = false;
+					for(sub in ["Compare", "SetOp", "MinMax", "Trig", "Logs", "CaseFolding"]) {
+						try {
+							Context.getType(path = 'runtime.natives.$sub.$name');
+							found = true;
+							break;
+						} catch(_: String) {}
+					}
+					if(!found) return null;
 				}
 				return path;
 			}).filter(path -> path != null).map(path -> path.split("."))

@@ -349,6 +349,31 @@ class Main {
 				#get-definition NAT_TRY
 			]
 
+			uppercase: make native! [[
+					string		[any-string! char!]
+					/part
+						limit	[number! any-string!]
+					return: 	[any-string! char!]
+				]
+				#get-definition NAT_UPPERCASE
+			]
+			
+			lowercase: make native! [[
+					string		[any-string! char!]
+					/part
+						limit	[number! any-string!]
+					return:		[any-string! char!]
+				]
+				#get-definition NAT_LOWERCASE
+			]
+
+			as-pair: make native! [[
+					x [integer! float!]
+					y [integer! float!]
+				]
+				#get-definition NAT_AS_PAIR
+			]
+
 			; ...
 
 			break: make native! [[

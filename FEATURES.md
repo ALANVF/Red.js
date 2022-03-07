@@ -135,9 +135,10 @@
 | `construct`         | Y      |
 | `value?`            | Y      |
 | `try`               | P      |
-| `uppercase`         | N      |
-| `lowercase`         | N      |
-| `as-pair`           | N      |
+| `uppercase`         | Y      |
+| `lowercase`         | Y      |
+| `as-pair`           | Y      |
+| `as-money`          | N      |
 | `break`             | Y      |
 | `continue`          | Y      |
 | `exit`              | Y      |
