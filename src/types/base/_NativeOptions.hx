@@ -86,7 +86,8 @@ typedef NConstructOptions = {
 }
 
 typedef NTryOptions = {
-	all: Bool
+	all: Bool,
+	keep: Bool
 }
 
 typedef NChangeCaseOptions = {

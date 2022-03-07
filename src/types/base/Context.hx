@@ -111,6 +111,19 @@ class Context extends Value {
 		}
 	}
 
+	public function addOrSet(word: std.String, value: Value, ignoreCase: Bool = true): Symbol {
+		switch this.offsetOf(word, ignoreCase) {
+			case -1:
+				final sym = new Word(word, this, this.symbols.length);
+				this.symbols.push(sym);
+				this.values.push(value);
+				return sym;
+			case index:
+				this.values[index] = value;
+				return this.symbols[index];
+		}
+	};
+
 	/*public function remove(word: String, ignoreCase: Bool = true) {
 		switch this.offsetOf(word, ignoreCase) {
 			case -1:

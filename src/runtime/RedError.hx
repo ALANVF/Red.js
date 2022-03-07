@@ -17,5 +17,9 @@ class RedError extends haxe.Exception {
 
 	inline function isReturn() return error.isReturn();
 
+	inline function isThrow() return error.isThrow();
+
+	inline function isSpecial() return error.isSpecial();
+
 	inline function get(name: String, ignoreCase = true) return error.get(name, ignoreCase);
 }

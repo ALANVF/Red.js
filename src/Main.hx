@@ -325,6 +325,32 @@ class Main {
 			
 			; ...
 
+			construct: make native! [[
+					block [block!]
+					/with
+						object [object!]
+					/only
+				]
+				#get-definition NAT_CONSTRUCT
+			]
+
+			value?: make native! [[
+					value
+					return: [logic!]
+				]
+				#get-definition NAT_VALUE?
+			]
+
+			try: make native! [[
+					block	[block!]
+					/all
+					/keep
+				]
+				#get-definition NAT_TRY
+			]
+
+			; ...
+
 			break: make native! [[
 					/return
 						value [any-type!]

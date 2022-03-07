@@ -48,4 +48,8 @@ class Object extends Value implements IGetPath implements ISetPath {
 	public function add(word, value, ?ignoreCase = true) {
 		return ctx.add(word, value, ignoreCase);
 	}
+
+	public function addOrSet(word, value, ?ignoreCase = true) {
+		return ctx.addOrSet(word, value, ignoreCase);
+	}
 }

@@ -97,4 +97,17 @@ class Error extends Object {
 	public function isReturn() {
 		return type == "throw" && id == "return";
 	}
+
+	public function isThrow() {
+		return type == "throw" && id == "throw";
+	}
+
+	public function isSpecial() {
+		return type == "throw" && (
+			id == "break" ||
+			id == "continue" ||
+			id == "return" ||
+			id == "throw"
+		);
+	}
 }

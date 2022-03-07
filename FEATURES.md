@@ -132,9 +132,9 @@
 | `log-e`             | Y      |
 | `exp`               | Y      |
 | `square-root`       | Y      |
-| `construct`         | N      |
-| `value?`            | N      |
-| `try`               | N      |
+| `construct`         | Y      |
+| `value?`            | Y      |
+| `try`               | P      |
 | `uppercase`         | N      |
 | `lowercase`         | N      |
 | `as-pair`           | N      |
