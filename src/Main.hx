@@ -399,6 +399,22 @@ class Main {
 				#get-definition NAT_RETURN
 			]
 
+			throw: make native! [[
+					value [any-type!]
+					/name
+						word [word!]
+				]
+				#get-definition NAT_THROW
+			]
+
+			catch: make native! [[
+					block [block!]
+					/name
+						word [word! block!]
+				]
+				#get-definition NAT_CATCH
+			]
+
 			+: make op! :add
 			=: make op! :equal?
 			<>: make op! :not-equal?

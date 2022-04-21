@@ -77,6 +77,8 @@ class Natives {
 			at([NBreak(f), []]) => f(Options.fromRefines(NBreakOptions, refines)),
 			at([NReturn(f), [v]]) => f(v),
 			at([NExit(f) | NContinue(f), []]) => f(),
+			at([NThrow(f), [v]]) => f(v, Options.fromRefines(NThrowOptions, refines)),
+			at([NCatch(f), [b is Block]]) => f(b, Options.fromRefines(NCatchOptions, refines)),
 			at([NTranscode(f), [v]]) => f(v, Options.fromRefines(NTranscodeOptions, refines)),
 			_ => throw "NYI"
 		);

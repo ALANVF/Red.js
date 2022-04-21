@@ -35,6 +35,9 @@ class Error extends Object {
 	public var id(get, never): std.String;
 	function get_id() return cast(ctx.values[2], Word).name.toLowerCase();
 
+	public var arg1(get, never): Value;
+	function get_arg1() return ctx.values[3];
+
 	override public function new(
 		code:  Value,
 		type:  Word,

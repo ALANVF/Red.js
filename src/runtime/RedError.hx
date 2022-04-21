@@ -1,14 +1,17 @@
 package runtime;
 
 import types.Error;
+import types.Word;
 
 @:publicFields
 class RedError extends haxe.Exception {
 	final error: Error;
+	final name: Null<Word>;
 
-	function new(error: Error, ?previous: haxe.Exception, ?native: Any) {
+	function new(error: Error, ?name: Word, ?previous: haxe.Exception, ?native: Any) {
 		super(error.description(), previous, native);
 		this.error = error;
+		this.name = name;
 	}
 
 	inline function isContinue() return error.isContinue();

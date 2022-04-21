@@ -143,8 +143,8 @@
 | `continue`          | Y      |
 | `exit`              | Y      |
 | `return`            | Y      |
-| `throw`             | N      |
-| `catch`             | N      |
+| `throw`             | Y      |
+| `catch`             | Y      |
 | `extend`            | N      |
 | `debase`            | N      |
 | `enbase`            | N      |
