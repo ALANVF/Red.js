@@ -415,6 +415,14 @@ class Main {
 				#get-definition NAT_CATCH
 			]
 
+			extend: make native! [[
+					obj  [object! map!]
+					spec [block! hash! map!]
+					/case
+				]
+				#get-definition NAT_EXTEND
+			]
+
 			+: make op! :add
 			=: make op! :equal?
 			<>: make op! :not-equal?

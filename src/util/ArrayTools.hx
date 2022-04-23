@@ -138,47 +138,88 @@ class ArrayTools {
 
 #else
 
-	static function every<T>(array: Array<T>, callback: (currentValue: T) -> Bool) {
-		for(value in array)
-			if(!callback(value))
-				return false;
-		return true;
+	static inline function every<T>(array: Array<T>, callback: (currentValue: T) -> Bool) {
+		var result = true;
+		for(value in array) if(!callback(value)) {
+			result = false;
+			break;
+		}
+		return result;
 	}
 	
 	static function everyi<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool) {
-		for(i => value in array)
+		for(i in 0...array.length) { final value = array[i];
 			if(!callback(value, i))
-				return false;
+				return false;}
 		return true;
 	}
 
 	static function everyia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool) {
-		for(i => value in array)
+		for(i in 0...array.length) { final value = array[i];
 			if(!callback(value, i, array))
-				return false;
+				return false;}
+		return true;
+	}
+
+	static function every2<T, U>(array1: Array<T>, array2: Array<U>, callback: (value1: T, value2: U) -> Bool) {
+		for(i in 0...array1.length) { final value = array1[i];
+			if(!callback(value, array2[i]))
+				return false;}
+		return true;
+	}
+	
+	static function every2Strict<T, U>(array1: Array<T>, array2: Array<U>, callback: (value1: T, value2: U) -> Bool) {
+		if(array1.length != array2.length) return false;
+		
+		for(i in 0...array1.length) { final value = array1[i];
+			if(!callback(value, array2[i]))
+				return false;}
 		return true;
 	}
 
 
-	static function some<T>(array: Array<T>, callback: (currentValue: T) -> Bool) {
-		for(value in array)
-			if(callback(value))
-				return true;
-		return false;
+	static inline function some<T>(array: Array<T>, callback: (currentValue: T) -> Bool) {
+		var result = false;
+		for(value in array) if(callback(value)) {
+			result = true;
+			break;
+		}
+		return result;
 	}
 	
 	static function somei<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool) {
-		for(i => value in array)
+		for(i in 0...array.length) { final value = array[i];
 			if(callback(value, i))
-				return true;
+				return true;}
 		return false;
 	}
 	
 	static function someia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool) {
-		for(i => value in array)
+		for(i in 0...array.length) { final value = array[i];
 			if(callback(value, i, array))
-				return true;
+				return true;}
 		return false;
+	}
+
+	static function none<T>(array: Array<T>, callback: (currentValue: T) -> Bool) {
+		for(value in array)
+			if(callback(value))
+				return false;
+		return true;
+	}
+	
+	static function nonei<T>(array: Array<T>, callback: (currentValue: T, index: Int) -> Bool) {
+		for(i in 0...array.length) { final value = array[i];
+			if(callback(value, i))
+				return false;}
+		return true;
+	}
+	
+	static function noneia<T>(array: Array<T>, callback: (currentValue: T, index: Int, array: Array<T>) -> Bool) {
+		for(i in 0...array.length) { final value = array[i];
+			if(callback(value, i, array))
+				return false;}
+		return true;
 	}
 
 
@@ -207,38 +248,38 @@ class ArrayTools {
 	}
 	
 	static function findi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Null<T> {
-		for(i => value in array)
+		for(i in 0...array.length) { final value = array[i];
 			if(callback(value, i))
-				return array[i];
+				return array[i];}
 		return null;
 	}
 
 	static function findia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Null<T> {
-		for(i => value in array)
+		for(i in 0...array.length) { final value = array[i];
 			if(callback(value, i, array))
-				return array[i];
+				return array[i];}
 		return null;
 	}
 
 
 	static function findIndex<T>(array: Array<T>, callback: (element: T) -> Bool) {
-		for(i => value in array)
+		for(i in 0...array.length) { final value = array[i];
 			if(callback(value))
-				return i;
+				return i;}
 		return -1;
 	}
 	
 	static function findIndexi<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool) {
-		for(i => value in array)
+		for(i in 0...array.length) { final value = array[i];
 			if(callback(value, i))
-				return i;
+				return i;}
 		return -1;
 	}
 
 	static function findIndexia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool) {
-		for(i => value in array)
+		for(i in 0...array.length) { final value = array[i];
 			if(callback(value, i, array))
-				return i;
+				return i;}
 		return -1;
 	}
 
@@ -248,26 +289,33 @@ class ArrayTools {
 			callback(value);
 	}
 	
-	static function forEachi<T>(array: Array<T>, callback: (element: T, index: Int) -> Void) {
-		for(i => value in array)
-			callback(value, i);
+	static inline function forEachi<T>(array: Array<T>, callback: (element: T, index: Int) -> Void) {
+		for(i in 0...array.length)
+			callback(array[i], i);
 	}
 
-	static function forEachia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Void) {
-		for(i => value in array)
-			callback(value, i, array);
+	static inline function forEachia<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Void) {
+		for(i in 0...array.length)
+			callback(array[i], i, array);
 	}
 
 	static function filteri<T>(array: Array<T>, callback: (element: T, index: Int) -> Bool): Array<T> {
-		return [for(i => value in array)
+		return [for(i in 0...array.length) { final value = array[i];
 			if(callback(value, i))
-				value];
+				value;}];
 	}
 
 	static function filteria<T>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Bool): Array<T> {
-		return [for(i => value in array)
+		return [for(i in 0...array.length) { final value = array[i];
 			if(callback(value, i, array))
-				value];
+				value;}];
+	}
+
+	static function reduce<T>(array: Array<T>, callback: (prev: T, curr: T) -> T): Null<T> {
+		var result: Null<T> = array[0];
+		for(i in 1...array.length)
+			result = callback(result, array[i]);
+		return result;
 	}
 
 
@@ -298,6 +346,29 @@ class ArrayTools {
 		function reduceRight<T>(callback: (previousValue: T, currentValue: T, index: Int, array: Array<T>) -> T, initialValue: T): T;
 	*/
 
+	static macro function _for<T>(array: ExprOf<Array<T>>, kv, body) {
+		switch kv { case macro $k => $v:
+			var dv = switch v {
+				case {expr: EDisplay(v2, _)}: v2;
+				default: v;
+			};
+			var vn = haxe.macro.ExprTools.toString(dv);
+			return macro {
+				for($k in 0...$array.length)
+					$b{
+						[macro final $vn = $array[$k]].concat(
+							switch body {
+								case macro $b{stmts}: stmts;
+								default: [body];
+							}
+						)
+					};
+				
+			};
+			
+		default: throw "error!"; }
+	}
+
 	static function equals<T>(a1: Array<T>, a2: Array<T>) {
 		return everyi(a1, (v, i) -> v == a2[i]);
 	}
@@ -307,7 +378,7 @@ class ArrayTools {
 			throw "error!";
 		}
 
-		return [for(i => e1 in a1) callback(e1, a2[i])];
+		return [for(i in 0...a1.length) callback(a1[i], a2[i])];
 	}
 
 	static function findMap<T, U>(array: Array<T>, callback: (element: T) -> Null<U>) {

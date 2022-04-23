@@ -145,7 +145,7 @@
 | `return`            | Y      |
 | `throw`             | Y      |
 | `catch`             | Y      |
-| `extend`            | N      |
+| `extend`            | Y      |
 | `debase`            | N      |
 | `enbase`            | N      |
 | `to-local-file`     | N      |
