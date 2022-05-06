@@ -11,8 +11,12 @@ class Object extends Value implements IGetPath implements ISetPath {
 	public final ctx: Context;
 	public final classID: Int;
 
-	public function new(?ctx: Context, ?classID: Int) {
-		this.ctx = if(ctx == null) new Context() else new Context(ctx.symbols, ctx.values);
+	public function new(?ctx: Context, ?classID: Int, dontCopy: Bool = false) {
+		this.ctx = ctx._andOr(
+			ctx => if(dontCopy) ctx else new Context(ctx.symbols, ctx.values),
+			new Context()
+		);
+		this.ctx.value = this;
 		this.classID = if(classID == null) ++maxID else classID;
 	}
 

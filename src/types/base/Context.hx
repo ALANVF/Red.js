@@ -1,10 +1,13 @@
 package types.base;
 
-class Context extends Value {
+import haxe.extern.EitherType;
+
+class Context /*extends Value*/ {
 	public static var GLOBAL = new Context();
 
 	public var symbols: Array<Symbol>;
 	public var values: Array<Value>;
+	public var value: Null<#if macro Any #else EitherType<types.Object, types.Function> #end> = null;
 
 	public function new(?symbols: Array<Symbol>, ?values: Array<Value>) {
 		if(symbols != null && values != null) {

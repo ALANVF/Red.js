@@ -7,7 +7,7 @@ abstract class Symbol extends Value {
 
 	public function new(name: std.String, ?context: Context, ?offset: Int) {
 		this.name = name;
-		this.context = context == null ? Context.GLOBAL : context;
+		this.context = Util._or(context, Context.GLOBAL);
 		if(offset == null) {
 			this.context.addSymbol(this);
 		} else {

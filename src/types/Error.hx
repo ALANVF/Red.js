@@ -54,7 +54,7 @@ class Error extends Object {
 			[code, type, id, arg1, arg2, arg3, near, where, stack]
 		);
 
-		super(ctx, 1);
+		super(ctx, 1, true);
 	}
 
 	static function _create(spec: CreateSpec) {

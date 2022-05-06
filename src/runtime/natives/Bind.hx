@@ -31,7 +31,7 @@ class Bind {
 			at(sym is Symbol) => sym.context,
 			at(obj is Object) => obj.ctx,
 			at(ctx_ is Context) => ctx_,
-			at(func is Function) => throw "NYI!",
+			at(func is Function) => func.ctx,
 			_ => throw "error!"
 		);
 

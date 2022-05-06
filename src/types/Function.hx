@@ -6,39 +6,31 @@ import types.base._Function;
 
 class Function extends _Function {
 	public final body: Block;
-	public var ctx: FunctionContext;
+	public var ctx: Context;
 
 	public function new(doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>, body: Block) {
 		super(doc, params, refines, retSpec);
 
-		this.ctx = new FunctionContext(this);
+		this.ctx = new Context();
+		this.ctx.value = this;
+
+		// bind params/refines
+		for(param in params) {
+			this.ctx.add(param.name, None.NONE);
+		}
+		for(refine in refines) {
+			this.ctx.add(refine.name, Logic.FALSE);
+			for(param in params) {
+				this.ctx.add(param.name, None.NONE);
+			}
+		}
+
 		this.body = body;
 		
 		runtime.natives.Bind.call(
 			this.body,
-			this.ctx,
+			this,
 			runtime.natives.Bind.defaultOptions
 		);
-	}
-}
-
-@:publicFields
-class FunctionContext extends Context {
-	public final func: Function;
-
-	override public function new(func: Function) {
-		super();
-		this.func = func;
-		
-		for(param in func.params) {
-			this.add(param.name, None.NONE);
-		}
-
-		for(refine in func.refines) {
-			this.add(refine.name, Logic.FALSE);
-			for(param in refine.params) {
-				this.add(param.name, None.NONE);
-			}
-		}
 	}
 }

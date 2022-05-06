@@ -11,6 +11,8 @@ class Main {
 		
 		@:privateAccess Runtime.registerDatatypes();
 
+		types.base.Context.GLOBAL.value = new types.Object(types.base.Context.GLOBAL, -1, true);
+
 		types.base.Context.GLOBAL.add(
 			"make",
 			new types.Action(
@@ -445,6 +447,13 @@ class Main {
 					return:  [logic!]
 				]
 				#get-definition NAT_NEW_LINE?
+			]
+
+			context?: make native! [[
+					word	[any-word!]
+					return: [object! function! none!]
+				]
+				#get-definition NAT_CONTEXT?
 			]
 
 			+: make op! :add
