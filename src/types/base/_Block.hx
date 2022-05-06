@@ -110,6 +110,10 @@ abstract class _Block extends _SeriesOf<Value> {
 		newlines._and(n => n.remove(index));
 	}
 
+	public inline function setNewline(index: Int, cond: Bool) {
+		if(cond) addNewline(index) else removeNewline(index);
+	}
+
 	public function hasNewline(index: Int) {
 		return newlines._andOr(
 			n => n.has(index),

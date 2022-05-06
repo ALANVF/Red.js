@@ -423,6 +423,30 @@ class Main {
 				#get-definition NAT_EXTEND
 			]
 
+			unset: make native! [[
+					word [word! block!]
+				]
+				#get-definition NAT_UNSET
+			]
+
+			new-line: make native! [[
+					position [any-list!]
+					value	 [logic!]
+					/all
+					/skip
+						size [integer!]
+					return:  [any-list!]
+				]
+				#get-definition NAT_NEW_LINE
+			]
+
+			new-line?: make native! [[
+					position [any-list!]
+					return:  [logic!]
+				]
+				#get-definition NAT_NEW_LINE?
+			]
+
 			+: make op! :add
 			=: make op! :equal?
 			<>: make op! :not-equal?

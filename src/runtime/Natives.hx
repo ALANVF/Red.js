@@ -6,10 +6,12 @@ import types.base._NativeOptions;
 import types.base.Options;
 import types.base._Number;
 import types.base._String;
+import types.base._Block;
 import types.Value;
 import types.Native;
 import types.Bitset;
 import types.Integer;
+import types.Logic;
 
 class Natives {
 	public static function callNative(native: Native, args: Array<Value>, refines: Dict<String, Array<Value>>) {
@@ -75,11 +77,13 @@ class Natives {
 				y is Integer | y is types.Float
 			]]) => f(x, y),
 			at([NBreak(f), []]) => f(Options.fromRefines(NBreakOptions, refines)),
-			at([NReturn(f), [v]]) => f(v),
+			at([NReturn(f) | NUnset(f), [v]]) => f(v),
 			at([NExit(f) | NContinue(f), []]) => f(),
 			at([NThrow(f), [v]]) => f(v, Options.fromRefines(NThrowOptions, refines)),
 			at([NCatch(f), [b is Block]]) => f(b, Options.fromRefines(NCatchOptions, refines)),
 			at([NExtend(f), [o, s]]) => f(o, s, Options.fromRefines(NExtendOptions, refines)),
+			at([NNewLine(f), [l is _Block, c is Logic]]) => f(l, c, Options.fromRefines(NNewLineOptions, refines)),
+			at([NNewLine_q(f), [l is _Block]]) => f(l),
 			at([NTranscode(f), [v]]) => f(v, Options.fromRefines(NTranscodeOptions, refines)),
 			_ => throw "NYI"
 		);

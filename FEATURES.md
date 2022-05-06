@@ -151,9 +151,9 @@
 | `to-local-file`     | N      |
 | `wait`              | N      |
 | `checksum`          | N      |
-| `unset`             | N      |
-| `new-line`          | N      |
-| `new-line?`         | N      |
+| `unset`             | Y      |
+| `new-line`          | Y      |
+| `new-line?`         | Y      |
 | `context?`          | N      |
 | `set-env`           | N      |
 | `get-env`           | N      |
