@@ -154,7 +154,7 @@
 | `unset`             | Y      |
 | `new-line`          | Y      |
 | `new-line?`         | Y      |
-| `context?`          | N      |
+| `context?`          | Y      |
 | `set-env`           | N      |
 | `get-env`           | N      |
 | `list-env`          | N      |
