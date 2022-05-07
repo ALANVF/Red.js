@@ -5,7 +5,7 @@
 
 # Datatypes
 |                          | datatype | syntax | `make` | `to` | `form` | `mold` | `compare` | other actions |
-|--------------------------|----------|--------|--------|------|-----------------|-----------|---------------|
+|--------------------------|----------|--------|--------|------|--------|--------|-----------|---------------|
 | `datatype!`              | Y        | NA     | NA     | NA   | N      | N      | N         | N             |
 | `unset!`                 | Y        | NA     | Y      | Y    | Y      | Y      | N         | N             |
 | `none!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
@@ -160,7 +160,7 @@
 | `list-env`          | N      |
 | `now`               | P      |
 | `sign?`             | P      |
-| `as`                | N      |
+| `as`                | Y***   |
 | `call`              | N      |
 | `size?`             | N      |
 | `browse`            | N      |
@@ -170,4 +170,7 @@
 | `transcode`         | P      |
 
 \* For debugging use for now.
+
 \*\* This can't be used in browsers.
+
+\*\*\* See implementation for details

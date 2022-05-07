@@ -479,6 +479,13 @@ class Main {
 				#get-definition NAT_SIGN?
 			]
 
+			as: make native! [[
+					type	[datatype! block! paren! any-path! any-string!]
+					spec	[block! paren! any-path! any-string!]
+				]
+				#get-definition NAT_AS
+			]
+
 			+: make op! :add
 			=: make op! :equal?
 			<>: make op! :not-equal?

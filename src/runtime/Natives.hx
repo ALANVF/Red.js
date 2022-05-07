@@ -61,7 +61,9 @@ class Natives {
 				f(v1, v2, Options.fromRefines(NSetOpOptions, refines)),
 			at([NComplement_q(f), [b is Bitset]]) => f(b),
 			at([NDehex(f) | NEnhex(f), [s is _String]]) => f(s),
-			at([NMin(f) | NMax(f), [v1, v2]]) => f(v1, v2),
+			at([( NMin(f) | NMax(f)
+				| NAs(f)
+			), [v1, v2]]) => f(v1, v2),
 			at([NShift(f), [d is Integer, b is Integer]]) => f(d, b, Options.fromRefines(NShiftOptions, refines)),
 			at([NToHex(f), [i is Integer]]) => f(i, Options.fromRefines(NToHexOptions, refines)),
 			at([( NSine(f)    | NCosine(f)    | NTangent(f)
