@@ -18,10 +18,14 @@ class Date extends Value implements IGetPath {
 
 	public function new(date: std.Date) {
 		this.date = date;
+		this.zone = {
+			final offset = date.getTimezoneOffset();
+			new Time(offset * 60);
+		};
 	}
 
 	public function getDate() {
-		return new Date(new std.Date(getYear(), getMonth(), getDay(), 0, 0, 0));
+		return new Date(new std.Date(getYear(), date.getMonth(), getDay(), 0, 0, 0));
 	}
 
 	public inline function getYear() return date.getFullYear();
@@ -30,7 +34,7 @@ class Date extends Value implements IGetPath {
 
 	public inline function getDay() return date.getDate();
 	
-	// time
+	public inline function getTime() return date.getTime() / 1000;
 
 	public inline function getHour() return date.getHours();
 
@@ -62,7 +66,7 @@ class Date extends Value implements IGetPath {
 			case Left(3) | Right("month"): Some(new Integer(getMonth()));
 			case Left(4) | Right("day"): Some(new Integer(getDay()));
 			case Left(5) | Right("zone"): Some(zone);
-			case Left(6) | Right("time"): Some(new Time(date.getTime() / 1000));
+			case Left(6) | Right("time"): Some(new Time(getTime()));
 			case Left(7) | Right("hour"): Some(new Integer(getHour()));
 			case Left(8) | Right("minute"): Some(new Integer(getMinute()));
 			case Left(9) | Right("second"): Some({

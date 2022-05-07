@@ -456,6 +456,29 @@ class Main {
 				#get-definition NAT_CONTEXT?
 			]
 
+			now: make native! [[
+					/year
+					/month
+					/day
+					/time
+					/zone
+					/date
+					/weekday
+					/yearday
+					/precise
+					/utc
+					return: [date! time! integer!]
+				]
+				#get-definition NAT_NOW
+			]
+
+			sign?: make native! [[
+					number [number! money! time!]
+					return: [integer!]
+				]
+				#get-definition NAT_SIGN?
+			]
+
 			+: make op! :add
 			=: make op! :equal?
 			<>: make op! :not-equal?

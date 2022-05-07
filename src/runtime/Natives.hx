@@ -86,6 +86,8 @@ class Natives {
 			at([NNewLine(f), [l is _Block, c is Logic]]) => f(l, c, Options.fromRefines(NNewLineOptions, refines)),
 			at([NNewLine_q(f), [l is _Block]]) => f(l),
 			at([NContext_q(f), [w is Symbol]]) => f(w),
+			at([NNow(f), []]) => f(Options.fromRefines(NNowOptions, refines)),
+			at([NSign_q(f), [n]]) => f(n),
 			at([NTranscode(f), [v]]) => f(v, Options.fromRefines(NTranscodeOptions, refines)),
 			_ => throw "NYI"
 		);

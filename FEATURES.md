@@ -158,8 +158,8 @@
 | `set-env`           | N      |
 | `get-env`           | N      |
 | `list-env`          | N      |
-| `now`               | N      |
-| `sign?`             | N      |
+| `now`               | P      |
+| `sign?`             | P      |
 | `as`                | N      |
 | `call`              | N      |
 | `size?`             | N      |
