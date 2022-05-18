@@ -4,6 +4,7 @@ import types.base.IDatatype;
 import util.Set;
 
 class Typeset extends Value implements IDatatype {
+	// TODO: I'm pretty sure R/S actually uses a bitset because `complement` is a thing
 	public final types: Set<Datatype>;
 
 	public function new(types: Iterable<IDatatype>) {

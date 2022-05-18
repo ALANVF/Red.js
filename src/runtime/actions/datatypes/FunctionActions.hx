@@ -1,5 +1,7 @@
 package runtime.actions.datatypes;
 
+import types.base.CompareResult;
+import types.base.ComparisonOp;
 import runtime.natives.Func;
 import types.Value;
 import types.Block;
@@ -15,6 +17,25 @@ class FunctionActions extends ValueActions<Function> {
 				);
 			},
 			_ => throw "invalid spec"
+		);
+	}
+
+	override function compare(value1: Function, value2: Value, op: ComparisonOp): CompareResult {
+		value2._match(
+			at(other is Function) => op._match(
+				at( CEqual
+				  | CFind
+				  | CSame
+				  | CStrictEqual
+				  | CNotEqual
+				  | CSort
+				  | CCaseSort
+				) => {
+					return value1 == other ? IsSame : IsLess;
+				},
+				_ => return IsInvalid
+			),
+			_ => return IsInvalid
 		);
 	}
 }

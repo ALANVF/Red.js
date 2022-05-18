@@ -52,7 +52,7 @@ class ActionBuilder {
 			).toUpperCase();
 		};
 
-		final callFn = switch fields.findMap(f -> switch f {
+		/*final callFn = switch fields.findMap(f -> switch f {
 			case {name: "call", kind: FFun(fn), access: acc} if(acc != null && acc.contains(AStatic)):
 				if(!f.meta.some(m -> m.name == ":keep")) f.meta.push({name: ":keep", pos: f.pos});
 				fn;
@@ -60,7 +60,7 @@ class ActionBuilder {
 		}) {
 			case null: trace("??? " + cls.name); return null;
 			case fn: (fn : Function);
-		};
+		};*/
 
 		final className = cls.name;
 		final enumName = "A" + cls.name;

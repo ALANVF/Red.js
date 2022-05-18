@@ -21,6 +21,7 @@ import types.*;
 
 @:build(runtime.NativeBuilder.build())
 class As {
+	// The codegen for these is awful
 	static final STRING_TYPES: std.Map<TypeKind, Class<_String>> = [
 		DString => types.String,
 		DFile => File,

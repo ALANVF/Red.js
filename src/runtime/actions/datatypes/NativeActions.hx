@@ -1,5 +1,7 @@
 package runtime.actions.datatypes;
 
+import types.base.ComparisonOp;
+import types.base.CompareResult;
 import types.Block;
 import types.Native;
 import types.Value;
@@ -15,9 +17,9 @@ class NativeActions extends ValueActions<Native> {
 	static function __init__() {
 		MAPPINGS = [];
 	}
-
+#if !macro // ide issue lol
 	override function make(_, spec: Value) {
-		return Util._match(cast(spec, Block).values,
+		return cast(spec, Block).values._match(
 			at([
 				s is Block,
 				{name: "get-definition"} is Issue,
@@ -38,4 +40,24 @@ class NativeActions extends ValueActions<Native> {
 			_ => throw "Match error!"
 		);
 	}
+
+	override function compare(value1: Native, value2: Value, op: ComparisonOp): CompareResult {
+		value2._match(
+			at(other is Native) => op._match(
+				at( CEqual
+				  | CFind
+				  | CSame
+				  | CStrictEqual
+				  | CNotEqual
+				  | CSort
+				  | CCaseSort
+				) => {
+					return value1 == other ? IsSame : IsLess;
+				},
+				_ => return IsInvalid
+			),
+			_ => return IsInvalid
+		);
+	}
+#end
 }

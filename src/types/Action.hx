@@ -54,7 +54,7 @@ enum ActionFn {
 	AHead(fn: (series: Value) -> Value);
 	AHead_q(fn: (series: Value) -> Logic);
 	AIndex_q(fn: (series: Value) -> Integer);
-	AInsert(fn: (series: Value) -> Value);
+	AInsert(fn: (series: Value, value: Value, options: AInsertOptions) -> Value);
 	ALength_q(fn: (series: Value) -> Value);
 	AMove(fn: (origin: Value, tparamet: Value, options: AMoveOptions) -> Value);
 	ANext(fn: (series: Value) -> Value);
