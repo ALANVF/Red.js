@@ -30,9 +30,9 @@ class Time extends _Float implements IGetPath {
 	
 	public function getPath(access: Value, ?ignoreCase = true): Option<Value> {
 		return access._match(
-			at({int: 1} is Integer | (_.equalsString("hour", ignoreCase) => true) is Word) => Some(new Integer(hours)),
-			at({int: 2} is Integer | (_.equalsString("minute", ignoreCase) => true) is Word) => Some(new Integer(minutes)),
-			at({int: 3} is Integer | (_.equalsString("second", ignoreCase) => true) is Word) => Some(new types.Float(seconds)),
+			at({int: 1} is Integer | (_.symbol.equalsString("hour", ignoreCase) => true) is Word) => Some(new Integer(hours)),
+			at({int: 2} is Integer | (_.symbol.equalsString("minute", ignoreCase) => true) is Word) => Some(new Integer(minutes)),
+			at({int: 3} is Integer | (_.symbol.equalsString("second", ignoreCase) => true) is Word) => Some(new types.Float(seconds)),
 			_ => None
 		);
 	}

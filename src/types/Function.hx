@@ -8,10 +8,10 @@ class Function extends _Function {
 	public final body: Block;
 	public var ctx: Context;
 
-	public function new(doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>, body: Block) {
+	public function new(ctx: Null<Context>, doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>, body: Block) {
 		super(doc, params, refines, retSpec);
 
-		this.ctx = new Context();
+		this.ctx = ctx._or(new Context());
 		this.ctx.value = this;
 
 		// bind params/refines
@@ -27,10 +27,8 @@ class Function extends _Function {
 
 		this.body = body;
 		
-		runtime.natives.Bind.call(
-			this.body,
-			this,
-			runtime.natives.Bind.defaultOptions
-		);
+		if(ctx == null) {
+			this.ctx.bind(this.body, false);
+		}
 	}
 }

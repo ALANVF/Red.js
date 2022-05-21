@@ -19,7 +19,7 @@ class Catch {
 				options.name._andOr(nameOpt => {
 					e.name._andOr(ename => nameOpt.word._match(
 						at(name is Word) => {
-							if(name.equalsSymbol(ename)) {
+							if(name.symbol.equalsSymbol(ename.symbol)) {
 								return e.error.arg1;
 							} else {
 								throw e;
@@ -28,7 +28,7 @@ class Catch {
 						at(b is Block) => {
 							for(v in b) v._match(
 								at(name is Word) => {
-									if(name.equalsSymbol(ename)) {
+									if(name.symbol.equalsSymbol(ename.symbol)) {
 										return e.error.arg1;
 									}
 								},

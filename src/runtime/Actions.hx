@@ -22,6 +22,7 @@ class Actions {
 		DOp => new OpActions(),
 		DFunction => new FunctionActions(),
 		DInteger => new IntegerActions<types.Integer>(),
+		DObject => new ObjectActions(),
 		DTypeset => new TypesetActions()
 	] : Dict<TypeKind, ValueActions<Value>>));
 

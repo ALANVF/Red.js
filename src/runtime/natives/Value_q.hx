@@ -1,14 +1,14 @@
 package runtime.natives;
 
-import types.base.Symbol;
+import types.base._Word;
 import types.*;
 
 @:build(runtime.NativeBuilder.build())
 class Value_q {
 	public static function call(value: Value) {
 		value._match(
-			at(sym is Symbol) => {
-				value = sym.getValue(true);
+			at(sym is _Word) => {
+				value = sym.get(true);
 			},
 			_ => {}
 		);

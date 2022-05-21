@@ -57,8 +57,8 @@ class Date extends Value implements IGetPath {
 	public function getPath(access: Value, ?ignoreCase = true) {
 		return Util._match(access,
 			at({int: i} is Integer) => Some(Left(i)),
-			at((_.name.toLowerCase() => n) is Word, when(ignoreCase && ACCESSORS.contains(n))) => Some(Right(n)),
-			at({name: n} is Word, when(!ignoreCase && ACCESSORS.contains(n))) => Some(Right(n)),
+			at((_.symbol.name.toLowerCase() => n) is Word, when(ignoreCase && ACCESSORS.contains(n))) => Some(Right(n)),
+			at({symbol: {name: n}} is Word, when(!ignoreCase && ACCESSORS.contains(n))) => Some(Right(n)),
 			_ => None
 		).flatMap(v -> (switch v {
 			case Left(1) | Right("date"): Some(getDate());

@@ -13,7 +13,7 @@ abstract class _Block extends _SeriesOf<Value> {
 	abstract function cloneBlock(values: Array<Value>, ?index: Int, ?newlines: Set<Int>): _Block; // ugh, can't wait for polymorphic `this` types
 	
 	function clone(values, ?index) {
-		return this.cloneBlock(values, index);
+		return this.cloneBlock(values, index, this.newlines);
 	}
 
 	override public function at(index: Int) {

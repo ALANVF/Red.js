@@ -77,7 +77,7 @@ class Do {
 
 	static function doesBecomeFunction(path: Path) {
 		return path.pick(0)._match(
-			at(Some(head is Word)) => _doesBecomeFunction(head.getValue(), (path : Values).next()),
+			at(Some(head is Word)) => _doesBecomeFunction(head.get(), (path : Values).next()),
 			_ => null
 		);
 	}
@@ -85,7 +85,7 @@ class Do {
 	static function checkForOp(values: Values) {
 		return if(values.length >= 2) {
 			values[0]._match(
-				at((_.getValue(true) => o is Op) is Word) => o,
+				at((_.get(true) => o is Op) is Word) => o,
 				at((doesBecomeFunction(_) => {_1: o is Op}) is Path) => o,
 				_ => null
 			);
@@ -122,7 +122,7 @@ class Do {
 		return values++[0].nonNull()._match(
 			at(s is SetWord) => groupNextExpr(values).map(e -> GSetWord(s, e)),
 			at(s is SetPath) => groupNextExpr(values).map(e -> GSetPath(s, e)),
-			at((_.getValue() => fn is IFunction) is Word) => // WE HAS DA FLOW TYPING!!!
+			at((_.get() => fn is IFunction) is Word) => // WE HAS DA FLOW TYPING!!!
 				groupParams(values, fn.params).map(args -> GCall(fn, args, [])),
 			at((doesBecomeFunction(_) => {_1: fn, _2: rest}) is Path) => {
 				final args = groupParams(values, fn.params);
@@ -136,9 +136,9 @@ class Do {
 
 					for(value in rest) {
 						value._match(
-							at(w is Word) => switch fn.refines.find(ref -> w.equalsString(ref.name)) {
-								case null: throw 'Unknown refinement `/${w.name}`!';
-								case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.name}`!';
+							at(w is Word) => switch fn.refines.find(ref -> w.symbol.equalsString(ref.name)) {
+								case null: throw 'Unknown refinement `/${w.symbol.name}`!';
+								case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.symbol.name}`!';
 								case {name: n, params: params2}:
 									detuple([@var refine, values], groupParams(values, params2));
 									refines[n] = refine;
@@ -179,12 +179,13 @@ class Do {
 		return switch expr {
 			case GValue(value): evalValue(value);
 			case GNoEval(value): value;
-			case GSetWord(s, GUnset): throw '${s.name} needs a value!';
+			case GSetWord(s, GUnset): throw '${s.symbol.name} needs a value!';
 			case GSetWord(s, evalGroupedExpr(_) => value):
 				if(value == Unset.UNSET) {
-					throw '${s.name} needs a value!';
+					throw '${s.symbol.name} needs a value!';
 				} else {
-					s.setValue(value);
+					s.set(value);
+					value;
 				}
 			case GSetPath(s, e): Set.setPath(s, evalGroupedExpr(e));
 			case GOp(left, op, right):
@@ -204,9 +205,9 @@ class Do {
 			at(p is Paren) => evalValues(p),
 			at(p is Path | p is GetPath) => Get.getPath(p),
 			at(l is LitPath) => new Path(l.values, l.index),
-			at(w is Word) => w.getValue(),
-			at(g is GetWord) => g.getValue(true),
-			at(l is LitWord) => new Word(l.name, l.context, l.offset),
+			at(w is Word) => w.get(),
+			at(g is GetWord) => g.get(true),
+			at(l is LitWord) => new Word(l.symbol),
 			_ => value
 		);
 	}
@@ -230,20 +231,21 @@ class Do {
 		}
 	}
 
+	@:keep
 	public static function call(value: Value, options: NDoOptions) {
 		return options._match(
 			at({expand: true} | {args: _!}) => throw 'NYI',
 			at({next: {position: word}}) => value._match(
 				at(b is Block | b is Paren) => {
 					detuple(@var [v, rest], doNextValue(b));
-					word.setValue(b.fastSkipHead(rest.offset));
+					word.set(b.fastSkipHead(rest.offset));
 					return v;
 				},
 				at(s is types.String) => {
 					final values = Transcode.call(s, Transcode.defaultOptions);
 					
 					detuple(@var [v, rest], doNextValue(values));
-					word.setValue(values.fastSkipHead(rest.offset));
+					word.set(values.fastSkipHead(rest.offset));
 					return v;
 				},
 				at(_ is File | _ is Url) => throw 'NYI',

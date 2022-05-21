@@ -4,7 +4,7 @@ import types.base.IFunction;
 import types.base._Function;
 import types.base._Number;
 import types.base._String;
-import types.base.Symbol;
+import types.base._Word;
 import types.base._Block;
 import types.base._NativeOptions;
 import types.Float;
@@ -52,7 +52,7 @@ enum NativeFn {
 	NCompose(fn: (value: Block, options: NComposeOptions) -> Value);
 	NStats(fn: (options: NStatsOptions) -> Value);
 	NBind(fn: (word: Value, context: Value, options: NBindOptions) -> Value);
-	NIn(fn: (object: Object, word: Symbol) -> Value);
+	NIn(fn: (object: Object, word: _Word) -> Value);
 	NParse(fn: (input: Value, rules: Block, options: NParseOptions) -> Value);
 	NUnion(fn: SetOpFn);
 	NIntersect(fn: SetOpFn);
@@ -103,7 +103,7 @@ enum NativeFn {
 	NNewLine(fn: (position: _Block, value: Logic, options: NNewLineOptions) -> _Block);
 	NNewLine_q(fn: (position: _Block) -> Logic);
 	NEnbase(fn: (value: Value, options: NBaseOptions) -> Value);
-	NContext_q(fn: (word: Symbol) -> Value);
+	NContext_q(fn: (word: _Word) -> Value);
 	NSetEnv(fn: (var_: Value, value: Value) -> Value);
 	NGetEnv(fn: (var_: Value) -> Value);
 	NListEnv(fn: () -> Map);

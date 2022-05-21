@@ -10,7 +10,7 @@ macro function genDatatypes(entries: Array<haxe.macro.Expr>) {
 	for(entry in entries) switch entry {
 		case macro [$name, $kind]: newEntries.push(macro (
 			new util.Tuple2(
-				types.base.Context.GLOBAL.add($name, _dummy = new types.Datatype($name, $kind)),
+				types.base.Context.GLOBAL.add($name, _dummy = new types.Datatype($name, $kind)).symbol,
 				_dummy
 			)
 		));

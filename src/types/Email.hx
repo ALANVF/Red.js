@@ -15,8 +15,8 @@ class Email extends _String implements IGetPath {
 
 	override public function getPath(access: Value, ?ignoreCase = true): Option<Value> {
 		return Util._match(access,
-			at((_.equalsString("user", ignoreCase) => true) is Word) => Some(new String(values.slice(0, values.findIndex(c -> c.int == "@".code)))),
-			at((_.equalsString("host", ignoreCase) => true) is Word) => Some(new String(values.slice(values.findIndex(c -> c.int == "@".code) + 1))),
+			at((_.symbol.equalsString("user", ignoreCase) => true) is Word) => Some(new String(values.slice(0, values.findIndex(c -> c.int == "@".code)))),
+			at((_.symbol.equalsString("host", ignoreCase) => true) is Word) => Some(new String(values.slice(values.findIndex(c -> c.int == "@".code) + 1))),
 			_ => super.getPath(access)
 		);
 	}

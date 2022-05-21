@@ -24,7 +24,7 @@ class RemoveEach {
 		switch words {
 			case [word]:
 				for(value in series) {
-					word.setValue(value);
+					word.set(value);
 
 					try {
 						if(Do.evalValues(body).isTruthy()) {
@@ -45,7 +45,7 @@ class RemoveEach {
 				while(!series.isTail()) {
 					var count = 0;
 					for(word in words) {
-						word.setValue(series.pick(count).orElse(types.None.NONE));
+						word.set(series.pick(count).orElse(types.None.NONE));
 						count++;
 					}
 

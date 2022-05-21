@@ -1,5 +1,6 @@
 package runtime.natives;
 
+import types.Word;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.Value;
@@ -17,7 +18,7 @@ class Type_q {
 		final datatype = Runtime.DATATYPES[cast value.TYPE_KIND];
 		
 		if(options.word) {
-			return datatype._1;
+			return new Word(datatype._1);
 		} else {
 			return datatype._2;
 		}

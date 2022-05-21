@@ -7,7 +7,7 @@ import types.Word;
 @:build(runtime.NativeBuilder.build())
 class Forall {
 	public static function call(word: Word, body: Block) {
-		final saved = word.getValue();
+		final saved = word.get();
 		
 		var series = saved.asSeries();
 		while(!series.isTail()) {
@@ -17,19 +17,19 @@ class Forall {
 				if(e.isContinue()) {
 					continue;
 				} else if(e.isBreak()) {
-					word.setValue(saved);
+					word.set(saved);
 					return e.get("arg1");
 				} else {
-					word.setValue(saved);
+					word.set(saved);
 					throw e;
 				}
 			}
 			
 			series = series.skip(1);
-			word.setValue(series);
+			word.set(series);
 		}
 		
-		word.setValue(saved);
+		word.set(saved);
 		return types.None.NONE;
 	}
 }

@@ -453,10 +453,10 @@ class Tokenizer {
 
 	static function tokenToValue(token: Token): types.Value {
 		return switch token {
-			case TWord(word): new types.Word(word);
-			case TGetWord(word): new types.GetWord(word);
-			case TSetWord(word): new types.SetWord(word);
-			case TLitWord(word): new types.LitWord(word);
+			case TWord(word): new types.Word(types.base.Symbol.make(word));
+			case TGetWord(word): new types.GetWord(types.base.Symbol.make(word));
+			case TSetWord(word): new types.SetWord(types.base.Symbol.make(word));
+			case TLitWord(word): new types.LitWord(types.base.Symbol.make(word));
 			case TPath(path): new types.Path(path.map(tokenToValue));
 			case TGetPath(path): new types.GetPath(path.map(tokenToValue));
 			case TSetPath(path): new types.SetPath(path.map(tokenToValue));

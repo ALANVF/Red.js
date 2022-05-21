@@ -4,7 +4,6 @@ import types.base.CompareResult;
 import types.base.ComparisonOp;
 import types.base._Path;
 import types.base._Number;
-import haxe.ds.Option;
 import types.base._ActionOptions;
 import types.*;
 
@@ -16,7 +15,7 @@ class ValueActions<This: Value> {
 		throw new InvalidAction("Invalid action!");
 	}
 	
-	function make(type: Option<This>, spec: Value): Value invalid();
+	function make(type: Null<This>, spec: Value): Value invalid();
 	function random(value: This, options: ARandomOptions): Value invalid();
 	function reflect(value: This, field: Word): Value invalid();
 	function to(type: Value, spec: Value): Value invalid();
@@ -24,7 +23,7 @@ class ValueActions<This: Value> {
 	function mold(value: This, options: AMoldOptions): String invalid();
 	function modify(target: This, field: Word, value: Value, options: AModifyOptions): Value invalid();
 
-	function evalPath(parent: Value, element: Value, value: Option<Value>, path: _Path, isCase: Bool): Value invalid();
+	function evalPath(parent: Value, element: Value, value: Null<Value>, path: _Path, isCase: Bool): Value invalid();
 	function compare(value1: This, value2: Value, op: ComparisonOp): CompareResult invalid();
 
 	/*-- Scalar actions --*/

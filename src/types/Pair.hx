@@ -14,8 +14,8 @@ class Pair extends Value implements IGetPath {
 
 	public function getPath(access: Value, ?ignoreCase = true): Option<Value> {
 		return Util._match(access,
-			at((_.equalsString("x", ignoreCase) => true) is Word) => Some(new Integer(x)),
-			at((_.equalsString("y", ignoreCase) => true) is Word) => Some(new Integer(y)),
+			at((_.symbol.equalsString("x", ignoreCase) => true) is Word) => Some(new Integer(x)),
+			at((_.symbol.equalsString("y", ignoreCase) => true) is Word) => Some(new Integer(y)),
 			_ => None
 		);
 	}

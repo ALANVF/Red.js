@@ -1,5 +1,6 @@
 package types;
 
+import types.base.Symbol;
 import haxe.ds.Option;
 import types.base.Context;
 
@@ -30,10 +31,10 @@ private typedef CreateSpec = {
 
 class Error extends Object {
 	public var type(get, never): std.String;
-	function get_type() return cast(ctx.values[1], Word).name.toLowerCase();
+	function get_type() return cast(ctx.values[1], Word).symbol.name.toLowerCase();
 	
 	public var id(get, never): std.String;
-	function get_id() return cast(ctx.values[2], Word).name.toLowerCase();
+	function get_id() return cast(ctx.values[2], Word).symbol.name.toLowerCase();
 
 	public var arg1(get, never): Value;
 	function get_arg1() return ctx.values[3];
@@ -50,7 +51,7 @@ class Error extends Object {
 		stack: Value
 	) {
 		final ctx = new Context(
-			[for(name in ["code", "type", "id", "arg1", "arg2", "arg3", "near", "where", "stack"]) new Word(name)],
+			[for(name in ["code", "type", "id", "arg1", "arg2", "arg3", "near", "where", "stack"]) new Word(Symbol.make(name))],
 			[code, type, id, arg1, arg2, arg3, near, where, stack]
 		);
 
@@ -60,8 +61,8 @@ class Error extends Object {
 	static function _create(spec: CreateSpec) {
 		return new Error(
 			spec.code.map(c -> new Integer(c)).orElse(types.None.NONE),
-			new Word(spec.type),
-			new Word(spec.id),
+			new Word(Symbol.make(spec.type)),
+			new Word(Symbol.make(spec.id)),
 			spec.arg1.orElse(types.None.NONE),
 			spec.arg2.orElse(types.None.NONE),
 			spec.arg3.orElse(types.None.NONE),

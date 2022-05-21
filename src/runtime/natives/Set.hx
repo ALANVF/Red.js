@@ -5,7 +5,7 @@ import types.Map;
 import types.Object;
 import types.Block;
 import types.Unset;
-import types.base.Symbol;
+import types.base._Word;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.base._Path;
@@ -52,7 +52,7 @@ class Set {
 	}
 
 	@:generic
-	static function _setMany<Syms: Iterable<Symbol>, Vals: Iterable<Value>>(symbols: Syms, values: Vals, any, some) {
+	static function _setMany<Words: Iterable<_Word>, Vals: Iterable<Value>>(symbols: Words, values: Vals, any, some) {
 		final syms = symbols.iterator();
 		final vals = values.iterator();
 
@@ -61,7 +61,7 @@ class Set {
 				while(syms.hasNext() && vals.hasNext())
 					switch vals.next() {
 						case types.None.NONE:
-						case val: syms.next().setValue(val);
+						case val: syms.next().set(val);
 					}
 			
 			case [false, true]:
@@ -69,36 +69,36 @@ class Set {
 					switch vals.next() {
 						case types.None.NONE:
 						case Unset.UNSET: throw "Expected a value!";
-						case val: syms.next().setValue(val);
+						case val: syms.next().set(val);
 					}
 			
 			case [true, false]:
-				while(syms.hasNext() && vals.hasNext()) syms.next().setValue(vals.next());
-				for(sym in syms) sym.setValue(types.None.NONE);
+				while(syms.hasNext() && vals.hasNext()) syms.next().set(vals.next());
+				for(sym in syms) sym.set(types.None.NONE);
 			
 			case [false, false]:
 				while(syms.hasNext() && vals.hasNext())
 					switch vals.next() {
 						case Unset.UNSET: throw "Expected a value!";
-						case val: syms.next().setValue(val);
+						case val: syms.next().set(val);
 					}
 				
-				for(sym in syms) sym.setValue(types.None.NONE);
+				for(sym in syms) sym.set(types.None.NONE);
 		}
 	}
 
 	@:generic
-	public static function setMany<Iter: Iterable<Symbol>>(symbols: Iter, value: Value, any, only, some) {
+	public static function setMany<Iter: Iterable<_Word>>(symbols: Iter, value: Value, any, only, some) {
 		if(!(value == types.None.NONE && some)) {
 			if(!only) {
 				value._match(
 					at(b is _Block) => _setMany(symbols, b, any, some),
 					at(p is _Path) => _setMany(symbols, p, any, some),
 					at(m is Map) => _setMany(symbols, m.keys.flatMap((k, i) -> [k, m.values[i]]), any, some),
-					_ => for(s in symbols) s.setValue(value)
+					_ => for(s in symbols) s.set(value)
 				);
 			} else {
-				for(s in symbols) s.setValue(value);
+				for(s in symbols) s.set(value);
 			}
 		}
 	}
@@ -109,9 +109,9 @@ class Set {
 		}
 
 		word._match(
-			at(s is Symbol) => s.setValue(value),
+			at(s is _Word) => s.set(value),
 			at(p is _Path) => setPath(p, value, options._case),
-			at(b is Block) => setMany([for(s in b) cast(s, Symbol)], value, options.any, options.only, options.some),
+			at(b is Block) => setMany([for(s in b) cast(s, _Word)], value, options.any, options.only, options.some),
 			at(o is Object) => setMany(o.ctx.symbols, value, options.any, options.only, options.some),
 			_ => throw "Invalid type!"
 		);

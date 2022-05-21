@@ -30,7 +30,7 @@ class Func {
 						spec.index++;
 
 						params.push({
-							name: w.name,
+							name: w.symbol.name,
 							quoting: switch w.TYPE_KIND {
 								case DWord:    QVal;
 								case DGetWord: QGet;
@@ -59,7 +59,7 @@ class Func {
 
 		inline function getRet() {
 			spec.pick(0)._match(
-				at(Some((_.equalsString("return") => true) is SetWord)) => {
+				at(Some((_.symbol.equalsString("return") => true) is SetWord)) => {
 					spec.index++;
 					spec.pick(0)._match(
 						at(Some(b is Block)) => {
@@ -123,7 +123,7 @@ class Func {
 	public static function call(spec: Block, body: Block): Function {
 		parseSpec(spec)._match(
 			at({doc: doc, params: params, refines: refines, ret: ret}) => {
-				return new Function(doc, params, refines, ret, body.copy());
+				return new Function(null, doc, params, refines, ret, body.copy());
 			}
 		);
 	}

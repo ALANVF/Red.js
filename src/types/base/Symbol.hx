@@ -1,18 +1,23 @@
 package types.base;
 
-abstract class Symbol extends Value {
-	public final name: std.String;
-	public var context: Context;
-	public var offset: Int;
+class Symbol {
+	public static var TABLE(default, never): Dict<std.String, Symbol>;
 
-	public function new(name: std.String, ?context: Context, ?offset: Int) {
+	public final name: std.String;
+
+	private function new(name: std.String) {
 		this.name = name;
-		this.context = Util._or(context, Context.GLOBAL);
-		if(offset == null) {
-			this.context.addSymbol(this);
-		} else {
-			this.offset = offset;
-		}
+	}
+
+	public static function make(name: std.String): Symbol {
+		//return TABLE[name] ?? TABLE[name] = new Symbol(name);
+	#if macro
+		return untyped null;
+	#else
+		js.Syntax.code("let tmp");
+		return js.Syntax.code("{0}.get({1}) ?? ({0}.set({1}, tmp = new {2}({1})), tmp)",
+								TABLE, name, Symbol);
+	#end
 	}
 
 	public function equalsString(str: std.String, ignoreCase = true) {
@@ -21,59 +26,9 @@ abstract class Symbol extends Value {
 			: this.name == str;
 	}
 
-	public function equalsSymbol(sym: Symbol) {
-		return this.name.toLowerCase() == sym.name.toLowerCase();
-	}
-
-	public abstract function copyWith(?context: Context, ?offset: Int): Symbol;
-
-	public function bindToContext(ctx: Context) {
-		if(this.context != ctx) {
-			switch ctx.offsetOf(this.name) {
-				case -1:
-					final value = this.getValue(true);
-					ctx.addSymbol(this);
-					ctx.setSymbol(this, value);
-				case offset:
-					this.context = ctx;
-					this.offset = offset;
-			}
-		}
-
-		return this;
-	}
-
-	public function boundToContext(ctx: Context) {
-		if(this.context == ctx) {
-			return this;
-		} else {
-			final value = this.getValue(true);
-			switch ctx.offsetOf(this.name) {
-				case -1:
-					// should this fail?
-					final sym = ctx.addSymbol(this, true);
-					ctx.setSymbol(sym, value);
-					return sym;
-				case offset:
-					return this.copyWith(ctx, offset);
-			}
-		}
-	}
-
-	public function getValue(?optional: Bool = false) {
-		switch this.context.getSymbol(this) {
-			case Unset.UNSET if(!optional):
-				throw 'Word `${this.name}` doesn\'t exist!';
-			case value:
-				return value;
-		}
-	}
-
-	public function setValue(value: Value) {
-		if(!context.containsSymbol(this)) {
-			Context.GLOBAL.addSymbol(this);
-		}
-		
-		return context.setSymbol(this, value);
+	public function equalsSymbol(sym: Symbol, ignoreCase = true) {
+		return ignoreCase
+			? this.name.toLowerCase() == sym.name.toLowerCase()
+			: this == sym;
 	}
 }

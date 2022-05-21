@@ -9,12 +9,12 @@ class Unset {
 	public static function call(value: Value): types.Unset {
 		value._match(
 			at(word is Word) => {
-				word.setValue(types.Unset.UNSET);
+				word.set(types.Unset.UNSET);
 			},
 			at(block is Block) => {
 				for(val in block) val._match(
 					at(word is Word) => {
-						word.setValue(types.Unset.UNSET);
+						word.set(types.Unset.UNSET);
 						
 					},
 					_ => continue

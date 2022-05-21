@@ -23,7 +23,7 @@ class NativeActions extends ValueActions<Native> {
 			at([
 				s is Block,
 				{name: "get-definition"} is Issue,
-				{name: name} is Word
+				{symbol: {name: name}} is Word
 			]) => ifMatch(runtime.natives.Func.parseSpec(s), {doc: doc, params: params, refines: refines, ret: ret},
 				new Native(
 					doc,

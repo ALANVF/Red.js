@@ -13,6 +13,8 @@ class Main {
 
 		types.base.Context.GLOBAL.value = new types.Object(types.base.Context.GLOBAL, -1, true);
 
+		runtime.Words.build();
+
 		types.base.Context.GLOBAL.add(
 			"make",
 			new types.Action(

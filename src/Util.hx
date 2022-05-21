@@ -366,6 +366,8 @@ class Util {
 					}
 				
 				case macro ${{expr: EIs(_, _)}} => ${_}: e;
+
+				case (macro ${_} => true) | (macro ${_} => false): e;
 				
 				case {expr: EUnop(OpNot, true, lhs), pos: pos}:
 					switch lhs {

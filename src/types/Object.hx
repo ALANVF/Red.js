@@ -9,7 +9,7 @@ class Object extends Value implements IGetPath implements ISetPath {
 	public static var maxID: Int = 0;
 
 	public final ctx: Context;
-	public final classID: Int;
+	public var classID: Int;
 
 	public function new(?ctx: Context, ?classID: Int, dontCopy: Bool = false) {
 		this.ctx = ctx._andOr(
@@ -26,14 +26,14 @@ class Object extends Value implements IGetPath implements ISetPath {
 
 	public function getPath(access: Value, ?ignoreCase = true) {
 		return Util._match(access,
-			at({name: n} is Word, when(ctx.contains(n, ignoreCase))) => Some(ctx.get(n, ignoreCase)),
+			at({symbol: {name: n}} is Word, when(ctx.contains(n, ignoreCase))) => Some(ctx.get(n, ignoreCase)),
 			_ => None
 		);
 	}
 
 	public function setPath(access: Value, newValue: Value, ?ignoreCase = true) {
 		return Util._match(access,
-			at({name: n} is Word, when(ctx.contains(n, ignoreCase))) => {
+			at({symbol: {name: n}} is Word, when(ctx.contains(n, ignoreCase))) => {
 				ctx.set(n, newValue, ignoreCase);
 				true;
 			},
@@ -41,19 +41,23 @@ class Object extends Value implements IGetPath implements ISetPath {
 		);
 	}
 
-	public function get(word, ?ignoreCase = true) {
+	public inline function get(word, ignoreCase = true) {
 		return ctx.get(word, ignoreCase);
 	}
 
-	public function set(word, newValue, ?ignoreCase = true) {
+	public inline function set(word, newValue, ignoreCase = true) {
 		return ctx.set(word, newValue, ignoreCase);
 	}
 
-	public function add(word, value, ?ignoreCase = true) {
+	public inline function add(word, value, ignoreCase = true) {
 		return ctx.add(word, value, ignoreCase);
 	}
 
-	public function addOrSet(word, value, ?ignoreCase = true) {
+	public inline function addOrSet(word, value, ignoreCase = true) {
 		return ctx.addOrSet(word, value, ignoreCase);
+	}
+
+	public inline function addOrSetWord(word, value, ignoreCase = true) {
+		return ctx.addOrSetWord(word, value, ignoreCase);
 	}
 }

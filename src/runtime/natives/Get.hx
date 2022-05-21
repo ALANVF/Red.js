@@ -7,7 +7,7 @@ import types.base.Options;
 import types.base._NativeOptions;
 import types.base._Path;
 import types.base.IGetPath;
-import types.base.Symbol;
+import types.base._Word;
 import types.Value;
 import types.Word;
 import haxe.ds.Option;
@@ -57,20 +57,20 @@ class Get {
 
 	public static function call(word: Value, options: NGetOptions) {
 		return word._match(
-			at(s is Symbol) => {
+			at(s is _Word) => {
 				if(options.any && options._case) {
-					if(s.context.contains(s.name, false)) {
-						s.context.get(s.name, false);
+					if(s.context.contains(s.symbol.name, false)) {
+						s.context.get(s.symbol.name, false);
 					} else {
 						Unset.UNSET;
 					}
 				} else if(!options.any && options._case) {
-					switch s.context.get(s.name, false) {
-						case Unset.UNSET: throw 'Word `${s.name}` doesn\'t exist!';
+					switch s.context.get(s.symbol.name, false) {
+						case Unset.UNSET: throw 'Word `${s.symbol.name}` doesn\'t exist!';
 						case value: return value;
 					}
 				} else {
-					s.getValue(options.any);
+					s.get(options.any);
 				}
 			},
 			at(p is _Path) => {

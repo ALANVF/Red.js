@@ -21,7 +21,7 @@ class Map extends Value {
 	public static function preprocessKey(key: Value): Value {
 		return key._match(
 			at(_ is SetWord) => key,
-			at(w is Word | w is LitWord | w is GetWord) => new SetWord(w.name, w.context, w.offset),
+			at(w is Word | w is LitWord | w is GetWord) => new SetWord(w.symbol),
 			at(b is Binary) => b.copy(),
 			at(s is types.base._String) => s.copy(),
 			_ => key.TYPE_KIND._match(

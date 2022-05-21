@@ -7,7 +7,7 @@ import types.base.Options;
 import types.base._Number;
 import types.base._String;
 import types.base._Block;
-import types.base.Symbol;
+import types.base._Word;
 import types.Value;
 import types.Native;
 import types.Bitset;
@@ -56,7 +56,7 @@ class Natives {
 			at([NType_q(f), [v]]) => f(v, Options.fromRefines(NType_qOptions, refines)),
 			at([NStats(f), []]) => f(Options.fromRefines(NStatsOptions, refines)),
 			at([NBind(f), [w, c]]) => f(w, c, Options.fromRefines(NBindOptions, refines)),
-			at([NIn(f), [o is types.Object, s is types.base.Symbol]]) => f(o, s),
+			at([NIn(f), [o is types.Object, s is _Word]]) => f(o, s),
 			at([NUnion(f) | NIntersect(f) | NExclude(f) | NDifference(f), [v1, v2]]) =>
 				f(v1, v2, Options.fromRefines(NSetOpOptions, refines)),
 			at([NComplement_q(f), [b is Bitset]]) => f(b),
@@ -87,7 +87,7 @@ class Natives {
 			at([NExtend(f), [o, s]]) => f(o, s, Options.fromRefines(NExtendOptions, refines)),
 			at([NNewLine(f), [l is _Block, c is Logic]]) => f(l, c, Options.fromRefines(NNewLineOptions, refines)),
 			at([NNewLine_q(f), [l is _Block]]) => f(l),
-			at([NContext_q(f), [w is Symbol]]) => f(w),
+			at([NContext_q(f), [w is _Word]]) => f(w),
 			at([NNow(f), []]) => f(Options.fromRefines(NNowOptions, refines)),
 			at([NSign_q(f), [n]]) => f(n),
 			at([NTranscode(f), [v]]) => f(v, Options.fromRefines(NTranscodeOptions, refines)),

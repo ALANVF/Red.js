@@ -20,13 +20,13 @@ class Construct {
 		final len = values.length;
 		while(i < len) {
 			values[i]._match(
-				at({name: field} is SetWord) => {
+				at({symbol: {name: field}} is SetWord) => {
 					i++;
 					
 					var value = values[i];
 					
 					if(evalLogic) value._match(
-						at({name: name} is Word) => {
+						at({symbol: {name: name}} is Word) => {
 							name.toLowerCase()._match(
 								at("true" | "yes" | "on") => value = Logic.TRUE,
 								at("false" | "no" | "off") => value = Logic.FALSE,

@@ -15,7 +15,7 @@ class TypesetActions extends ValueActions<Typeset> {
 			at(b is Block) => {
 				return new Typeset([
 					for(value in b) value._match(
-						at(w is Word) => w.getValue(),
+						at(w is Word) => w.get(),
 						_ => value
 					)._match(
 						at(dt is IDatatype) => dt,
