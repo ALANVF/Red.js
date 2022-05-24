@@ -61,7 +61,7 @@ class Tokenizer {
 			} else {
 				Token.TWord(word);
 			}
-		} else if((match = rdr.tryMatchRx(RegexpChecks.specialWord)) != null) { // [word]
+		} else if((match = rdr.tryMatchRx(Regexps.specialWord)) != null) { // [word]
 			final word = match[0];
 			if(rdr.tryMatch(":")) {
 				Token.TSetWord(word);
@@ -83,7 +83,7 @@ class Tokenizer {
 					} else {
 						Token.TGetWord(word);
 					}
-				case _.tryMatchRx(RegexpChecks.specialWord) => [word]:
+				case _.tryMatchRx(Regexps.specialWord) => [word]:
 					if(rdr.peek() == ":") {
 						throw "error!";
 					} else {
@@ -106,7 +106,7 @@ class Tokenizer {
 					} else {
 						Token.TLitWord(word);
 					}
-				case _.tryMatchRx(RegexpChecks.specialWord) => [word]:
+				case _.tryMatchRx(Regexps.specialWord) => [word]:
 					if(rdr.peek() == ":") {
 						throw "error!";
 					} else {
