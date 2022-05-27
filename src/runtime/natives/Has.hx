@@ -7,7 +7,7 @@ import types.Block;
 class Has {
 	public static function call(locals: Block, body: Block): Function {
 		locals = locals.copy();
-		locals.values.unshift(new types.Refinement("local"));
+		locals.values.unshift(new types.Refinement(runtime.Words.LOCAL));
 		return Func.call(locals, body);
 	}
 }

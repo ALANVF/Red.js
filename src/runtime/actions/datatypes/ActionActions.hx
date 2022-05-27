@@ -22,7 +22,7 @@ class ActionActions extends ValueActions<Action> {
 		return cast(spec, Block).values._match(
 			at([
 				s is Block,
-				{name: "get-definition"} is Issue,
+				{symbol: {name: "get-definition"}} is Issue,
 				{symbol: {name: name}} is Word
 			]) => ifMatch(runtime.natives.Func.parseSpec(s), {doc: doc, params: params, refines: refines, ret: ret},
 				new Action(

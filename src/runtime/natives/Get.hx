@@ -7,7 +7,7 @@ import types.base.Options;
 import types.base._NativeOptions;
 import types.base._Path;
 import types.base.IGetPath;
-import types.base._Word;
+import types.base._AnyWord;
 import types.Value;
 import types.Word;
 import haxe.ds.Option;
@@ -57,7 +57,7 @@ class Get {
 
 	public static function call(word: Value, options: NGetOptions) {
 		return word._match(
-			at(s is _Word) => {
+			at(s is _AnyWord) => {
 				if(options.any && options._case) {
 					if(s.context.contains(s.symbol.name, false)) {
 						s.context.get(s.symbol.name, false);

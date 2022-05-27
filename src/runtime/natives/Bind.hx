@@ -5,6 +5,7 @@ import types.base._Block;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.base._Word;
+import types.base._AnyWord;
 import types.*;
 import types.TypeKind;
 
@@ -28,7 +29,7 @@ class Bind {
 
 	public static function call(word: Value, context: Value, options: NBindOptions): Value {
 		final ctx = context._match(
-			at(word is _Word) => word.context,
+			at(word is _AnyWord) => word.context,
 			at(obj is Object) => obj.ctx,
 			at(ctx_ is Context) => ctx_,
 			at(func is Function) => func.ctx,
@@ -36,7 +37,7 @@ class Bind {
 		);
 
 		word._match(
-			at(w is _Word) => return w.copyIn(ctx, ctx.addWord(w)),
+			at(w is _AnyWord) => return w.copyIn(ctx, ctx.addWord(w)),
 			at(b is Block) => {
 				if(options.copy) {
 					b = cast runtime.actions.Copy.call(b, {

@@ -190,7 +190,7 @@ class Context /*extends Value*/ {
 		final values = block.values;
 		for(i in block.index...block.absLength) {
 			Util._match(values[i],
-				at(word is types.base._Word) => {
+				at(word is types.base._AnyWord | word is types.Refinement) => {
 					if(hasSelf && word is types.Word && word.symbol == runtime.Words.SELF) {
 						values[i] = word.copyIn(this, -1);
 					} else {

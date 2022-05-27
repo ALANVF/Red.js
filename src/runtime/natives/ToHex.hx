@@ -2,6 +2,7 @@ package runtime.natives;
 
 import types.base.Options;
 import types.base._NativeOptions;
+import types.base.Symbol;
 import types.Integer;
 import types.Issue;
 
@@ -18,6 +19,6 @@ class ToHex {
 		}, 8);
 		final hex = (js.Syntax.code("{0}.toString(16).toUpperCase().padStart({1}, '0')", int, length) : String);
 
-		return new Issue(hex);
+		return new Issue(Symbol.make(hex));
 	}
 }

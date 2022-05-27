@@ -1,10 +1,11 @@
 package types;
 
 import types.base._Word;
+import types.base._AnyWord;
 import types.base.Symbol;
 import types.base.Context;
 
-class SetWord extends _Word {
+class SetWord extends _AnyWord {
 	function copyWith(symbol: Symbol): SetWord {
 		return new SetWord(symbol);
 	}

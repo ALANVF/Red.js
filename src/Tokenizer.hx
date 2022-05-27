@@ -179,50 +179,50 @@ class Tokenizer {
 		} else if(rdr.tryMatch("2#{")) {
 			final out = new StringBuf();
 
-				eatEmpty(rdr);
+			eatEmpty(rdr);
 
-				while(!rdr.tryMatch("}")) {
-					for(_ in 0...8) {
-						switch rdr.next() {
-							case c = "0" | "1": out.add(c);
-							case c: throw 'Unexpected character "$c" in binary! at ${rdr.getLocStr()}';
-						}
+			while(!rdr.tryMatch("}")) {
+				for(_ in 0...8) {
+					switch rdr.next() {
+						case c = "0" | "1": out.add(c);
+						case c: throw 'Unexpected character "$c" in binary! at ${rdr.getLocStr()}';
 					}
-
-					eatEmpty(rdr);
 				}
 
-				Token.TBinary(out.toString(), 2);
+				eatEmpty(rdr);
+			}
+
+			Token.TBinary(out.toString(), 2);
 		} else if((match = rdr.tryMatchRx(~/(?:16)?#\{/)) != null) { // [_]
 			final out = new StringBuf();
 
-				eatEmpty(rdr);
+			eatEmpty(rdr);
 
-				while(!rdr.tryMatch("}")) {
-					switch rdr.next(2) {
-						case c if(~/^[a-fA-F\d]{2}$/.match(c)): out.add(c);
-						case c: throw 'Unexpected character "$c" in binary! at ${rdr.getLocStr()}';
-					}
-
-					eatEmpty(rdr);
+			while(!rdr.tryMatch("}")) {
+				switch rdr.next(2) {
+					case c if(~/^[a-fA-F\d]{2}$/.match(c)): out.add(c);
+					case c: throw 'Unexpected character "$c" in binary! at ${rdr.getLocStr()}';
 				}
 
-				Token.TBinary(out.toString(), 16);
+				eatEmpty(rdr);
+			}
+
+			Token.TBinary(out.toString(), 16);
 		} else if(rdr.tryMatch("64#{")) {
 			final out = new StringBuf();
 
-				eatEmpty(rdr);
+			eatEmpty(rdr);
 
-				while(!rdr.tryMatch("}")) {
-					switch rdr.next() {
-						case c if(~/^[a-zA-Z\d=\/+]$/.match(c)): out.add(c);
-						case c: throw 'Unexpected character "$c" in binary! at ${rdr.getLocStr()}';
-					}
-
-					eatEmpty(rdr);
+			while(!rdr.tryMatch("}")) {
+				switch rdr.next() {
+					case c if(~/^[a-zA-Z\d=\/+]$/.match(c)): out.add(c);
+					case c: throw 'Unexpected character "$c" in binary! at ${rdr.getLocStr()}';
 				}
 
-				Token.TBinary(out.toString(), 64);
+				eatEmpty(rdr);
+			}
+
+			Token.TBinary(out.toString(), 64);
 		} else if(rdr.matches("(")) {
 			Token.TParen(Actions.paren(rdr));
 		} else if(rdr.matches("[")) {
@@ -470,8 +470,8 @@ class Tokenizer {
 			case TFile(file): new types.File(types.base._String.charsFromRed(file));
 			case TEmail(email): new types.Email(types.base._String.charsFromRed(email));
 			case TUrl(url): new types.Url(types.base._String.charsFromRed(url));
-			case TIssue(issue): new types.Issue(issue);
-			case TRefinement(ref): new types.Refinement(ref);
+			case TIssue(issue): new types.Issue(types.base.Symbol.make(issue));
+			case TRefinement(ref): new types.Refinement(types.base.Symbol.make(ref));
 			case TTag(tag): new types.Tag(types.base._String.charsFromRed(tag));
 			case TRef(ref): new types.Ref(types.base._String.charsFromRed(ref));
 			case TBinary(_, _): throw 'NYI';

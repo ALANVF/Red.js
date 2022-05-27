@@ -5,7 +5,7 @@ import types.Map;
 import types.Object;
 import types.Block;
 import types.Unset;
-import types.base._Word;
+import types.base._AnyWord;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.base._Path;
@@ -52,7 +52,7 @@ class Set {
 	}
 
 	@:generic
-	static function _setMany<Words: Iterable<_Word>, Vals: Iterable<Value>>(symbols: Words, values: Vals, any, some) {
+	static function _setMany<Words: Iterable<_AnyWord>, Vals: Iterable<Value>>(symbols: Words, values: Vals, any, some) {
 		final syms = symbols.iterator();
 		final vals = values.iterator();
 
@@ -88,7 +88,7 @@ class Set {
 	}
 
 	@:generic
-	public static function setMany<Iter: Iterable<_Word>>(symbols: Iter, value: Value, any, only, some) {
+	public static function setMany<Iter: Iterable<_AnyWord>>(symbols: Iter, value: Value, any, only, some) {
 		if(!(value == types.None.NONE && some)) {
 			if(!only) {
 				value._match(
@@ -109,10 +109,10 @@ class Set {
 		}
 
 		word._match(
-			at(s is _Word) => s.set(value),
+			at(s is _AnyWord) => s.set(value),
 			at(p is _Path) => setPath(p, value, options._case),
-			at(b is Block) => setMany([for(s in b) cast(s, _Word)], value, options.any, options.only, options.some),
-			at(o is Object) => setMany(o.ctx.symbols, value, options.any, options.only, options.some),
+			at(b is Block) => setMany([for(s in b) cast(s, _AnyWord)], value, options.any, options.only, options.some),
+			at(o is Object) => setMany(cast o.ctx.symbols, value, options.any, options.only, options.some),
 			_ => throw "Invalid type!"
 		);
 

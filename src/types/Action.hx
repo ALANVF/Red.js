@@ -45,7 +45,7 @@ enum ActionFn {
 	
 	/*-- Series actions --*/
 	AAppend(fn: (series: Value, value: Value, options: AAppendOptions) -> Value);
-	AAt(fn: (series: Value) -> Value);
+	AAt(fn: (series: Value, index: Value) -> Value);
 	ABack(fn: (series: Value) -> Value);
 	AChange(fn: (series: Value, value: Value, options: AChangeOptions) -> Value);
 	AClear(fn: (series: Value) -> Value);

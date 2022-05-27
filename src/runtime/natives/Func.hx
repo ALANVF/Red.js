@@ -91,7 +91,7 @@ class Func {
 					spec.index++;
 					
 					final refine: _Refine = {
-						name: r.name,
+						name: r.symbol.name,
 						doc: spec.pick(0)._match(
 							at(Some(s is types.String)) => {
 								spec.index++;

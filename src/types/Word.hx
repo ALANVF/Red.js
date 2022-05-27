@@ -1,13 +1,11 @@
 package types;
 
 import types.base._Word;
+import types.base._AnyWord;
 import types.base.Symbol;
 import types.base.Context;
 
-class Word extends _Word {
-	// Required due to an obscure bug (that's probably caused by the build macro)
-	//override public function new(name: std.String, ?context: Context, ?offset: Int) super(name, context, offset);
-
+class Word extends _AnyWord {
 	public function copyWith(symbol: Symbol): Word {
 		return new Word(symbol);
 	}
