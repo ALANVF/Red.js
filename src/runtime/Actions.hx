@@ -17,13 +17,33 @@ class Actions {
 		DDatatype => new DatatypeActions(),
 		DUnset => new UnsetActions(),
 		DNone => new NoneActions(),
+		DBlock => new BlockActions(),
+		DParen => new ParenActions(),
+		DString => new StringActions(),
+		DFile => new FileActions(),
+		DUrl => new UrlActions(),
+		DWord => new WordActions(),
+		DSetWord => new SetWordActions(),
+		DLitWord => new LitWordActions(),
+		DGetWord => new GetWordActions(),
+		DRefinement => new RefinementActions(),
+		DIssue => new IssueActions(),
 		DNative => new NativeActions(),
 		DAction => new ActionActions(),
 		DOp => new OpActions(),
 		DFunction => new FunctionActions(),
-		DInteger => new IntegerActions<types.Integer>(),
+		DChar => new CharActions(),
+		DInteger => new IntegerActions(),
+		DFloat => new FloatActions(),
 		DObject => new ObjectActions(),
-		DTypeset => new TypesetActions()
+		DTypeset => new TypesetActions(),
+		DHash => new HashActions(),
+		DPercent => new PercentActions(),
+		DBinary => new BinaryActions(),
+		DTime => new TimeActions(),
+		DTag => new TagActions(),
+		DEmail => new EmailActions(),
+		DRef => new RefActions()
 	] : Dict<TypeKind, ValueActions<Value>>));
 
 	static inline function get(kind: TypeKind) {
@@ -40,7 +60,7 @@ class Actions {
 			
 			case [AAbsolute(f) | ANegate(f)
 				| AComplement(f)
-				| AAt(f) | ABack(f) | AClear(f) | AHead(f) | ALength_q(f) | ANext(f) | ATail(f)
+				| ABack(f) | AClear(f) | AHead(f) | ALength_q(f) | ANext(f) | ATail(f)
 				| ACreate(f) | ADelete(f) | AQuery(f), [v]]: f(v);
 			case [AEven_q(f) | AOdd_q(f)
 				| AHead_q(f) | ATail_q(f), [v]]: f(v);
@@ -59,7 +79,7 @@ class Actions {
 			case [AMake(f) | ATo(f)
 				| AAdd(f) | ASubtract(f) | AMultiply(f) | ADivide(f) | ARemainder(f)
 				| AAnd(f) | AOr(f) | AXor(f)
-				| APick(f) | ASkip(f) | ASwap(f)
+				| AAt(f) | APick(f) | ASkip(f) | ASwap(f)
 				| ARename(f), [v1, v2]]: f(v1, v2);
 			case [APower(f), [v1, v2]]: f(Std.downcast(v1, _Number).nonNull(), Std.downcast(v2, _Number).nonNull());
 			case [AReflect(f), [v1, v2]]: f(v1, Std.downcast(v2, Word).nonNull());

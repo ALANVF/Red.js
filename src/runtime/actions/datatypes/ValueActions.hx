@@ -46,33 +46,33 @@ class ValueActions<This: Value> {
 	function xor(value1: This, value2: Value): Value invalid();
 	
 	/*-- Series actions --*/
-	function append(series: This, value: Value, options: AAppendOptions): Value invalid();
-	@:noCompletion function at(series: This): Value invalid();
-	function back(series: This): Value invalid();
-	function change(series: This, value: Value, options: AChangeOptions): Value invalid();
-	function clear(series: This): Value invalid();
-	function copy(value: This, options: ACopyOptions): Value invalid();
+	function append(series: This, value: Value, options: AAppendOptions): This invalid();
+	@:noCompletion function at(series: This, index: Value): This invalid();
+	function back(series: This): This invalid();
+	function change(series: This, value: Value, options: AChangeOptions): This invalid();
+	function clear(series: This): This invalid();
+	function copy(value: This, options: ACopyOptions): This invalid();
 	function find(series: This, value: Value, options: AFindOptions): Value invalid();
-	function head(series: This): Value invalid();
+	function head(series: This): This invalid();
 	function head_q(series: This): Logic invalid();
 	function index_q(series: This): Integer invalid();
-	function insert(series: This): Value invalid();
+	function insert(series: This, value: Value, options: AInsertOptions): This invalid();
 	function length_q(series: This): Value invalid();
-	function move(origin: This, target: Value, options: AMoveOptions): Value invalid();
-	function next(series: This): Value invalid();
+	function move(origin: This, target: Value, options: AMoveOptions): This invalid();
+	function next(series: This): This invalid();
 	function pick(series: This, index: Value): Value invalid();
 	function poke(series: This, index: Value, value: Value): Value invalid();
 	function put(series: This, key: Value, value: Value, options: APutOptions): Value invalid();
-	function remove(series: This, options: ARemoveOptions): Value invalid();
-	function reverse(series: This, options: AReverseOptions): Value invalid();
+	function remove(series: This, options: ARemoveOptions): This invalid();
+	function reverse(series: This, options: AReverseOptions): This invalid();
 	function select(series: This, value: Value, options: ASelectOptions): Value invalid();
-	function sort(series: This, options: ASortOptions): Value invalid();
-	function skip(series: This, offset: Value): Value invalid();
-	function swap(series1: This, series2: Value): Value invalid();
-	function tail(series: This): Value invalid();
+	function sort(series: This, options: ASortOptions): This invalid();
+	function skip(series: This, offset: Value): This invalid();
+	function swap(series1: This, series2: Value): This invalid();
+	function tail(series: This): This invalid();
 	function tail_q(series: This): Logic invalid();
 	function take(series: This, options: ATakeOptions): Value invalid();
-	function trim(series: This, options: ATrimOptions): Value invalid();
+	function trim(series: This, options: ATrimOptions): This invalid();
 	
 	/*-- I/O actions --*/
 	function create(port: Value): Value invalid();

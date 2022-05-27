@@ -44,6 +44,79 @@ class Main {
 				]
 				#get-definition ACT_ADD
 			]
+
+			at: make action! [[
+					series	 [series! port!]
+					index 	 [integer! pair!]
+					return:  [series! port!]
+				]
+				#get-definition ACT_AT
+			]
+			
+			back: make action! [[
+					series	 [series! port!]
+					return:  [series! port!]
+				]
+				#get-definition ACT_BACK
+			]
+
+			head: make action! [[
+					series	 [series! port!]
+					return:  [series! port!]
+				]
+				#get-definition ACT_HEAD
+			]
+			
+			head?: make action! [[
+					series	 [series! port!]
+					return:  [logic!]
+				]
+				#get-definition ACT_HEAD?
+			]
+			
+			index?: make action! [[
+					series	 [series! port! any-word!]
+					return:  [integer!]
+				]
+				#get-definition ACT_INDEX?
+			]
+
+			length?: make action! [[
+					series	 [series! port! bitset! map! tuple! none!]
+					return:  [integer! none!]
+				]
+				#get-definition ACT_LENGTH?
+			]
+
+			next: make action! [[
+					series	 [series! port!]
+					return:  [series! port!]
+				]
+				#get-definition ACT_NEXT
+			]
+
+			skip: make action! [[
+					series	 [series! port!]
+					offset 	 [integer! pair!]
+					return:  [series! port!]
+				]
+				#get-definition ACT_SKIP
+			]
+			
+			tail: make action! [[
+					series	 [series! port!]
+					return:  [series! port!]
+				]
+				#get-definition ACT_TAIL
+			]
+			
+			tail?: make action! [[
+					series	 [series! port!]
+					return:  [logic!]
+				]
+				#get-definition ACT_TAIL?
+			]
+		
 		");
 
 		runtime.Eval.evalCode("

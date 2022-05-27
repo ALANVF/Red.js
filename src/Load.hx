@@ -3,7 +3,7 @@ import types.TypeKind;
 import types.Datatype;
 import util.Tuple2;
 
-var _dummy: Datatype;
+private var _dummy: Datatype;
 
 macro function genDatatypes(entries: Array<haxe.macro.Expr>) {
 	final newEntries = [];

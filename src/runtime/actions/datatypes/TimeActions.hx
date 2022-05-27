@@ -6,15 +6,13 @@ import types.base._Integer;
 import types.base._Float;
 import types.Value;
 import types.Integer;
-import types.Char;
+import types.Float;
 import types.Money;
 import types.Time;
 import types.Percent;
-import types.Pair;
-import types.Tuple;
 
-class IntegerActions extends _IntegerActions<Integer> {
-	function makeThis(i: Int): Integer {
-		return new Integer(i);
+class TimeActions extends _FloatActions<Time> {
+	function makeThis(f: StdTypes.Float): Time {
+		return new Time(f);
 	}
 }

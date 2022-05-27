@@ -1,0 +1,11 @@
+package runtime.actions;
+
+import types.Value;
+import types.Logic;
+
+@:build(runtime.ActionBuilder.build())
+class Head_q {
+	public static function call(series: Value): Logic {
+		return Actions.getFor(series).head_q(series);
+	}
+}
