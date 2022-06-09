@@ -124,6 +124,14 @@ class Tokenizer {
 			Token.TTime(Util.mustParseInt(match[1]), Util.mustParseInt(match[2]), if(s == null) 0 else Std.parseFloat(s));
 		} else if(rdr.matchesRx(RegexpChecks.date)) {
 			throw "todo!";
+		} else if(rdr.matchesRx(RegexpChecks.specialFloat)) {
+			if((match = rdr.tryMatchRx(Regexps.nanFloat)) != null) {
+				Token.TFloat(Math.NaN);
+			} else if((match = rdr.tryMatchRx(Regexps.infFloat)) != null) {
+				Token.TFloat(if(match[1] == "-") Math.NEGATIVE_INFINITY else Math.POSITIVE_INFINITY);
+			} else {
+				throw "Invalid float literal!";
+			}
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.float, Regexps.float)) != null) { // [Std.parseFloat(_) => float]
 			final float = Std.parseFloat(match[0]);
 			if(rdr.tryMatch("%")) {
@@ -174,6 +182,14 @@ class Tokenizer {
 			}
 
 			Token.TString(out.toString());
+		} else if((match = rdr.tryMatchRx(Regexps.beginRawString)) != null) {
+			final end = "}" + match[1];
+
+			rdr.matchSubstr(end)._andOr(str => {
+				Token.TRawString(str);
+			}, {
+				throw "Invalid string literal";
+			});
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.tag, Regexps.tag)) != null) { // [_, tag]
 			Token.TTag(match[1]);
 		} else if(rdr.tryMatch("2#{")) {
@@ -235,204 +251,6 @@ class Tokenizer {
 			throw 'Syntax error: Invalid token "${rdr.peek()}" near "${rdr.stream.substr(rdr.pos, 5)}" at ${rdr.getLocStr()}';
 		}
 		
-		/*final res = switch rdr {
-			case _.tryMatchRx(Regexps.div) => [word]:
-				Token.TWord(word);
-			case _.tryMatchRx(Regexps.getDiv) => [_, word]:
-				Token.TGetWord(word);
-			case _.tryMatchRx(Regexps.litDiv) => [_, word]:
-				Token.TLitWord(word);
-			case _.tryMatchRx(Regexps.setDiv) => [_, word]:
-				Token.TSetWord(word);
-			case matchRxWithGuard(_, RegexpChecks.refinement, Regexps.refinement) => [_, refine]:
-				Token.TRefinement(refine);
-			case _.tryMatchRx(Regexps.hexa) => [_, hexa]:
-				Token.TInteger(Util.mustParseInt('0x$hexa'));
-			// skip email for now
-			case matchRxWithGuardRx(_, RegexpChecks.file, Regexps.file) => [_, file]:
-				Token.TFile(file);
-			case matchRxWithGuardRx(_, RegexpChecks.url, Regexps.url) => [_, url]:
-				Token.TUrl(url);
-			// skip money for now
-			case matchRxWithGuardRx(_, RegexpChecks.word, Regexps.word) => [word]:
-				if(rdr.tryMatch(":")) {
-					Token.TSetWord(word);
-				} else if(rdr.peek() == "/") {
-					final path = Actions.path(rdr, Token.TWord(word));
-					if(rdr.tryMatch(":")) {
-						Token.TSetPath(path);
-					} else {
-						Token.TPath(path);
-					}
-				} else {
-					Token.TWord(word);
-				}
-			case _.tryMatchRx(RegexpChecks.specialWord) => [word]:
-				if(rdr.tryMatch(":")) {
-					Token.TSetWord(word);
-				} else {
-					Token.TWord(word);
-				}
-			case _.tryMatch(":") => true:
-				switch rdr {
-					case matchRxWithGuardRx(_, RegexpChecks.word, Regexps.word) => [word]:
-						if(rdr.peek() == ":") {
-							throw "error!";
-						} else if(rdr.peek() == "/") {
-							final path = Actions.path(rdr, TWord(word));
-							if(rdr.peek() == ":") {
-								throw "error!";
-							} else {
-								Token.TGetPath(path);
-							}
-						} else {
-							Token.TGetWord(word);
-						}
-					case _.tryMatchRx(RegexpChecks.specialWord) => [word]:
-						if(rdr.peek() == ":") {
-							throw "error!";
-						} else {
-							Token.TGetWord(word);
-						}
-					default: throw "error!";
-				}
-			case _.tryMatch("'") => true:
-				switch rdr {
-					case matchRxWithGuardRx(_, RegexpChecks.word, Regexps.word) => [word]:
-						if(rdr.peek() == ":") {
-							throw "error!";
-						} else if(rdr.peek() == "/") {
-							final path = Actions.path(rdr, TWord(word));
-							if(rdr.peek() == ":") {
-								throw "error!";
-							} else {
-								Token.TLitPath(path);
-							}
-						} else {
-							Token.TLitWord(word);
-						}
-					case _.tryMatchRx(RegexpChecks.specialWord) => [word]:
-						if(rdr.peek() == ":") {
-							throw "error!";
-						} else {
-							Token.TLitWord(word);
-						}
-					default: throw "error!";
-				}
-				
-			case matchRxWithGuardRx(_, RegexpChecks.issue, Regexps.issue) => [_, issue]:
-				Token.TIssue(issue);
-			case matchRxWithGuardRx(_, RegexpChecks.pair, Regexps.pair) => [_, x, y]:
-				Token.TPair(Util.mustParseInt(x), Util.mustParseInt(y));
-			case matchRxWithGuardRx(_, RegexpChecks.time, Regexps.time) => [_, h, m, s]:
-				Token.TTime(Util.mustParseInt(h), Util.mustParseInt(m), if(s == null) 0 else Std.parseFloat(s));
-			case _.matchesRx(RegexpChecks.date) => true:
-				throw "todo!";
-			case matchRxWithGuardRx(_, RegexpChecks.float, Regexps.float) => [Std.parseFloat(_) => float]:
-				if(rdr.tryMatch("%")) {
-					Token.TPercent(float);
-				} else {
-					Token.TFloat(float);
-				}
-			case matchRxWithGuardRx(_, RegexpChecks.integer, Regexps.integer) => [Util.mustParseInt(_) => integer]:
-				if(rdr.tryMatch("%")) {
-					Token.TPercent(integer);
-				} else {
-					Token.TInteger(integer);
-				}
-			case matchRxWithGuardRx(_, RegexpChecks.tuple, Regexps.tuple) => match if(match != null):
-				Token.TTuple(match.slice(1).map(Util.mustParseInt));
-			case matchRxWithGuard(_, RegexpChecks.char, Regexps.char) => [_, char]:
-				Token.TChar(char);
-			case matchRxWithGuard(_, RegexpChecks.string, Regexps.string) => [_, string]:
-				Token.TString(string);
-			case _.tryMatch(RegexpChecks.multiString) => true:
-				final out = new StringBuf();
-				var level = 1;
-
-				while(level > 0) {
-					if(rdr.eof()) {
-						throw 'Syntax error: Invalid string! at "$out"';
-					}
-
-					switch rdr.next() {
-						case "{":
-							out.add("{");
-							level++;
-						case "}" if(level > 0):
-							out.add("}");
-							level--;
-						case "}":
-							break;
-						case "^":
-							out.add(switch rdr.next() {
-								case c = "{" | "}": c;
-								case c: '^$c';
-							});
-						case c:
-							out.add(c);
-					}
-				}
-
-				Token.TString(out.toString());
-			case matchRxWithGuardRx(_, RegexpChecks.tag, Regexps.tag) => [_, tag]:
-				Token.TTag(tag);
-			case _.tryMatch("2#{") => true:
-				final out = new StringBuf();
-
-				eatEmpty(rdr);
-
-				while(!rdr.tryMatch("}")) {
-					for(i in 0...8) {
-						switch rdr.next() {
-							case c = "0" | "1": out.add(c);
-							case c: throw 'Unexpected character "$c" in binary!';
-						}
-					}
-
-					eatEmpty(rdr);
-				}
-
-				Token.TBinary(out.toString(), 2);
-			case _.tryMatchRx(~/(?:16)?#\{/) => [_]:
-				final out = new StringBuf();
-
-				eatEmpty(rdr);
-
-				while(!rdr.tryMatch("}")) {
-					switch rdr.next(2) {
-						case c if(~/^[a-fA-F\d]{2}$/.match(c)): out.add(c);
-						case c: throw 'Unexpected character "$c" in binary!';
-					}
-
-					eatEmpty(rdr);
-				}
-
-				Token.TBinary(out.toString(), 16);
-			case _.tryMatch("64#{") => true:
-				final out = new StringBuf();
-
-				eatEmpty(rdr);
-
-				while(!rdr.tryMatch("}")) {
-					switch rdr.next() {
-						case c if(~/^[a-zA-Z\d=\/+]$/.match(c)): out.add(c);
-						case c: throw 'Unexpected character "$c" in binary!';
-					}
-
-					eatEmpty(rdr);
-				}
-
-				Token.TBinary(out.toString(), 64);
-			case _.matches("(") => true: Token.TParen(Actions.paren(rdr));
-			case _.matches("[") => true: Token.TBlock(Actions.block(rdr));
-			case _.matches("#(") => true: Token.TMap(Actions.map(rdr));
-			case _.matches("#[") => true: Token.TConstruct(Actions.construct(rdr));
-			default:
-				final loc = rdr.getLoc();
-				throw 'Syntax error: Invalid token "${rdr.peek()}" near "${rdr.stream.substr(rdr.pos, 5)}" at [${loc.line}:${loc.column}]';
-		};*/
-
 		eatEmpty(rdr);
 
 		return res;
@@ -467,6 +285,7 @@ class Tokenizer {
 			case TMoney(_, _): throw 'NYI';
 			case TChar(char): types.Char.fromRed(char);
 			case TString(str): types.String.fromRed(str);
+			case TRawString(str): types.String.fromString(str);
 			case TFile(file): new types.File(types.base._String.charsFromRed(file));
 			case TEmail(email): new types.Email(types.base._String.charsFromRed(email));
 			case TUrl(url): new types.Url(types.base._String.charsFromRed(url));

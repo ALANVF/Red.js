@@ -5,6 +5,7 @@ class RegexpChecks {
 	static final word = ~/^(?:[a-zA-Z_*=>&|!?~`^]|<+(?=[-:=>\[\](){}l^"\s]|$)|(?:\.|[+-]\.?)(?!\d))/;
 	static final hexa = ~/^([A-F\d]{2,})h/;
 	static final integer = ~/^[+-]?\d+(?![\.xX]|#\{)/;
+	static final specialFloat = ~/^[+-]?1\.#/;
 	static final float = ~/^[+-]?(?:\d*\.\d+(?![\.\d])|\d+\.(?!\d+\.))/;
 	static final money = ~/^[+-]?[a-zA-Z]{0,3}\$\d/;
 	static final string = '"';

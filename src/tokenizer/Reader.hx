@@ -86,6 +86,17 @@ class Reader {
 		}
 	}
 
+	public function matchSubstr(str: String): Null<String> {
+		final index = this.stream.indexOf(str, this.pos);
+		if(index == -1) {
+			return null;
+		} else {
+			final start = this.pos;
+			this.pos = index + str.length;
+			return this.stream.substring(start, index);
+		}
+	}
+
 	public function tryMatch(str: String) {
 		return if(this.matches(str)) {
 			this.pos += str.length;

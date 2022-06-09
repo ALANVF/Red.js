@@ -5,6 +5,8 @@ class Regexps {
 	static final word = ~/^(?:[a-zA-Z_*=>&|!?~`^]|<+(?=[-:=>\[\](){}l^"\s]|$)|(?:\.|[+-]\.?)(?!\d))(?:[\w+\-*=>&|!?~`\.'^]|<(?!<))*/;
 	static final hexa = ~/^([A-F\d]{2,})h/;
 	static final integer = ~/^[+-]?\d+(?![\.xX]|#\{)/;
+	static final nanFloat = ~/^[+-]?1\.#NaN\b/i;
+	static final infFloat = ~/^([+-]?)1\.#Inf\b/i;
 	static final float = ~/^[+-]?(?:\d*\.\d+(?!\.)|\d+\.(?!\d+\.))/;
 	static final money = ~/^([+-]?)([a-zA-Z]{0,3})\$(\d+(?:\.\d+)?)/;
 	static final string = ~/^"((?:\^.|[^"^]+)*)"/;

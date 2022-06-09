@@ -34,6 +34,7 @@ enum Token {
 
 	TChar(char: String);
 	TString(string: String);
+	TRawString(string: String);
 	TFile(file: String);
 	TEmail(email: String);
 	TUrl(url: String);

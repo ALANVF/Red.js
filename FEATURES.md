@@ -12,12 +12,12 @@
 | `logic!`                 | Y        | Y      | N      | N    | N      | N      | Y         | N             |
 | `block!`                 | Y        | Y      | N      | N    | N      | N      | N         | P             |
 | `paren!`                 | Y        | Y      | N      | N    | N      | N      | N         | P             |
-| `string!`                | Y        | P*     | N      | N    | N      | N      | N         | P             |
+| `string!`                | Y        | Y*     | N      | N    | N      | N      | N         | P             |
 | `file!`                  | Y        | Y      | N      | N    | N      | N      | N         | P             |
 | `url!`                   | Y        | Y      | N      | N    | N      | N      | N         | P             |
 | `char!`                  | Y        | Y      | N      | N    | N      | N      | Y         | P             |
 | `integer!`               | Y        | Y      | N      | N    | N      | N      | P         | P             |
-| `float!`                 | Y        | P**    | N      | N    | N      | N      | P         | P             |
+| `float!`                 | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `word!`                  | Y        | Y      | N      | N    | N      | N      | Y         | N             |
 | `set-word!`              | Y        | Y      | N      | N    | N      | N      | Y         | N             |
 | `lit-word!`              | Y        | Y      | N      | N    | N      | N      | Y         | N             |
@@ -32,12 +32,12 @@
 | `lit-path!`              | Y        | Y      | N      | N    | N      | N      | N         | P             |
 | `set-path!`              | Y        | Y      | N      | N    | N      | N      | N         | P             |
 | `get-path!`              | Y        | Y      | N      | N    | N      | N      | N         | P             |
-| `routine!`               | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `routine!`               | NA       | NA     | N      | N    | N      | N      | N         | N             |
 | `bitset!`                | Y        | NA     | N      | N    | N      | N      | N         | N             |
 | `point!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `object!`                | Y        | NA     | Y      | N    | N      | N      | N         | P             |
 | `typeset!`               | Y        | NA     | Y      | N    | N      | N      | N         | N             |
-| `error!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `error!`                 | Y        | NA     | N      | N    | N      | N      | N         | N             |
 | `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `hash!`                  | P        | NA     | N      | N    | N      | N      | N         | P             |
 | `pair!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
@@ -47,19 +47,17 @@
 | `binary!`                | Y        | N      | N      | N    | N      | N      | N         | P             |
 | `time!`                  | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `tag!`                   | Y        | Y      | N      | N    | N      | N      | N         | P             |
-| `email!`                 | Y        | N***   | N      | N    | N      | N      | N         | P             |
-| `handle!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `email!`                 | Y        | N**    | N      | N    | N      | N      | N         | P             |
+| `handle!`                | NA       | NA     | N      | N    | N      | N      | N         | N             |
 | `date!`                  | Y        | N      | N      | N    | N      | N      | N         | N             |
 | `port!`                  | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `image!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
-| `money!`                 | N        | N      | N      | N    | N      | N      | N         | N             |
+| `money!`                 | N        | N**    | N      | N    | N      | N      | N         | N             |
 | `ref!`                   | Y        | Y      | N      | N    | N      | N      | N         | P             |
 
-\* `raw-string!` literals are currently not supported.
+\* `raw-string!` literals are slightly more permissive than in Red's normal lexer.
 
-\*\* NaN and infinity literals are currently not supported.
-
-\*\*\* Parsing rule has been removed from the parser due to it causing a noticable slowdown during parsing.
+\*\* Parsing rule has been removed from the parser due to it causing a noticable slowdown during parsing.
 
 # Natives
 |                     | status |
@@ -100,7 +98,7 @@
 | `same?`             | Y      |
 | `not`               | Y      |
 | `type?`             | Y      |
-| `stats`             | N      |
+| `stats`             | NA     |
 | `bind`              | Y      |
 | `in`                | Y      |
 | `parse`             | N      |
@@ -148,25 +146,25 @@
 | `extend`            | Y      |
 | `debase`            | N      |
 | `enbase`            | N      |
-| `to-local-file`     | N      |
+| `to-local-file`     | N**    |
 | `wait`              | N      |
 | `checksum`          | N      |
 | `unset`             | Y      |
 | `new-line`          | Y      |
 | `new-line?`         | Y      |
 | `context?`          | Y      |
-| `set-env`           | N      |
-| `get-env`           | N      |
-| `list-env`          | N      |
+| `set-env`           | N**    |
+| `get-env`           | N**    |
+| `list-env`          | N**    |
 | `now`               | P      |
 | `sign?`             | P      |
 | `as`                | Y***   |
-| `call`              | N      |
+| `call`              | N**    |
 | `size?`             | N      |
 | `browse`            | N      |
-| `compress`          | N      |
-| `decompress`        | N      |
-| `recycle`           | N      |
+| `compress`          | N**    |
+| `decompress`        | N**    |
+| `recycle`           | NA     |
 | `transcode`         | P      |
 
 \* For debugging use for now.
