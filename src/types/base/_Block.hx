@@ -2,7 +2,7 @@ package types.base;
 
 import util.Set;
 
-abstract class _Block extends _SeriesOf<Value> {
+abstract class _Block extends _BlockLike {
 	public var newlines: Null<Set<Int>>;
 	
 	override public function new(values: Array<Value>, ?index: Int, ?newlines: Set<Int>) {

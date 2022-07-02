@@ -3,12 +3,15 @@ package runtime;
 import types.base.Options;
 import types.base._ActionOptions;
 import types.base.ComparisonOp;
+import types.base.CompareResult;
 import types.base._Number;
 import types.Value;
 import types.Logic;
 import types.Word;
 import types.Action;
 import types.TypeKind;
+import types.None;
+import types.Unset;
 import runtime.actions.datatypes.*;
 
 @:publicFields
@@ -32,6 +35,10 @@ class Actions {
 		DAction => new ActionActions(),
 		DOp => new OpActions(),
 		DFunction => new FunctionActions(),
+		DPath => new PathActions(),
+		DLitPath => new LitPathActions(),
+		DSetPath => new SetPathActions(),
+		DGetPath => new GetPathActions(),
 		DChar => new CharActions(),
 		DInteger => new IntegerActions(),
 		DFloat => new FloatActions(),
@@ -122,5 +129,14 @@ class Actions {
 			case CGreaterEqual: cmp != IsLess;
 			default: throw "error!";
 		});
+	}
+
+	static function compareValue(value1: Value, value2: Value, op: ComparisonOp): CompareResult {
+		return value1._match(
+			at(l1 is Logic) => cast (untyped l1.cond - (untyped value2 : Logic).cond),
+			at(f is types.base._Function) => cast (value1 == value2 ? 0 : -1),
+			at(_ is None | _ is Unset) => IsSame,
+			_ => getFor(value1).compare(value1, value2, op)
+		);
 	}
 }

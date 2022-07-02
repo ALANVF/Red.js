@@ -2,7 +2,7 @@ package runtime.actions;
 
 import types.base.Options;
 import types.base._ActionOptions;
-import types.base._SeriesOf;
+import types.base._BlockLike;
 import types.base._Path;
 import types.Value;
 import types.Block;
@@ -16,7 +16,7 @@ class Copy {
 		return Actions.getFor(value).copy(value, options);
 	}
 
-	public static function block<T: _SeriesOf<Value>>(blk: T, deep: Bool, any: Bool) {
+	public static function block<T: _BlockLike>(blk: T, deep: Bool, any: Bool) {
 		if(blk.length == 0) {
 			return (untyped blk.copy() : T);
 		}
@@ -34,7 +34,7 @@ class Copy {
 						? (value is Block || value is Paren || value is _Path)
 						: (value is Block)
 					)) {
-						values[i] = block((untyped value : _SeriesOf<Value>), true, @if (any ? true : false));
+						values[i] = block((untyped value : _BlockLike), true, @if (any ? true : false));
 					}
 				}
 			);

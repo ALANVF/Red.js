@@ -10,11 +10,11 @@
 | `unset!`                 | Y        | NA     | Y      | Y    | Y      | Y      | Y         | N             |
 | `none!`                  | Y        | Y      | Y      | Y    | N      | N      | Y         | N             |
 | `logic!`                 | Y        | Y      | N      | N    | N      | N      | Y         | N             |
-| `block!`                 | Y        | Y      | N      | N    | N      | N      | N         | P             |
-| `paren!`                 | Y        | Y      | N      | N    | N      | N      | N         | P             |
-| `string!`                | Y        | Y*     | N      | N    | N      | N      | N         | P             |
-| `file!`                  | Y        | Y      | N      | N    | N      | N      | N         | P             |
-| `url!`                   | Y        | Y      | N      | N    | N      | N      | N         | P             |
+| `block!`                 | Y        | Y      | N      | N    | N      | N      | Y         | P             |
+| `paren!`                 | Y        | Y      | N      | N    | N      | N      | Y         | P             |
+| `string!`                | Y        | Y*     | N      | N    | N      | N      | P         | P             |
+| `file!`                  | Y        | Y      | N      | N    | N      | N      | P         | P             |
+| `url!`                   | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `char!`                  | Y        | Y      | N      | N    | N      | N      | Y         | P             |
 | `integer!`               | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `float!`                 | Y        | Y      | N      | N    | N      | N      | P         | P             |
@@ -28,9 +28,9 @@
 | `action!`                | Y        | NA     | Y      | N    | N      | N      | Y         | N             |
 | `op!`                    | Y        | NA     | Y      | N    | N      | N      | Y         | N             |
 | `function!`              | Y        | NA     | Y      | N    | N      | N      | Y         | N             |
-| `path!`                  | Y        | Y      | N      | N    | N      | N      | N         | P             |
-| `lit-path!`              | Y        | Y      | N      | N    | N      | N      | N         | P             |
-| `set-path!`              | Y        | Y      | N      | N    | N      | N      | N         | P             |
+| `path!`                  | Y        | Y      | N      | N    | N      | N      | Y         | P             |
+| `lit-path!`              | Y        | Y      | N      | N    | N      | N      | Y         | P             |
+| `set-path!`              | Y        | Y      | N      | N    | N      | N      | Y         | P             |
 | `get-path!`              | Y        | Y      | N      | N    | N      | N      | N         | P             |
 | `routine!`               | NA       | NA     | N      | N    | N      | N      | N         | N             |
 | `bitset!`                | Y        | NA     | N      | N    | N      | N      | N         | N             |
@@ -39,21 +39,21 @@
 | `typeset!`               | Y        | NA     | Y      | N    | N      | N      | N         | N             |
 | `error!`                 | Y        | NA     | N      | N    | N      | N      | N         | N             |
 | `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
-| `hash!`                  | P        | NA     | N      | N    | N      | N      | N         | P             |
+| `hash!`                  | P        | NA     | N      | N    | N      | N      | Y         | P             |
 | `pair!`                  | Y        | Y      | N      | N    | N      | N      | N         | N             |
 | `percent!`               | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `tuple!`                 | Y        | Y      | N      | N    | N      | N      | N         | N             |
 | `map!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
 | `binary!`                | Y        | N      | N      | N    | N      | N      | N         | P             |
 | `time!`                  | Y        | Y      | N      | N    | N      | N      | P         | P             |
-| `tag!`                   | Y        | Y      | N      | N    | N      | N      | N         | P             |
-| `email!`                 | Y        | N**    | N      | N    | N      | N      | N         | P             |
+| `tag!`                   | Y        | Y      | N      | N    | N      | N      | P         | P             |
+| `email!`                 | Y        | N**    | N      | N    | N      | N      | P         | P             |
 | `handle!`                | NA       | NA     | N      | N    | N      | N      | N         | N             |
 | `date!`                  | Y        | N      | N      | N    | N      | N      | N         | N             |
 | `port!`                  | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `image!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `money!`                 | N        | N**    | N      | N    | N      | N      | N         | N             |
-| `ref!`                   | Y        | Y      | N      | N    | N      | N      | N         | P             |
+| `ref!`                   | Y        | Y      | N      | N    | N      | N      | P         | P             |
 
 \* `raw-string!` literals are slightly more permissive than in Red's normal lexer.
 

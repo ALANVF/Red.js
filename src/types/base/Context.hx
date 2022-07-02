@@ -176,7 +176,7 @@ class Context /*extends Value*/ {
 	}
 
 #if !macro
-	public function bind(block: types.base._SeriesOf<Value>, hasSelf: Bool, cache: Set<Value> = /*BAD*/untyped null) {
+	public function bind(block: types.base._BlockLike, hasSelf: Bool, cache: Set<Value> = /*BAD*/untyped null) {
 		if(cache == null) {
 			cache = new Set();
 		} else {
@@ -199,7 +199,7 @@ class Context /*extends Value*/ {
 						values[i] = word;
 					}
 				},
-				at(blk is types.base._Block | blk is types.base._Path) => {
+				at(blk is types.base._BlockLike) => {
 					this.bind(blk, hasSelf, cache);
 				},
 				_ => {}

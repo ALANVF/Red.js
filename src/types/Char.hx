@@ -96,23 +96,19 @@ class Char extends _Integer {
 	}
 
 	public function toUpperCase() {
-		return Char.fromCode(
-			if("a".code <= this.int && this.int <= 'z'.code) {
-				this.int - 32;
-			} else {
-				this.int;
-			}
-		);
+		return if("a".code <= this.int && this.int <= 'z'.code) {
+			Char.fromCode(this.int - 32);
+		} else {
+			this;
+		}
 	}
 
 	public function toLowerCase() {
-		return Char.fromCode(
-			if("A".code <= this.int && this.int <= 'Z'.code) {
-				this.int + 32;
-			} else {
-				this.int;
-			}
-		);
+		return if("A".code <= this.int && this.int <= 'Z'.code) {
+			Char.fromCode(this.int + 32);
+		} else {
+			this;
+		}
 	}
 
 	public function equalsChar(other: Char) {
