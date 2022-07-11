@@ -21,30 +21,30 @@ abstract class _WordActions<This: _Word> extends ValueActions<This> {
 
 		op._match(
 			at(CEqual | CNotEqual | CFind) => {
-				return cast js.Syntax.code("+{0}", !value1.equalsWord(other));
+				return cast (!value1.equalsWord(other)).asInt();
 			},
 			at(CStrictEqual) => {
-				return cast js.Syntax.code("+({0})",
+				return cast (
 					value1.thisType() != other.thisType()
 					|| value1.symbol != other.symbol
-				);
+				).asInt();
 			},
 			at(CSame) => {
-				return cast js.Syntax.code("+({0})",
+				return cast (
 					value1.symbol != other.symbol
 					|| value1.context != other.context
 					|| value1.thisType() != other.thisType()
-				);
+				).asInt();
 			},
 			at(CStrictEqualWord) => {
 				if((value1 is Word && other is LitWord)
 				|| (value1 is LitWord && other is Word)) {
-					return js.Syntax.code("+({0})", value1.symbol != other.symbol);
+					return cast (value1.symbol != other.symbol).asInt();
 				} else {
-					return js.Syntax.code("+({0})",
+					return cast (
 						value1.thisType() != other.thisType()
 						|| value1.symbol != other.symbol
-					);
+					).asInt();
 				}
 			},
 			_ => {

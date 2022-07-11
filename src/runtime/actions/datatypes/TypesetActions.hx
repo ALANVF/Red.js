@@ -48,7 +48,7 @@ class TypesetActions extends ValueActions<Typeset> {
 					return IsSame;
 				},
 				at(CSort | CCaseSort) => {
-					return cast js.lib.Math.sign(value1.types.length - other.types.length);
+					return cast (value1.types.length - other.types.length).sign();
 				},
 				_ => return IsInvalid
 			),

@@ -10,8 +10,8 @@ import types.Money;
 class Sign_q {
 	public static function call(value: Value): Integer {
 		return new Integer(value._match(
-			at(i is _Integer) => js.lib.Math.sign(i.int),
-			at(f is _Float) => js.lib.Math.sign(f.float),
+			at(i is _Integer) => (i.int).sign(),
+			at(f is _Float) => (f.float).sign(),
 			at(m is Money) => throw "NYI!",
 			_ => throw "bad"
 		));

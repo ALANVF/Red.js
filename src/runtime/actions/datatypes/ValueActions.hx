@@ -15,10 +15,10 @@ class ValueActions<This: Value> {
 		throw new InvalidAction("Invalid action!");
 	}
 	
-	function make(type: Null<This>, spec: Value): Value invalid();
+	function make(proto: Null<This>, spec: Value): Value invalid();
 	function random(value: This, options: ARandomOptions): Value invalid();
 	function reflect(value: This, field: Word): Value invalid();
-	function to(type: Value, spec: Value): Value invalid();
+	function to(proto: Null<This>, spec: Value): Value invalid();
 	function form(value: This, options: AFormOptions): String invalid();
 	function mold(value: This, options: AMoldOptions): String invalid();
 	function modify(target: This, field: Word, value: Value, options: AModifyOptions): Value invalid();

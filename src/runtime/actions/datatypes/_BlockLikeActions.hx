@@ -56,14 +56,14 @@ function compareEach(blk1: _BlockLike, blk2: _BlockLike, op: ComparisonOp): Comp
 		) {
 			runtime.Actions.compareValue(v1, v2, op);
 		} else {
-			return cast MathTools.sign(untyped v1.TYPE_KIND - v2.TYPE_KIND);
+			return cast MathTools.compare(cast v1.TYPE_KIND, cast v2.TYPE_KIND);
 		};
 
 		if(res != IsSame) break;
 	}
 
 	return if(res == IsSame) {
-		cast MathTools.sign(size1 - size2);
+		cast size1.compare(size2);
 	} else {
 		res;
 	};

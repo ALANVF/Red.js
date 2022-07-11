@@ -32,7 +32,7 @@ abstract class _IntegerActions<This: _Integer> extends ValueActions<This> {
 			_ => return IsInvalid
 		);
 		
-		return cast js.lib.Math.sign(value1.int - other);
+		return cast (value1.int - other).sign();
 	}
 	
 	

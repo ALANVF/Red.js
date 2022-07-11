@@ -71,9 +71,9 @@ abstract class _StringActions<This: _String> extends SeriesActions<This, Char> {
 		}
 		
 		return if(c1 == c2) {
-			cast MathTools.sign(size1 - size2);
+			cast size1.compare(size2);
 		} else {
-			cast MathTools.sign(c1.int - c2.int);
+			cast c1.int.compare(c2.int);
 		}
 	}
 }
