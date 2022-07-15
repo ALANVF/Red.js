@@ -7,7 +7,7 @@ class Context /*extends Value*/ {
 	public static var GLOBAL: Context =
 		#if macro new Context()
 		// Can't rearrange the f***ing global statics
-		#else js.Syntax.code("({0}.TABLE = new Map(), {1})", Symbol, new Context()) #end
+		#else js.Syntax.code("({0}.TABLE = new Map(), {0}.INDEXES = new Map(), {0}.MAX_INDEX = 0, {1})", Symbol, new Context()) #end
 	;
 
 	public var symbols: Array<_Word>;

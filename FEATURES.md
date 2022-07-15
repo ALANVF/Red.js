@@ -35,9 +35,9 @@
 | `routine!`               | NA       | NA     | N      | N    | N      | N      | N         | N             |
 | `bitset!`                | Y        | NA     | N      | N    | N      | N      | Y         | N             |
 | `point!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
-| `object!`                | Y        | NA     | Y      | N    | N      | N      | N         | P             |
+| `object!`                | Y        | NA     | Y      | N    | N      | N      | Y         | P             |
 | `typeset!`               | Y        | NA     | Y      | N    | N      | N      | Y         | N             |
-| `error!`                 | Y        | NA     | N      | N    | N      | N      | N         | N             |
+| `error!`                 | Y        | NA     | N      | N    | N      | N      | Y         | N             |
 | `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `hash!`                  | P        | NA     | N      | N    | N      | N      | Y         | P             |
 | `pair!`                  | Y        | Y      | N      | N    | N      | N      | Y         | N             |

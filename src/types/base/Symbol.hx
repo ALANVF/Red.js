@@ -2,6 +2,8 @@ package types.base;
 
 class Symbol {
 	public static var TABLE(default, never): Dict<std.String, Symbol>;
+	public static var INDEXES(default, never): Dict<std.String, Int>;
+	public static var MAX_INDEX(default, never): Int;
 
 	public final name: std.String;
 
@@ -15,8 +17,8 @@ class Symbol {
 		return untyped null;
 	#else
 		js.Syntax.code("let tmp");
-		return js.Syntax.code("{0}.get({1}) ?? ({0}.set({1}, tmp = new {2}({1})), tmp)",
-								TABLE, name, Symbol);
+		return js.Syntax.code("{0}.get({3}) ?? ({1}.set({3}, {2}++), {0}.set({3}, tmp = new {4}({3})), tmp)",
+								TABLE, INDEXES, MAX_INDEX, name, Symbol);
 	#end
 	}
 
@@ -30,5 +32,10 @@ class Symbol {
 		return ignoreCase
 			? this.name.toLowerCase() == sym.name.toLowerCase()
 			: this == sym;
+	}
+
+	public var index(get, never): Int;
+	inline function get_index(): Int {
+		return INDEXES[name];
 	}
 }

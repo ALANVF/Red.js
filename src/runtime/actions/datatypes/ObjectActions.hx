@@ -8,6 +8,8 @@ import types.base.Context;
 import types.base._SeriesOf;
 import types.base._Path;
 import types.base._String;
+import types.base._AnyWord;
+import types.base._Number;
 import types.Value;
 import types.Object;
 import types.Block;
@@ -108,6 +110,67 @@ class ObjectActions extends ValueActions<Object> {
 		);
 
 		return obj;
+	}
+
+	override function compare(value1: Object, value2: Value, op: ComparisonOp): CompareResult {
+		final obj1 = value1;
+		final obj2 = value2._match(
+			at(o is Object) => o,
+			_ => return IsInvalid
+		);
+
+		if(obj1.ctx == obj2.ctx) {
+			return IsSame;
+		} else if(op == CSame) {
+			return IsLess;
+		}
+
+		//TODO: cycles
+
+		final ctx1 = obj1.ctx;
+		final ctx2 = obj2.ctx;
+		final sym1 = ctx1.symbols;
+		final sym2 = ctx2.symbols;
+
+		final diff = sym1.length.compare(sym2.length);
+		if(diff != 0) {
+			return cast diff;
+		}
+
+		if(sym1.length == 0) {
+			return IsSame;
+		}
+
+		final value1 = ctx1.values;
+		final value2 = ctx2.values;
+
+		//TODO: cycles
+
+		var res = IsSame;
+		for(i in 0...sym1.length) {
+			final s1 = sym1[i].symbol;
+			final s2 = sym2[i].symbol;
+
+			if(!s1.equalsSymbol(s2)) {
+				return cast s1.index.compare(s2.index);
+			}
+
+			final v1 = value1[i];
+			final v2 = value2[i];
+			if(
+				v1.thisType() == v2.thisType()
+				|| (v1 is _AnyWord && v2 is _AnyWord)
+				|| (v1 is _Number && v2 is _Number)
+			) {
+				res = runtime.Actions.compareValue(v1, v2, op);
+			} else {
+				return cast MathTools.compare(cast v1.TYPE_KIND, cast v2.TYPE_KIND);
+			}
+
+			if(res != IsSame) break;
+		}
+
+		return res;
 	}
 
 
