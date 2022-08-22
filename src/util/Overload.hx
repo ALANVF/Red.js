@@ -116,7 +116,7 @@ class Overload {
 		final thisFields = Context.getBuildFields();
 		
 		return thisFields.flatMap(function(field) {
-			if((field.meta != null && field.meta.some(m -> m.name == "ignore" || m.name == ":overload" || m.name == "overload_processed"))
+			if(field.meta?.some(m -> m.name == "ignore" || m.name == ":overload" || m.name == "overload_processed")
 			|| field.name == "new" || field.name == "__init__"
 			|| !field.kind.match(FFun(_))
 			|| !field.access.contains(AOverload)
@@ -130,8 +130,8 @@ class Overload {
 				default: throw "???";
 			};
 
-			final access = field.access != null ? field.access : [];
-			final meta = field.meta != null ? field.meta : [];
+			final access = field.access ?? [];
+			final meta = field.meta ?? [];
 
 			var mangledName = mangleName(field.name);
 			if(f.params != null && f.params.length > 0) {
@@ -156,9 +156,8 @@ class Overload {
 				"ZA" + f.args.length
 				+ f.args.joinMap("Z_", a -> {
 					var t =
-						if(a.type != null)
-							a.type
-						else if(a.value != null)
+						a.type ??
+						if(a.value != null)
 							Context.toComplexType(Context.typeof(a.value))
 						else null;
 					var res = maybeMangleType(t);

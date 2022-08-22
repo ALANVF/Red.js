@@ -9,7 +9,7 @@ abstract class _Word extends Value {
 		this.symbol = symbol;
 		Util._andOr(context, ctx => {
 			this.context = ctx;
-			this.index = Util._or(index, ctx.addSymbol(symbol));
+			this.index = index ?? ctx.addSymbol(symbol);
 		}, {
 			this.context = Context.GLOBAL;
 			this.index = Context.GLOBAL.addWord(this);

@@ -112,7 +112,7 @@ class Util {
 		return macro {
 			switch($value) {
 				case $pattern: $expr;
-				default: ${otherwise != null ? otherwise : macro $b{[]}};
+				default: ${otherwise ?? macro $b{[]}};
 			}
 		};
 	}

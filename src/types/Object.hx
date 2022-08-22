@@ -17,7 +17,7 @@ class Object extends Value implements IGetPath implements ISetPath {
 			new Context()
 		);
 		this.ctx.value = this;
-		this.classID = if(classID == null) ++maxID else classID;
+		this.classID = classID ?? ++maxID;
 	}
 
 	public static inline function fromObject(obj: Object) {

@@ -39,18 +39,16 @@ class ActionBuilder {
 		}
 
 		final fields = Context.getBuildFields();
-
-		final name = "ACT_" + if(actionName != null) {
-			(actionName : String);
-		} else {
+		
+		final name = "ACT_" + (actionName ??
 			~/_q$/g.replace(
 				~/([a-z])([A-Z])/g.replace(
 					cls.name,
 					"$1_$2"
 				),
 				"?"
-			).toUpperCase();
-		};
+			).toUpperCase()
+		);
 
 		/*final callFn = switch fields.findMap(f -> switch f {
 			case {name: "call", kind: FFun(fn), access: acc} if(acc != null && acc.contains(AStatic)):

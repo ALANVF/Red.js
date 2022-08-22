@@ -22,8 +22,11 @@ NYI
 
 ## Locally
 In order to run this locally, you'll need:
-- Haxe 4.2.3 (or higher)
+- Haxe 4.3 preview (or higher)
 - Some version of Node
+
+1) Run `haxe build.hxml` to build Red.js
+2) Run `node bin/main.js` to start the Red.js REPL
 
 
 ## In a browser
@@ -80,12 +83,12 @@ Haxe, on the other hand, is a very powerful language that not only compiles to J
 
 That being said, Haxe does have a few downsides:
 - requires more boilerplate due to its small standard library
-- null safety is essentially non-existent (and you can't overload postifx `!` without macros??)
+- null safety is meh (you can't overload postifx `!` without macros??)
 - no array splats (`...`)
 - no type refinement/narrowing
 - no polymorphic `this` type
 - pattern matching extractors exponentially increase codegen (...bug?)
-- function overloading is (currently) only allowed for externs
+- function overloading is kinda painful
 - no untagged unions
 
 Despite these issues, Haxe has been much nicer to work with, and gave me a chance to fix a lot of things that I had originally implemented incorrectly.

@@ -18,14 +18,14 @@ class NativeBuilder {
 				var path = 'runtime.natives.$name';
 				try {
 					Context.getType(path);
-				} catch(_: String) {
+				} catch(_: Any) {
 					var found = false;
 					for(sub in ["Compare", "SetOp", "MinMax", "Trig", "Logs", "CaseFolding"]) {
 						try {
 							Context.getType(path = 'runtime.natives.$sub.$name');
 							found = true;
 							break;
-						} catch(_: String) {}
+						} catch(_: Any) {}
 					}
 					if(!found) return null;
 				}
@@ -48,17 +48,15 @@ class NativeBuilder {
 
 		final fields = Context.getBuildFields();
 
-		final name = "NAT_" + if(nativeName != null) {
-			(nativeName : String);
-		} else {
+		final name = "NAT_" + (nativeName ??
 			~/_q$/g.replace(
 				~/([a-z])([A-Z])/g.replace(
 					cls.name,
 					"$1_$2"
 				),
 				"?"
-			).toUpperCase();
-		};
+			).toUpperCase()
+		);
 
 		/*final callFn = switch fields.findMap(f -> switch f {
 			case {name: "call", kind: FFun(fn), access: acc} if(acc != null && acc.contains(AStatic)):

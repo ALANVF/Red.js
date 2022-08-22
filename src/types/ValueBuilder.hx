@@ -48,7 +48,7 @@ class ValueBuilder {
 
 			if(cls.isAbstract && sc.isAbstract) {
 				for(f in sc.fields.get()) switch f {
-					case {name: name, kind: FMethod(m), isAbstract: true} if(fields.find(f2 -> f2.name == name) == null):
+					case {name: name, kind: FMethod(m), isAbstract: true} if(!fields.some(f2 -> f2.name == name)):
 						fields.push({
 							name: f.name,
 							access: {
@@ -71,9 +71,7 @@ class ValueBuilder {
 							kind: FFun({
 								final expr = f.expr();
 
-								if(expr == null) {
-									continue;
-								}
+								if(expr == null) continue;
 
 								switch expr.t {
 									case TFun(args, ret) | TLazy(_() => TFun(args, ret)):
@@ -107,7 +105,7 @@ class ValueBuilder {
 				for(field in sc.fields.get()) if(
 					!field.isAbstract
 					&& field.kind.match(FMethod(_))
-					&& fields.find(f -> f.name == field.name) == null
+					&& !fields.some(f -> f.name == field.name)
 				) {
 					final cfield = Reflect.copy(field);
 					

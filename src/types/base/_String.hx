@@ -67,16 +67,14 @@ abstract class _String extends _SeriesOf<Char> {
 							len = 2 + k.length;
 						});
 
-						if(res != null) {
-							res;
-						} else {
+						res ?? {
 							final rx = ~/^([A-F\d]+)\)/i;
 							if(rx.match(nstr)) {
 								code = Util.mustParseInt("0x" + rx.matched(0)); len = 2 + rx.matchedPos().len;
 							} else {
 								throw 'Invalid string! escape "^${str.charAt(1)}"!';
 							}
-						}
+						};
 					},
 
 					at(esc = ("A".code ... "Z".code)) => {code = esc - 64; len = 2;},

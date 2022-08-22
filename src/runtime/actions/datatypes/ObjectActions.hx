@@ -23,7 +23,7 @@ class ObjectActions extends ValueActions<Object> {
 		final from = src.values;
 		final to = dst.values;
 
-		from._for(i => value, {
+		for(i => value in from) {
 			if(value is types.base.ISeriesOf) {
 				final newValue = Copy.call(value, {deep: true});
 				to[i] = newValue;
@@ -39,7 +39,7 @@ class ObjectActions extends ValueActions<Object> {
 					to[i] = value;
 				}
 			}
-		});
+		}
 	}
 
 	static function extend(ctx: Context, spec: Context, obj: Object) {
@@ -52,9 +52,9 @@ class ObjectActions extends ValueActions<Object> {
 		final baseVals = ctx.values;
 
 		// 1st pass
-		syms._for(i => sym, {
+		for(i => sym in syms) {
 			ctx.addOrSetWord(sym, vals[i]);
-		});
+		}
 
 		// 2nd pass
 		for(i in 0...numSyms) {

@@ -257,7 +257,7 @@ class Tokenizer {
 	}
 
 	public static function tokenize(input: String) {
-		if(Actions.makeNext == null) Actions.makeNext = makeNext;
+		Actions.makeNext ??= makeNext;
 		
 		final rdr = new Reader(input);
 		final out = [];

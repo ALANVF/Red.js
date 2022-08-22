@@ -58,7 +58,7 @@ function changeCase(value: Value, isUpper: Bool, ?limit: Value): Value {
 				l._match(
 					at(num is _Number) => {
 						final len = num.asInt();
-						Math.clamp(0, len, str.length);
+						len.clamp(0, str.length);
 					},
 					at(str2 is _String) => {
 						if(str.sameSeriesAs(str2)) {
@@ -88,13 +88,13 @@ final defaultOptions = Options.defaultFor(NChangeCaseOptions);
 @:build(runtime.NativeBuilder.build())
 class Uppercase {
 	public static function call(value: Value, options: NChangeCaseOptions) {
-		return changeCase(value, true, options.part._and(p => p.limit));
+		return changeCase(value, true, options.part?.limit);
 	}
 }
 
 @:build(runtime.NativeBuilder.build())
 class Lowercase {
 	public static function call(value: Value, options: NChangeCaseOptions) {
-		return changeCase(value, false, options.part._and(p => p.limit));
+		return changeCase(value, false, options.part?.limit);
 	}
 }

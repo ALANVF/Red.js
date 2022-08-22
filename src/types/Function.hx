@@ -11,7 +11,7 @@ class Function extends _Function {
 	public function new(ctx: Null<Context>, doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>, body: Block) {
 		super(doc, params, refines, retSpec);
 
-		this.ctx = ctx._or(new Context());
+		this.ctx = ctx ?? new Context();
 		this.ctx.value = this;
 
 		// bind params/refines

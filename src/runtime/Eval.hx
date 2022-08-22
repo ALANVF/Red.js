@@ -31,9 +31,9 @@ class Eval {
 		final oldValues = fctx.values;
 		fctx.values = fctx.values.copy();
 
-		fn.params._for(i => param, {
+		for(i => param in fn.params) {
 			fctx.set(param.name, args[i]);
-		});
+		}
 
 		for(refine in fn.refines) {
 			refines[refine.name]._match(

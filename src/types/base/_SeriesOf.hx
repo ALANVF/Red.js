@@ -18,7 +18,7 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 
 	public function new(values: Array<T>, ?index: Int) {
 		this.values = values;
-		this.index = index == null ? 0 : index;
+		this.index = index ?? 0;
 	}
 
 	abstract function clone(values: Array<T>, ?index: Int): _SeriesOf<T>; // ugh, can't wait for polymorphic `this` types
@@ -62,14 +62,9 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	public function at(index: Int) {
 		return this.clone(
 			this.values,
-			Std.int(
-				Math.max(
-					0,
-					Math.min(
-						this.absLength,
-						this.index + (index <= 0 ? index : index - 1)
-					)
-				)
+			(this.index + (index <= 0 ? index : index - 1)).clamp(
+				0,
+				this.absLength
 			)
 		);
 	}
@@ -77,14 +72,9 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	public function skip(index: Int) {
 		return this.clone(
 			this.values,
-			Std.int(
-				Math.max(
-					0,
-					Math.min(
-						this.absLength,
-						this.index + index
-					)
-				)
+			(this.index + index).clamp(
+				0,
+				this.absLength
 			)
 		);
 	}
@@ -92,14 +82,9 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	public function skipHead(index: Int) {
 		return this.clone(
 			this.values,
-			Std.int(
-				Math.max(
-					0,
-					Math.min(
-						this.absLength,
-						index
-					)
-				)
+			index.clamp(
+				0,
+				this.absLength
 			)
 		);
 	}

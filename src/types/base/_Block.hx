@@ -19,14 +19,9 @@ abstract class _Block extends _BlockLike {
 	override public function at(index: Int) {
 		return this.cloneBlock(
 			this.values,
-			Std.int(
-				Math.max(
-					0,
-					Math.min(
-						this.absLength,
-						this.index + (index <= 0 ? index : index - 1)
-					)
-				)
+			(this.index + (index <= 0 ? index : index - 1)).clamp(
+				0,
+				this.absLength
 			),
 			this.newlines
 		);
@@ -35,14 +30,9 @@ abstract class _Block extends _BlockLike {
 	override public function skip(index: Int) {
 		return this.cloneBlock(
 			this.values,
-			Std.int(
-				Math.max(
-					0,
-					Math.min(
-						this.absLength,
-						this.index + index
-					)
-				)
+			(this.index + index).clamp(
+				0,
+				this.absLength
 			),
 			this.newlines
 		);
@@ -51,14 +41,9 @@ abstract class _Block extends _BlockLike {
 	override public function skipHead(index: Int) {
 		return this.cloneBlock(
 			this.values,
-			Std.int(
-				Math.max(
-					0,
-					Math.min(
-						this.absLength,
-						index
-					)
-				)
+			index.clamp(
+				0,
+				this.absLength
 			),
 			this.newlines
 		);
@@ -76,10 +61,9 @@ abstract class _Block extends _BlockLike {
 		return this.cloneBlock(
 			this.values.slice(this.index),
 			0,
-			this.newlines._and(n => n
-				.filter(nl -> nl >= this.index)
+			this.newlines
+				?.filter(nl -> nl >= this.index)
 				.map(nl -> nl - this.index)
-			)
 		);
 	}
 
@@ -107,7 +91,7 @@ abstract class _Block extends _BlockLike {
 	}
 
 	public function removeNewline(index: Int) {
-		newlines._and(n => n.remove(index));
+		newlines?.remove(index);
 	}
 
 	public inline function setNewline(index: Int, cond: Bool) {
@@ -115,9 +99,6 @@ abstract class _Block extends _BlockLike {
 	}
 
 	public function hasNewline(index: Int) {
-		return newlines._andOr(
-			n => n.has(index),
-			false
-		);
+		return newlines?.has(index) ?? false;
 	}
 }

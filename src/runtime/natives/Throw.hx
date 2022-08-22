@@ -16,6 +16,6 @@ class Throw {
 			type: "throw",
 			id: "throw",
 			arg1: value
-		}), options.name._and(n => n.word));
+		}), options.name?.word);
 	}
 }

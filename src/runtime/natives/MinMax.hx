@@ -51,7 +51,7 @@ function minmax(value1: Value, value2: Value, isMax: Bool): Value {
 				},
 				at(num is _Number) => {
 					final n = num.asInt();
-					final b = Math.clamp(0, n, 255);
+					final b = n.clamp(0, 255);
 					Util.deepIf(
 						for(i in 0...res.length) {
 							final v = res[i];

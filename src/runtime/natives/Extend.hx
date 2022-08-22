@@ -26,9 +26,9 @@ class Extend {
 					}
 				},
 				at(m is Map) => {
-					m.keys._for(i => key, {
+					for(i => key in m.keys) {
 						map.set(key, m.values[i], ignoreCase);
-					});
+					}
 				},
 				_ => throw "Invalid value!"
 			),

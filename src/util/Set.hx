@@ -14,7 +14,7 @@ private typedef _SetRepr<T> =
 private abstract _Set<T>(_SetRepr<T>) {
 	public var length(get, never): Int;
 	
-	inline function new(?repr: _SetRepr<T>) this = Util._or(repr, new _SetRepr<T>());
+	inline function new(?repr: _SetRepr<T>) this = repr ?? new _SetRepr<T>();
 
 	static inline function init<T>(values: Iterable<T>) {
 		#if (js || python)
@@ -53,7 +53,7 @@ private abstract _Set<T>(_SetRepr<T>) {
 			}
 		#end
 
-		return (cast this : _Set<T>);
+		return abstract;
 	}
 
 	public inline function has(value: T) {
@@ -118,7 +118,7 @@ abstract Set<T>(_Set<T>) from _Set<T> {
 	inline function get_length() return this.length;
 
 	public inline function new(?values: Iterable<T>) {
-		this = @:privateAccess inline _Set.init((values == null) ? [] : values);
+		this = @:privateAccess inline _Set.init(values ?? cast []);
 	}
 
 	@:op([])
