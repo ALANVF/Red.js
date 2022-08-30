@@ -293,7 +293,10 @@ class Tokenizer {
 			case TRefinement(ref): new types.Refinement(types.base.Symbol.make(ref));
 			case TTag(tag): new types.Tag(types.base._String.charsFromRed(tag));
 			case TRef(ref): new types.Ref(types.base._String.charsFromRed(ref));
-			case TBinary(_, _): throw 'NYI';
+			case TBinary(binary, 2): new types.Binary(js.Syntax.code("{0}.match(/.{{}8}/g).map(x => new {1}(parseInt(x, 2)))", binary, types.Integer));
+			case TBinary(binary, 16): new types.Binary(js.Syntax.code("{0}.match(/../g).map(x => new {1}(parseInt(x, 16)))", binary, types.Integer));
+			case TBinary(binary, 64): new types.Binary(js.Syntax.code("[...atob({0})].map(c => new {1}(c.charCodeAt()))", binary, types.Integer));
+			case TBinary(_, _): throw "bad";
 			case TBlock(block): new types.Block(block.map(tokenToValue));
 			case TParen(paren): new types.Paren(paren.map(tokenToValue));
 			case TMap(map): types.Map.fromPairs([for(i => k in map) if(i % 2 == 0) {k: tokenToValue(k), v: tokenToValue(map[i + 1])}]);

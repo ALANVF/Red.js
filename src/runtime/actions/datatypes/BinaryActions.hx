@@ -10,5 +10,39 @@ import types.Pair;
 import types.Logic;
 
 class BinaryActions extends SeriesActions<Binary, Integer> {
-	
+	override function compare(value1: Binary, value2: Value, op: ComparisonOp): CompareResult {
+		value2._match(
+			at(bin2 is Binary) => {
+				final bin1 = value1;
+
+				final size1 = bin1.length;
+				final size2 = bin2.length;
+
+				if(size1 != size2) op._match(
+					at(CFind | CEqual | CNotEqual | CStrictEqual | CStrictEqualWord) => return IsMore,
+					_ => {}
+				);
+
+				if(size1 == 0) return IsSame;
+
+				final len = size1.min(size2);
+
+				var v1: Int = untyped null;
+				var v2: Int = untyped null;
+				for(i in 0...len) {
+					v1 = bin1.fastPick(i).int;
+					v2 = bin2.fastPick(i).int;
+
+					if(v1 != v2) break;
+				}
+
+				return if(v1 == v2) {
+					cast size1.compare(size2);
+				} else {
+					cast v1.compare(v2);
+				}
+			},
+			_ => throw "error"
+		);
+	}
 }

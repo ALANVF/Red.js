@@ -44,7 +44,7 @@
 | `percent!`               | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `tuple!`                 | Y        | Y      | N      | N    | N      | N      | Y         | N             |
 | `map!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
-| `binary!`                | Y        | N      | N      | N    | N      | N      | N         | P             |
+| `binary!`                | Y        | Y      | N      | N    | N      | N      | Y         | P             |
 | `time!`                  | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `tag!`                   | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `email!`                 | Y        | N**    | N      | N    | N      | N      | P         | P             |
