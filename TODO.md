@@ -18,5 +18,4 @@ Natives:
 - most of 'em
 
 Parser:
-- raw-string! literals
 - date! literals

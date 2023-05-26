@@ -22,7 +22,7 @@ NYI
 
 ## Locally
 In order to run this locally, you'll need:
-- Haxe 4.3 preview (or higher)
+- Haxe 4.3.1 (or higher)
 - Some version of Node
 
 1) Run `haxe build.hxml` to build Red.js

@@ -45,6 +45,69 @@ class Main {
 				#get-definition ACT_ADD
 			]
 
+			subtract: make action! [[
+					value1	 [scalar! vector!]
+					value2	 [scalar! vector!]
+					return:  [scalar! vector!]
+				]
+				#get-definition ACT_SUBTRACT
+			]
+
+			multiply: make action! [[
+					value1	 [number! money! char! pair! tuple! vector! time!]
+					value2	 [number! money! char! pair! tuple! vector! time!]
+					return:  [number! money! char! pair! tuple! vector! time!]
+				]
+				#get-definition ACT_MULTIPLY
+			]
+
+			divide: make action! [[
+					value1	 [number! money! char! pair! tuple! vector! time!]
+					value2	 [number! money! char! pair! tuple! vector! time!]
+					return:  [number! money! char! pair! tuple! vector! time!]
+				]
+				#get-definition ACT_DIVIDE
+			]
+
+			remainder: make action! [[
+					value1 	 [number! money! char! pair! tuple! vector! time!]
+					value2 	 [number! money! char! pair! tuple! vector! time!]
+					return:  [number! money! char! pair! tuple! vector! time!]
+				]
+				#get-definition ACT_REMAINDER
+			]
+
+			and~: make action! [[
+					value1	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
+					value2	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
+					return:	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
+				]
+				#get-definition ACT_AND~
+			]
+
+			complement: make action! [[
+					value	[logic! integer! tuple! bitset! typeset! binary!]
+					return: [logic! integer! tuple! bitset! typeset! binary!]
+				]
+				#get-definition ACT_COMPLEMENT
+			]
+
+			or~: make action! [[
+					value1	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
+					value2	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
+					return:	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
+				]
+				#get-definition ACT_OR~
+			]
+			
+			xor~: make action! [[
+					value1	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
+					value2	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
+					return:	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
+				]
+				#get-definition ACT_XOR~
+			]
+
 			at: make action! [[
 					series	 [series! port!]
 					index 	 [integer! pair!]
@@ -562,6 +625,13 @@ class Main {
 			]
 
 			+: make op! :add
+			-: make op! :subtract
+			*: make op! :multiply
+			/: make op! :divide
+			%: make op! :remainder
+			and: make op! :and~
+			or: make op! :or~
+			xor: make op! :xor~
 			=: make op! :equal?
 			<>: make op! :not-equal?
 			==: make op! :strict-equal?
