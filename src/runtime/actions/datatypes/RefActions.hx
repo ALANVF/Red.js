@@ -9,6 +9,6 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class RefActions extends _StringActions<Ref> {
+class RefActions extends StringActions<Ref> {
 	
 }

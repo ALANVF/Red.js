@@ -13,8 +13,8 @@ import types.Percent;
 import types.Pair;
 import types.Tuple;
 
-class CharActions extends _IntegerActions<Char> {
-	function makeThis(i: Int): Char {
+class CharActions extends IntegerActions<Char> {
+	override function makeThis(i: Int): Char {
 		return Char.fromCode(i);
 	}
 

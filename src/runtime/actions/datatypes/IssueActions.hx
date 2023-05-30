@@ -8,7 +8,7 @@ import types.Value;
 import types.Issue;
 import types.Logic;
 
-class IssueActions extends _WordActions<Issue> {
+class IssueActions extends WordActions<Issue> {
 	override function compare(value1: Issue, value2: Value, op: ComparisonOp) {
 		if(!(value2 is Issue)) {
 			return IsInvalid;

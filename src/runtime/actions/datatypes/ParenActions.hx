@@ -9,6 +9,6 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class ParenActions extends _BlockActions<Paren> {
+class ParenActions extends BlockActions<Paren> {
 	
 }

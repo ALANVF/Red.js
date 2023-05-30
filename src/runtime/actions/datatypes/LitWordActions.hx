@@ -10,6 +10,6 @@ import types.LitWord;
 import types.Issue;
 import types.Logic;
 
-class LitWordActions extends _WordActions<LitWord> {
+class LitWordActions extends WordActions<LitWord> {
 	
 }

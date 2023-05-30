@@ -9,6 +9,6 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class EmailActions extends _StringActions<Email> {
+class EmailActions extends StringActions<Email> {
 	
 }

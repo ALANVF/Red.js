@@ -9,6 +9,6 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class TagActions extends _StringActions<Tag> {
+class TagActions extends StringActions<Tag> {
 	
 }

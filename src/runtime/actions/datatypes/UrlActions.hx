@@ -9,6 +9,6 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class UrlActions extends _StringActions<Url> {
+class UrlActions extends StringActions<Url> {
 	
 }

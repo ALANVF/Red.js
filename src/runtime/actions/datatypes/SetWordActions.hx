@@ -10,6 +10,6 @@ import types.SetWord;
 import types.Issue;
 import types.Logic;
 
-class SetWordActions extends _WordActions<SetWord> {
+class SetWordActions extends WordActions<SetWord> {
 	
 }

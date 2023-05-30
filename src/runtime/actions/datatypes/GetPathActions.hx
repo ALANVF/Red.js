@@ -10,6 +10,6 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class GetPathActions extends _PathActions<GetPath> {
+class GetPathActions extends PathActions<GetPath> {
 	
 }

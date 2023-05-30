@@ -9,6 +9,6 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class HashActions extends _BlockActions<Hash> {
+class HashActions extends BlockActions<Hash> {
 	
 }

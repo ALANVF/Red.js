@@ -11,8 +11,8 @@ import types.Money;
 import types.Time;
 import types.Percent;
 
-class PercentActions extends _FloatActions<Percent> {
-	function makeThis(f: StdTypes.Float): Percent {
+class PercentActions extends FloatActions<Percent> {
+	override function makeThis(f: StdTypes.Float): Percent {
 		return new Percent(f);
 	}
 }

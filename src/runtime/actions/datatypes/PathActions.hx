@@ -10,6 +10,6 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class PathActions extends _PathActions<Path> {
+class PathActions<This: _Path = Path> extends _BlockLikeActions<This> {
 	
 }

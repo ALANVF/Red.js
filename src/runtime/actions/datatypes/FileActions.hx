@@ -9,6 +9,6 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class FileActions extends _StringActions<File> {
+class FileActions extends StringActions<File> {
 	
 }

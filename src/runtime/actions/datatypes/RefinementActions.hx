@@ -8,6 +8,6 @@ import types.Value;
 import types.Refinement;
 import types.Logic;
 
-class RefinementActions extends _WordActions<Refinement> {
+class RefinementActions extends WordActions<Refinement> {
 	
 }

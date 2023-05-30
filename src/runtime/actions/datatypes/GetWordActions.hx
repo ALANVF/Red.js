@@ -10,6 +10,6 @@ import types.GetWord;
 import types.Issue;
 import types.Logic;
 
-class GetWordActions extends _WordActions<GetWord> {
+class GetWordActions extends WordActions<GetWord> {
 	
 }
