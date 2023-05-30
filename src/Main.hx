@@ -36,6 +36,13 @@ class Main {
 				]
 				#get-definition ACT_ABSOLUTE
 			]
+
+			negate: make action! [[
+					number 	 [number! money! bitset! pair! time!]
+					return:  [number! money! bitset! pair! time!]
+				]
+				#get-definition ACT_NEGATE
+			]
 			
 			add: make action! [[
 					value1	[scalar! vector!]
@@ -69,6 +76,14 @@ class Main {
 				#get-definition ACT_DIVIDE
 			]
 
+			power: make action! [[
+					number	 [number!]
+					exponent [integer! float!]
+					return:	 [number!]
+				]
+				#get-definition ACT_POWER
+			]
+
 			remainder: make action! [[
 					value1 	 [number! money! char! pair! tuple! vector! time!]
 					value2 	 [number! money! char! pair! tuple! vector! time!]
@@ -76,6 +91,35 @@ class Main {
 				]
 				#get-definition ACT_REMAINDER
 			]
+
+			round: make action! [[
+					n		[number! money! time! pair!]
+					/to
+					scale	[number! money! time! pair!]
+					/even
+					/down
+					/half-down
+					/floor
+					/ceiling
+					/half-ceiling
+				]
+				#get-definition ACT_ROUND
+			]
+
+			even?: make action! [[
+					number 	 [number! money! char! time!]
+					return:  [logic!]
+				]
+				#get-definition ACT_EVEN?
+			]
+			
+			odd?: make action! [[
+					number 	 [number! money! char! time!]
+					return:  [logic!]
+				]
+				#get-definition ACT_ODD?
+			]
+		
 
 			and~: make action! [[
 					value1	[logic! integer! char! bitset! binary! typeset! pair! tuple! vector!]
@@ -629,6 +673,7 @@ class Main {
 			*: make op! :multiply
 			/: make op! :divide
 			%: make op! :remainder
+			**: make op! :power
 			and: make op! :and~
 			or: make op! :or~
 			xor: make op! :xor~

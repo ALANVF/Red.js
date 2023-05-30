@@ -11,7 +11,7 @@ import types.*;
 class ValueActions<This: Value> {
 	function new() {}
 	
-	static inline function invalid() {
+	private static inline function invalid() {
 		throw new InvalidAction("Invalid action!");
 	}
 	
@@ -32,9 +32,9 @@ class ValueActions<This: Value> {
 	function divide(value1: This, value2: Value): Value invalid();
 	function multiply(value1: This, value2: Value): Value invalid();
 	function negate(value: This): This invalid();
-	function power(number: _Number, exponent: _Number): _Number invalid();
+	function power(number: This, exponent: _Number): _Number invalid();
 	function remainder(value1: This, value2: Value): Value invalid();
-	function round(n: This, options: ARoundOptions): Value invalid();
+	function round(value: This, options: ARoundOptions): Value invalid();
 	function subtract(value1: This, value2: Value): Value invalid();
 	function even_q(value: This): Logic invalid();
 	function odd_q(value: This): Logic invalid();

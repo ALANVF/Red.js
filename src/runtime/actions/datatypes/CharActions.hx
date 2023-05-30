@@ -1,5 +1,7 @@
 package runtime.actions.datatypes;
 
+import types.base._ActionOptions;
+import types.base._Number;
 import types.base.ComparisonOp;
 import types.base.CompareResult;
 import types.base._Integer;
@@ -12,6 +14,8 @@ import types.Time;
 import types.Percent;
 import types.Pair;
 import types.Tuple;
+
+import runtime.actions.datatypes.ValueActions.invalid;
 
 class CharActions extends IntegerActions<Char> {
 	override function makeThis(i: Int): Char {
@@ -31,5 +35,16 @@ class CharActions extends IntegerActions<Char> {
 		return cast (value1.int - other).sign();
 	}
 
-	// TODO: redo add
+	
+	/*-- Scalar actions --*/
+
+	override function negate(value: Char): Char invalid();
+
+	override function power(number: Char, exponent: _Number): _Number invalid();
+
+	override function round(value: Char, options: ARoundOptions): Value invalid();
+
+	/*-- Bitwise actions --*/
+
+	override function complement(value: Char): Char invalid();
 }

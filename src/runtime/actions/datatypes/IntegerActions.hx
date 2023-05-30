@@ -1,17 +1,21 @@
 package runtime.actions.datatypes;
 
+import types.base._ActionOptions;
+import types.base._Number;
 import types.base.ComparisonOp;
 import types.base.CompareResult;
 import types.base._Integer;
 import types.base._Float;
 import types.Value;
 import types.Integer;
+import types.Float;
 import types.Char;
 import types.Money;
 import types.Time;
 import types.Percent;
 import types.Pair;
 import types.Tuple;
+import types.Logic;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
@@ -20,6 +24,28 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 		return cast new Integer(i);
 	}
 	
+
+	override function make(proto: Null<This>, spec: Value) {
+		return spec._match(
+			at(l is Logic) => makeThis(l.cond.asInt()),
+			_ => to(proto, spec)
+		);
+	}
+
+	override function to(proto: Null<This>, spec: Value) {
+		return spec._match(
+			at(_ is Integer) => spec,
+			at(c is Char) => makeThis(c.int),
+			at(t is Time) => makeThis(Std.int(t.float + 0.5)),
+			at(f is _Float) => makeThis(Std.int(f.float)),
+			// Money
+			// Binary
+			// Issue
+			// Date
+			// _String
+			_ => invalid()
+		);
+	}
 	
 	override function compare(value1: This, value2: Value, op: ComparisonOp) {
 		if((op == CFind || op == CStrictEqual) && !(value2.thisType() == value1.thisType())) {
@@ -43,6 +69,10 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 	override function absolute(value: This) {
 		return makeThis(Math.iabs(value.int));
 	}
+
+	override function negate(value: This) {
+		return makeThis(-value.int);
+	}
 	
 	override function add(value1: This, value2: Value) {
 		final int = value1.int;
@@ -55,7 +85,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// Vector
 			// Date
 			// ...
-			_ => untyped invalid()
+			_ => invalid()
 		);
 	}
 
@@ -69,7 +99,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// Vector
 			// Date
 			// ...
-			_ => untyped invalid()
+			_ => invalid()
 		);
 	}
 
@@ -84,7 +114,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// Vector
 			// Date
 			// ...
-			_ => untyped invalid()
+			_ => invalid()
 		);
 	}
 
@@ -100,7 +130,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// Vector
 			// Date
 			// ...
-			_ => untyped invalid()
+			_ => invalid()
 		);
 	}
 
@@ -113,7 +143,95 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// Vector
 			// Date
 			// ...
-			_ => untyped invalid()
+			_ => invalid()
+		);
+	}
+
+	override function power(number: This, exponent: _Number) {
+		var base = number.int;
+
+		return exponent._match(
+			at({int: exp} is Integer, when(exp >= 0)) => {
+				var res = 1;
+				while(exp != 0) {
+					if(cast exp & 1) {
+						res *= base;
+					}
+					exp >>= 1;
+					base *= base;
+				}
+				new Integer(res);
+			},
+			at(exp is Integer | exp is Float) => new Float(Math.pow(base, exp.asFloat())),
+			_ => invalid()
+		);
+	}
+
+	override function even_q(value: This) {
+		return Logic.fromCond(value.int & 1 == 0);
+	}
+
+	override function odd_q(value: This) {
+		return Logic.fromCond(value.int & 1 != 0);
+	}
+
+	override function round(value: This, options: ARoundOptions): Value {
+		final scale = options.to?.scale;
+
+		final num = value.int;
+		if(num == 0x80000000) return value;
+		var sc = 1;
+		scale._match(
+			at(null) => {},
+			at(m is Money) => throw "not related",
+			at(f is _Float) => throw "TODO",
+			at(i is Integer) => {
+				sc = Math.iabs(i.int);
+			},
+			_ => throw "bad"
+		);
+		if(sc == 0) return value;
+
+		var n = Math.iabs(num);
+		var r = n % sc;
+		if(r == 0) return value;
+
+		var s = sc - r;
+		var m = n + s;
+
+		inline function trunc() return num > 0 ? n - r : r - n;
+		inline function floor() {
+			if(m < 0) {
+				throw "math overflow";
+			} else {
+				return num > 0 ? n - r : 0 - m;
+			}
+		}
+		inline function ceil() {
+			if(m < 0) {
+				throw "math overflow";
+			} else {
+				return num < 0 ? r - n : m;
+			}
+		}
+		inline function away() {
+			if(m < 0) {
+				throw "math overflow";
+			} else {
+				return num > 0 ? m : 0 - m;
+			}
+		}
+
+		return new Integer(
+			if(options.down) trunc()
+			else if(options.floor) floor()
+			else if(options.ceiling) ceil()
+			else if(r < s) trunc()
+			else if(r > s) away()
+			else if(options.even) (Math.floor(n / sc) & 1 == 0) ? trunc() : away()
+			else if(options.halfDown) trunc()
+			else if(options.halfCeiling) ceil()
+			else away()
 		);
 	}
 
@@ -133,7 +251,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// Vector
 			// Date
 			// ...
-			_ => untyped invalid()
+			_ => invalid()
 		);
 	}
 
@@ -146,7 +264,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// Vector
 			// Date
 			// ...
-			_ => untyped invalid()
+			_ => invalid()
 		);
 	}
 
@@ -159,7 +277,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// Vector
 			// Date
 			// ...
-			_ => untyped invalid()
+			_ => invalid()
 		);
 	}
 }

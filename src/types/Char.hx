@@ -25,6 +25,7 @@ class Char extends _Integer {
 		return fromCode(value);
 	}
 
+	// maybe don't inline this
 	public static inline function fromCode(code: Int): Char {
 		return if(chars.has(code)) {
 			chars[code];
