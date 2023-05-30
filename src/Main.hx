@@ -30,6 +30,13 @@ class Main {
 		);
 		
 		runtime.Eval.evalCode("
+			to: make action! [[
+					type	[any-type!]
+					spec	[any-type!]
+				]
+				#get-definition ACT_TO
+			]
+			
 			absolute: make action! [[
 					value	[number! money! char! pair! time!]
 					return: [number! money! char! pair! time!]

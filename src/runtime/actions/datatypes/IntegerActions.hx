@@ -79,7 +79,8 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 		return value2._match(
 			at(i is _Integer) => makeThis(int + i.int),
 			at(_ is Money) => throw "todo!",
-			at(f is _Float) => f.make(int + f.float),
+			at(t is Time) => new Time(int + t.float),
+			at(f is _Float) => new Float(int + f.float),
 			at({x: x, y: y} is Pair) => new Pair(int + x, int + y),
 			at(t is Tuple) => new Tuple(t.values.map(i -> i + int)),
 			// Vector
@@ -94,7 +95,8 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 		return value2._match(
 			at(i is _Integer) => makeThis(int - i.int),
 			at(_ is Money) => throw "todo!",
-			at(f is _Float) => f.make(int - f.float),
+			at(t is Time) => new Time(int - t.float),
+			at(f is _Float) => new Float(int - f.float),
 			at({x: x, y: y} is Pair) => new Pair(int - x, int - y),
 			// Vector
 			// Date
@@ -108,7 +110,8 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 		return value2._match(
 			at(i is _Integer) => makeThis(int * i.int),
 			at(_ is Money) => throw "todo!",
-			at(f is _Float) => f.make(int * f.float),
+			at(t is Time) => new Time(int * t.float),
+			at(f is _Float) => new Float(int * f.float),
 			at({x: x, y: y} is Pair) => new Pair(int * x, int * y),
 			at(t is Tuple) => new Tuple(t.values.map(i -> i * int)),
 			// Vector
@@ -126,7 +129,8 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 				else new types.Float(int / i.int);
 			},
 			at(_ is Money) => throw "todo!",
-			at(f is _Float) => f.make(int / f.float),
+			at(t is Time) => new Time(int / t.float),
+			at(f is _Float) => new Float(int / f.float),
 			// Vector
 			// Date
 			// ...
@@ -137,9 +141,10 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 	override function remainder(value1: This, value2: Value) {
 		final int = value1.int;
 		return value2._match(
-			at(i is _Integer) => new types.Float(int % i.int),
+			at(i is _Integer) => makeThis(int % i.int),
 			at(_ is Money) => throw "todo!",
-			at(f is _Float) => f.make(int % f.float),
+			at(t is Time) => new Time(int % t.float),
+			at(f is _Float) => new Float(int % f.float),
 			// Vector
 			// Date
 			// ...

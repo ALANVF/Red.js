@@ -3,6 +3,8 @@ package types;
 import types.base._Integer;
 
 class Char extends _Integer {
+	public static inline final MAX_CODEPOINT: Int = 0x0010FFFF;
+
 	// Optimization bug here
 	static var chars: Dict<Int, Char>;
 	

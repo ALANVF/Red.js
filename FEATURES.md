@@ -15,7 +15,7 @@
 | `string!`                | Y        | Y*     | N      | N    | N      | N      | P         | P             |
 | `file!`                  | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `url!`                   | Y        | Y      | N      | N    | N      | N      | P         | P             |
-| `char!`                  | Y        | Y      | N      | N    | N      | N      | Y         | P             |
+| `char!`                  | Y        | Y      | Y      | P    | N      | N      | Y         | P             |
 | `integer!`               | Y        | Y      | Y      | P    | N      | N      | P         | P             |
 | `float!`                 | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `word!`                  | Y        | Y      | N      | N    | N      | N      | Y         | N             |
