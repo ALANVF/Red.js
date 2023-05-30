@@ -1,5 +1,6 @@
 package runtime.actions.datatypes;
 
+import types.base.MathOp;
 import types.base.CompareResult;
 import types.base.ComparisonOp;
 import types.base._Path;
@@ -25,6 +26,8 @@ class ValueActions<This: Value> {
 
 	function evalPath(parent: Value, element: Value, value: Null<Value>, path: _Path, isCase: Bool): Value invalid();
 	function compare(value1: This, value2: Value, op: ComparisonOp): CompareResult invalid();
+
+	function doMath(left: Value, right: Value, op: MathOp): Value invalid();
 
 	/*-- Scalar actions --*/
 	@:noCompletion function absolute(value: This): This invalid();

@@ -1,5 +1,6 @@
 package runtime.actions.datatypes;
 
+import types.base.MathOp;
 import types.base._ActionOptions;
 import types.base._Number;
 import types.base.ComparisonOp;
@@ -59,70 +60,28 @@ class CharActions extends IntegerActions<Char> {
 		return cast (value1.int - other).sign();
 	}
 
+	override function doMath(left: Value, right: Value, op: MathOp): Value {
+		left._match(
+			at(l is Char) => {
+				final rv = right._match(
+					at(r is _Integer) => r.int,
+					at(r is Float) => Std.int(r.float),
+					// Vector
+					_ => invalid()
+				);
+
+				final res = (cast doMathOp(l.int, rv, op, true) : Char);
+				if(res.int > Char.MAX_CODEPOINT || res.int <= 0) throw "math overflow";
+				return res;
+			},
+			_ => invalid()
+		);
+	}
+
 	
 	/*-- Scalar actions --*/
 
 	override function negate(value: Char): Char invalid();
-
-	override function add(value1: Char, value2: Value) {
-		final int = value1.int;
-		final res = value2._match(
-			at(i is _Integer) => int + i.int,
-			at(f is Float) => int + Std.int(f.float),
-			// Vector
-			_ => invalid()
-		);
-		if(res < 0 || res > Char.MAX_CODEPOINT) throw "math overflow";
-		return makeThis(res);
-	}
-
-	override function subtract(value1: Char, value2: Value) {
-		final int = value1.int;
-		final res = value2._match(
-			at(i is _Integer) => int - i.int,
-			at(f is Float) => int - Std.int(f.float),
-			// Vector
-			_ => invalid()
-		);
-		if(res < 0 || res > Char.MAX_CODEPOINT) throw "math overflow";
-		return makeThis(res);
-	}
-
-	override function multiply(value1: Char, value2: Value) {
-		final int = value1.int;
-		final res = value2._match(
-			at(i is _Integer) => int * i.int,
-			at(f is Float) => int * Std.int(f.float),
-			// Vector
-			_ => invalid()
-		);
-		if(res < 0 || res > Char.MAX_CODEPOINT) throw "math overflow";
-		return makeThis(res);
-	}
-
-	override function divide(value1: Char, value2: Value) {
-		final int = value1.int;
-		final res = value2._match(
-			at(i is _Integer) => Math.floor(int / i.int),
-			at(f is Float) => Math.floor(int / Std.int(f.float)),
-			// Vector
-			_ => invalid()
-		);
-		if(res < 0 || res > Char.MAX_CODEPOINT) throw "math overflow";
-		return makeThis(res);
-	}
-
-	override function remainder(value1: Char, value2: Value) {
-		final int = value1.int;
-		final res = value2._match(
-			at(i is _Integer) => int % i.int,
-			at(f is Float) => int % Std.int(f.float),
-			// Vector
-			_ => invalid()
-		);
-		if(res < 0 || res > Char.MAX_CODEPOINT) throw "math overflow";
-		return makeThis(res);
-	}
 
 	override function power(number: Char, exponent: _Number): _Number invalid();
 
@@ -131,40 +90,4 @@ class CharActions extends IntegerActions<Char> {
 	/*-- Bitwise actions --*/
 
 	override function complement(value: Char): Char invalid();
-
-	override function and(value1: Char, value2: Value) {
-		final int = value1.int;
-		final res = value2._match(
-			at(i is _Integer) => int & i.int,
-			at(f is Float) => int & Std.int(f.float),
-			// Vector
-			_ => invalid()
-		);
-		if(res < 0 || res > Char.MAX_CODEPOINT) throw "math overflow";
-		return makeThis(res);
-	}
-
-	override function or(value1: Char, value2: Value) {
-		final int = value1.int;
-		final res = value2._match(
-			at(i is _Integer) => int | i.int,
-			at(f is Float) => int | Std.int(f.float),
-			// Vector
-			_ => invalid()
-		);
-		if(res < 0 || res > Char.MAX_CODEPOINT) throw "math overflow";
-		return makeThis(res);
-	}
-
-	override function xor(value1: Char, value2: Value) {
-		final int = value1.int;
-		final res = value2._match(
-			at(i is _Integer) => int ^ i.int,
-			at(f is Float) => int ^ Std.int(f.float),
-			// Vector
-			_ => invalid()
-		);
-		if(res < 0 || res > Char.MAX_CODEPOINT) throw "math overflow";
-		return makeThis(res);
-	}
 }

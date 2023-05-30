@@ -1,5 +1,6 @@
 package runtime.actions.datatypes;
 
+import types.base.MathOp;
 import types.base._ActionOptions;
 import types.base._Number;
 import types.base.ComparisonOp;
@@ -62,6 +63,50 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 		
 		return cast (value1.int - other).sign();
 	}
+
+	function doMathOp(left: Int, right: Int, op: MathOp, forceIntDiv: Bool): _Number {
+		return op._match(
+			at(OAdd) => makeThis(left + right),
+			at(OSub) => makeThis(left - right),
+			at(OMul) => makeThis(left * right),
+			at(OAnd) => makeThis(left & right),
+			at(OOr) => makeThis(left | right),
+			at(OXor) => makeThis(left ^ right),
+			at(ORem) => makeThis(left % right),
+			at(ODiv) => {
+				if(forceIntDiv || left % right == 0) makeThis(Std.int(left / right));
+				else new Float(left / right);
+			},
+			_ => throw "bad"
+		);
+	}
+
+	override function doMath(left: Value, right: Value, op: MathOp) {
+		return left._match(
+			at(l is _Integer) => right._match(
+				at(r is _Integer) => doMathOp(l.int, r.int, op, false),
+				// Money,
+				at(r is _Float) => Actions.get(DFloat).doMath(l, r, op),
+				at(r is Pair) => {
+					final pairActions = Actions.get(DPair);
+					if(op == ODiv) throw "not related";
+					if(op == OSub) {
+						r = cast pairActions.negate(r);
+						op = OAdd;
+					}
+					pairActions.doMath(r, l, op);
+				},
+				at(r is Tuple) => {
+					if(op == OSub || op == ODiv) throw "not related";
+					Actions.get(DTuple).doMath(r, l, op);
+				},
+				// Vector
+				// Date
+				_ => invalid()
+			),
+			_ => invalid()
+		);
+	}
 	
 	
 	/*-- Scalar actions --*/
@@ -75,81 +120,23 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 	}
 	
 	override function add(value1: This, value2: Value) {
-		final int = value1.int;
-		return value2._match(
-			at(i is _Integer) => makeThis(int + i.int),
-			at(_ is Money) => throw "todo!",
-			at(t is Time) => new Time(int + t.float),
-			at(f is _Float) => new Float(int + f.float),
-			at({x: x, y: y} is Pair) => new Pair(int + x, int + y),
-			at(t is Tuple) => new Tuple(t.values.map(i -> i + int)),
-			// Vector
-			// Date
-			// ...
-			_ => invalid()
-		);
+		return doMath(value1, value2, OAdd);
 	}
 
 	override function subtract(value1: This, value2: Value) {
-		final int = value1.int;
-		return value2._match(
-			at(i is _Integer) => makeThis(int - i.int),
-			at(_ is Money) => throw "todo!",
-			at(t is Time) => new Time(int - t.float),
-			at(f is _Float) => new Float(int - f.float),
-			at({x: x, y: y} is Pair) => new Pair(int - x, int - y),
-			// Vector
-			// Date
-			// ...
-			_ => invalid()
-		);
+		return doMath(value1, value2, OSub);
 	}
 
 	override function multiply(value1: This, value2: Value) {
-		final int = value1.int;
-		return value2._match(
-			at(i is _Integer) => makeThis(int * i.int),
-			at(_ is Money) => throw "todo!",
-			at(t is Time) => new Time(int * t.float),
-			at(f is _Float) => new Float(int * f.float),
-			at({x: x, y: y} is Pair) => new Pair(int * x, int * y),
-			at(t is Tuple) => new Tuple(t.values.map(i -> i * int)),
-			// Vector
-			// Date
-			// ...
-			_ => invalid()
-		);
+		return doMath(value1, value2, OMul);
 	}
 
 	override function divide(value1: This, value2: Value) {
-		final int = value1.int;
-		return value2._match(
-			at(i is _Integer) => {
-				if(int % i.int == 0) makeThis(Std.int(int / i.int))
-				else new types.Float(int / i.int);
-			},
-			at(_ is Money) => throw "todo!",
-			at(t is Time) => new Time(int / t.float),
-			at(f is _Float) => new Float(int / f.float),
-			// Vector
-			// Date
-			// ...
-			_ => invalid()
-		);
+		return doMath(value1, value2, ODiv);
 	}
 
 	override function remainder(value1: This, value2: Value) {
-		final int = value1.int;
-		return value2._match(
-			at(i is _Integer) => makeThis(int % i.int),
-			at(_ is Money) => throw "todo!",
-			at(t is Time) => new Time(int % t.float),
-			at(f is _Float) => new Float(int % f.float),
-			// Vector
-			// Date
-			// ...
-			_ => invalid()
-		);
+		return doMath(value1, value2, ORem);
 	}
 
 	override function power(number: This, exponent: _Number) {
@@ -248,41 +235,14 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 	}
 
 	override function and(value1: This, value2: Value) {
-		final int = value1.int;
-		return value2._match(
-			at(i is _Integer) => makeThis(int & i.int),
-			at({x: x, y: y} is Pair) => new Pair(int & x, int & y),
-			at(t is Tuple) => new Tuple(t.values.map(i -> i & int)),
-			// Vector
-			// Date
-			// ...
-			_ => invalid()
-		);
+		return doMath(value1, value2, OAnd);
 	}
 
 	override function or(value1: This, value2: Value) {
-		final int = value1.int;
-		return value2._match(
-			at(i is _Integer) => makeThis(int | i.int),
-			at({x: x, y: y} is Pair) => new Pair(int | x, int | y),
-			at(t is Tuple) => new Tuple(t.values.map(i -> i | int)),
-			// Vector
-			// Date
-			// ...
-			_ => invalid()
-		);
+		return doMath(value1, value2, OOr);
 	}
 
 	override function xor(value1: This, value2: Value) {
-		final int = value1.int;
-		return value2._match(
-			at(i is _Integer) => makeThis(int ^ i.int),
-			at({x: x, y: y} is Pair) => new Pair(int ^ x, int ^ y),
-			at(t is Tuple) => new Tuple(t.values.map(i -> i ^ int)),
-			// Vector
-			// Date
-			// ...
-			_ => invalid()
-		);
+		return doMath(value1, value2, OXor);
 	}
 }
