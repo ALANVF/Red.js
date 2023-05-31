@@ -12,7 +12,7 @@ import types.*;
 class ValueActions<This: Value> {
 	function new() {}
 	
-	private static inline function invalid() {
+	private static inline function invalid<T>(): T {
 		throw new InvalidAction("Invalid action!");
 	}
 	
@@ -24,7 +24,7 @@ class ValueActions<This: Value> {
 	function mold(value: This, options: AMoldOptions): String invalid();
 	function modify(target: This, field: Word, value: Value, options: AModifyOptions): Value invalid();
 
-	function evalPath(parent: Value, element: Value, value: Null<Value>, path: _Path, isCase: Bool): Value invalid();
+	function evalPath(parent: This, element: Value, value: Null<Value>, path: _Path, isCase: Bool): Value invalid();
 	function compare(value1: This, value2: Value, op: ComparisonOp): CompareResult invalid();
 
 	function doMath(left: Value, right: Value, op: MathOp): Value invalid();

@@ -17,7 +17,7 @@
 | `url!`                   | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `char!`                  | Y        | Y      | Y      | P    | N      | N      | Y         | P             |
 | `integer!`               | Y        | Y      | Y      | P    | N      | N      | P         | P             |
-| `float!`                 | Y        | Y      | N      | N    | N      | N      | P         | P             |
+| `float!`                 | Y        | Y      | Y      | P    | N      | N      | P         | P             |
 | `word!`                  | Y        | Y      | N      | N    | N      | N      | Y         | N             |
 | `set-word!`              | Y        | Y      | N      | N    | N      | N      | Y         | N             |
 | `lit-word!`              | Y        | Y      | N      | N    | N      | N      | Y         | N             |
@@ -41,11 +41,11 @@
 | `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `hash!`                  | P        | NA     | N      | N    | N      | N      | Y         | P             |
 | `pair!`                  | Y        | Y      | N      | N    | N      | N      | Y         | N             |
-| `percent!`               | Y        | Y      | N      | N    | N      | N      | P         | P             |
+| `percent!`               | Y        | Y      | Y      | P    | N      | N      | P         | P             |
 | `tuple!`                 | Y        | Y      | N      | N    | N      | N      | Y         | N             |
 | `map!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
 | `binary!`                | Y        | Y      | N      | N    | N      | N      | Y         | P             |
-| `time!`                  | Y        | Y      | N      | N    | N      | N      | P         | P             |
+| `time!`                  | Y        | Y      | Y      | P    | N      | N      | P         | P             |
 | `tag!`                   | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `email!`                 | Y        | N**    | N      | N    | N      | N      | P         | P             |
 | `handle!`                | NA       | NA     | N      | N    | N      | N      | N         | N             |
