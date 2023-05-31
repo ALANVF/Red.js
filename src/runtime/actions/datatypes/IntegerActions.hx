@@ -64,18 +64,18 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 		return cast (value1.int - other).sign();
 	}
 
-	function doMathOp(left: Int, right: Int, op: MathOp, forceIntDiv: Bool): _Number {
+	static function doMathOp(left: Int, right: Int, op: MathOp, forceIntDiv: Bool): StdTypes.Float {
 		return op._match(
-			at(OAdd) => makeThis(left + right),
-			at(OSub) => makeThis(left - right),
-			at(OMul) => makeThis(left * right),
-			at(OAnd) => makeThis(left & right),
-			at(OOr) => makeThis(left | right),
-			at(OXor) => makeThis(left ^ right),
-			at(ORem) => makeThis(left % right),
+			at(OAdd) => left + right,
+			at(OSub) => left - right,
+			at(OMul) => left * right,
+			at(OAnd) => left & right,
+			at(OOr) => left | right,
+			at(OXor) => left ^ right,
+			at(ORem) => left % right,
 			at(ODiv) => {
-				if(forceIntDiv || left % right == 0) makeThis(Std.int(left / right));
-				else new Float(left / right);
+				if(forceIntDiv || left % right == 0) Std.int(left / right);
+				else left / right;
 			},
 			_ => throw "bad"
 		);
@@ -84,7 +84,11 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 	override function doMath(left: Value, right: Value, op: MathOp) {
 		return left._match(
 			at(l is _Integer) => right._match(
-				at(r is _Integer) => doMathOp(l.int, r.int, op, false),
+				at(r is _Integer) => {
+					final res = doMathOp(l.int, r.int, op, false);
+					if(res % 1.0 != 0.0) new Float(res);
+					else makeThis(cast res);
+				},
 				// Money,
 				at(r is _Float) => Actions.get(DFloat).doMath(l, r, op),
 				at(r is Pair) => {
@@ -167,7 +171,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 		return Logic.fromCond(value.int & 1 != 0);
 	}
 
-	override function round(value: This, options: ARoundOptions): Value {
+	override function round(value: This, options: ARoundOptions): _Integer {
 		final scale = options.to?.scale;
 
 		final num = value.int;

@@ -70,7 +70,7 @@ class CharActions extends IntegerActions<Char> {
 					_ => invalid()
 				);
 
-				final res = (cast doMathOp(l.int, rv, op, true) : Char);
+				final res = Char.fromCode(cast IntegerActions.doMathOp(l.int, rv, op, true));
 				if(res.int > Char.MAX_CODEPOINT || res.int <= 0) throw "math overflow";
 				return res;
 			},
@@ -85,7 +85,7 @@ class CharActions extends IntegerActions<Char> {
 
 	override function power(number: Char, exponent: _Number): _Number invalid();
 
-	override function round(value: Char, options: ARoundOptions): Value invalid();
+	override function round(value: Char, options: ARoundOptions): _Integer invalid();
 
 	/*-- Bitwise actions --*/
 

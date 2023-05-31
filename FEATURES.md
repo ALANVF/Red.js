@@ -40,7 +40,7 @@
 | `error!`                 | Y        | NA     | N      | N    | N      | N      | Y         | N             |
 | `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `hash!`                  | P        | NA     | N      | N    | N      | N      | Y         | P             |
-| `pair!`                  | Y        | Y      | N      | N    | N      | N      | Y         | N             |
+| `pair!`                  | Y        | Y      | P      | Y    | N      | N      | Y         | P             |
 | `percent!`               | Y        | Y      | Y      | P    | N      | N      | P         | P             |
 | `tuple!`                 | Y        | Y      | N      | N    | N      | N      | Y         | N             |
 | `map!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |

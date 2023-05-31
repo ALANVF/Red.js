@@ -10,6 +10,8 @@ class Words {
 	static var HOUR: Symbol;
 	static var MINUTE: Symbol;
 	static var SECOND: Symbol;
+	static var X: Symbol;
+	static var Y: Symbol;
 
 	static function build() {
 		Context.GLOBAL.addSymbol(SELF = Symbol.make("self"));
@@ -17,5 +19,7 @@ class Words {
 		Context.GLOBAL.addSymbol(HOUR = Symbol.make("hour"));
 		Context.GLOBAL.addSymbol(MINUTE = Symbol.make("minute"));
 		Context.GLOBAL.addSymbol(SECOND = Symbol.make("second"));
+		Context.GLOBAL.addSymbol(X = Symbol.make("x"));
+		Context.GLOBAL.addSymbol(Y = Symbol.make("y"));
 	}
 }
