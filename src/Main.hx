@@ -216,6 +216,25 @@ class Main {
 				]
 				#get-definition ACT_SKIP
 			]
+
+			pick: make action! [[
+					series	 [series! bitset! pair! tuple! money! date! time!]
+					index 	 [scalar! any-string! any-word! block! logic! time!]
+					return:  [any-type!]
+				]
+				#get-definition ACT_PICK
+			]
+
+			reverse: make action! [[
+					series	 [series! port! pair! tuple!]
+					/part
+						length [number! series!]
+					/skip
+						size [integer!]
+					return:  [series! port! pair! tuple!]
+				]
+				#get-definition ACT_REVERSE
+			]
 			
 			tail: make action! [[
 					series	 [series! port!]

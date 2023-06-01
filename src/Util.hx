@@ -197,6 +197,11 @@ class Util {
 	}
 
 	@:noUsing
+	static macro function swap(a, b) {
+		return macro js.Syntax.code("[{0}, {1}] = [{1}, {0}]", $a, $b);
+	}
+
+	@:noUsing
 	static macro function deepIf(stmt) {
 		var cond;
 		function deepCopyF(expr: Expr) return switch expr {

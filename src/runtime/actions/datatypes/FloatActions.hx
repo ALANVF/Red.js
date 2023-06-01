@@ -102,7 +102,7 @@ class FloatActions<This: _Float = Float> extends ValueActions<This> {
 		);
 	}
 
-	function doMathOp(left: StdTypes.Float, right: StdTypes.Float, op: MathOp) {
+	static function doMathOp(left: StdTypes.Float, right: StdTypes.Float, op: MathOp) {
 		return op._match(
 			at(OAdd) => left + right,
 			at(OSub) => left - right,

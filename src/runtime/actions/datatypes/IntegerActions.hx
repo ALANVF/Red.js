@@ -2,9 +2,9 @@ package runtime.actions.datatypes;
 
 import types.base.MathOp;
 import types.base._ActionOptions;
-import types.base._Number;
 import types.base.ComparisonOp;
 import types.base.CompareResult;
+import types.base._Number;
 import types.base._Integer;
 import types.base._Float;
 import types.Value;

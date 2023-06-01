@@ -30,4 +30,6 @@ interface ISeriesOf<T: Value> extends IGetPath extends ISetPath {
 	public function isTail(): Bool;
 	
 	public function iterator(): Iterator<T>;
+
+	public function keyValueIterator(): KeyValueIterator<Int, T>;
 }

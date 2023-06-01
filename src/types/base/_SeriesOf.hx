@@ -124,6 +124,10 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		return values.slice(index).iterator();
 	}
 
+	public inline function keyValueIterator(): KeyValueIterator<Int, T> {
+		return values.slice(index).keyValueIterator();
+	}
+
 	public function getPath(access: Value, ?ignoreCase = true) {
 		return Util._match(access,
 			at((_.int - 1 => i) is Integer, when(0 <= i)) => cast this.pick(i),

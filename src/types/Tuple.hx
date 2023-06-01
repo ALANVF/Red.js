@@ -7,6 +7,8 @@ import types.base.IGetPath;
 class Tuple extends Value implements IGetPath {
 	public var values: UInt8ClampedArray; // TODO: use bitpacked int(s)
 
+	public static inline function of(...values: Int) return new Tuple(UInt8ClampedArray.of(...values));
+	
 	public function new(values: UInt8ClampedArray) {
 		if(values.length < 3 || values.length > 12) {
 			throw "Invalid tuple!";
@@ -14,6 +16,7 @@ class Tuple extends Value implements IGetPath {
 			this.values = values;
 		}
 	}
+
 	
 	public function getPath(access:Value, ?_) {
 		return access._match(
