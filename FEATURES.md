@@ -36,13 +36,13 @@
 | `bitset!`                | Y        | NA     | N      | N    | N      | N      | Y         | N             |
 | `point!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `object!`                | Y        | NA     | Y      | N    | N      | N      | Y         | P             |
-| `typeset!`               | Y        | NA     | Y      | N    | N      | N      | Y         | N             |
+| `typeset!`               | Y        | NA     | Y      | Y    | N      | N      | Y         | Y             |
 | `error!`                 | Y        | NA     | N      | N    | N      | N      | Y         | N             |
 | `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `hash!`                  | P        | NA     | N      | N    | N      | N      | Y         | P             |
-| `pair!`                  | Y        | Y      | P      | Y    | N      | N      | Y         | Y             |
+| `pair!`                  | Y        | Y      | P      | Y    | N      | N      | Y         | P             |
 | `percent!`               | Y        | Y      | Y      | P    | N      | N      | P         | P             |
-| `tuple!`                 | Y        | Y      | Y      | P    | N      | N      | Y         | Y             |
+| `tuple!`                 | Y        | Y      | Y      | P    | N      | N      | Y         | P             |
 | `map!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
 | `binary!`                | Y        | Y      | N      | N    | N      | N      | Y         | P             |
 | `time!`                  | Y        | Y      | Y      | P    | N      | N      | P         | P             |
@@ -103,10 +103,10 @@
 | `in`                | Y      |
 | `parse`             | N      |
 | `union`             | P      |
-| `unique`            | N      |
-| `intersect`         | N      |
-| `difference`        | N      |
-| `exclude`           | N      |
+| `unique`            | P      |
+| `intersect`         | P      |
+| `difference`        | P      |
+| `exclude`           | P      |
 | `complement?`       | Y      |
 | `dehex`             | Y      |
 | `enhex`             | Y      |

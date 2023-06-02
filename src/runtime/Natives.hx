@@ -59,6 +59,7 @@ class Natives {
 			at([NIn(f), [o is types.Object, s is _AnyWord]]) => f(o, s),
 			at([NUnion(f) | NIntersect(f) | NExclude(f) | NDifference(f), [v1, v2]]) =>
 				f(v1, v2, Options.fromRefines(NSetOpOptions, refines)),
+			at([NUnique(f), [v]]) => f(v, Options.fromRefines(NSetOpOptions, refines)),
 			at([NComplement_q(f), [b is Bitset]]) => f(b),
 			at([NDehex(f) | NEnhex(f), [s is _String]]) => f(s),
 			at([( NMin(f) | NMax(f)

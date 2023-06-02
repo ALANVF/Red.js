@@ -13,7 +13,7 @@ import types.TypeKind;
 class Bind {
 	public static final defaultOptions = Options.defaultFor(NBindOptions);
 	
-	static final copyTypeset = new Typeset([
+	static final copyTypeset = Typeset.of([
 		Runtime.DATATYPES[cast DBlock]._2,
 		Runtime.DATATYPES[cast DParen]._2,
 		Runtime.DATATYPES[cast DHash]._2

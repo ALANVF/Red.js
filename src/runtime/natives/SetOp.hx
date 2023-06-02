@@ -1,23 +1,45 @@
 package runtime.natives;
 
+import types.base.MathOp;
 import types.base.ComparisonOp;
 import types.base._Block;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.base.IDatatype;
 import types.*;
+import runtime.actions.datatypes.BlockActions;
+import runtime.actions.datatypes.StringActions;
+import runtime.actions.datatypes.BitsetActions;
+import runtime.actions.datatypes.TypesetActions;
+import runtime.actions.datatypes.DateActions;
+
 import js.Syntax.plainCode as emit;
 
 final defaultOptions = Options.defaultFor(NSetOpOptions);
 
-/*enum abstract SetOp(Int) {
-	final OUnion;
-	final OIntersect;
-	final OExclude;
-	final ODifference;
-}*/
+function doSetOp(value1: Value, value2: Value, op: MathOp, options: NSetOpOptions) {
+	final step = options.skip._match(
+		at({size: {int: size}}) => if(size <= 0) throw "invalid size" else size,
+		_ => 1
+	);
+	final isCase = options._case;
 
-// TODO: correctly implement this according to https://github.com/red/red/blob/master/runtime/natives.reds#L1296
+	if(op != OUnique && value1.thisType() != value2.thisType()) {
+		throw "invalid type";
+	}
+
+	return value1._match(
+		at(b is Block | b is Hash) => throw "todo", // BlockActions.doSetOp(b, value2, op, isCase, skip),
+		at(s is String) => throw "todo", // StringActions.doSetOp(s, value2, op, isCase, skip),
+		at(b is Bitset) => throw "todo", // BitsetActions.doBitwise(b, value2, op),
+		at(t is Typeset) => TypesetActions.doBitwise(t, value2, op),
+		at(d is Date) => {
+			if(op != ODifference) throw "invalid type";
+			throw "todo"; // DateActions.difference(d, Std.downcast(value2, Date) ?? throw "invalid type");
+		},
+		_ => throw "invalid type"
+	);
+}
 
 @:build(runtime.NativeBuilder.build())
 class Union {
@@ -60,32 +82,35 @@ class Union {
 		return result;
 	}
 
-	static inline function forTypeset(ts1: Typeset, ts2: Typeset): Typeset {
-		return new Typeset([ts1, ts2]);
-	}
-
-	// [block! hash! string! bitset! typeset!]
 	public static function call(value1: Value, value2: Value, options: NSetOpOptions): Value {
-		value1._match(
-			at(b is Block | b is Hash) => value2._match(
-				at(b2 is Block | b2 is Hash) => {
-					return forBlock(b, b2, options);
-				},
-				_ => throw "invalid type"
-			),
-			at(str1 is String) => {
-				throw "todo";
-			},
-			at(bs1 is Bitset) => {
-				throw "todo";
-			},
-			at(ts1 is Typeset) => value2._match(
-				at(ts2 is Typeset) => {
-					return forTypeset(ts1, ts2);
-				},
-				_ => throw "invalid type"
-			),
-			_ => throw "invalid type"
-		);
+		return doSetOp(value1, value2, OUnion, options);
+	}
+}
+
+@:build(runtime.NativeBuilder.build())
+class Intersect {
+	public static function call(value1: Value, value2: Value, options: NSetOpOptions): Value {
+		return doSetOp(value1, value2, OIntersect, options);
+	}
+}
+
+@:build(runtime.NativeBuilder.build())
+class Unique {
+	public static function call(value: Value, options: NSetOpOptions): Value {
+		return doSetOp(value, value, OUnique, options);
+	}
+}
+
+@:build(runtime.NativeBuilder.build())
+class Difference {
+	public static function call(value1: Value, value2: Value, options: NSetOpOptions): Value {
+		return doSetOp(value1, value2, ODifference, options);
+	}
+}
+
+@:build(runtime.NativeBuilder.build())
+class Exclude {
+	public static function call(value1: Value, value2: Value, options: NSetOpOptions): Value {
+		return doSetOp(value1, value2, OExclude, options);
 	}
 }

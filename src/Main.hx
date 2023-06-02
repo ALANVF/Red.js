@@ -510,6 +510,50 @@ class Main {
 				#get-definition NAT_UNION
 			]
 
+			unique: make native! [[
+					set [block! hash! string!]
+					/case
+					/skip
+						size [integer!]
+					return: [block! hash! string!]
+				]
+				#get-definition NAT_UNIQUE
+			]
+			
+			intersect: make native! [[
+					set1 [block! hash! string! bitset! typeset!]
+					set2 [block! hash! string! bitset! typeset!]
+					/case
+					/skip
+						size [integer!]
+					return: [block! hash! string! bitset! typeset!]
+				]
+				#get-definition NAT_INTERSECT
+			]
+			
+			difference: make native! [[
+					set1 [block! hash! string! bitset! typeset! date!]
+					set2 [block! hash! string! bitset! typeset! date!]
+					/case
+					/skip
+						size [integer!]
+					return: [block! hash! string! bitset! typeset! time!]
+				]
+				#get-definition NAT_DIFFERENCE
+			]
+			
+			exclude: make native! [[
+					set1 [block! hash! string! bitset! typeset!]
+					set2 [block! hash! string! bitset! typeset!]
+					/case
+					/skip
+						size [integer!]
+					return: [block! hash! string! bitset! typeset!]
+				]
+				#get-definition NAT_EXCLUDE
+			]
+		
+
 			; ...
 			
 			min: make native! [[value1 value2] #get-definition NAT_MIN]

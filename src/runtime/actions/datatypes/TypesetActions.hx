@@ -1,19 +1,30 @@
 package runtime.actions.datatypes;
 
+import js.lib.Set;
+import types.base.MathOp;
+import types.base._ActionOptions;
 import types.base.CompareResult;
 import types.base.ComparisonOp;
 import types.base.IDatatype;
 import types.Value;
 import types.Typeset;
+import types.Datatype;
 import types.Block;
 import types.Word;
+import types.Logic;
+
+import runtime.actions.datatypes.ValueActions.invalid;
 
 class TypesetActions extends ValueActions<Typeset> {
-	override function make(_, spec: Value) {
+	override function make(proto: Null<Typeset>, spec: Value) {
+		return to(proto, spec);
+	}
+
+	override function to(proto: Null<Typeset>, spec: Value) {
 		spec._match(
 			at(ts is Typeset) => return ts,
 			at(b is Block) => {
-				return new Typeset([
+				return Typeset.ofAny([
 					for(value in b) value._match(
 						at(w is Word) => w.get(),
 						_ => value
@@ -53,6 +64,70 @@ class TypesetActions extends ValueActions<Typeset> {
 				_ => return IsInvalid
 			),
 			_ => return IsInvalid
+		);
+	}
+
+	static function doBitwise(left: Typeset, right: Value, op: MathOp) {
+		final set1 = left.types;
+		final set2 = right._match(
+			at(t is Typeset) => t.types,
+			at(d is Datatype) => new util.Set([d]),
+			_ => invalid()
+		);
+
+		return new Typeset(op._match(
+			at(OUnion | OOr) => {
+				new util.Set(js.Syntax.code("[...{0}, ...{1}]", set1, set2));
+			},
+			at(OIntersect | OAnd) => {
+				set1.filter(d -> set2.has(d));
+			},
+			at(ODifference | OXor) => {
+				final res = set1.copy();
+
+				for(d in set2) {
+					if(res.has(d)) res.remove(d);
+					else res.add(d);
+				}
+
+				res;
+			},
+			at(OExclude) => {
+				set1.filter(d -> !set2.has(d));
+			},
+			_ => invalid()
+		));
+	}
+
+
+	/*-- Bitwise actions --*/
+
+	override function complement(value: Typeset) {
+		return Typeset.of([
+			for(p in Runtime.DATATYPES)
+				if(!value.types.has(p._2)) p._2
+		]);
+	}
+
+	override function and(value1: Typeset, value2: Value) {
+		return doBitwise(value1, value2, OAnd);
+	}
+
+	override function or(value1: Typeset, value2: Value) {
+		return doBitwise(value1, value2, OOr);
+	}
+
+	override function xor(value1: Typeset, value2: Value) {
+		return doBitwise(value1, value2, OXor);
+	}
+
+	
+	/*-- Series actions --*/
+
+	override function find(typeset: Typeset, value: Value, options: AFindOptions) {
+		return value._match(
+			at(type is Datatype) => return Logic.fromCond(typeset.types.has(type)),
+			_ => invalid()
 		);
 	}
 }
