@@ -6,18 +6,18 @@ import haxe.ds.Option;
 import haxe.io.Bytes;
 import util.Set;
 
-class Bitset extends Value implements IGetPath implements ISetPath {
+class Bitset extends Value /*implements IGetPath implements ISetPath*/ {
 	public var bytes: Bytes;
-	public final negated: Bool;
+	public var negated: Bool;
 
-	function new(bytes: Bytes, negated: Bool) {
+	public function new(bytes: Bytes, negated: Bool) {
 		this.bytes = bytes;
 		this.negated = negated;
 	}
 
 	public static function alloc(size: Int, negated: Bool = false) {
 		final bytes = Bytes.alloc(size);
-		bytes.fill(0, size, 0);
+		// bytes.fill(0, size, 0); not needed with js
 		return new Bitset(bytes, negated);
 	}
 
@@ -34,12 +34,13 @@ class Bitset extends Value implements IGetPath implements ISetPath {
 	}
 
 	static inline function toByte(ord: Int) {
-		return 1 << (7 - (ord & 7));
+		//return 1 << (7 - (ord & 7));
+		return 128 >> (ord & 7);
 	}
 
 	static function _fromOrds(ords: Set<Int>, negated: Bool) {
 		var maxBit = (ords.length == 0) ? 0 : #if js
-			js.Syntax.code("{0}(...{1}.repr)", js.lib.Math.max, ords);
+			js.Syntax.code("{0}(...{1})", js.lib.Math.max, ords);
 		/*#elseif python
 			switch ords.toArray() {
 				case [ord]: ord;
@@ -63,7 +64,22 @@ class Bitset extends Value implements IGetPath implements ISetPath {
 		return out;
 	}
 
-	public function hasBit(bit: Int, noCase: Bool = false /* ignore noCase for now */) {
+	public function setBit(bit: Int) {
+		final i = bit >> 3;
+		bytes.set(i, bytes.get(i) | toByte(bit));
+	}
+
+	public function clearBit(bit: Int) {
+		final i = bit >> 3;
+		bytes.set(i, bytes.get(i) & ~toByte(bit));
+	}
+
+	public function testBit(bit: Int) {
+		final i = bit >> 3;
+		return bytes.get(i) & toByte(bit) != 0;
+	}
+
+	/*public function hasBit(bit: Int, noCase: Bool = false /* ignore noCase for now * /) {
 		final i = bit >> 3;
 
 		return if(i >= this.bytes.length) {
@@ -111,5 +127,5 @@ class Bitset extends Value implements IGetPath implements ISetPath {
 			},
 			_ => false
 		);
-	}
+	}*/
 }

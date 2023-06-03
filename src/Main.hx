@@ -225,6 +225,15 @@ class Main {
 				#get-definition ACT_PICK
 			]
 
+			poke: make action! [[
+					series	 [series! port! bitset!]
+					index 	 [scalar! any-string! any-word! block! logic!]
+					value 	 [any-type!]
+					return:  [series! port! bitset!]
+				]
+				#get-definition ACT_POKE
+			]
+
 			reverse: make action! [[
 					series	 [series! port! pair! tuple!]
 					/part

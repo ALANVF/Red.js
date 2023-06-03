@@ -43,6 +43,7 @@ class Actions {
 		DLitPath => new LitPathActions(),
 		DSetPath => new SetPathActions(),
 		DGetPath => new GetPathActions(),
+		DBitset => new BitsetActions(),
 		DObject => new ObjectActions(),
 		DError => new ErrorActions(),
 		DTypeset => new TypesetActions(),
