@@ -1,6 +1,7 @@
 package types.base;
 
 import haxe.ds.Option;
+import util.Series;
 
 abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	public var index: Int;
@@ -24,10 +25,10 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	abstract function clone(values: Array<T>, ?index: Int): _SeriesOf<T>; // ugh, can't wait for polymorphic `this` types
 
 	public function pick(index: Int) {
-		return if(index >= this.length) {
-			None;
+		if(index < 0 || index >= this.length) {
+			return null;
 		} else {
-			Some(this.values[this.index + index]);
+			return this.values[this.index + index];
 		}
 	}
 
@@ -36,8 +37,8 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 	}
 
 	public function poke(index: Int, value: T) {
-		if(index >= this.length) {
-			throw "out of bounds!";
+		if(index < 0 || index >= this.length) {
+			return null;
 		} else {
 			return this.values[this.index + index] = value;
 		}
@@ -120,6 +121,10 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		return this.values == other.values;
 	}
 
+	public inline function asSeries() {
+		return new Series(values, index);
+	}
+
 	public inline function iterator(): Iterator<T> {
 		return values.slice(index).iterator();
 	}
@@ -130,14 +135,14 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 
 	public function getPath(access: Value, ?ignoreCase = true) {
 		return Util._match(access,
-			at((_.int - 1 => i) is Integer, when(0 <= i)) => cast this.pick(i),
+			at((_.int - 1 => i) is Integer) => Option.fromNull(cast this.pick(i)),
 			_ => None
 		);
 	}
 
 	public function setPath(access: Value, newValue: Value, ?ignoreCase = true) {
 		return Util._match(access,
-			at((_.int - 1 => i) is Integer, when(0 <= i)) => { // TODO: somehow typecheck against T
+			at((_.int - 1 => i) is Integer) => { // TODO: somehow typecheck against T
 				this.poke(i, cast newValue);
 				true;
 			},

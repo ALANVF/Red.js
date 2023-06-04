@@ -103,7 +103,12 @@ class TimeActions extends FloatActions<Time> {
 		);
 	}
 
-	override function evalPath(parent: Time, element: Value, value: Null<Value>, path: _Path, isCase: Bool): Value {
+	override function evalPath(
+		parent: Time, element: Value, value: Null<Value>,
+		path: Null<_Path>, gparent: Null<Value>, pItem: Null<Value>,
+		index: Int,
+		isCase: Bool, isGet: Bool, isTail: Bool
+	): Value {
 		final time = parent.float;
 
 		final field = element._match(

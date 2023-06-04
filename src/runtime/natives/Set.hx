@@ -23,7 +23,7 @@ class Set {
 
 	static function _getPathUptoEnd(value: Value, path: _Path, ignoreCase: Bool) {
 		inline function evalNext() {
-			final v = path.pick(0).value();
+			final v = path.pick(0).nonNull();
 			return v is Word ? v : Do.evalValue(v);
 		}
 
@@ -39,7 +39,7 @@ class Set {
 	}
 
 	public static function setPath(path: _Path, newValue: Value, ignoreCase = true) {
-		_getPathUptoEnd(Do.evalValue(path.pick(0).value()), path.skip(1), ignoreCase)._match(
+		_getPathUptoEnd(Do.evalValue(path.pick(0).nonNull()), path.skip(1), ignoreCase)._match(
 			at({value: value is ISetPath, access: access}) => {
 				if(value.setPath(access, newValue, ignoreCase)) {
 					return newValue;

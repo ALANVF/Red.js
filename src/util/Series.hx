@@ -3,8 +3,8 @@ package util;
 @:publicFields
 @:structInit
 private class _Series<T> {
-	final values: Array<T>;
-	final offset: Int;
+	var values: Array<T>;
+	var offset: Int;
 
 	inline function new(values: Array<T>, offset: Int) {
 		this.values = values;
@@ -20,6 +20,14 @@ abstract Series<T>(_Series<T>) from _Series<T> {
 		return this.values.length - this.offset;
 	}
 
+	public var value(get, set): T;
+	inline function get_value() {
+		return this.values[this.offset];
+	}
+	inline function set_value(v: T) {
+		return this.values[this.offset] = value;
+	}
+
 
 	@:from
 	static inline function fromSeriesOf<T: types.Value>(series: types.base._SeriesOf<T>) {
@@ -31,6 +39,11 @@ abstract Series<T>(_Series<T>) from _Series<T> {
 		return new Series(array, 0);
 	}
 
+	
+	public inline function assign(to: Series<T>) {
+		this.offset = to.offset;
+		this.values = to.values; // optimize this eventually, not always needed
+	}
 
 	@:op(A + B)
 	public inline function skip(by: Int) {
@@ -48,7 +61,9 @@ abstract Series<T>(_Series<T>) from _Series<T> {
 
 	@:op(++A)
 	inline function incrPre(): Series<T> {
-		return this = inline new _Series(this.values, this.offset + 1);
+		//return this = inline new _Series(this.values, this.offset + 1);
+		this.offset++;
+		return this;
 	}
 
 	@:arrayAccess

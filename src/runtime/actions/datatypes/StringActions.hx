@@ -3,15 +3,36 @@ package runtime.actions.datatypes;
 import types.base.CompareResult;
 import types.base.ComparisonOp;
 import types.base._ActionOptions;
-import types.Value;
+import types.base._Path;
 import types.base._String;
+import types.Value;
 import types.String;
 import types.Char;
 import types.Integer;
 import types.Pair;
 import types.Logic;
+import types.Word;
 
 class StringActions<This: _String = String> extends SeriesActions<This, Char> {
+	override function evalPath(
+		parent: This, element: Value, value: Null<Value>,
+		path: Null<_Path>, gparent: Null<Value>, pItem: Null<Value>,
+		index: Int,
+		isCase: Bool, isGet: Bool, isTail: Bool
+	): Value {
+		return element._match(
+			at(i is Integer) => {
+				value._andOr(value => {
+					poke(parent, i, value);
+				}, {
+					pick(parent, i);
+				});
+			},
+			at(_ is Word) => throw "invalid path",
+			_ => throw "todo"
+		);
+	}
+
 	// TODO: implement actual logic
 	override function compare(value1: This, value2: Value, op: ComparisonOp): CompareResult {
 		if(

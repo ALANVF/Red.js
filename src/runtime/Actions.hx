@@ -146,4 +146,19 @@ class Actions {
 			_ => getFor(value1).compare(value1, value2, op)
 		);
 	}
+
+	static function evalPath(parent: Value, element: Value, ?value: Value) {
+		return getFor(parent).evalPath(
+			parent,
+			element,
+			value,
+			null,
+			null,
+			null,
+			-1,
+			false,
+			false,
+			true
+		);
+	}
 }

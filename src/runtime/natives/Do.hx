@@ -1,7 +1,6 @@
 package runtime.natives;
 
-import types.Tuple;
-import util.Tuple2;
+import runtime.actions.EvalPath;
 import types.Value;
 import types.Op;
 import types.Path;
@@ -17,11 +16,14 @@ import types.Paren;
 import types.Unset;
 import types.File;
 import types.Url;
+import types.Function;
+import types.base.Context;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.base._Path;
 import types.base.IGetPath;
 import types.base.IFunction;
+import util.Tuple2;
 import haxe.ds.Option;
 import Util.detuple;
 
@@ -77,7 +79,7 @@ class Do {
 
 	static function doesBecomeFunction(path: Path) {
 		return path.pick(0)._match(
-			at(Some(head is Word)) => _doesBecomeFunction(head.get(), (path : Values).next()),
+			at(head is Word) => _doesBecomeFunction(head.get(), (path : Values).next()),
 			_ => null
 		);
 	}
@@ -165,6 +167,7 @@ class Do {
 			case QGet if(values.isTail()): mkResult(GUnset, values);
 			case QGet: mkResult(GNoEval(values++[0].nonNull()), values);
 			case QLit:
+				//eval-path pc pc + 1 end code no yes yes no
 				mkResult(
 					values++[0].nonNull()._match(
 						at(v is Paren | v is GetWord | v is GetPath) => GValue(v),
@@ -173,6 +176,67 @@ class Do {
 					values
 				);
 		}
+	}
+	
+	public static function evalPath(path: _Path, setValue: Null<Value>, isGet: Bool, /*isSub: Bool,*/ isCase: Bool) {
+		var head = path.asSeries();
+		if(head.isTail()) throw "empty path";
+
+		var item = head + 1;
+		var idx = 0;
+
+		var pItem = head;
+		var w = head.value._match(
+			at(v is Word) => v,
+			_ => throw "word first"
+		);
+		var parent = w.get(true);
+		var gparent: Null<Value> = null;
+
+		if(parent == Unset.UNSET) throw "unset path";
+
+		if(w.context != Context.GLOBAL) {
+			w.context.value._match(
+				at(f is Function) => {
+					gparent = f;
+				},
+				_ => {}
+			);
+		}
+
+		var prevValue: Null<Value> = null;
+		while(item.isNotTail()) {
+			var value = item.value._match(
+				at(w is GetWord) => w.get(),
+				at(p is Paren) => evalValues(p),
+				at(v) => v
+			);
+			if(value == Unset.UNSET) throw "invalid path";
+
+			final prev = parent;
+			final isTail = item.isEnd();
+			final arg = isTail ? setValue : null;
+			parent = EvalPath.call(parent, value, arg, path, gparent, pItem.value, idx, isCase, isGet, isTail);
+
+			// hacky thingy for now bc idk how to get it to assign set-path scalars
+			if(setValue != null && item.isEnd(1)) prevValue = value; 
+			if(setValue != null && isTail && parent != arg) {
+				if(prevValue == null) { // means path is just `foo/bar: baz`
+					w.set(parent);
+				} else {
+					EvalPath.call(gparent, prevValue, parent, path, gparent, pItem[-1], idx-1, isCase, isGet, isTail);
+				}
+				parent = arg;
+				break;
+			}
+
+			pItem.assign(item);
+			gparent = prev;
+			++item;
+			++idx;
+		}
+
+		return parent;
 	}
 
 	public static function evalGroupedExpr(expr: GroupedExpr): Value {
@@ -187,14 +251,18 @@ class Do {
 					s.set(value);
 					value;
 				}
-			case GSetPath(s, e): Set.setPath(s, evalGroupedExpr(e));
+			case GSetPath(s, e): evalPath(s, evalGroupedExpr(e), false, false);
 			case GOp(left, op, right):
 				Eval.callAnyFunction(op, [evalGroupedExpr(left), evalGroupedExpr(right)], null);
 			case GCall(fn, args, refines):
 				Eval.callAnyFunction(
 					fn,
 					args.map(a -> evalGroupedExpr(a)),
-					[for(k => v in refines) k => v.map(a -> evalGroupedExpr(a))] // TODO: fix bad codegen
+					{
+						final res = new Dict();
+						for(k => v in refines) res[k] = v.map(a -> evalGroupedExpr(a));
+						res;
+					}
 				);
 			case GUnset: throw "Unexpected unset!";
 		}
@@ -203,7 +271,8 @@ class Do {
 	public static function evalValue(value: Value) {
 		return value._match(
 			at(p is Paren) => evalValues(p),
-			at(p is Path | p is GetPath) => Get.getPath(p),
+			at(p is Path) => evalPath(p, null, false, false),
+			at(p is GetPath) => evalPath(p, null, true, false),
 			at(l is LitPath) => new Path(l.values, l.index),
 			at(w is Word) => w.get(),
 			at(g is GetWord) => g.get(true),

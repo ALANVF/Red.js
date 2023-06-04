@@ -23,7 +23,7 @@ class Get {
 			return value;
 		} else if(value is IGetPath) {
 			final access = {
-				final v = path.pick(0).value();
+				final v = path.pick(0).nonNull();
 				v is Word ? v : Do.evalValue(v);
 			};
 			final value_ = cast(value, IGetPath);
@@ -38,9 +38,9 @@ class Get {
 			return Some(value);
 		} else if(value is IGetPath) {
 			final value_ = cast(value, IGetPath);
-			final access = path.pick(0).map(v -> v is Word ? v : Do.evalValue(v));
+			final access = path.pick(0)._and(v => v is Word ? v : Do.evalValue(v));
 			return access
-				.flatMap(v -> value_.getPath(v, ignoreCase))
+				._and(v => value_.getPath(v, ignoreCase))
 				.flatMap(v -> _tryGetPath(v, path.skip(1), ignoreCase));
 		} else {
 			throw "error!";
@@ -48,11 +48,11 @@ class Get {
 	}
 
 	public static function getPath(path: _Path, ignoreCase = true) {
-		return _getPath(Do.evalValue(path.pick(0).value()), path.skip(1), ignoreCase);
+		return _getPath(Do.evalValue(path.pick(0).nonNull()), path.skip(1), ignoreCase);
 	}
 
 	public static function tryGetPath(path: _Path, ignoreCase = true) {
-		return _tryGetPath(Do.evalValue(path.pick(0).value()), path.skip(1), ignoreCase);
+		return _tryGetPath(Do.evalValue(path.pick(0).nonNull()), path.skip(1), ignoreCase);
 	}
 
 	public static function call(word: Value, options: NGetOptions) {

@@ -48,7 +48,12 @@ class TupleActions extends ValueActions<Tuple> {
 		);
 	}
 
-	override function evalPath(parent: Tuple, element: Value, value: Null<Value>, path: _Path, isCase: Bool): Value {
+	override function evalPath(
+		parent: Tuple, element: Value, value: Null<Value>,
+		path: Null<_Path>, gparent: Null<Value>, pItem: Null<Value>,
+		index: Int,
+		isCase: Bool, isGet: Bool, isTail: Bool
+	): Value {
 		element._match(
 			at(i is Integer) => {
 				value._andOr(value => {

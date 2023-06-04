@@ -26,7 +26,7 @@ class Func {
 		inline function getParams(params: _Params) {
 			while(true) {
 				spec.pick(0)._match(
-					at(Some(w is Word | w is GetWord | w is LitWord)) => {
+					at(w is Word | w is GetWord | w is LitWord) => {
 						spec.index++;
 
 						params.push({
@@ -37,14 +37,14 @@ class Func {
 								default:       QLit;
 							},
 							spec: spec.pick(0)._match(
-								at(Some(b is Block)) => {
+								at(b is Block) => {
 									spec.index++;
 									b.copy();
 								},
 								_ => null
 							),
 							doc: spec.pick(0)._match(
-								at(Some(s is types.String)) => {
+								at(s is types.String) => {
 									spec.index++;
 									s.form();
 								},
@@ -59,10 +59,10 @@ class Func {
 
 		inline function getRet() {
 			spec.pick(0)._match(
-				at(Some((_.symbol.equalsString("return") => true) is SetWord)) => {
+				at((_.symbol.equalsString("return") => true) is SetWord) => {
 					spec.index++;
 					spec.pick(0)._match(
-						at(Some(b is Block)) => {
+						at(b is Block) => {
 							spec.index++;
 							res.ret = b.copy();
 						},
@@ -74,7 +74,7 @@ class Func {
 		}
 		
 		spec.pick(0)._match(
-			at(Some(s is types.String)) => {
+			at(s is types.String) => {
 				spec.index++;
 				res.doc = s.form();
 			},
@@ -87,13 +87,13 @@ class Func {
 
 		while(true) {
 			spec.pick(0)._match(
-				at(Some(r is Refinement)) => {
+				at(r is Refinement) => {
 					spec.index++;
 					
 					final refine: _Refine = {
 						name: r.symbol.name,
 						doc: spec.pick(0)._match(
-							at(Some(s is types.String)) => {
+							at(s is types.String) => {
 								spec.index++;
 								s.form();
 							},

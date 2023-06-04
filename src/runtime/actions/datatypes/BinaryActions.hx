@@ -3,6 +3,7 @@ package runtime.actions.datatypes;
 import types.base.CompareResult;
 import types.base.ComparisonOp;
 import types.base._ActionOptions;
+import types.base._Path;
 import types.Value;
 import types.Binary;
 import types.Integer;
@@ -10,6 +11,24 @@ import types.Pair;
 import types.Logic;
 
 class BinaryActions extends SeriesActions<Binary, Integer> {
+	override function evalPath(
+		parent: Binary, element: Value, value: Null<Value>,
+		path: Null<_Path>, gparent: Null<Value>, pItem: Null<Value>,
+		index: Int,
+		isCase: Bool, isGet: Bool, isTail: Bool
+	): Value {
+		return element._match(
+			at(i is Integer) => {
+				value._andOr(value => {
+					poke(parent, i, value);
+				}, {
+					pick(parent, i);
+				});
+			},
+			_ => throw "todo"
+		);
+	}
+
 	override function compare(value1: Binary, value2: Value, op: ComparisonOp): CompareResult {
 		value2._match(
 			at(bin2 is Binary) => {

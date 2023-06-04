@@ -45,7 +45,7 @@ class RemoveEach {
 				while(!series.isTail()) {
 					var count = 0;
 					for(word in words) {
-						word.set(series.pick(count).orElse(types.None.NONE));
+						word.set(series.pick(count) ?? cast types.None.NONE);
 						count++;
 					}
 

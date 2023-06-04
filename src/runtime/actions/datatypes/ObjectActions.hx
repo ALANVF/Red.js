@@ -15,6 +15,7 @@ import types.Object;
 import types.Block;
 import types.Paren;
 import types.Function;
+import types.None;
 
 import runtime.actions.Copy;
 
@@ -110,6 +111,20 @@ class ObjectActions extends ValueActions<Object> {
 		);
 
 		return obj;
+	}
+
+	// TODO: implement this correctly
+	override function evalPath(
+		parent: Object, element: Value, value: Null<Value>,
+		path: Null<_Path>, gparent: Null<Value>, pItem: Null<Value>,
+		index: Int,
+		isCase: Bool, isGet: Bool, isTail: Bool
+	): Value {
+		return value._andOr(value => {
+			parent.setPath(element, value, !isCase) ? value : throw "invalid path";
+		}, {
+			parent.getPath(element, isCase).orElse(None.NONE);
+		});
 	}
 
 	override function compare(value1: Object, value2: Value, op: ComparisonOp): CompareResult {

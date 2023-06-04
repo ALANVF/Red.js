@@ -55,7 +55,12 @@ class PairActions extends ValueActions<Pair> {
 		return make(proto, spec);
 	}
 
-	override function evalPath(parent: Pair, element: Value, value: Null<Value>, path: _Path, isCase: Bool): Value {
+	override function evalPath(
+		parent: Pair, element: Value, value: Null<Value>,
+		path: Null<_Path>, gparent: Null<Value>, pItem: Null<Value>,
+		index: Int,
+		isCase: Bool, isGet: Bool, isTail: Bool
+	): Value {
 		final axis = element._match(
 			at(i is Integer) => {
 				if(i.int != 1 && i.int != 2) throw "invalid path";

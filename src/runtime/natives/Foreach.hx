@@ -61,7 +61,7 @@ class Foreach {
 			at([_, series is ISeriesOf<Value>], when(words.length > 0)) => {
 				while(!series.isTail()) {
 					for(word in words) {
-						word.set(series.pick(0).orElse(types.None.NONE));
+						word.set(series.pick(0) ?? cast types.None.NONE);
 						series = series.skip(1);
 					}
 

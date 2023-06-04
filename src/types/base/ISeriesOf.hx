@@ -7,9 +7,9 @@ interface ISeriesOf<T: Value> extends IGetPath extends ISetPath {
 	public var length(get, default): Int;
 	public var absLength(get, default): Int;
 
-	public function pick(index: Int): Option<T>;
+	public function pick(index: Int): Null<T>;
 	
-	public function poke(index: Int, value: T): T;
+	public function poke(index: Int, value: T): Null<T>;
 	
 	public function remove(): T;
 	
