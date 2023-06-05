@@ -36,6 +36,27 @@ class Main {
 				]
 				#get-definition ACT_TO
 			]
+
+			form: make action! [[
+					value	  [any-type!]
+					/part
+						limit [integer!]
+					return:	  [string!]
+				]
+				#get-definition ACT_FORM
+			]
+			
+			mold: make action! [[
+					value	  [any-type!]
+					/only
+					/all
+					/flat
+					/part
+						limit [integer!]
+					return:	  [string!]
+				]
+				#get-definition ACT_MOLD
+			]
 			
 			absolute: make action! [[
 					value	[number! money! char! pair! time!]

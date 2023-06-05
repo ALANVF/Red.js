@@ -69,7 +69,7 @@ function compareEach(blk1: _BlockLike, blk2: _BlockLike, op: ComparisonOp): Comp
 	};
 }
 
-abstract class _BlockLikeActions<This: _BlockLike> extends SeriesActions<This, Value> {
+abstract class _BlockLikeActions<This: _BlockLike> extends SeriesActions<This, Value, Value> {
 	override function compare(value1: This, value2: Value, op: ComparisonOp): CompareResult {
 		value2._match(
 			at(blk is _BlockLike) => {

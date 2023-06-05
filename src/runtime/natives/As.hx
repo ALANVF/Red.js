@@ -31,7 +31,7 @@ class As {
 		DRef => Ref
 	];
 
-	static final BLOCK_TYPES: std.Map<TypeKind, Class<_SeriesOf<Value>>> = [
+	static final BLOCK_TYPES: std.Map<TypeKind, Class<_SeriesOf<Value, Value>>> = [
 		DBlock => Block,
 		DParen => Paren,
 		DPath => Path,

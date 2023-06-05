@@ -17,6 +17,7 @@ import types.Percent;
 import types.Pair;
 import types.Tuple;
 import types.Logic;
+import types.String;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
@@ -46,6 +47,16 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// _String
 			_ => invalid()
 		);
+	}
+
+	override function form(value: This, buffer: String, arg: Null<Int>, part: Int) {
+		final formed = value.int.toString();
+		buffer.appendLiteral(formed);
+		return part - formed.length;
+	}
+
+	override function mold(value: This, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
+		return form(value, buffer, arg, part);
 	}
 	
 	override function compare(value1: This, value2: Value, op: ComparisonOp) {

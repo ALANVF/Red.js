@@ -10,7 +10,7 @@ import types.Integer;
 import types.Pair;
 import types.Logic;
 
-class BinaryActions extends SeriesActions<Binary, Integer> {
+class BinaryActions extends SeriesActions<Binary, Integer, Int> {
 	override function evalPath(
 		parent: Binary, element: Value, value: Null<Value>,
 		path: Null<_Path>, gparent: Null<Value>, pItem: Null<Value>,

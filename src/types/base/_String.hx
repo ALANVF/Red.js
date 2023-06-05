@@ -1,7 +1,6 @@
 package types.base;
 
 using StringTools;
-using util.StringTools;
 
 macro function inlineMap(kIdent, vIdent, mapExpr, body) {
 	final kName = switch kIdent { case macro $i{n}: n; default: throw "error!"; };
@@ -33,12 +32,13 @@ macro function inlineMap(kIdent, vIdent, mapExpr, body) {
 	return mapCases(map);
 }
 
-abstract class _String extends _SeriesOf<Char> {
-	public static function charsFromRed(str: std.String) {
+abstract class _String extends _SeriesOf<Char, Int> {
+	// TODO: optimize this whole mapping functionality eventually
+	public static function codesFromRed(str: std.String) {
 		return [while(str.length > 0) {
 			var code = 0, len = 0;
-			if(str.charCodeAt(0) == "^".code) {
-				Util._match(str.charCodeAt(1).nonNull(),
+			if(str.cca(0) == "^".code) {
+				Util._match(str.cca(1).nonNull(),
 					at(c = ('"'.code | "^".code)) => {code = c; len = 2;},
 					at("\\".code) => {code = 28; len = 2;},
 					at("]".code) => {code = 29; len = 2;},
@@ -83,15 +83,79 @@ abstract class _String extends _SeriesOf<Char> {
 					_ => throw 'Invalid string! escape "^${str.charAt(1)}"!'
 				);
 			} else {
-				code = str.charCodeAt(0); len = 1;
+				code = str.cca(0); len = 1;
 			};
 
 			str = str.substr(len);
-			Char.fromCode(code);
+			code;
 		}];
 	}
 
+	public static function charsFromRed(str: std.String) {
+		final codes: Array<Any> = codesFromRed(str);
+		for(i in 0...codes.length) codes[i] = Char.fromCode(codes[i]);
+		return (cast codes : Array<Char>);
+	}
+
 	public function toJs() {
-		return std.String.fromCharCodes((index == 0 ? values : values.slice(index)).map(c -> c.int));		
+		return std.String.fromCharCodes((index == 0 ? values : values.slice(index)));		
+	}
+
+	function wrap(value: Int) return Char.fromCode(value);
+	function unwrap(value: Char) return value.int;
+
+
+	public function append(value: _String, limit: Null<Int>) {
+		values.pushAll(
+			Util._andOr(limit, limit => {
+				if(value.index == 0) value.values.slice(0, value.index + limit);
+				else value.values.slice(value.index, value.index + limit);
+			}, {
+				if(value.index == 0) value.values;
+				else value.values.slice(value.index);
+			})
+		);
+	}
+
+	public function appendLiteral(value: std.String) {
+		for(i in 0...value.length) {
+			values.push(value.cca(i));
+		}
+	}
+
+	public function appendLiteralPart(value: std.String, part: Int) {
+		for(i in 0...part) {
+			values.push(value.cca(i));
+		}
+	}
+
+	public inline function appendChar(char: Int) {
+		values.push(char);
+	}
+
+	public function appendEscapedChar(char: Int, isEsc: Bool, isAll: Bool) {
+		if(char == 0x1e || (0x80 <= char && char <= 0x9f) || (isAll && char > 0x7f)) {
+			appendChar('^'.code);
+			appendChar('('.code);
+			appendLiteral(char.toString(16).padStart(2, "0"));
+			appendChar(')'.code);
+		} else if(isEsc) {
+			final c = Util._match(char,
+				at((0 ... 7) | 11 | (13 ... 31)) => char + 64,
+				at(9) => '-'.code,
+				at(10) => '/'.code,
+				at(34) => '"'.code,
+				at(94 | 0x7f) => '^'.code,
+				_ => -1 
+			);
+			if(c == -1) {
+				appendChar(char);
+			} else {
+				appendChar('^'.code);
+				appendChar(c);
+			}
+		} else {
+			appendChar(char);
+		}
 	}
 }

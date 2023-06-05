@@ -16,6 +16,7 @@ import types.Time;
 import types.Percent;
 import types.Pair;
 import types.Tuple;
+import types.String;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
@@ -46,6 +47,19 @@ class CharActions extends IntegerActions<Char> {
 			_ => invalid()
 		);
 	}
+
+	override function form(value: Char, buffer: String, arg: Null<Int>, part: Int) {
+		buffer.values.push(value.int);
+		return part - 1;
+	}
+
+	override function mold(value: Char, buffer: String, _, isAll: Bool, _, arg: Null<Int>, part: Int, _) {
+		buffer.appendLiteral('#"');
+		buffer.appendEscapedChar(value.int, true, isAll);
+		buffer.appendChar('"'.code);
+		return part - 4;
+	}
+	
 
 	override function compare(value1: Char, value2: Value, op: ComparisonOp) {
 		if((op == CFind || op == CStrictEqual) && !(value2.thisType() == value1.thisType())) {

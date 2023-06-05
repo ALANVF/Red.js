@@ -13,7 +13,112 @@ import types.Pair;
 import types.Logic;
 import types.Word;
 
-class StringActions<This: _String = String> extends SeriesActions<This, Char> {
+class StringActions<This: _String = String> extends SeriesActions<This, Char, Int> {
+	static inline final BRACES_THRESHOLD = 50;
+
+	static function sniffChars(str: _String, p: Int, len: Int): Tuple2<Int, Int> {
+		var quote = 0;
+		var nl = 0;
+
+		for(i in p...len) {
+			str.values[i]._match(
+				at('"'.code) => quote++,
+				at('\n'.code) => nl++,
+				_ => {}
+			);
+		}
+
+		return new Tuple2(quote, nl);
+	}
+
+	static function findRightBrace(str: _String, p: Int, len: Int) {
+		var cnt = 0;
+
+		for(i in 0...len) {
+			str.values[i]._match(
+				at('{'.code) => cnt++,
+				at('\n'.code) => if(--cnt == 0) return true,
+				_ => {}
+			);
+		}
+
+		return false;
+	}
+
+
+	override function form(value: This, buffer: String, arg: Null<Int>, part: Int) {
+		buffer.append(value, arg);
+		return part - value.length;
+	}
+
+	override function mold(
+		value: This, buffer: String,
+		isOnly: Bool, isAll: Bool, isFlat: Bool,
+		arg: Null<Int>, part: Int,
+		indent: Int
+	) {
+		final limit = arg ?? 0;
+
+		final head = value.index;
+		var p = head;
+
+		final tail = (
+			if(limit == 0) value.length
+			else if(part < 0) p
+			else (p + part).min(value.length)
+		);
+
+		var cBeg = 0;
+		var conti = true;
+		Util.detuple(@var [quote, nl], sniffChars(value, p, tail));
+
+		var open: Int, close: Int;
+		if(nl >= 3 || quote > 0 || BRACES_THRESHOLD <= value.length) {
+			open = '{'.code;
+			close = '}'.code;
+		} else {
+			open = close = '"'.code;
+		}
+
+		buffer.appendChar(open);
+
+		while(p < tail) {
+			final cp = value.values[p];
+			if(open == '{'.code) {
+				cp._match(
+					at('{'.code) => {
+						if(conti && !findRightBrace(value, p, tail)) {
+							conti = false;
+						}
+						if(conti) {
+							cBeg++;
+						} else {
+							buffer.appendChar('^'.code);
+						}
+						buffer.appendChar(cp);
+					},
+					at('}'.code) => {
+						if(cBeg > 0) {
+							cBeg--;
+						} else {
+							buffer.appendChar(cp);
+						}
+					},
+					at('"'.code) => buffer.appendChar(cp),
+					at('^'.code) => buffer.appendLiteral("^^"),
+					_ => buffer.appendEscapedChar(cp, true, isAll)
+				);
+			} else {
+				buffer.appendEscapedChar(cp, true, isAll);
+			}
+			p++;
+		}
+
+		buffer.appendChar(close);
+
+		return part - (tail - head) - 2;
+	}
+
 	override function evalPath(
 		parent: This, element: Value, value: Null<Value>,
 		path: Null<_Path>, gparent: Null<Value>, pItem: Null<Value>,

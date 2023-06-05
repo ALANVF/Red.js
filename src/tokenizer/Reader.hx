@@ -38,7 +38,7 @@ class Reader {
 		return if(this.eof() || this.pos + pos > this.stream.length) {
 			null;
 		} else {
-			this.stream.charCodeAt(this.pos + pos);
+			this.stream.cca(this.pos + pos);
 		}
 	}
 

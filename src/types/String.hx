@@ -2,22 +2,20 @@ package types;
 
 import types.base._String;
 
-using util.StringTools;
-
 class String extends _String {
 	public static function fromRed(str: std.String) {
-		return new String(_String.charsFromRed(str));
+		return new String(_String.codesFromRed(str));
 	}
 
 	public static function fromString(str: std.String) {
-		return new String([for(i in 0...str.length) Char.fromCode(str.charCodeAt(i))]);
+		return new String([for(i in 0...str.length) str.cca(i)]);
 	}
 
-	function clone(values: Array<Char>, ?index: Int) {
+	function clone(values: Array<Int>, ?index: Int) {
 		return new String(values, index);
 	}
 
 	public function form(): std.String {
-		return std.String.fromCharCodes(values.map(c -> c.int));
+		return std.String.fromCharCodes(values);
 	}
 }

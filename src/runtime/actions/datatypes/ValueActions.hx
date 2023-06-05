@@ -20,8 +20,13 @@ class ValueActions<This: Value> {
 	function random(value: This, options: ARandomOptions): Value invalid();
 	function reflect(value: This, field: Word): Value invalid();
 	function to(proto: Null<This>, spec: Value): Value invalid();
-	function form(value: This, options: AFormOptions): String invalid();
-	function mold(value: This, options: AMoldOptions): String invalid();
+	function form(value: This, buffer: String, arg: Null<Int>, part: Int): Int invalid();
+	function mold(
+		value: This, buffer: String,
+		isOnly: Bool, isAll: Bool, isFlat: Bool,
+		arg: Null<Int>, part: Int,
+		indent: Int
+	): Int invalid();
 	function modify(target: This, field: Word, value: Value, options: AModifyOptions): Value invalid();
 
 	function evalPath(

@@ -30,7 +30,7 @@ abstract Series<T>(_Series<T>) from _Series<T> {
 
 
 	@:from
-	static inline function fromSeriesOf<T: types.Value>(series: types.base._SeriesOf<T>) {
+	static inline function fromSeriesOf<T: types.Value, V>(series: types.base._SeriesOf<T, V>) {
 		return new Series(series.values, series.index);
 	}
 

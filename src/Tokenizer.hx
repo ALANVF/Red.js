@@ -1,8 +1,5 @@
-import types.Paren;
 import tokenizer.*;
 //import tokenizer.Token;
-
-using util.MathTools;
 
 class Tokenizer {
 	static function matchRxWithGuardRx(rdr: Reader, guard: EReg, rx: EReg) {
@@ -286,13 +283,13 @@ class Tokenizer {
 			case TChar(char): types.Char.fromRed(char);
 			case TString(str): types.String.fromRed(str);
 			case TRawString(str): types.String.fromString(str);
-			case TFile(file): new types.File(types.base._String.charsFromRed(file));
-			case TEmail(email): new types.Email(types.base._String.charsFromRed(email));
-			case TUrl(url): new types.Url(types.base._String.charsFromRed(url));
+			case TFile(file): new types.File(types.base._String.codesFromRed(file));
+			case TEmail(email): new types.Email(types.base._String.codesFromRed(email));
+			case TUrl(url): new types.Url(types.base._String.codesFromRed(url));
 			case TIssue(issue): new types.Issue(types.base.Symbol.make(issue));
 			case TRefinement(ref): new types.Refinement(types.base.Symbol.make(ref));
-			case TTag(tag): new types.Tag(types.base._String.charsFromRed(tag));
-			case TRef(ref): new types.Ref(types.base._String.charsFromRed(ref));
+			case TTag(tag): new types.Tag(types.base._String.codesFromRed(tag));
+			case TRef(ref): new types.Ref(types.base._String.codesFromRed(ref));
 			case TBinary(binary, 2): new types.Binary(js.Syntax.code("{0}.match(/.{{}8}/g).map(x => new {1}(parseInt(x, 2)))", binary, types.Integer));
 			case TBinary(binary, 16): new types.Binary(js.Syntax.code("{0}.match(/../g).map(x => new {1}(parseInt(x, 16)))", binary, types.Integer));
 			case TBinary(binary, 64): new types.Binary(js.Syntax.code("[...atob({0})].map(c => new {1}(c.charCodeAt()))", binary, types.Integer));

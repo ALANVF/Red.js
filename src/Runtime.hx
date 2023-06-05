@@ -2,7 +2,6 @@ import types.TypeKind;
 import types.base.Symbol;
 import types.Datatype;
 import types.base.Context;
-import util.Tuple2;
 
 @:publicFields
 class Runtime {

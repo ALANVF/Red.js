@@ -8,6 +8,7 @@ import types.Integer;
 import types.Float;
 import types.Percent;
 import types.None;
+import types.String;
 
 class LogicActions extends ValueActions<Logic> {
 	override function make(proto: Null<Logic>, spec: Value): Logic {
@@ -24,6 +25,22 @@ class LogicActions extends ValueActions<Logic> {
 			at(_ is None) => Logic.FALSE,
 			_ => Logic.TRUE
 		);
+	}
+
+	override function form(value: Logic, buffer: String, _, part: Int) {
+		final str = value.cond ? "true" : "false";
+		buffer.appendLiteral(str);
+		return part - str.length;
+	}
+
+	override function mold(value: Logic, buffer: String, _, isAll: Bool, _, _, part: Int, _) {
+		if(isAll) {
+			final str = value.cond ? "#[true]" : "#[false]";
+			buffer.appendLiteral(str);
+			return part - str.length;
+		} else {
+			return form(value, buffer, null, part);
+		}
 	}
 
 	override function compare(value1: Logic, value2: Value, op: ComparisonOp): CompareResult {

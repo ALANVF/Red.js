@@ -28,17 +28,23 @@ class Char extends _Integer {
 	}
 
 	// maybe don't inline this
-	public static inline function fromCode(code: Int): Char {
-		return if(chars.has(code)) {
+	public static /*inline*/ function fromCode(code: Int): Char {
+		/*return if(chars.has(code)) {
 			chars[code];
 		} else {
 			chars[code] = new Char(code);
-		}
+		}*/
+		/*#if js
+		return js.Syntax.code("{0}.get({1}) ?? (tmp = {0}.set({1}, new {2}({1})), tmp)", chars, code, Char);
+		#else
+		return null;
+		#end*/
+		return chars[code] ?? (chars[code] = new Char(code));
 	}
 
 	public static function fromRed(str: std.String) {
 		return Char.fromCode(
-			if(str.charCodeAt(0) == "^".code) {
+			if(str.cca(0) == "^".code) {
 				switch(str.substr(1).toUpperCase()) {
 					case "\"": 34;
 					case "^":  94;
@@ -56,7 +62,7 @@ class Char extends _Integer {
 
 					case esc:
 						if(esc.length == 1 && "A" <= esc && esc <= "Z") {
-							esc.charCodeAt(0) - 64;
+							esc.cca(0) - 64;
 						} else {
 							final rx = ~/^\(([A-F\d]+)\)$/i;
 							if(rx.match(esc)) {
@@ -67,7 +73,7 @@ class Char extends _Integer {
 						}
 				}
 			} else if(str.length == 1) {
-				str.charCodeAt(0);
+				str.cca(0);
 			} else {
 				throw 'Invalid char! literal #"$str"!';
 			}

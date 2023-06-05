@@ -3,9 +3,9 @@ package types.base;
 import haxe.ds.Option;
 import util.Series;
 
-abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
+abstract class _SeriesOf<T: Value, V> extends Value implements ISeriesOf<T> {
 	public var index: Int;
-	public var values: Array<T>;
+	public var values: Array<V>;
 	
 	public var length(get, default): Int;
 	function get_length() {
@@ -17,22 +17,37 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		return this.values.length;
 	}
 
-	public function new(values: Array<T>, ?index: Int) {
+	public function new(values: Array<V>, ?index: Int) {
 		this.values = values;
 		this.index = index ?? 0;
 	}
 
-	abstract function clone(values: Array<T>, ?index: Int): _SeriesOf<T>; // ugh, can't wait for polymorphic `this` types
+	abstract function clone(values: Array<V>, ?index: Int): _SeriesOf<T, V>; // ugh, can't wait for polymorphic `this` types
+
+	abstract function wrap(value: V): T;
+	abstract function unwrap(value: T): V; 
 
 	public function pick(index: Int) {
 		if(index < 0 || index >= this.length) {
 			return null;
 		} else {
-			return this.values[this.index + index];
+			return fastPick(index);
+		}
+	}
+
+	public function rawPick(index: Int) {
+		if(index < 0 || index >= this.length) {
+			return null;
+		} else {
+			return rawFastPick(index);
 		}
 	}
 
 	public inline function fastPick(index: Int) {
+		return wrap(this.values[this.index + index]);
+	}
+
+	public inline function rawFastPick(index: Int) {
 		return this.values[this.index + index];
 	}
 
@@ -40,11 +55,24 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		if(index < 0 || index >= this.length) {
 			return null;
 		} else {
-			return this.values[this.index + index] = value;
+			return fastPoke(index, value);
+		}
+	}
+
+	public function rawPoke(index: Int, value: V) {
+		if(index < 0 || index >= this.length) {
+			return null;
+		} else {
+			return rawFastPoke(index, value);
 		}
 	}
 
 	public inline function fastPoke(index: Int, value: T) {
+		this.values[this.index + index] = unwrap(value);
+		return value;
+	}
+
+	public inline function rawFastPoke(index: Int, value: V) {
 		return this.values[this.index + index] = value;
 	}
 	
@@ -52,12 +80,12 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		if(this.isTail()) {
 			throw "out of bounds!";
 		} else {
-			return this.values.splice(this.index, 1)[0];
+			return wrap(this.values.splice(this.index, 1)[0]);
 		}
 	}
 	
 	public function removePart(count: Int) {
-		return this.values.splice(this.index, count);
+		return this.values.splice(this.index, count).map(v -> wrap(v));
 	}
 	
 	public function at(index: Int) {
@@ -117,7 +145,7 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		return this.index == this.absLength;
 	}
 
-	public inline function sameSeriesAs(other: _SeriesOf<T>) {
+	public inline function sameSeriesAs(other: _SeriesOf<T, V>) {
 		return this.values == other.values;
 	}
 
@@ -125,12 +153,13 @@ abstract class _SeriesOf<T: Value> extends Value implements ISeriesOf<T> {
 		return new Series(values, index);
 	}
 
+	// TODO: make actual iterators for these so they're optimized
 	public inline function iterator(): Iterator<T> {
-		return values.slice(index).iterator();
+		return values.slice(index).map(v -> wrap(v)).iterator();
 	}
 
 	public inline function keyValueIterator(): KeyValueIterator<Int, T> {
-		return values.slice(index).keyValueIterator();
+		return values.slice(index).map(v -> wrap(v)).keyValueIterator();
 	}
 
 	public function getPath(access: Value, ?ignoreCase = true) {

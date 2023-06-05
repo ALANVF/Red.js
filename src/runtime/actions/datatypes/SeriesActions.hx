@@ -17,7 +17,7 @@ import types.Binary;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
-class SeriesActions<This: _SeriesOf<Elem>, Elem: Value> extends ValueActions<This> {
+class SeriesActions<This: _SeriesOf<Elem, Val>, Elem: Value, Val> extends ValueActions<This> {
 	/*-- Series actions --*/
 
 	override function at(series: This, index: Value): This {
@@ -76,15 +76,14 @@ class SeriesActions<This: _SeriesOf<Elem>, Elem: Value> extends ValueActions<Thi
 				idx--;
 				cast series._match(
 					// Hash
-					at(b is _BlockLike) => b.poke(idx, value),
+					at(b is _BlockLike) => b.rawPoke(idx, value),
 					at(b is Binary) => value._match(
-						at(i is Integer) => b.poke(idx, i),
-						at(c is Char) => b.poke(idx, new Integer(c.int)), // TODO: change later
+						at(i is _Integer) => cast b.rawPoke(idx, i.int),
 						_ => invalid()
 					),
 					// Vector
 					at(s is _String) => value._match(
-						at(c is Char) => s.poke(idx, c),
+						at(c is Char) => cast s.rawPoke(idx, c.int),
 						_ => invalid()
 					),
 					_ => invalid()

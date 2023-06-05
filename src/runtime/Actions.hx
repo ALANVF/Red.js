@@ -68,7 +68,8 @@ class Actions {
 
 	static function callAction(action: Action, args: Array<Value>, refines: Dict<String, Array<Value>>) {
 		return switch [action.fn, args] {
-			case [AForm(_) | AMold(_), [_]]: throw "NYI!";
+			case [AForm(f), [v]]: f(v, Options.fromRefines(AFormOptions, refines));
+			case [AMold(f), [v]]: f(v, Options.fromRefines(AMoldOptions, refines));
 			
 			case [AEvalPath(_) | ACompare(_), _]: throw "this can't be called directly!";
 			

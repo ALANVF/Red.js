@@ -32,8 +32,8 @@ class Helpers {
 		return (untyped value.as(ISeriesOf) : ISeriesOf<Value>);
 	}
 	
-	public static inline function asSeries(value: IValue): _SeriesOf<Value> {
-		return (untyped value.as(_SeriesOf) : _SeriesOf<Value>);
+	public static inline function asSeries(value: IValue): _SeriesOf<Value, Any> {
+		return (untyped value.as(_SeriesOf) : _SeriesOf<Value, Any>);
 	}
 
 	public static macro function is<T: IValue>(value: ExprOf<IValue>, type: ExprOf<Class<T>>): ExprOf<Option<T>> {
@@ -73,9 +73,9 @@ class Helpers {
 		}
 	}
 	
-	public static inline function isSeries(value: IValue): Option<_SeriesOf<Value>> {
+	public static inline function isSeries(value: IValue): Option<_SeriesOf<Value, Any>> {
 		return if(value is _SeriesOf) {
-			Some((untyped value : _SeriesOf<Value>));
+			Some((untyped value : _SeriesOf<Value, Any>));
 		} else {
 			None;
 		}

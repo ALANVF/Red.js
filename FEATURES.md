@@ -8,15 +8,15 @@
 |--------------------------|----------|--------|--------|------|--------|--------|-----------|---------------|
 | `datatype!`              | Y        | NA     | NA     | NA   | N      | N      | Y         | N             |
 | `unset!`                 | Y        | NA     | Y      | Y    | Y      | Y      | Y         | N             |
-| `none!`                  | Y        | Y      | Y      | Y    | N      | N      | Y         | N             |
-| `logic!`                 | Y        | Y      | Y      | Y    | N      | N      | Y         | P             |
+| `none!`                  | Y        | Y      | Y      | Y    | Y      | Y      | Y         | N             |
+| `logic!`                 | Y        | Y      | Y      | Y    | Y      | Y      | Y         | P             |
 | `block!`                 | Y        | Y      | N      | N    | N      | N      | Y         | P             |
 | `paren!`                 | Y        | Y      | N      | N    | N      | N      | Y         | P             |
-| `string!`                | Y        | Y*     | N      | N    | N      | N      | P         | P             |
+| `string!`                | Y        | Y*     | N      | N    | Y      | Y      | P         | P             |
 | `file!`                  | Y        | Y      | N      | N    | N      | N      | P         | P             |
 | `url!`                   | Y        | Y      | N      | N    | N      | N      | P         | P             |
-| `char!`                  | Y        | Y      | Y      | P    | N      | N      | Y         | P             |
-| `integer!`               | Y        | Y      | Y      | P    | N      | N      | P         | P             |
+| `char!`                  | Y        | Y      | Y      | P    | Y      | Y      | Y         | P             |
+| `integer!`               | Y        | Y      | Y      | P    | Y      | Y      | P         | P             |
 | `float!`                 | Y        | Y      | Y      | P    | N      | N      | P         | P             |
 | `word!`                  | Y        | Y      | N      | N    | N      | N      | Y         | N             |
 | `set-word!`              | Y        | Y      | N      | N    | N      | N      | Y         | N             |
@@ -86,8 +86,8 @@
 | `compose`           | P      |
 | `get`               | Y      |
 | `set`               | Y      |
-| `print`             | Y*     |
-| `prin`              | N**    |
+| `print`             | Y      |
+| `prin`              | N*     |
 | `equal?`            | Y      |
 | `not-equal?`        | Y      |
 | `strict-equal?`     | Y      |
@@ -146,29 +146,27 @@
 | `extend`            | Y      |
 | `debase`            | N      |
 | `enbase`            | N      |
-| `to-local-file`     | N**    |
+| `to-local-file`     | N*     |
 | `wait`              | N      |
 | `checksum`          | N      |
 | `unset`             | Y      |
 | `new-line`          | Y      |
 | `new-line?`         | Y      |
 | `context?`          | Y      |
-| `set-env`           | N**    |
-| `get-env`           | N**    |
-| `list-env`          | N**    |
+| `set-env`           | N*     |
+| `get-env`           | N*     |
+| `list-env`          | N*     |
 | `now`               | P      |
 | `sign?`             | P      |
-| `as`                | Y***   |
-| `call`              | N**    |
+| `as`                | Y**    |
+| `call`              | N*     |
 | `size?`             | N      |
 | `browse`            | N      |
-| `compress`          | N**    |
-| `decompress`        | N**    |
+| `compress`          | N*     |
+| `decompress`        | N*     |
 | `recycle`           | NA     |
 | `transcode`         | P      |
 
-\* For debugging use for now.
+\* This can't be used in browsers.
 
-\*\* This can't be used in browsers.
-
-\*\*\* See implementation for details
+\*\* See implementation for details

@@ -1,7 +1,6 @@
 import types.Word;
 import types.TypeKind;
 import types.Datatype;
-import util.Tuple2;
 
 private var _dummy: Datatype;
 

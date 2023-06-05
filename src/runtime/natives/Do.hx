@@ -23,7 +23,6 @@ import types.base._NativeOptions;
 import types.base._Path;
 import types.base.IGetPath;
 import types.base.IFunction;
-import util.Tuple2;
 import haxe.ds.Option;
 import Util.detuple;
 
