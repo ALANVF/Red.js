@@ -92,8 +92,8 @@ class Action extends _Function {
 
 	public final fn: ActionFn;
 
-	public function new(doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>, fn: ActionFn) {
-		super(doc, params, refines, retSpec);
+	public function new(origSpec: Block, doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>, fn: ActionFn) {
+		super(origSpec, doc, params, refines, retSpec);
 		this.fn = fn;
 	}
 }

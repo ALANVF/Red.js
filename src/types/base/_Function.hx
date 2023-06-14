@@ -3,6 +3,11 @@ package types.base;
 import types.base.IFunction;
 
 abstract class _Function extends Value implements IFunction {
+	var _origSpec: Block;
+	public var origSpec(get, set): Block;
+	function get_origSpec() return _origSpec;
+	function set_origSpec(v) return _origSpec = v;
+
 	var _doc: Null<std.String>;
 	public var doc(get, set): Null<std.String>;
 	function get_doc() return _doc;
@@ -26,7 +31,8 @@ abstract class _Function extends Value implements IFunction {
 	public var arity(get, never): Int;
 	function get_arity() return this._params.length;
 
-	public function new(doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>) {
+	public function new(origSpec: Block, doc: Null<std.String>, params: _Params, refines: _Refines, retSpec: Null<Block>) {
+		this.origSpec = origSpec;
 		this.doc = doc;
 		this.params = params;
 		this.refines = refines;

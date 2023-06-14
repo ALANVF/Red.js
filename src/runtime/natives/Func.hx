@@ -123,7 +123,7 @@ class Func {
 	public static function call(spec: Block, body: Block): Function {
 		parseSpec(spec)._match(
 			at({doc: doc, params: params, refines: refines, ret: ret}) => {
-				return new Function(null, doc, params, refines, ret, body.copy());
+				return new Function(null, spec, doc, params, refines, ret, body.copy());
 			}
 		);
 	}

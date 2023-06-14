@@ -1,5 +1,6 @@
 package runtime.actions.datatypes;
 
+import types.Integer;
 import types.base.CompareResult;
 import types.base.ComparisonOp;
 import types.base._ActionOptions;
@@ -15,9 +16,19 @@ import types.Object;
 import types.Block;
 import types.Paren;
 import types.Function;
+import types.LitWord;
+import types.SetWord;
+import types.Word;
+import types.LitPath;
+import types.Path;
 import types.None;
+import types.Unset;
+import types.String;
 
+import runtime.Words;
 import runtime.actions.Copy;
+import runtime.actions.Form;
+import runtime.actions.Mold;
 
 class ObjectActions extends ValueActions<Object> {
 	static function duplicate(src: Context, dst: Context, copy: Bool) {
@@ -81,7 +92,72 @@ class ObjectActions extends ValueActions<Object> {
 		ctx.bind(blk, true);
 		newCtx.bind(blk, false);
 		
-		return new Function(newCtx, fn.doc, fn.params, fn.refines, fn.retSpec, blk);
+		return new Function(newCtx, fn.origSpec, fn.doc, fn.params, fn.refines, fn.retSpec, blk);
+	}
+
+	static function doIndent(buffer: String, tabs: Int, part: Int) {
+		for(_ in 0...tabs) buffer.appendLiteral("    ");
+		return part - (4 * tabs);
+	}
+
+	static function serialize(
+		obj: Object, buffer: String,
+		isOnly: Bool, isAll: Bool, isFlat: Bool,
+		arg: Null<Int>, part: Int,
+		isIndent: Bool, tabs: Int,
+		isMold: Bool
+	) {
+		final ctx = obj.ctx;
+		final syms = ctx.symbols;
+		final values = ctx.values;
+		
+		if(syms.length == 0) return part;
+
+		final blank = if(isFlat) {
+			isIndent = false;
+			' '.code;
+		} else {
+			if(isMold) {
+				buffer.appendChar('\n'.code);
+				part--;
+			}
+			'\n'.code;
+		}
+		Cycles.push(ctx);
+
+		for(i => sym in syms) {
+			var value = values[i];
+
+			if(part <= 0) {
+				Cycles.pop();
+				return part;
+			}
+
+			final id = sym.symbol;
+
+			//if(isAll) {
+				if(isIndent) part = doIndent(buffer, tabs, part);
+
+				part = Form._call(sym, buffer, arg, part);
+				buffer.appendLiteral(": ");
+				part -= 2;
+
+				if(value == null) {
+					value = values[i] = Unset.UNSET;
+				} else if(value is Word) {
+					buffer.appendChar("'".code);
+					part--;
+				}
+				part = Mold._call(value, buffer, isOnly, isAll, isFlat, arg, part, tabs);
+
+				if(isIndent || i + 1 < syms.length) {
+					buffer.appendChar(blank);
+					part--;
+				}
+			//}
+		}
+		Cycles.pop();
+		return part;
 	}
 
 
@@ -111,6 +187,68 @@ class ObjectActions extends ValueActions<Object> {
 		);
 
 		return obj;
+	}
+
+	override function reflect(value: Object, field: Word): Value {
+		return field.symbol._match(
+			at(_ == Words.CHANGED => true) => throw "NYI",
+			at(_ == Words.CLASS => true) => new Integer(value.classID),
+			at(_ == Words.WORDS => true) => new Block([
+				for(sym in value.ctx.symbols) {
+					sym is Word ? sym : new Word(sym.symbol, sym.context, sym.index);
+				}
+			]),
+			at(_ == Words.VALUES => true) => new Block(value.ctx.values.copy()),
+			at(_ == Words.BODY => true) => {
+				final ctx = value.ctx;
+				final blk = new Block([]);
+
+				final syms = ctx.symbols;
+				final vals = ctx.values;
+
+				for(i => sym in syms) { final val = vals[i];
+					blk.values.push(sym is SetWord ? cast sym : new SetWord(sym.symbol, sym.context, sym.index));
+					blk.addNewline(i * 2);
+
+					blk.values.push(val._match(
+						at(w is Word) => new LitWord(w.symbol, w.context, w.index),
+						at(p is Path) => new LitPath(p.values, p.index),
+						_ => val
+					));
+				}
+
+				blk;
+			},
+			at(_ == Words.OWNER => true) => throw "NYI",
+			_ => throw "bad"
+		);
+	}
+
+	override function form(value: Object, buffer: String, arg: Null<Int>, part: Int) {
+		Util.detuple([part, @var cycle], Cycles.detect(value, buffer, part, false));
+		if(cycle) return part;
+		return serialize(value, buffer, false, false, false, arg, part, false, 0, false);
+	}
+
+	override function mold(
+		value: Object, buffer: String,
+		isOnly: Bool, isAll: Bool, isFlat: Bool,
+		arg: Null<Int>, part: Int,
+		indent: Int
+	) {
+		Util.detuple([part, @var cycle], Cycles.detect(value, buffer, part, false));
+		if(cycle) return part;
+
+		buffer.appendLiteral("make object! [");
+		part = serialize(
+			value, buffer,
+			false, isAll, isFlat,
+			arg, part - 14,
+			true, indent + 1, true 
+		);
+		if(!isFlat && indent > 0) part = doIndent(buffer, indent, part);
+		buffer.appendChar(']'.code);
+		return part - 1;
 	}
 
 	// TODO: implement this correctly

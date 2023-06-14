@@ -5,6 +5,10 @@ import types.base._Function;
 import haxe.ds.Option;
 
 class Op extends Value implements IFunction {
+	public var origSpec(get, set): Block;
+	function get_origSpec() return fn.origSpec;
+	function set_origSpec(v) return fn.origSpec = v;
+
 	public var doc(get, set): Null<std.String>;
 	function get_doc() return fn.doc;
 	function set_doc(v) return fn.doc = v;

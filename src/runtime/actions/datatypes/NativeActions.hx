@@ -7,11 +7,13 @@ import types.Native;
 import types.Value;
 import types.Issue;
 import types.Word;
-import Util.ifMatch;
 
+import runtime.actions.Mold;
+
+import Util.ifMatch;
 using Lambda;
 
-class NativeActions extends ValueActions<Native> {
+class NativeActions extends _IFunctionActions<Native> {
 	static var MAPPINGS: #if macro haxe.ds.Map<String, NativeFn> #else Dict<String, NativeFn> #end;
 
 	static function __init__() {
@@ -26,6 +28,7 @@ class NativeActions extends ValueActions<Native> {
 				{symbol: {name: name}} is Word
 			]) => ifMatch(runtime.natives.Func.parseSpec(s), {doc: doc, params: params, refines: refines, ret: ret},
 				new Native(
+					s,
 					doc,
 					params,
 					refines,
@@ -39,6 +42,30 @@ class NativeActions extends ValueActions<Native> {
 			),
 			_ => throw "Match error!"
 		);
+	}
+
+	override function form(value: Native, buffer: types.String, arg: Null<Int>, part: Int) {
+		buffer.appendLiteral("?native?");
+		return part - 8;
+	}
+
+	override function mold(
+		value: Native, buffer: types.String,
+		isOnly: Bool, isAll: Bool, isFlat: Bool,
+		arg: Null<Int>, part: Int,
+		indent: Int
+	) {
+		buffer.appendLiteral("make native! [");
+
+		part = Mold._call(
+			value.origSpec, buffer,
+			isOnly, isAll, isFlat,
+			arg, part - 14,
+			indent
+		);
+
+		buffer.appendChar(']'.code);
+		return part - 1;
 	}
 
 	override function compare(value1: Native, value2: Value, op: ComparisonOp): CompareResult {

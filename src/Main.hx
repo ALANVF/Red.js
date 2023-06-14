@@ -19,6 +19,7 @@ class Main {
 			"make",
 			new types.Action(
 				null,
+				null,
 				[
 					{name: "type", quoting: QVal},
 					{name: "spec", quoting: QVal}
@@ -30,6 +31,21 @@ class Main {
 		);
 		
 		runtime.Eval.evalCode("
+			make: make action! [[
+					type	 [any-type!]
+					spec	 [any-type!]
+					return:  [any-type!]
+				]
+				#get-definition ACT_MAKE
+			]
+
+			reflect: make action! [[
+					value	[any-type!]
+					field 	[word!]
+				]
+				#get-definition ACT_REFLECT
+			]
+			
 			to: make action! [[
 					type	[any-type!]
 					spec	[any-type!]

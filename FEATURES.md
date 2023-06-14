@@ -24,10 +24,10 @@
 | `get-word!`              | Y        | Y      | N      | N    | Y      | Y      | Y         | N             |
 | `refinement!`            | Y        | Y      | N      | N    | Y      | Y      | Y         | N             |
 | `issue!`                 | Y        | Y      | N      | N    | Y      | Y      | Y         | N             |
-| `native!`                | Y        | NA     | Y      | N    | N      | N      | Y         | N             |
-| `action!`                | Y        | NA     | Y      | N    | N      | N      | Y         | N             |
-| `op!`                    | Y        | NA     | Y      | N    | N      | N      | Y         | N             |
-| `function!`              | Y        | NA     | Y      | N    | N      | N      | Y         | N             |
+| `native!`                | Y        | NA     | Y      | N    | Y      | Y      | Y         | Y             |
+| `action!`                | Y        | NA     | Y      | N    | Y      | Y      | Y         | Y             |
+| `op!`                    | Y        | NA     | Y      | N    | Y      | Y      | Y         | Y             |
+| `function!`              | Y        | NA     | Y      | N    | Y      | Y      | Y         | Y             |
 | `path!`                  | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
 | `lit-path!`              | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
 | `set-path!`              | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
@@ -35,7 +35,7 @@
 | `routine!`               | NA       | NA     | N      | N    | N      | N      | N         | N             |
 | `bitset!`                | Y        | NA     | Y      | Y    | Y      | Y      | Y         | Y             |
 | `point!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
-| `object!`                | Y        | NA     | Y      | N    | N      | N      | Y         | P             |
+| `object!`                | Y        | NA     | Y      | N    | Y      | Y      | Y         | P             |
 | `typeset!`               | Y        | NA     | Y      | Y    | Y      | Y      | Y         | Y             |
 | `error!`                 | Y        | NA     | N      | N    | N      | N      | Y         | N             |
 | `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |

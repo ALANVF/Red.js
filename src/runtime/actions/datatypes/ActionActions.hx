@@ -7,11 +7,13 @@ import types.Action;
 import types.Value;
 import types.Issue;
 import types.Word;
-import Util.ifMatch;
 
+import runtime.actions.Mold;
+
+import Util.ifMatch;
 using Lambda;
 
-class ActionActions extends ValueActions<Action> {
+class ActionActions extends _IFunctionActions<Action> {
 	static var MAPPINGS: #if macro haxe.ds.Map<String, ActionFn> #else Dict<String, ActionFn> #end;
 
 	static function __init__() {
@@ -26,6 +28,7 @@ class ActionActions extends ValueActions<Action> {
 				{symbol: {name: name}} is Word
 			]) => ifMatch(runtime.natives.Func.parseSpec(s), {doc: doc, params: params, refines: refines, ret: ret},
 				new Action(
+					s,
 					doc,
 					params,
 					refines,
@@ -39,6 +42,30 @@ class ActionActions extends ValueActions<Action> {
 			),
 			_ => throw "Match error!"
 		);
+	}
+
+	override function form(value: Action, buffer: types.String, arg: Null<Int>, part: Int) {
+		buffer.appendLiteral("?action?");
+		return part - 8;
+	}
+
+	override function mold(
+		value: Action, buffer: types.String,
+		isOnly: Bool, isAll: Bool, isFlat: Bool,
+		arg: Null<Int>, part: Int,
+		indent: Int
+	) {
+		buffer.appendLiteral("make action! [");
+
+		part = Mold._call(
+			value.origSpec, buffer,
+			isOnly, isAll, isFlat,
+			arg, part - 14,
+			indent
+		);
+
+		buffer.appendChar(']'.code);
+		return part - 1;
 	}
 
 	override function compare(value1: Action, value2: Value, op: ComparisonOp): CompareResult {

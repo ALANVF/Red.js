@@ -24,6 +24,7 @@ typedef _Refines = Array<_Refine>;
 typedef _Params = Array<_Param>;
 
 interface IFunction extends IValue {
+	public var origSpec(get, set): Block;
 	public var doc(get, set): Null<std.String>;
 	public var params(get, set): _Params;
 	public var refines(get, set): _Refines;
