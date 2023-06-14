@@ -15,6 +15,7 @@ import types.Logic;
 import types.None;
 import types.Word;
 import types.Block;
+import types.String;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
@@ -53,6 +54,22 @@ class PairActions extends ValueActions<Pair> {
 	
 	override function to(proto: Null<Pair>, spec: Value) {
 		return make(proto, spec);
+	}
+
+	override function form(value: Pair, buffer: String, arg: Null<Int>, part: Int) {
+		var formed = value.x.toString();
+		buffer.appendLiteral(formed);
+		part -= formed.length;
+
+		buffer.appendChar('x'.code);
+
+		formed = value.y.toString();
+		buffer.appendLiteral(formed);
+		return part - 1 - formed.length;
+	}
+
+	override function mold(value: Pair, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
+		return form(value, buffer, arg, part);
 	}
 
 	override function evalPath(

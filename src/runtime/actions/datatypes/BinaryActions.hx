@@ -9,8 +9,61 @@ import types.Binary;
 import types.Integer;
 import types.Pair;
 import types.Logic;
+import types.String;
 
 class BinaryActions extends SeriesActions<Binary, Integer, Int> {
+	static function serialize(
+		bin: Binary, buffer: String,
+		isOnly: Bool, isAll: Bool, isFlat: Bool,
+		arg: Null<Int>, part: Int,
+		isMold: Bool
+	) {
+		var head = bin.index;
+		var tail = bin.absLength;
+		final size = bin.length;
+
+		buffer.appendLiteral("#{");
+		part -= 2;
+
+		var bytes = 0;
+		if(size > 30 && !isFlat) {
+			buffer.appendChar('\n'.code);
+			part--;
+		}
+
+		while(head < tail) {
+			buffer.appendLiteral(StringActions.byteToHex(bin.values[head]));
+			bytes++;
+			if(bytes % 32 == 0 && !isFlat) {
+				buffer.appendChar('\n'.code);
+				part--;
+			}
+			part -= 2;
+			if(arg != null && part <= 0) return part;
+			head++;
+		}
+		if(size > 30 && bytes % 32 != 0 && !isFlat) {
+			buffer.appendChar('\n'.code);
+			part--;
+		}
+		buffer.appendChar('}'.code);
+		return part - 1;
+	}
+
+
+	override function form(value: Binary, buffer: String, arg: Null<Int>, part: Int) {
+		return serialize(value, buffer, false, false, false, arg, part, false);
+	}
+
+	override function mold(
+		value: Binary, buffer: String,
+		isOnly: Bool, isAll: Bool, isFlat: Bool,
+		arg: Null<Int>, part: Int,
+		indent: Int
+	) {
+		return serialize(value, buffer, isOnly, isAll, isFlat, arg, part, true);
+	}
+
 	override function evalPath(
 		parent: Binary, element: Value, value: Null<Value>,
 		path: Null<_Path>, gparent: Null<Value>, pItem: Null<Value>,

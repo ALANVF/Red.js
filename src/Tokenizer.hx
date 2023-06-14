@@ -41,9 +41,9 @@ class Tokenizer {
 		} else if((match = rdr.tryMatchRx(Regexps.hexa)) != null) { // [_, hexa]
 			Token.TInteger(Util.mustParseInt('0x${match[1]}'));
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.file, Regexps.file)) != null) { // [_, file]
-			Token.TFile(match[1]);
+			Token.TFile(match[1] ?? match[2]);
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.url, Regexps.url)) != null) { // [_, url]
-			Token.TUrl(match[1]);
+			Token.TUrl(match[0]);
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.word, Regexps.word)) != null) { // [word]
 			final word = match[0];
 			if(rdr.tryMatch(":")) {
@@ -290,9 +290,9 @@ class Tokenizer {
 			case TRefinement(ref): new types.Refinement(types.base.Symbol.make(ref));
 			case TTag(tag): new types.Tag(types.base._String.codesFromRed(tag));
 			case TRef(ref): new types.Ref(types.base._String.codesFromRed(ref));
-			case TBinary(binary, 2): new types.Binary(js.Syntax.code("{0}.match(/.{{}8}/g).map(x => new {1}(parseInt(x, 2)))", binary, types.Integer));
-			case TBinary(binary, 16): new types.Binary(js.Syntax.code("{0}.match(/../g).map(x => new {1}(parseInt(x, 16)))", binary, types.Integer));
-			case TBinary(binary, 64): new types.Binary(js.Syntax.code("[...atob({0})].map(c => new {1}(c.charCodeAt()))", binary, types.Integer));
+			case TBinary(binary, 2): new types.Binary(js.Syntax.code("{0}.match(/.{{}8}/g).map(x => parseInt(x, 2))", binary));
+			case TBinary(binary, 16): new types.Binary(js.Syntax.code("{0}.match(/../g).map(x => parseInt(x, 16))", binary));
+			case TBinary(binary, 64): new types.Binary(js.Syntax.code("[...atob({0})].map(c => c.charCodeAt())", binary));
 			case TBinary(_, _): throw "bad";
 			case TBlock(block): new types.Block(block.map(tokenToValue));
 			case TParen(paren): new types.Paren(paren.map(tokenToValue));

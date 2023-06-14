@@ -17,6 +17,7 @@ import types.Float;
 import types.Percent;
 import types.Logic;
 import types.None;
+import types.String;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
@@ -46,6 +47,25 @@ class TupleActions extends ValueActions<Tuple> {
 			at(t is Tuple) => t,
 			_ => invalid()
 		);
+	}
+
+	override function form(value: Tuple, buffer: String, arg: Null<Int>, part: Int) {
+		final values = value.values;
+		final size = values.length;
+		for(i => v in values) {
+			final formed = v.toString();
+			buffer.appendLiteral(formed);
+			if(i + 1 < size) {
+				part--;
+				buffer.appendChar('.'.code);
+			}
+			part -= formed.length;
+		}
+		return part;
+	}
+
+	override function mold(value: Tuple, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
+		return form(value, buffer, arg, part);
 	}
 
 	override function evalPath(

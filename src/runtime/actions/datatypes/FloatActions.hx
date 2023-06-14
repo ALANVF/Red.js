@@ -18,12 +18,31 @@ import types.Logic;
 import types.Char;
 import types.Pair;
 import types.Tuple;
+import types.String;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
 class FloatActions<This: _Float = Float> extends ValueActions<This> {
 	private function makeThis(f: StdTypes.Float): This {
 		return cast new Float(f);
+	}
+
+	static function formFloat(f: _Float) {
+		var d = f.float;
+
+		if(d == Math.NaN) return "1.#NaN";
+		else if(d == Math.NEGATIVE_INFINITY) return "-1.#Inf";
+		else if(d == Math.POSITIVE_INFINITY) return "1.#Inf";
+
+		final isPercent = f is Percent;
+		
+		// TODO
+		
+		if(isPercent) d *= 100;
+		var s = d.toString();
+		if(isPercent) s += "%";
+		else if(!s.includes(".")) s += ".0";
+		return s;
 	}
 	
 
@@ -52,6 +71,27 @@ class FloatActions<This: _Float = Float> extends ValueActions<This> {
 			},
 			_ => invalid()
 		);
+	}
+
+	override function form(value: This, buffer: String, _, part: Int) {
+		final formed = formFloat(value);
+		buffer.appendLiteral(formed);
+		return part - formed.length;
+	}
+
+	override function mold(value: This, buffer: String, _, _, _, _, part: Int, _) {
+		final str = switch value.float {
+			// TODO: force this as a js switch because this does not generate an actual switch
+			case _ == Math.NaN => true: "1.#NaN";
+			case _ == Math.POSITIVE_INFINITY => true: "1.#Inf";
+			case _ == Math.NEGATIVE_INFINITY => true: "-1.#Inf";
+			case f: {
+				final s = f.toString();
+				if(s.includes(".")) s else s + ".0";
+			}
+		};
+		buffer.appendLiteral(str);
+		return part - str.length;
 	}
 	
 	// TODO: implement actual float comparison:
@@ -142,7 +182,7 @@ class FloatActions<This: _Float = Float> extends ValueActions<This> {
 		return (
 			if(isT1 || isT2) new Time(res)
 			else if(isPct && !isT2) new Percent(res)
-			else new Float(res)
+			else makeThis(res)
 		);
 	}
 	

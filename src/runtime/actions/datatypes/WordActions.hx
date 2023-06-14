@@ -10,8 +10,19 @@ import types.Word;
 import types.LitWord;
 import types.Issue;
 import types.Logic;
+import types.String;
 
 class WordActions<This: _Word = Word> extends ValueActions<This> {
+	override function form(value: This, buffer: String, arg: Null<Int>, part: Int) {
+		final name = value.symbol.name;
+		buffer.appendLiteral(name);
+		return part - name.length;
+	}
+
+	override function mold(value: This, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
+		return form(value, buffer, arg, part);
+	}
+
 	override function compare(value1: This, value2: Value, op: ComparisonOp): CompareResult {
 		if((value2 is Issue && !(value1 is Issue)) || !(value2 is _Word)) {
 			return IsInvalid;

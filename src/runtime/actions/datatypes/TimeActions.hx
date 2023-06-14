@@ -15,6 +15,7 @@ import types.Time;
 import types.Percent;
 import types.Logic;
 import types.Word;
+import types.String;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
@@ -26,21 +27,21 @@ class TimeActions extends FloatActions<Time> {
 		return new Time(f);
 	}
 
-	function getHours(time: StdTypes.Float) {
+	static function getHours(time: StdTypes.Float) {
 		time /= H_FACTOR;
 		return Math.trunc(time);
 	}
 
-	function getMinutes(time: StdTypes.Float) {
+	static function getMinutes(time: StdTypes.Float) {
 		if(time < 0) time = -time;
 		return Math.floor((time % H_FACTOR) / M_FACTOR);
 	}
 
-	inline function getSeconds(time: StdTypes.Float) {
+	static inline function getSeconds(time: StdTypes.Float) {
 		return time % M_FACTOR;
 	}
 
-	function getNamedIndex(w: Word, ref: Value) {
+	static function getNamedIndex(w: Word, ref: Value) {
 		final sym = w.symbol;
 		var idx = -1;
 		if(sym == Words.HOUR) idx = 1;
@@ -50,13 +51,40 @@ class TimeActions extends FloatActions<Time> {
 		return idx;
 	}
 
-	function getField(time: StdTypes.Float, field: Int) {
+	static function getField(time: StdTypes.Float, field: Int) {
 		return field._match(
 			at(1) => new Integer(getHours(time)),
 			at(2) => new Integer(getMinutes(time)),
 			at(3) => new Float(getSeconds(time)),
 			_ => throw "bad"
 		);
+	}
+
+	static function serialize(time: Time, buffer: String, part: Int) {
+		final t = if(time.float < 0.0) {
+			buffer.appendChar('-'.code);
+			Math.abs(time.float);
+		} else {
+			time.float;
+		};
+
+		var formed = getHours(t).toString();
+		buffer.appendLiteral(formed);
+		part -= formed.length;
+
+		buffer.appendChar(':'.code);
+
+		formed = getMinutes(t).toString().padStart(2, "0");
+		buffer.appendLiteral(formed);
+		part -= formed.length - 1;
+
+		buffer.appendChar(':'.code);
+
+		final sec = getSeconds(t);
+		formed = sec < 1E-6 ? "00" : sec.toString().padStart(2, "0");
+		if(formed.charCodeAt(1) == '.'.code) formed = "0" + formed;
+		buffer.appendLiteral(formed);
+		return formed.length - 1;
 	}
 
 
@@ -101,6 +129,14 @@ class TimeActions extends FloatActions<Time> {
 			// _String
 			_ => invalid()
 		);
+	}
+
+	override function form(value: Time, buffer: String, _, part: Int) {
+		return serialize(value, buffer, part);
+	}
+
+	override function mold(value: Time, buffer: String, _, _, _, _, part: Int, _) {
+		return serialize(value, buffer, part);
 	}
 
 	override function evalPath(

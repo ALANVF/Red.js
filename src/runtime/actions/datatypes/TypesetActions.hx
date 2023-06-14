@@ -12,6 +12,7 @@ import types.Datatype;
 import types.Block;
 import types.Word;
 import types.Logic;
+import types.String;
 
 import runtime.actions.datatypes.ValueActions.invalid;
 
@@ -36,6 +37,32 @@ class TypesetActions extends ValueActions<Typeset> {
 			},
 			_ => throw "bad"
 		);
+	}
+
+	override function form(value: Typeset, buffer: String, arg: Null<Int>, part: Int) {
+		final hasPart = arg != null;
+		final types = value.types;
+		var cnt = 0;
+		buffer.appendLiteral("make typeset! [");
+		part -= 15;
+		for(dt in types) {
+			if(hasPart && part < 0) return part;
+			final name = dt.name;
+			buffer.appendLiteral(name);
+			buffer.appendChar(' '.code);
+			part -= name.length - 1;
+			cnt++;
+		}
+		if(cnt == 0) {
+			buffer.appendChar(']'.code);
+		} else {
+			buffer.values[buffer.absLength - 1] = ']'.code;
+		}
+		return part;
+	}
+
+	override function mold(value: Typeset, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
+		return form(value, buffer, arg, part);
 	}
 
 	override function compare(value1: Typeset, value2: Value, op: ComparisonOp): CompareResult {

@@ -9,7 +9,11 @@ import types.Value;
 import types.GetWord;
 import types.Issue;
 import types.Logic;
+import types.String;
 
 class GetWordActions extends WordActions<GetWord> {
-	
+	override function mold(value: GetWord, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
+		buffer.appendChar(':'.code);
+		return form(value, buffer, arg, part - 1);
+	}
 }

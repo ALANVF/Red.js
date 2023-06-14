@@ -136,6 +136,8 @@ class ArrayTools {
 	static overload extern inline function copyWithin<T>(array: Array<T>, target: Int, start: Int, end: Int): Array<T>
 		return (untyped array).copyWithin(target, start, end);
 
+	static inline function at<T>(array: Array<T>, index: Int): T
+		return (untyped array).at(index);
 #else
 
 	static function sorted<T>(arr: Array<T>, cmp: (T, T) -> Int) {
@@ -349,6 +351,9 @@ class ArrayTools {
 
 		return result;
 	}
+
+	static inline function at<T>(array: Array<T>, index: Int): T
+		return array[index < 0 ? array.length + index : index];
 #end
 
 	/*

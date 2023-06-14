@@ -21,7 +21,7 @@ class Time extends _Float implements IGetPath {
 	}
 	
 	public static inline function fromHMS(h: Int, m: Int, s: StdTypes.Float) {
-		return new Time(h*3600 + m*60 + s);
+		return new Time((Math.iabs(h)*3600 + m*60 + s) * h.sign());
 	}
 	
 	function make(value: StdTypes.Float): Time {

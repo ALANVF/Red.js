@@ -24,4 +24,8 @@ class Form {
 		if(expected > 0) buffer.values.resize(expected);
 		return buffer;
 	}
+
+	public static inline function _call(value: Value, buffer: String, arg: Null<Int>, part: Int) {
+		return Actions.getFor(value).form(value, buffer, arg, part);
+	}
 }

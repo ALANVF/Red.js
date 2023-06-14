@@ -29,4 +29,7 @@ class StringTools {
 		return #if js js.Syntax.code("{0}.padEnd({1})", self, length) #else null #end;
 	static overload extern inline function padEnd(self: String, length: Int, padString: String): String
 		return #if js js.Syntax.code("{0}.padEnd({1}, {2})", self, length, padString) #else null #end;
+
+	static inline function includes(self: String, needle: String): Bool
+		return #if js js.Syntax.code("{0}.includes({1})", self, needle) #else false #end;
 }

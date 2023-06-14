@@ -9,7 +9,12 @@ import types.Value;
 import types.SetWord;
 import types.Issue;
 import types.Logic;
+import types.String;
 
 class SetWordActions extends WordActions<SetWord> {
-	
+	override function mold(value: SetWord, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
+		part = form(value, buffer, arg, part);
+		buffer.appendChar(':'.code);
+		return part - 1;
+	}
 }

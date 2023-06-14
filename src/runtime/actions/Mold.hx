@@ -29,4 +29,13 @@ class Mold {
 		if(expected > 0) buffer.values.resize(expected);
 		return buffer;
 	}
+
+	public static inline function _call(
+		value: Value, buffer: String,
+		isOnly: Bool, isAll: Bool, isFlat: Bool,
+		arg: Null<Int>, part: Int,
+		indent: Int
+	) {
+		return Actions.getFor(value).mold(value, buffer, isOnly, isAll, isFlat, arg, part, indent);
+	}
 }

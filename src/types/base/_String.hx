@@ -137,7 +137,7 @@ abstract class _String extends _SeriesOf<Char, Int> {
 		if(char == 0x1e || (0x80 <= char && char <= 0x9f) || (isAll && char > 0x7f)) {
 			appendChar('^'.code);
 			appendChar('('.code);
-			appendLiteral(char.toString(16).padStart(2, "0"));
+			appendLiteral(char.toString(16).toUpperCase().padStart(2, "0"));
 			appendChar(')'.code);
 		} else if(isEsc) {
 			final c = Util._match(char,

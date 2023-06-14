@@ -58,6 +58,25 @@ class BitsetActions extends ValueActions<Bitset> {
 		}
 	}
 
+	static function formBytes(bits: Bitset, buffer: String, isPart: Bool, part: Int, invert: Bool) {
+		for(byte in @:privateAccess bits.bytes.b) {
+			if(invert) byte = 255 - byte;
+
+			var nibble = byte >> 4;
+			var c = if(nibble < 10) '0'.code + nibble else 'A'.code + (nibble - 10);
+			buffer.appendChar(c);
+
+			nibble = byte & 15;
+			c = if(nibble < 10) '0'.code + nibble else 'A'.code + (nibble - 10);
+			buffer.appendChar(c);
+
+			part -= 2;
+			if(isPart && part < 0) return part;
+		}
+
+		return part;
+	}
+
 
 	static function processRange(bits: Bitset, lower: Int, upper: Int, op: BitsetOp) {
 		final isNot = bits.negated;
@@ -282,6 +301,34 @@ class BitsetActions extends ValueActions<Bitset> {
 
 	override function to(_, spec: Value) {
 		return construct(spec, CTo);
+	}
+
+	override function form(value: Bitset, buffer: String, arg: Null<Int>, part: Int) {
+		final isNot = value.negated;
+
+		buffer.appendLiteral("make bitset! ");
+		part -= 13;
+		if(isNot) {
+			buffer.appendLiteral("[not ");
+			part -= 5;
+		}
+
+		buffer.appendLiteral("#{");
+		part -= 2;
+		part = formBytes(value, buffer, arg != null, part, isNot);
+		if(arg != null && part <= 0) return part;
+		buffer.appendChar('}'.code);
+
+		if(isNot) {
+			buffer.appendChar(']'.code);
+			return part - 7;
+		} else {
+			return part - 1;
+		}
+	}
+
+	override function mold(value: Bitset, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
+		return form(value, buffer, arg, part);
 	}
 
 	override function modify(target: Bitset, field: Word, value: Value, options: AModifyOptions) {

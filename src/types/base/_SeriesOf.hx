@@ -8,12 +8,12 @@ abstract class _SeriesOf<T: Value, V> extends Value implements ISeriesOf<T> {
 	public var values: Array<V>;
 	
 	public var length(get, default): Int;
-	function get_length() {
+	inline function get_length() {
 		return this.absLength - this.index;
 	}
 
 	public var absLength(get, default): Int;
-	function get_absLength() {
+	inline function get_absLength() {
 		return this.values.length;
 	}
 
