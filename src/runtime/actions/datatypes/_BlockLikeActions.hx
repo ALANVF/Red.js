@@ -27,7 +27,9 @@ function compareEach(blk1: _BlockLike, blk2: _BlockLike, op: ComparisonOp): Comp
 		}
 	}
 	if(isSame) return IsSame;
-	// TODO: track cycles
+	if(Cycles.find(blk1.values)) {
+		return cast Cycles.find(blk2.values) ? 0 : -1;
+	}
 
 	final size1 = blk1.length;
 	final size2 = blk2.length;
@@ -40,6 +42,9 @@ function compareEach(blk1: _BlockLike, blk2: _BlockLike, op: ComparisonOp): Comp
 	if(size1 == 0) return IsSame;
 
 	final len = size1.min(size2);
+
+	Cycles.push(blk1.values);
+	Cycles.push(blk2.values);
 
 	var res = IsSame;
 	for(i in 0...len) {
@@ -56,12 +61,13 @@ function compareEach(blk1: _BlockLike, blk2: _BlockLike, op: ComparisonOp): Comp
 		) {
 			runtime.Actions.compareValue(v1, v2, op);
 		} else {
+			Cycles.popN(2);
 			return cast MathTools.compare(cast v1.TYPE_KIND, cast v2.TYPE_KIND);
 		};
 
 		if(res != IsSame) break;
 	}
-
+	Cycles.popN(2);
 	return if(res == IsSame) {
 		cast size1.compare(size2);
 	} else {

@@ -140,7 +140,9 @@ class ObjectActions extends ValueActions<Object> {
 			return IsLess;
 		}
 
-		//TODO: cycles
+		if(Cycles.find(obj1.ctx)) {
+			return cast Cycles.find(obj2.ctx) ? 0 : -1;
+		}
 
 		final ctx1 = obj1.ctx;
 		final ctx2 = obj2.ctx;
@@ -159,7 +161,8 @@ class ObjectActions extends ValueActions<Object> {
 		final value1 = ctx1.values;
 		final value2 = ctx2.values;
 
-		//TODO: cycles
+		Cycles.push(obj1.ctx);
+		Cycles.push(obj2.ctx);
 
 		var res = IsSame;
 		for(i in 0...sym1.length) {
@@ -167,6 +170,7 @@ class ObjectActions extends ValueActions<Object> {
 			final s2 = sym2[i].symbol;
 
 			if(!s1.equalsSymbol(s2)) {
+				Cycles.popN(2);
 				return cast s1.index.compare(s2.index);
 			}
 
@@ -179,12 +183,13 @@ class ObjectActions extends ValueActions<Object> {
 			) {
 				res = runtime.Actions.compareValue(v1, v2, op);
 			} else {
+				Cycles.popN(2);
 				return cast MathTools.compare(cast v1.TYPE_KIND, cast v2.TYPE_KIND);
 			}
 
 			if(res != IsSame) break;
 		}
-
+		Cycles.popN(2);
 		return res;
 	}
 
