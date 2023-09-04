@@ -44,4 +44,8 @@ class NoneActions extends ValueActions<None> {
 			return IsInvalid;
 		}
 	}
+
+	override function clear(none: None): None {
+		return none;
+	}
 }

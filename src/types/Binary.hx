@@ -1,6 +1,6 @@
 package types;
 
-import types.base._SeriesOf;
+import types.base._String;
 
 // https://github.com/HaxeFoundation/haxe/blob/4.1.3/std/hl/types/ArrayBytes.hx
 /*import types.base.ISeriesOf;
@@ -14,11 +14,12 @@ class Binary extends Value implements ISeriesOf<Integer> {
 		
 	}
 }*/
-class Binary extends _SeriesOf<Integer, Int> {
+class Binary extends _String {
+	public static function fromString(str: std.String) {
+		return new Binary(_String.codesFromRed(str));
+	}
+	
 	function clone(values, ?index) {
 		return new Binary(values, index);
 	}
-
-	function wrap(value: Int) return new Integer(value);
-	function unwrap(value: Integer) return value.int;
 }

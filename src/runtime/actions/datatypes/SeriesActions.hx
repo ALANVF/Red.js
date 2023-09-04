@@ -34,6 +34,11 @@ class SeriesActions<This: _SeriesOf<Elem, Val>, Elem: Value, Val> extends ValueA
 		return cast series.skip(-1);
 	}
 
+	override function clear(series: This): This {
+		series.values.splice(series.index, series.values.length - series.index);
+		return series;
+	}
+
 	override function head(series: This): This {
 		return cast series.head();
 	}

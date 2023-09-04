@@ -11,7 +11,7 @@ import types.Pair;
 import types.Logic;
 import types.String;
 
-class BinaryActions extends SeriesActions<Binary, Integer, Int> {
+class BinaryActions extends StringActions<Binary> {
 	static function serialize(
 		bin: Binary, buffer: String,
 		isOnly: Bool, isAll: Bool, isFlat: Bool,

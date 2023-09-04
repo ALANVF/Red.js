@@ -5,6 +5,8 @@ import types.base.ComparisonOp;
 import types.base._ActionOptions;
 import types.base._Path;
 import types.base._String;
+import types.base._BlockLike;
+import types.base._Block;
 import types.Value;
 import types.String;
 import types.Char;
@@ -132,6 +134,94 @@ class StringActions<This: _String = String> extends SeriesActions<This, Char, In
 			pcode[2] = str.cca(1);
 			return 3;
 		}
+	}
+
+	static function _insert(string: _String, value: Value, options: AInsertOptions, isAppend: Bool) {
+		final part = options.part._match(
+			at(null) => -1,
+			at({length: p}) => p._match(
+				at(i is Integer) => i.int,
+				at(s is _String) => s.absLength - s.index,
+				at(b is _BlockLike) => b.absLength - b.index,
+				_ => throw "bad"
+			)
+		);
+		final str = Form.call(
+			value,
+			{part: {limit: new Integer(part)}}
+		);
+		var dupN = 1;
+		var cnt = 1;
+		options.dup._and(d => {
+			cnt = d.count.int;
+			if(cnt < 0) return string;
+			dupN = cnt;
+		});
+
+		final s = string.values;
+		final length = string.length;
+		final isTail = length == 0 || isAppend;
+		final index = isAppend ? length : string.index;
+
+		var added = 0;
+		while(cnt != 0) {
+			var cell, limit, src, s2;
+			value._match(
+				at(b is _Block) => {
+					src = b;
+					s2 = src.values;
+					cell = src.index;
+					limit = src.absLength;
+				},
+				_ => {
+					src = null;
+					s2 = null;
+					cell = -1;
+					limit = 0;
+				}
+			);
+			var rest = 0;
+			added = 0;
+			var formBuf: String;
+			while(cell < limit && added != part) {
+				final v = cell == -1 ? value : s2[cell];
+				v._match(
+					at(c is Char) => {
+						if(isTail) {
+							s.push(c.int);
+						} else {
+							s.insert(index, c.int);
+						}
+						added++;
+					},
+					_ => {
+						// I feel like there's some unnecessary allocations here...
+						if(v is _String && !(v is types.Tag || v is types.Binary)) {
+							formBuf = (cast v : String).copy();
+						} else {
+							formBuf = new String([]);
+							Form._call(v, formBuf, null, 0);
+						}
+						final len = formBuf.length;
+						var rest = len;
+						if(part > 0) {
+							rest = part - added;
+							if(rest > len) rest = len;
+						}
+						if(isTail) {
+							string.append(formBuf, rest);
+						} else {
+							string.insert(formBuf, index + added, rest);
+						}
+						added += rest;
+					}
+				);
+				cell++;
+			}
+			cnt--;
+		}
+
+		return if(isAppend) string else string.skip(added * dupN);
 	}
 
 
@@ -291,5 +381,15 @@ class StringActions<This: _String = String> extends SeriesActions<This, Char, In
 		} else {
 			cast c1.int.compare(c2.int);
 		}
+	}
+
+	override function append(string: This, value: Value, options: AAppendOptions): This {
+		return cast _insert(string, value, cast options, true);
+	}
+
+	// ...
+
+	override function insert(string: This, value: Value, options: AInsertOptions): This {
+		return cast _insert(string, value, options, false);
 	}
 }

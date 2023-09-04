@@ -11,4 +11,8 @@ class MapActions extends ValueActions<Map> {
 
 		throw "NYI";
 	}
+
+	override function clear(map: Map): Map {
+		throw "NYI";
+	}
 }

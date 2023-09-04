@@ -8,7 +8,7 @@
 |--------------------------|----------|--------|--------|------|--------|--------|-----------|---------------|
 | `datatype!`              | Y        | NA     | NA     | NA   | Y      | Y      | Y         | N             |
 | `unset!`                 | Y        | NA     | Y      | Y    | Y      | Y      | Y         | N             |
-| `none!`                  | Y        | Y      | Y      | Y    | Y      | Y      | Y         | N             |
+| `none!`                  | Y        | Y      | Y      | Y    | Y      | Y      | Y         | P            |
 | `logic!`                 | Y        | Y      | Y      | Y    | Y      | Y      | Y         | P             |
 | `block!`                 | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
 | `paren!`                 | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
@@ -34,7 +34,8 @@
 | `get-path!`              | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
 | `routine!`               | NA       | NA     | N      | N    | N      | N      | N         | N             |
 | `bitset!`                | Y        | NA     | Y      | Y    | Y      | Y      | Y         | Y             |
-| `point!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
+| `point2D!`               | N        | N      | N      | N    | N      | N      | N         | N             |
+| `point3D!`               | N        | N      | N      | N    | N      | N      | N         | N             |
 | `object!`                | Y        | NA     | Y      | N    | Y      | Y      | Y         | P             |
 | `typeset!`               | Y        | NA     | Y      | Y    | Y      | Y      | Y         | Y             |
 | `error!`                 | Y        | NA     | N      | N    | N      | N      | Y         | N             |

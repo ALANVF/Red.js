@@ -2,6 +2,7 @@ package types;
 
 import types.base.ISetPath;
 import types.base.IGetPath;
+import types.base._Integer;
 import haxe.ds.Option;
 import haxe.io.Bytes;
 import util.Set;
@@ -25,7 +26,7 @@ class Bitset extends Value /*implements IGetPath implements ISetPath*/ {
 		return _fromOrds(new Set([for(char in chars) char.int]), negated);
 	}
 
-	public static function fromIntegers(integers: Iterable<Integer>, negated: Bool = false) {
+	public static function fromIntegers(integers: Iterable<_Integer>, negated: Bool = false) {
 		return _fromOrds(new Set([for(integer in integers) integer.int]), negated);
 	}
 

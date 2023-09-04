@@ -5,6 +5,7 @@ import types.base.ComparisonOp;
 import types.base._ActionOptions;
 import types.base._BlockLike;
 import types.base._AnyWord;
+import types.Hash;
 import types.Path;
 import types.LitPath;
 import types.Value;
@@ -76,6 +77,94 @@ function compareEach(blk1: _BlockLike, blk2: _BlockLike, op: ComparisonOp): Comp
 }
 
 abstract class _BlockLikeActions<This: _BlockLike> extends SeriesActions<This, Value, Value> {
+	static function _insert(series: _BlockLike, value: Value, options: AInsertOptions, isAppend: Bool): _BlockLike {
+		var cnt = 1;
+		var part = -1;
+		final isHash = series is Hash;
+		var shouldRehash = false;
+		if(isHash) {
+			// ...
+		}
+
+		final isValues = !options.only && value is _BlockLike;
+
+		options.part?.length._match(
+			at(i is Integer) => {
+				part = i.int;
+			},
+			at(b is _BlockLike) => {
+				if(series.sameSeriesAs(b)) {
+					part = b.index - series.index;
+				} else {
+					throw "bad";
+				}
+			},
+			_ => {}
+		);
+
+		options.dup?.count._and(c => {
+			cnt = c.int;
+			if(cnt < 0) return series;
+		});
+
+		final src = (cast value : _BlockLike);
+		final size = if(isValues) src.length else 1;
+		if(part < 0 || part > size) part = size;
+
+		final isTail = series.isTail() || isAppend;
+		final slots = part * cnt;
+		final index = if(isAppend) series.absLength - 1 else series.index;
+
+		/*if(!isTail) {
+
+		}*/
+
+		final s = series.values;
+		final blk = src.values;
+		var head = series.index;
+		while(cnt != 0) {
+			if(isValues) {
+				var cell = src.index;
+				final limit = cell + part;
+				
+				if(isTail) {
+					while(cell < limit) {
+						s.push(blk[cell]);
+						cell++;
+					}
+				} else { 
+					while(cell < limit) {
+						s.insert(head, blk[cell]);
+						head++;
+						cell++;
+					}
+				}
+			} else {
+				if(isTail) {
+					s.push(value);
+				} else {
+					s.insert(head, value);
+					head++;
+				}
+			}
+			cnt--;
+		}
+
+		/*if(isHash) {
+
+		}*/
+
+		return if(isAppend) series.head() else {
+			var idx = series.index + slots;
+			if(idx >= series.absLength) {
+				series.tail();
+			} else {
+				series.fastSkipHead(idx);
+			}
+		}
+	}
+
+
 	override function compare(value1: This, value2: Value, op: ComparisonOp): CompareResult {
 		value2._match(
 			at(blk is _BlockLike) => {
@@ -95,5 +184,15 @@ abstract class _BlockLikeActions<This: _BlockLike> extends SeriesActions<This, V
 			},
 			_ => return IsInvalid
 		);
+	}
+
+	override function append(series: This, value: Value, options: AAppendOptions): This {
+		return cast _insert(series, value, cast options, true);
+	}
+
+	// ...
+
+	override function insert(series: This, value: Value, options: AInsertOptions): This {
+		return cast _insert(series, value, options, false);
 	}
 }

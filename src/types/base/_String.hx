@@ -105,9 +105,22 @@ abstract class _String extends _SeriesOf<Char, Int> {
 	function unwrap(value: Char) return value.int;
 
 
+	// TODO: add insert functionality https://github.com/red/red/blob/master/runtime/datatypes/string.reds#L1202
 	public function append(value: _String, limit: Null<Int>) {
 		values.pushAll(
 			Util._andOr(limit, limit => {
+				if(value.index == 0) value.values.slice(0, value.index + limit);
+				else value.values.slice(value.index, value.index + limit);
+			}, {
+				if(value.index == 0) value.values;
+				else value.values.slice(value.index);
+			})
+		);
+	}
+
+	public function insert(value: _String, index: Int, limit: Null<Int>) {
+		(untyped values : {splice: (Int, Int, ...Any) -> Void}).splice(index, 0,
+			...Util._andOr(limit, limit => {
 				if(value.index == 0) value.values.slice(0, value.index + limit);
 				else value.values.slice(value.index, value.index + limit);
 			}, {

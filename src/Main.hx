@@ -196,6 +196,19 @@ class Main {
 				#get-definition ACT_XOR~
 			]
 
+			append: make action! [[
+					series	   [series! bitset! port!]
+					value	   [any-type!]
+					/part
+						length [number! series!]
+					/only
+					/dup
+						count  [integer!]
+					return:    [series! port! bitset!]
+				]
+				#get-definition ACT_APPEND
+			]
+
 			at: make action! [[
 					series	 [series! port!]
 					index 	 [integer! pair!]
@@ -209,6 +222,13 @@ class Main {
 					return:  [series! port!]
 				]
 				#get-definition ACT_BACK
+			]
+
+			clear: make action! [[
+					series	 [series! port! bitset! map! none!]
+					return:  [series! port! bitset! map! none!]
+				]
+				#get-definition ACT_CLEAR
 			]
 
 			head: make action! [[
@@ -230,6 +250,19 @@ class Main {
 					return:  [integer!]
 				]
 				#get-definition ACT_INDEX?
+			]
+
+			insert: make action! [[
+					series	   [series! port! bitset!]
+					value	   [any-type!]
+					/part
+						length [number! series!]
+					/only
+					/dup
+						count  [integer!]
+					return:    [series! port! bitset!]
+				]
+				#get-definition ACT_INSERT
 			]
 
 			length?: make action! [[
