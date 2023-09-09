@@ -15,4 +15,10 @@ class Macros {
 			if(isVirtualBit($bs, $bit)) return 0;
 		}
 	}
+
+	static macro function getBuild() {
+		final date = Date.now();
+		final res = '${date.getFullYear()}.${date.getMonth()}.${date.getDate()}';
+		return macro $v{res};
+	}
 }

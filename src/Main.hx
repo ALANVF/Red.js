@@ -1,13 +1,10 @@
-class Main {
-	static function main() {
-		/*for(token in Tokenizer.tokenize(Util.readFile("./parse-tests/test1.red"))) trace(Std.string(token));
-		for(token in Tokenizer.tokenize(Util.readFile("./parse-tests/test2.red"))) trace(Std.string(token));
-		for(token in Tokenizer.tokenize(Util.readFile("./parse-tests/test3.red"))) trace(Std.string(token));*/
+import js.Browser.console;
 
-		/*final tokens = haxe.Timer.measure(() -> Tokenizer.tokenize(Util.readFile("./parse-tests/test4.red")));
-		for(token in tokens) trace(Util.pretty(token));*/
-		
-		//trace(Do.call(types.String.fromRed("123 [456 #abc] \"banana\""), Do.defaultOptions));
+class Main {
+	static inline final DEBUG = false;
+
+	static function main() {
+		console.log('Build ${Macros.getBuild()}\n');
 		
 		@:privateAccess Runtime.registerDatatypes();
 
@@ -854,33 +851,30 @@ class Main {
 			default!:		union series! union immediate! union any-object! union external! union any-function! make typeset! [map! bitset!]
 			any-type!:		union default! internal!
 		");
-		
-		js.Syntax.code("
-const readline = require('readline');
-const io = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout,
-	prompt: '> '
-});
-io.prompt(true);
-io.on('line', (input) => {
-	if(input === 'quit') {
-		io.close();
-		return;
-	} else {
-		({0})(input);
-		console.log();
+
+		final readline: Readline = js.Syntax.code("require('readline')");
+		final io = readline.createInterface({
+			input: js.Syntax.code("process.stdin"),
+			output: js.Syntax.code("process.stdout"),
+			prompt: ">> "
+		});
 		io.prompt(true);
-	}
-});",
-			(input: String) -> {
+		io.on("line", (input: String) -> {
+			if(DEBUG && input == "quit") {
+				io.close();
+				return;
+			} else {
 				try {
 					final res = runtime.Eval.evalCode(input);
-					js.Syntax.code("console.log({0})", res);
+					if(res != types.Unset.UNSET) {
+						console.log("==", DEBUG ? res : runtime.actions.Mold.call(res, runtime.actions.Mold.defaultOptions).toJs());
+					}
 				} catch(e) {
-					js.Syntax.code("console.log({0})", e.details());
+					console.log(e.details());
+					console.log();
 				}
+				io.prompt(true);
 			}
-		);
+		});
 	}
 }
