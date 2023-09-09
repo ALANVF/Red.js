@@ -4,8 +4,6 @@ class Main {
 	static inline final DEBUG = false;
 
 	static function main() {
-		console.log('Build ${Macros.getBuild()}\n');
-		
 		@:privateAccess Runtime.registerDatatypes();
 
 		types.base.Context.GLOBAL.value = new types.Object(types.base.Context.GLOBAL, -1, true);
@@ -852,29 +850,34 @@ class Main {
 			any-type!:		union default! internal!
 		");
 
-		final readline: Readline = js.Syntax.code("require('readline')");
-		final io = readline.createInterface({
-			input: js.Syntax.code("process.stdin"),
-			output: js.Syntax.code("process.stdout"),
-			prompt: ">> "
-		});
-		io.prompt(true);
-		io.on("line", (input: String) -> {
-			if(DEBUG && input == "quit") {
-				io.close();
-				return;
-			} else {
-				try {
-					final res = runtime.Eval.evalCode(input);
-					if(res != types.Unset.UNSET) {
-						console.log("==", DEBUG ? res : runtime.actions.Mold.call(res, runtime.actions.Mold.defaultOptions).toJs());
+		(untyped setTimeout)(() -> {
+			if(!DEBUG) console.clear();
+			console.log('Build ${Macros.getBuild()}\n');
+
+			final readline: Readline = js.Syntax.code("require('readline')");
+			final io = readline.createInterface({
+				input: js.Syntax.code("process.stdin"),
+				output: js.Syntax.code("process.stdout"),
+				prompt: ">> "
+			});
+			io.prompt(true);
+			io.on("line", (input: String) -> {
+				if(DEBUG && input == "quit") {
+					io.close();
+					return;
+				} else {
+					try {
+						final res = runtime.Eval.evalCode(input);
+						if(res != types.Unset.UNSET) {
+							console.log("==", DEBUG ? res : runtime.actions.Mold.call(res, runtime.actions.Mold.defaultOptions).toJs());
+						}
+					} catch(e) {
+						console.log(e.details());
+						console.log();
 					}
-				} catch(e) {
-					console.log(e.details());
-					console.log();
+					io.prompt(true);
 				}
-				io.prompt(true);
-			}
-		});
+			});
+		}, 1);
 	}
 }
