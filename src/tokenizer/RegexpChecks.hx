@@ -6,7 +6,7 @@ class RegexpChecks {
 	static final hexa = ~/^([A-F\d]{2,})h/;
 	static final integer = ~/^[+-]?\d+\b(?!\.|#\{)/;
 	static final specialFloat = ~/^[+-]?1\.#/;
-	static final float = ~/^[+-]?(?:\d*\.\d+(?![\.\d])|\d+\.(?!\d+\.))/;
+	static final float = ~/^[+-]?(?:\d*\.\d+(?![\.\d])|\d+\.(?!\d+\.)|\d+[eE][+-]?\d+)/;
 	static final money = ~/^[+-]?[a-zA-Z]{0,3}\$\d/;
 	static final string = '"';
 	static final file = ~/^%(?![\s%:;()\[\]{}])/;

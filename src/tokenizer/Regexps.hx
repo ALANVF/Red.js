@@ -7,7 +7,7 @@ class Regexps {
 	static final integer = ~/^[+-]?\d+\b(?!\.|#\{)/;
 	static final nanFloat = ~/^[+-]?1\.#NaN\b/i;
 	static final infFloat = ~/^([+-]?)1\.#Inf\b/i;
-	static final float = ~/^[+-]?(?:\d*\.\d+(?!\.)|\d+\.(?!\d+\.))/;
+	static final float = ~/^[+-]?(?:(?:\d*\.\d+(?!\.)|\d+\.(?!\d+\.))(?:[eE][+-]?\d+)?|\d+[eE][+-]?\d+)/;
 	static final money = ~/^([+-]?)([a-zA-Z]{0,3})\$(\d+(?:\.\d+)?)/;
 	static final string = ~/^"((?:\^.|[^"^]+)*)"/;
 	static final file = ~/^%(?![\s%:;()\[\]{}])(?:([^\s;"]+)|"((?:\^.|[^"^]+)*)")/;
