@@ -44,6 +44,8 @@ class Actions {
 		DSetPath => new SetPathActions(),
 		DGetPath => new GetPathActions(),
 		DBitset => new BitsetActions(),
+		DPoint2D => new Point2DActions(),
+		DPoint3D => new Point3DActions(),
 		DObject => new ObjectActions(),
 		DError => new ErrorActions(),
 		DTypeset => new TypesetActions(),

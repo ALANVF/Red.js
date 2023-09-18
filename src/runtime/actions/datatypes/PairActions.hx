@@ -20,7 +20,7 @@ import types.String;
 import runtime.actions.datatypes.ValueActions.invalid;
 
 class PairActions extends ValueActions<Pair> {
-	function getNamedIndex(w: Word, ref: Value): Int {
+	static function getNamedIndex(w: Word, ref: Value): Int {
 		final axis = w.symbol;
 		if(axis != Words.X && axis != Words.Y) {
 			if(ref is Pair) throw "cannot use";
@@ -184,15 +184,15 @@ class PairActions extends ValueActions<Pair> {
 			_ => false
 		);
 
-		final res = new Pair(0, 0);
 		final intActions = Actions.get(DInteger);
 
-		res.x = (cast intActions.round(new Integer(value.x), options) : Integer).int;
-
-		if(scalexy) (untyped options.to.scale).int = y;
-		res.y = (cast intActions.round(new Integer(value.y), options) : Integer).int;
-
-		return res;
+		return new Pair(
+			(cast intActions.round(new Integer(value.x), options) : Integer).int,
+			{
+				if(scalexy) (untyped options.to.scale).int = y;
+				(cast intActions.round(new Integer(value.y), options) : Integer).int;
+			}
+		);
 	}
 
 

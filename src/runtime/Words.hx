@@ -12,6 +12,7 @@ class Words {
 	static var SECOND: Symbol;
 	static var X: Symbol;
 	static var Y: Symbol;
+	static var Z: Symbol;
 	static var DASH: Symbol;
 	static var NOT: Symbol;
 	static var SPEC: Symbol;
@@ -30,6 +31,7 @@ class Words {
 		Context.GLOBAL.addSymbol(SECOND = Symbol.make("second"));
 		Context.GLOBAL.addSymbol(X = Symbol.make("x"));
 		Context.GLOBAL.addSymbol(Y = Symbol.make("y"));
+		Context.GLOBAL.addSymbol(Z = Symbol.make("z"));
 		Context.GLOBAL.addSymbol(DASH = Symbol.make("-"));
 		Context.GLOBAL.addSymbol(NOT = Symbol.make("not"));
 		Context.GLOBAL.addSymbol(SPEC = Symbol.make("spec"));

@@ -18,6 +18,7 @@ class RegexpChecks {
 	static final time = ~/^[+-]?\d+:\d/;
 	static final pair = ~/^[+-]?\d+[xX]/;
 	static final tuple = ~/^(?:\d+\.){2}/;
+	static final point = ~/^\(\d+(?:\.(?:#Inf|#NaN|\d+(?:[eE][+-]?\d+)?)|e[+-]?\d+)?\s*,\s/;
 	static final tag = ~/^<[^-=>\[\](){}l^"\s](?:"[^"]*"|'[^']*'|[^>"']+)*/;
 	static final ref = "@";
 	static final refinement = "/";

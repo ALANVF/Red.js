@@ -19,6 +19,7 @@ class Regexps {
 	static final time = ~/^([+-]?\d+):(\d+)(?::(\d+(?:\.\d+)?))?/;
 	static final pair = ~/^([+-]?\d+)[xX]([+-]?\d+)/;
 	static final tuple = ~/^(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?/;
+	static final pointComma = ~/^\s*,\s+/;
 	static final tag = ~/^<([^-=>\[\](){}l^"\s](?:"[^"]*"|'[^']*'|[^>])*)>/;
 	static final ref = ~/^@([^#$',=>@\\^"();<\[\]{}\s]*)/;
 	static final refinement = ~/^\/([^\/\\^,\[\](){}"#$%@:;\s]+)/;

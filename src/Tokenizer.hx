@@ -1,3 +1,4 @@
+import types.Point2D;
 import tokenizer.*;
 //import tokenizer.Token;
 
@@ -122,13 +123,7 @@ class Tokenizer {
 		} else if(rdr.matchesRx(RegexpChecks.date)) {
 			throw "todo!";
 		} else if(rdr.matchesRx(RegexpChecks.specialFloat)) {
-			if((match = rdr.tryMatchRx(Regexps.nanFloat)) != null) {
-				Token.TFloat(Math.NaN);
-			} else if((match = rdr.tryMatchRx(Regexps.infFloat)) != null) {
-				Token.TFloat(if(match[1] == "-") Math.NEGATIVE_INFINITY else Math.POSITIVE_INFINITY);
-			} else {
-				throw "Invalid float literal!";
-			}
+			Token.TFloat(Actions.specialFloat(rdr) ?? throw "Invalid float literal!");
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.float, Regexps.float)) != null) { // [Std.parseFloat(_) => float]
 			final float = Std.parseFloat(match[0]);
 			if(rdr.tryMatch("%")) {
@@ -237,7 +232,7 @@ class Tokenizer {
 
 			Token.TBinary(out.toString(), 64);
 		} else if(rdr.matches("(")) {
-			Token.TParen(Actions.paren(rdr));
+			Actions.parenOrPoint(rdr);
 		} else if(rdr.matches("[")) {
 			Token.TBlock(Actions.block(rdr));
 		} else if(rdr.matches("#(")) {
@@ -299,6 +294,8 @@ class Tokenizer {
 			case TMap(map): types.Map.fromPairs([for(i => k in map) if(i % 2 == 0) {k: tokenToValue(k), v: tokenToValue(map[i + 1])}]);
 			case TTuple(tuple): new types.Tuple(new util.UInt8ClampedArray(tuple));
 			case TPair(x, y): new types.Pair(x, y);
+			case TPoint2D(x, y): new types.Point2D(x, y);
+			case TPoint3D(x, y, z): new types.Point3D(x, y, z);
 			case TDate(_, _, _): throw 'NYI';
 			case TTime(h, m, s): types.Time.fromHMS(h, m, s);
 			case TConstruct([TWord("true")]): types.Logic.TRUE;

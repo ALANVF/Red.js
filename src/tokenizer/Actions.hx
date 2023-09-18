@@ -23,6 +23,45 @@ class Actions {
 		return Std.parseFloat(rdr.matchRx(Regexps.float)[0]);
 	}
 
+	public static function specialFloat(rdr: Reader) {
+		var match;
+		return if((match = rdr.tryMatchRx(Regexps.nanFloat)) != null) {
+			Math.NaN;
+		} else if((match = rdr.tryMatchRx(Regexps.infFloat)) != null) {
+			if(match[1] == "-") Math.NEGATIVE_INFINITY else Math.POSITIVE_INFINITY;
+		} else {
+			null;
+		}
+	}
+
+	public static function number(rdr: Reader) {
+		var match;
+		return if((match = rdr.tryMatchRx(Regexps.integer)) != null) {
+			Util.mustParseInt(match[0]);
+		} else if((match = rdr.tryMatchRx(Regexps.float)) != null) {
+			Std.parseFloat(match[0]);
+		} else {
+			specialFloat(rdr);
+		}
+	}
+
+	public static function point(rdr: Reader) {
+		final x = number(rdr) ?? throw "Invalid float literal!";
+		trace(x);
+		rdr.matchRx(Regexps.pointComma);
+		final y = number(rdr) ?? throw "Invalid float literal!";
+		if(rdr.tryMatchRx(Regexps.pointComma) != null) {
+			final z = number(rdr) ?? throw "Invalid float literal!";
+			rdr.trimSpace();
+			rdr.match(")");
+			return Token.TPoint3D(x, y, z);
+		} else {
+			rdr.trimSpace();
+			rdr.match(")");
+			return Token.TPoint2D(x, y);
+		}
+	}
+
 	public static function path(rdr: Reader, head: Token) {
 		final out = [head];
 		
@@ -36,6 +75,8 @@ class Actions {
 					Token.TInteger(integer(rdr));
 				} else if(rdr.matchesRx(RegexpChecks.float)) {
 					Token.TFloat(float(rdr));
+				} else if(rdr.matchesRx(RegexpChecks.specialFloat)) {
+					Token.TFloat(specialFloat(rdr));
 				} else if(rdr.tryMatch("'")) {
 					if(Checks.anyWord(rdr)) {
 						Token.TWord(anyWord(rdr));
@@ -80,9 +121,19 @@ class Actions {
 	public static inline function block(rdr: Reader) {
 		return delim(rdr, "block!", "[", "]");
 	}
-	
+
 	public static inline function paren(rdr: Reader) {
 		return delim(rdr, "paren!", "(", ")");
+	}
+	
+	public static inline function parenOrPoint(rdr: Reader) {
+		if(rdr.matchesRx(RegexpChecks.point)) {
+			rdr.match("(");
+			rdr.trimSpace();
+			return point(rdr);
+		} else {
+			return Token.TParen(paren(rdr));
+		}
 	}
 
 	public static inline function map(rdr: Reader) {

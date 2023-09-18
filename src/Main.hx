@@ -1,7 +1,7 @@
 import js.Browser.console;
 
 class Main {
-	static inline final DEBUG = false;
+	static inline final DEBUG = true;
 
 	static function main() {
 		@:privateAccess Runtime.registerDatatypes();

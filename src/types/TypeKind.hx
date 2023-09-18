@@ -32,6 +32,8 @@ enum abstract TypeKind(Int) {
 	//var DRoutine;
 	var DBitset;
 	//var DPoint;
+	var DPoint2D;
+	var DPoint3D;
 	var DObject;
 	var DTypeset;
 	var DError;

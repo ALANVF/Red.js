@@ -49,6 +49,8 @@ enum Token {
 	TMap(map: Array<Token>);
 	TTuple(tuple: Array<Int>);
 	TPair(x: Int, y: Int);
+	TPoint2D(x: Float, y: Float);
+	TPoint3D(x: Float, y: Float, z: Float);
 
 	TDate(date: DateToken, time: Null<DateTimeToken>, zone: Null<DateZoneToken>);
 	TTime(hour: Int, minute: Int, second: Float);
