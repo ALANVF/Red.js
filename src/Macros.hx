@@ -18,7 +18,7 @@ class Macros {
 
 	static macro function getBuild() {
 		final date = Date.now();
-		final res = '${date.getFullYear()}.${date.getMonth()}.${date.getDate()}';
+		final res = '${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}';
 		return macro $v{res};
 	}
 }
