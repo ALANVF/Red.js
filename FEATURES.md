@@ -34,8 +34,8 @@
 | `get-path!`              | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
 | `routine!`               | NA       | NA     | N      | N    | N      | N      | N         | N             |
 | `bitset!`                | Y        | NA     | Y      | Y    | Y      | Y      | Y         | Y             |
-| `point2D!`               | N        | N      | N      | N    | N      | N      | N         | N             |
-| `point3D!`               | N        | N      | N      | N    | N      | N      | N         | N             |
+| `point2D!`               | Y        | Y      | P      | N    | Y      | Y      | Y         | P             |
+| `point3D!`               | Y        | Y      | P      | N    | Y      | Y      | Y         | P             |
 | `object!`                | Y        | NA     | Y      | N    | Y      | Y      | Y         | P             |
 | `typeset!`               | Y        | NA     | Y      | Y    | Y      | Y      | Y         | Y             |
 | `error!`                 | Y        | NA     | N      | N    | N      | N      | Y         | N             |
