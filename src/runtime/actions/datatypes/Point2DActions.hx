@@ -88,6 +88,9 @@ class Point2DActions extends ValueActions<Point2D> {
 		);
 
 		value._match(
+			at(i is Integer) => {
+				return if(axis == 1) new Point2D(i.int, parent.y) else new Point2D(parent.x, i.int);
+			},
 			at(f is Float) => {
 				return if(axis == 1) new Point2D(f.float, parent.y) else new Point2D(parent.x, f.float);
 			},

@@ -98,6 +98,11 @@ class Point3DActions extends ValueActions<Point3D> {
 		);
 
 		value._match(
+			at(i is Integer) => {
+				return if(axis == 1) new Point3D(i.int, parent.y, parent.z)
+					else if(axis == 2) new Point3D(parent.x, i.int, parent.z)
+					else new Point3D(parent.x, parent.y, i.int);
+			},
 			at(f is Float) => {
 				return if(axis == 1) new Point3D(f.float, parent.y, parent.z)
 					else if(axis == 2) new Point3D(parent.x, f.float, parent.z)
