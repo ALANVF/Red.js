@@ -1,21 +1,33 @@
 package runtime.actions.datatypes;
 
+import types.Word;
 import types.base.CompareResult;
 import types.base.ComparisonOp;
 import types.base._ActionOptions;
 import types.base._Path;
 import types.base._Block;
+import types.base._BlockLike;
 import types.Value;
 import types.Block;
 import types.Integer;
+import types.Float;
 import types.Pair;
 import types.Logic;
+import types.Object;
+import types.Map;
 import types.String;
+import types.Typeset;
 
 import runtime.actions.Form;
 import runtime.actions.Mold;
 
+import runtime.actions.datatypes.ValueActions.invalid;
+
 class BlockActions<This: _Block = Block> extends _BlockLikeActions<This> {
+	private function makeThis(values: Array<Value>, ?index: Int, ?newlines: util.Set<Int>): This {
+		return cast new Block(values, index, newlines);
+	}
+
 	static function moldEach(
 		blk: _Block, buffer: String,
 		isOnly: Bool, isAll: Bool, isFlat: Bool,
@@ -76,6 +88,40 @@ class BlockActions<This: _Block = Block> extends _BlockLikeActions<This> {
 		return part;
 	}
 
+
+	override function make(proto: Null<This>, spec: Value): This {
+		return spec._match(
+			at(_ is Integer | _ is Float) => makeThis([]),
+			at(b is _BlockLike) => {
+				makeThis(b.cloneValues(), 0, b._match(
+					at({newlines: nl} is _Block) => nl?.copy(),
+					_ => null
+				));
+			},
+			at(o is Object) => cast ObjectActions._reflect(o, Words.BODY),
+			at(m is Map) => throw "todo",
+			//Vector
+			_ => invalid()
+
+		);
+	}
+
+	override function to(proto: Null<This>, spec: Value) {
+		return spec._match(
+			at(o is Object) => cast ObjectActions._reflect(o, Words.BODY),
+			at(m is Map) => throw "todo",
+			//Vector
+			//String
+			at(t is Typeset) => makeThis(cast t.types.toArray()),
+			at(b is _BlockLike) => {
+				makeThis(b.cloneValues(), 0, b._match(
+					at({newlines: nl} is _Block) => nl?.copy(),
+					_ => null
+				));
+			},
+			_ => makeThis([spec])
+		);
+	}
 
 	override function form(value: This, buffer: String, arg: Null<Int>, part: Int) {
 		Util.detuple([part, @var cycle], Cycles.detect(value, buffer, part, false));
@@ -142,6 +188,69 @@ class BlockActions<This: _Block = Block> extends _BlockLikeActions<This> {
 				});
 			},
 			_ => throw "todo"
+		);
+	}
+
+	/*-- Series actions --*/
+
+	override function copy(series: This, options: ACopyOptions): This {
+		final node = series.values;
+		final res = super.copy(series, options);
+		if(options.deep) {
+			if(Cycles.find(node)) throw "bad";
+			Cycles.push(node);
+			for(i in 0...res.absLength) {
+				res.values[i]._match(
+					at(slot is types.base._SeriesOf<Value, Any>) => {
+						res.values[i] = runtime.actions.Copy.call(res.values[i], {deep: true});
+					},
+					_ => {}
+				);
+			}
+			Cycles.pop();
+		}
+		
+		return res;
+	}
+
+	override function swap(series1: This, series2: Value): This {
+		if(series1.length == 0) return series1;
+		series2._match(
+			at(s2 is _Block) => {
+				if(s2.length == 0) return series1;
+				final value1 = series1.rawFastPick(0);
+				final value2 = s2.rawFastPick(0);
+				series1.rawFastPoke(0, value2);
+				s2.rawFastPoke(0, value1);
+				return series1;
+			},
+			_ => throw "bad"
+		);
+	}
+
+	override function take(series: This, options: ATakeOptions): Value {
+		return super.take(series, options)._match(
+			at(blk is _BlockLike) => {
+				final s = blk.values;
+
+				if(options.deep) {
+					for(i in 0...blk.absLength) {
+						s[i]._match(
+							at(slot is types.base._SeriesOf<Value, Any>) => {
+								s[i] = runtime.actions.Copy.call(slot, {deep: true});
+							},
+							_ => {}
+						);
+					}
+				}
+				
+				if(options.part == null) {
+					blk.copy();
+				} else {
+					blk;
+				}
+			},
+			at(res) => res
 		);
 	}
 }

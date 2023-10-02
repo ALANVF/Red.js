@@ -11,6 +11,7 @@ import types.base._Path;
 import types.base._String;
 import types.base._AnyWord;
 import types.base._Number;
+import types.base.Symbol;
 import types.Value;
 import types.Object;
 import types.Block;
@@ -190,7 +191,11 @@ class ObjectActions extends ValueActions<Object> {
 	}
 
 	override function reflect(value: Object, field: Word): Value {
-		return field.symbol._match(
+		return _reflect(value, field.symbol);
+	}
+
+	static function _reflect(value: Object, field: Symbol): Value {
+		return field._match(
 			at(_ == Words.CHANGED => true) => throw "NYI",
 			at(_ == Words.CLASS => true) => new Integer(value.classID),
 			at(_ == Words.WORDS => true) => new Block([

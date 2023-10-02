@@ -1,7 +1,7 @@
 import js.Browser.console;
 
 class Main {
-	static inline final DEBUG = true;
+	static inline final DEBUG = false;
 
 	static function main() {
 		@:privateAccess Runtime.registerDatatypes();
@@ -226,6 +226,18 @@ class Main {
 				#get-definition ACT_CLEAR
 			]
 
+			copy: make action! [[
+					value	 [series! any-object! bitset! map!]
+					/part
+						length [number! series! pair!]
+					/deep
+					/types
+						kind [datatype!]
+					return:  [series! any-object! bitset! map!]
+				]
+				#get-definition ACT_COPY
+			]
+
 			head: make action! [[
 					series	 [series! port!]
 					return:  [series! port!]
@@ -309,6 +321,14 @@ class Main {
 				]
 				#get-definition ACT_REVERSE
 			]
+
+			swap: make action! [[
+					series1  [series! port!]
+					series2  [series! port!]
+					return:  [series! port!]
+				]
+				#get-definition ACT_SWAP
+			]
 			
 			tail: make action! [[
 					series	 [series! port!]
@@ -322,6 +342,16 @@ class Main {
 					return:  [logic!]
 				]
 				#get-definition ACT_TAIL?
+			]
+
+			take: make action! [[
+					series	 [series! port! none!]
+					/part
+						length [number! series!]
+					/deep
+					/last
+				]
+				#get-definition ACT_TAKE
 			]
 		
 		");

@@ -11,6 +11,10 @@ import types.Logic;
 import types.String;
 
 class ParenActions extends BlockActions<Paren> {
+	override function makeThis(values: Array<Value>, ?index: Int, ?newlines: util.Set<Int>) {
+		return cast new Paren(values, index, newlines);
+	}
+
 	override function mold(
 		value: Paren, buffer: String,
 		isOnly: Bool, isAll: Bool, isFlat: Bool,

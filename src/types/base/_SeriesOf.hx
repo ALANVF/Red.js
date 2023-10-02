@@ -27,6 +27,10 @@ abstract class _SeriesOf<T: Value, V> extends Value implements ISeriesOf<T> {
 	abstract function wrap(value: V): T;
 	abstract function unwrap(value: T): V; 
 
+	public function cloneValues() {
+		return this.values.slice(this.index);
+	}
+
 	public function pick(index: Int) {
 		if(index < 0 || index >= this.length) {
 			return null;

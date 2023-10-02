@@ -11,6 +11,11 @@ import types.Logic;
 import types.String;
 
 class HashActions extends BlockActions<Hash> {
+	override function makeThis(values: Array<Value>, ?index: Int, ?newlines: util.Set<Int>) {
+		return cast new Hash(values, index, newlines);
+	}
+
+
 	override function mold(
 		value: Hash, buffer: String,
 		isOnly: Bool, isAll: Bool, isFlat: Bool,
