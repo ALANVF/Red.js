@@ -22,23 +22,23 @@ import types.*;
 @:build(runtime.NativeBuilder.build())
 class As {
 	// The codegen for these is awful
-	static final STRING_TYPES: std.Map<TypeKind, Class<_String>> = [
-		DString => types.String,
-		DFile => File,
-		DUrl => Url,
-		DTag => Tag,
-		DEmail => Email,
-		DRef => Ref
-	];
+	static final STRING_TYPES = Dict.of(([
+		TypeKind.DString => types.String,
+		TypeKind.DFile => File,
+		TypeKind.DUrl => Url,
+		TypeKind.DTag => Tag,
+		TypeKind.DEmail => Email,
+		TypeKind.DRef => Ref
+	] : std.Map<TypeKind, Class<_String>>));
 
-	static final BLOCK_TYPES: std.Map<TypeKind, Class<_SeriesOf<Value, Value>>> = [
-		DBlock => Block,
-		DParen => Paren,
-		DPath => Path,
-		DLitPath => LitPath,
-		DSetPath => SetPath,
-		DGetPath => GetPath
-	];
+	static final BLOCK_TYPES = Dict.of(([
+		TypeKind.DBlock => Block,
+		TypeKind.DParen => Paren,
+		TypeKind.DPath => Path,
+		TypeKind.DLitPath => LitPath,
+		TypeKind.DSetPath => SetPath,
+		TypeKind.DGetPath => GetPath
+	] : std.Map<TypeKind, Class<_SeriesOf<Value, Value>>>));
 
 	public static function call(type: Value, spec: Value): Value {
 		final kind = type._match(

@@ -19,7 +19,7 @@ class Repeat {
 
 		for(i in 0...n) {
 			try {
-				word.set(new Integer(i));
+				word.set(new Integer(i + 1));
 				Do.evalValues(body);
 			} catch(e: RedError) {
 				if(e.isContinue()) {

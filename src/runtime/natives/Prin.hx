@@ -6,9 +6,15 @@ import types.Unset;
 import runtime.actions.Form;
 
 @:build(runtime.NativeBuilder.build())
-class Print {
+class Prin {
 	public static function call(value: Value) {
-		js.html.Console.log(Form.call(Reduce.call(value, Reduce.defaultOptions), Form.defaultOptions).form());
+		if(Util.IS_NODE) {
+			#if js
+			js.Syntax.code("process.stdout.write({0})", Form.call(value, Form.defaultOptions).form());
+			#end
+		} else {
+			throw "Can't use `prin` on web!";
+		}
 
 		return Unset.UNSET;
 	}

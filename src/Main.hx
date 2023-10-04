@@ -379,6 +379,18 @@ class Main {
 				#get-definition NAT_EITHER
 			]
 
+			any: make native! [[
+					conds [block!]
+				]
+				#get-definition NAT_ANY
+			]
+			
+			all: make native! [[
+					conds [block!]
+				]
+				#get-definition NAT_ALL
+			]
+
 			loop: make native! [[
 					count [integer!]
 					body  [block!]
@@ -508,6 +520,13 @@ class Main {
 				]
 				#get-definition NAT_SET
 			]
+
+			prin: make native! [[
+					value [any-type!]
+				]
+				#get-definition NAT_PRIN
+			]
+
 			print: make native! [[
 					value [any-type!]
 				]
@@ -878,6 +897,13 @@ class Main {
 			immediate!:		union scalar! union all-word! make typeset! [none! logic! datatype! typeset! date!] ;handle!
 			default!:		union series! union immediate! union any-object! union external! union any-function! make typeset! [map! bitset!]
 			any-type!:		union default! internal!
+
+			Red: none: #[none]
+			true: yes: on: #[true]
+			false: no: off: #[false]
+
+			newline: #\"^/\"
+			tab: #\"^-\"
 		");
 
 		(untyped setTimeout)(() -> {
