@@ -32,4 +32,14 @@ class StringTools {
 
 	static inline function includes(self: String, needle: String): Bool
 		return #if js js.Syntax.code("{0}.includes({1})", self, needle) #else false #end;
+
+	static overload extern inline function startsWith(self: String, str: String): Bool
+		return #if js js.Syntax.code("{0}.startsWith({1})", self, str) #else null #end;
+	static overload extern inline function startsWith(self: String, str: String, position: Int): Bool
+		return #if js js.Syntax.code("{0}.startsWith({1}, {2})", self, str, position) #else null #end;
+
+	static overload extern inline function endsWith(self: String, str: String): Bool
+		return #if js js.Syntax.code("{0}.endsWith({1})", self, str) #else null #end;
+	static overload extern inline function endsWith(self: String, str: String, position: Int): Bool
+		return #if js js.Syntax.code("{0}.endsWith({1}, {2})", self, str, position) #else null #end;
 }

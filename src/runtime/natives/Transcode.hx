@@ -26,4 +26,8 @@ class Transcode {
 			)
 		);
 	}
+
+	public static function _call(src: std.String) {
+		return new Block(Tokenizer.parse(src));
+	}
 }

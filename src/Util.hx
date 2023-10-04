@@ -52,6 +52,24 @@ class Util {
 	}
 #end
 
+	static final IS_NODE = #if js js.Syntax.code("globalThis.XMLHttpRequest") == null #else false #end;
+	static final CHILD_PROCESS = #if js IS_NODE ? js.Lib.require("child_process") : null #else null #end;
+	static final FS = #if js IS_NODE ? js.Lib.require("fs") : null #else null #end;
+	
+	@:noUsing
+	static function readUrl(url: String): String {
+		if(IS_NODE) {
+		#if js
+			// this is so fucking stupid
+			return CHILD_PROCESS.spawnSync("curl", [url]).stdout.toString();
+		#else
+			return null;
+		#end
+		} else {
+			return haxe.Http.requestUrl(url);
+		}
+	}
+
 	private static function _pretty(value: Any, indent: Int): String {
 		final thisLevel = "".lpad("\t", indent);
 		final nextLevel = "".lpad("\t", indent + 1);

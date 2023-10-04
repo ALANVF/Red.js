@@ -322,7 +322,18 @@ class Do {
 			_ => value._match(
 				at(body is Block | body is Paren) => evalValues(body),
 				at(s is types.String) => evalValues(Transcode.call(s, Transcode.defaultOptions)),
-				at(_ is File | _ is Url) => throw 'NYI',
+				at(file is File) => {
+					if(Util.IS_NODE) {
+						var f = file.toJs();
+						if(f.startsWith("/c/") || f.startsWith("/C/")) {
+							f = "C:/" + f.substr(3);
+						}
+						evalValues(Transcode._call(Util.FS.readFileSync(f).toString()));
+					} else {
+						throw "Not available on web!";
+					}
+				},
+				at(url is Url) => evalValues(Transcode._call(Util.readUrl(url.toJs()))),
 				_ => evalValue(value)
 			)
 		);
