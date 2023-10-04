@@ -195,4 +195,19 @@ abstract class _BlockLikeActions<This: _BlockLike> extends SeriesActions<This, V
 	override function insert(series: This, value: Value, options: AInsertOptions): This {
 		return cast _insert(series, value, options, false);
 	}
+
+	override function swap(series1: This, series2: Value): This {
+		if(series1.length == 0) return series1;
+		series2._match(
+			at(s2 is _BlockLike) => {
+				if(s2.length == 0) return series1;
+				final value1 = series1.rawFastPick(0);
+				final value2 = s2.rawFastPick(0);
+				series1.rawFastPoke(0, value2);
+				s2.rawFastPoke(0, value1);
+				return series1;
+			},
+			_ => throw "bad"
+		);
+	}
 }
