@@ -201,7 +201,6 @@ class Do {
 
 			values = args._2;
 
-			trace(path);
 			if(path == null) {
 				while(values.length > 0) {
 					values.getNext()._match(
