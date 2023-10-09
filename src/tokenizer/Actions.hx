@@ -47,7 +47,6 @@ class Actions {
 
 	public static function point(rdr: Reader) {
 		final x = number(rdr) ?? throw "Invalid float literal!";
-		trace(x);
 		rdr.matchRx(Regexps.pointComma);
 		final y = number(rdr) ?? throw "Invalid float literal!";
 		if(rdr.tryMatchRx(Regexps.pointComma) != null) {
