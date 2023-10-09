@@ -36,15 +36,12 @@ class Eval {
 		}
 
 		for(refine in fn.refines) {
-			refines[refine.name]._match(
-				at(refArgs!) => {
-					fctx.set(refine.name, Logic.TRUE);
-					for(j => param in refine.params) {
-						fctx.set(param.name, refArgs[j]);
-					}
-				},
-				_ => {}
-			);
+			refines[refine.name]._and(refArgs => {
+				fctx.set(refine.name, Logic.TRUE);
+				for(j => param in refine.params) {
+					fctx.set(param.name, refArgs[j]);
+				}
+			});
 		}
 
 		try {

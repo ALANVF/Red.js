@@ -36,6 +36,10 @@ class Bind {
 			_ => throw "error!"
 		);
 
+		return _call(word, ctx, options);
+	}
+
+	public static function _call(word: Value, ctx: Context, options: NBindOptions): Value {
 		word._match(
 			at(w is _AnyWord) => return w.copyIn(ctx, ctx.addWord(w)),
 			at(b is Block) => {

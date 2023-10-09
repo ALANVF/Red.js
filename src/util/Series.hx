@@ -52,6 +52,12 @@ abstract Series<T>(_Series<T>) from _Series<T> {
 
 	public inline function next() return skip(1);
 
+	public inline function getNext() {
+		this.offset++;
+		return this.values[this.offset - 1];
+	}
+
+	// TODO: remove this it's yucky and will always allocate bc haxe is fucking stupid
 	@:op(A++)
 	inline function incrPost(): Series<T> {
 		final ret = this;

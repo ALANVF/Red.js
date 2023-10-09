@@ -179,4 +179,9 @@ typedef NTranscodeOptions = {
 	?trace:   {callback: Function}
 }
 
+typedef NApplyOptions = {
+	all: Bool,
+	safer: Bool
+};
+
 typedef _NativeOptions = {}

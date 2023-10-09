@@ -20,7 +20,7 @@ class Function extends _Function {
 		}
 		for(refine in refines) {
 			this.ctx.add(refine.name, Logic.FALSE);
-			for(param in params) {
+			for(param in refine.params) {
 				this.ctx.add(param.name, None.NONE);
 			}
 		}

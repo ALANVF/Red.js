@@ -167,6 +167,7 @@
 | `decompress`        | N*     |
 | `recycle`           | NA     |
 | `transcode`         | P      |
+| `apply`             | Y      |
 
 \* This can't be used in browsers.
 

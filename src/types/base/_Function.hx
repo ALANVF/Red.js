@@ -53,4 +53,8 @@ abstract class _Function extends Value implements IFunction {
 
 		return nparams;
 	}
+
+	public function findRefine(w: _Word) {
+		return refines.find(ref -> w.symbol.equalsString(ref.name));
+	}
 }

@@ -861,6 +861,15 @@ class Main {
 				#get-definition NAT_AS
 			]
 
+			apply: make native! [[
+					func	[word! path! any-function!]
+					args	[block!]
+					/all
+					/safer
+				]
+				#get-definition NAT_APPLY
+			]
+
 			+: make op! :add
 			-: make op! :subtract
 			*: make op! :multiply

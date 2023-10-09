@@ -11,6 +11,7 @@ import types.Word;
 import types.GetWord;
 import types.SetWord;
 import types.LitWord;
+import types.Refinement;
 import types.Block;
 import types.Paren;
 import types.Unset;
@@ -38,7 +39,13 @@ enum GroupedExpr {
 	GSetWord(s: SetWord, e: GroupedExpr);
 	GSetPath(s: SetPath, e: GroupedExpr);
 	GOp(l: GroupedExpr, op: Op, r: GroupedExpr);
-	GCall(f: IFunction, args: Array<GroupedExpr>, refines: Dict<String, Array<GroupedExpr>>);
+	GCall(
+		f: IFunction,
+		args: Array<GroupedExpr>,
+		refines: Dict<String, Array<GroupedExpr>>,
+		?dynamicRefines: Dict<String, GroupedExpr>,
+		?safer: Bool
+);
 	GUnset;
 }
 
@@ -68,7 +75,7 @@ class Do {
 	static function _doesBecomeFunction(value: Value, values: Values) {
 		return value._match(
 			at(fn is IFunction) => mkResult(fn, values),
-			at(g is IGetPath, when(values.isNotTail())) => switch g.getPath(values++[0]) {
+			at(g is IGetPath, when(values.isNotTail())) => switch g.getPath(values.getNext()) {
 				case Some(v): _doesBecomeFunction(v, values);
 				case None: null;
 			},
@@ -120,7 +127,7 @@ class Do {
 			);
 		}
 
-		return values++[0].nonNull()._match(
+		return values.getNext().nonNull()._match(
 			at(s is SetWord) => groupNextExpr(values).map(e -> GSetWord(s, e)),
 			at(s is SetPath) => groupNextExpr(values).map(e -> GSetPath(s, e)),
 			at((_.get() => fn is IFunction) is Word) => // WE HAS DA FLOW TYPING!!!
@@ -131,24 +138,33 @@ class Do {
 				if(rest.length == 0) {
 					args.map(a -> GCall(fn, a, []));
 				} else {
-					final refines = new Dict();//: Dict<String, Array<GroupedExpr>> = [];
+					final refines = new Dict<String, Array<GroupedExpr>>();
+					var dynamicRefines = new Dict<String, GroupedExpr>();
 
 					values = args._2;
 
 					for(value in rest) {
 						value._match(
-							at(w is Word) => switch fn.refines.find(ref -> w.symbol.equalsString(ref.name)) {
+							at(w is Word) => switch fn.findRefine(w) {
 								case null: throw 'Unknown refinement `/${w.symbol.name}`!';
 								case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.symbol.name}`!';
 								case {name: n, params: params2}:
 									detuple([@var refine, values], groupParams(values, params2));
 									refines[n] = refine;
 							},
+							at(w is GetWord) => switch fn.findRefine(w) {
+								case null: throw 'Unknown refinement `/${w.symbol.name}`!';
+								case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.symbol.name}`!';
+								case {name: n, params: params2}:
+									detuple([@var refine, values], groupParams(values, params2));
+									refines[n] = refine;
+									dynamicRefines[n] = GNoEval(w.get());
+							},
 							_ => throw "Invalid refinement!"
 						);
 					}
 					
-					new Result(GCall(fn, args._1, refines), values);
+					new Result(GCall(fn, args._1, refines, dynamicRefines), values);
 				}
 			},
 			at(v) => checkForOp(values)._match(
@@ -160,15 +176,82 @@ class Do {
 		return new Result(GUnset, values);
 	}
 
+	public static function groupFnApply(fn: IFunction, path: Null<_Path>, values: Values, all: Bool, safer: Bool) {
+		final args = groupParams(values, fn.params);
+
+		return if(all) {
+			if(path != null) throw "bad";
+
+			values = args._2;
+
+			final refines = new Dict<String, Array<GroupedExpr>>();
+			final dynamicRefines = new Dict<String, GroupedExpr>();
+
+			for(refine in fn.refines) {
+				detuple([@var refineFlag, values], groupNextExpr(values));
+				detuple([@var refineArgs, values], groupParams(values, refine.params));
+				refines[refine.name] = refineArgs;
+				dynamicRefines[refine.name] = refineFlag;
+			}
+
+			new Result(GCall(fn, args._1, refines, dynamicRefines, safer), values);
+		} else {
+			final refines = new Dict<String, Array<GroupedExpr>>();
+			final dynamicRefines = new Dict<String, GroupedExpr>();
+
+			values = args._2;
+
+			trace(path);
+			if(path == null) {
+				while(values.length > 0) {
+					values.getNext()._match(
+						at(r is Refinement) => {
+							final refine = fn.findRefine(r) ?? throw "bad";
+							detuple([@var flag, values], groupNextExpr(values));
+							detuple([@var refineArgs, values], groupParams(values, refine.params));
+							refines[r.symbol.name] = refineArgs;
+							dynamicRefines[r.symbol.name] = flag;
+						},
+						_ => throw "bad"
+					);
+				}
+			} else {
+				for(value in path) {
+					value._match(
+						at(w is Word) => switch fn.findRefine(w) {
+							case null: throw 'Unknown refinement `/${w.symbol.name}`!';
+							case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.symbol.name}`!';
+							case {name: n, params: params2}:
+								detuple([@var refine, values], groupParams(values, params2));
+								refines[n] = refine;
+						},
+						at(w is GetWord) => switch fn.findRefine(w) {
+							case null: throw 'Unknown refinement `/${w.symbol.name}`!';
+							case {name: n} if(refines.has(n)): throw 'Duplicate refinement `/${w.symbol.name}`!';
+							case {name: n, params: params2}:
+								detuple([@var wValue, values], groupNextExpr(values));
+								detuple([@var refine, values], groupParams(values, params2));
+								refines[n] = refine;
+								dynamicRefines[n] = wValue;
+						},
+						_ => throw "Invalid refinement!"
+					);
+				}
+			}
+			
+			new Result(GCall(fn, args._1, refines, dynamicRefines, safer), values);
+		}
+	}
+
 	public static function groupNextExprForParam(values: Values, param: _Param): Result<GroupedExpr> {
 		return switch param.quoting {
 			case QVal: groupNextExpr(values);
 			case QGet if(values.isTail()): mkResult(GUnset, values);
-			case QGet: mkResult(GNoEval(values++[0].nonNull()), values);
+			case QGet: mkResult(GNoEval(values.getNext().nonNull()), values);
 			case QLit:
 				//eval-path pc pc + 1 end code no yes yes no
 				mkResult(
-					values++[0].nonNull()._match(
+					values.getNext().nonNull()._match(
 						at(v is Paren | v is GetWord | v is GetPath) => GValue(v),
 						at(v) => GNoEval(v)
 					),
@@ -253,13 +336,21 @@ class Do {
 			case GSetPath(s, e): evalPath(s, evalGroupedExpr(e), false, false);
 			case GOp(left, op, right):
 				Eval.callAnyFunction(op, [evalGroupedExpr(left), evalGroupedExpr(right)], null);
-			case GCall(fn, args, refines):
+			case GCall(fn, args, refines, dynamicRefines, safer):
 				Eval.callAnyFunction(
 					fn,
 					args.map(a -> evalGroupedExpr(a)),
 					{
 						final res = new Dict();
-						for(k => v in refines) res[k] = v.map(a -> evalGroupedExpr(a));
+						for(k => v in refines) {
+							if(js.Syntax.code("{0}?.has({1})", dynamicRefines, k)) {
+								if(!evalGroupedExpr(dynamicRefines[k]).isTruthy()) {
+									if(!safer) v.forEach(a -> evalGroupedExpr(a));
+									continue;
+								}
+							}
+							res[k] = v.map(a -> evalGroupedExpr(a));
+						}
 						res;
 					}
 				);

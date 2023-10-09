@@ -92,6 +92,7 @@ class Natives {
 			at([NNow(f), []]) => f(Options.fromRefines(NNowOptions, refines)),
 			at([NSign_q(f), [n]]) => f(n),
 			at([NTranscode(f), [v]]) => f(v, Options.fromRefines(NTranscodeOptions, refines)),
+			at([NApply(f), [fn, b is Block]]) => f(fn, b, Options.fromRefines(NApplyOptions, refines)),
 			_ => throw "NYI"
 		);
 	}

@@ -118,6 +118,7 @@ enum NativeFn {
 	NDecompress(fn: (data: Binary, options: NDecompressOptions) -> Value);
 	NRecycle(fn: (options: NRecycleOptions) -> Unset);
 	NTranscode(fn: (src: Value, options: NTranscodeOptions) -> Value);
+	NApply(fn: (func: Value, args: Block, options: NApplyOptions) -> Value);
 }
 
 class Native extends _Function {

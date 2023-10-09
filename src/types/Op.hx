@@ -2,7 +2,7 @@ package types;
 
 import types.base.IFunction;
 import types.base._Function;
-import haxe.ds.Option;
+import types.base._Word;
 
 class Op extends Value implements IFunction {
 	public var origSpec(get, set): Block;
@@ -39,4 +39,8 @@ class Op extends Value implements IFunction {
 	}
 
 	public function arityWithRefines(refines: Iterable<std.String>) return 2;
+
+	public function findRefine(w: _Word) {
+		return refines.find(ref -> w.symbol.equalsString(ref.name));
+	}
 }

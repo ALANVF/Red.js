@@ -32,4 +32,5 @@ interface IFunction extends IValue {
 	public var arity(get, never): Int;
 
 	public function arityWithRefines(refines: Iterable<std.String>): Int;
+	public function findRefine(w: _Word): Null<_Refine>;
 }
