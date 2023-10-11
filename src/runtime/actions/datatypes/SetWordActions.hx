@@ -12,6 +12,10 @@ import types.Logic;
 import types.String;
 
 class SetWordActions extends WordActions<SetWord> {
+	static function __init__() {
+		js.Syntax.code("{0}.thisType = {1}", SetWordActions, SetWord);
+	}
+
 	override function mold(value: SetWord, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
 		part = form(value, buffer, arg, part);
 		buffer.appendChar(':'.code);

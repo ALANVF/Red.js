@@ -12,6 +12,10 @@ import types.Logic;
 import types.String;
 
 class LitWordActions extends WordActions<LitWord> {
+	static function __init__() {
+		js.Syntax.code("{0}.thisType = {1}", LitWordActions, LitWord);
+	}
+	
 	override function mold(value: LitWord, buffer: String, _, _, _, arg: Null<Int>, part: Int, _) {
 		buffer.appendChar("'".code);
 		return form(value, buffer, arg, part - 1);

@@ -63,6 +63,15 @@ class Context /*extends Value*/ {
 		return this.values[offset];
 	}
 
+	public function getSymbol(word: std.String, ignoreCase: Bool = true) {
+		switch this.offsetOf(word, ignoreCase) {
+			case -1:
+				throw 'Word `$word` doesn\'t exist!';
+			case index:
+				return this.symbols[index];
+		}
+	}
+
 	public function set(word: std.String, value: Value, ignoreCase: Bool = true) {
 		switch this.offsetOf(word, ignoreCase) {
 			case -1:

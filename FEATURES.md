@@ -18,12 +18,12 @@
 | `char!`                  | Y        | Y      | Y      | P    | Y      | Y      | Y         | P             |
 | `integer!`               | Y        | Y      | Y      | P    | Y      | Y      | P         | P             |
 | `float!`                 | Y        | Y      | Y      | P    | P      | Y      | P         | P             |
-| `word!`                  | Y        | Y      | N      | N    | Y      | Y      | Y         | N             |
-| `set-word!`              | Y        | Y      | N      | N    | Y      | Y      | Y         | N             |
-| `lit-word!`              | Y        | Y      | N      | N    | Y      | Y      | Y         | N             |
-| `get-word!`              | Y        | Y      | N      | N    | Y      | Y      | Y         | N             |
-| `refinement!`            | Y        | Y      | N      | N    | Y      | Y      | Y         | N             |
-| `issue!`                 | Y        | Y      | N      | N    | Y      | Y      | Y         | N             |
+| `word!`                  | Y        | Y      | P      | P    | Y      | Y      | Y         | Y             |
+| `set-word!`              | Y        | Y      | P      | P    | Y      | Y      | Y         | Y             |
+| `lit-word!`              | Y        | Y      | P      | P    | Y      | Y      | Y         | Y             |
+| `get-word!`              | Y        | Y      | P      | P    | Y      | Y      | Y         | Y             |
+| `refinement!`            | Y        | Y      | P      | P    | Y      | Y      | Y         | Y             |
+| `issue!`                 | Y        | Y      | Y      | Y    | Y      | Y      | Y         | Y             |
 | `native!`                | Y        | NA     | Y      | N    | Y      | Y      | Y         | Y             |
 | `action!`                | Y        | NA     | Y      | N    | Y      | Y      | Y         | Y             |
 | `op!`                    | Y        | NA     | Y      | N    | Y      | Y      | Y         | Y             |
@@ -88,7 +88,7 @@
 | `get`               | Y      |
 | `set`               | Y      |
 | `print`             | Y      |
-| `prin`              | N*     |
+| `prin`              | Y*     |
 | `equal?`            | Y      |
 | `not-equal?`        | Y      |
 | `strict-equal?`     | Y      |
