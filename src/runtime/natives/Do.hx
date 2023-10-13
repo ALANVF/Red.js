@@ -85,7 +85,7 @@ class Do {
 
 	static function doesBecomeFunction(path: Path) {
 		return path.pick(0)._match(
-			at(head is Word) => _doesBecomeFunction(head.get(), (path : Values).next()),
+			at(head is Word) => _doesBecomeFunction(head.get(true), (path : Values).next()),
 			_ => null
 		);
 	}
@@ -130,7 +130,7 @@ class Do {
 		return values.getNext().nonNull()._match(
 			at(s is SetWord) => groupNextExpr(values).map(e -> GSetWord(s, e)),
 			at(s is SetPath) => groupNextExpr(values).map(e -> GSetPath(s, e)),
-			at((_.get() => fn is IFunction) is Word) => // WE HAS DA FLOW TYPING!!!
+			at((_.get(true) => fn is IFunction) is Word) => // WE HAS DA FLOW TYPING!!!
 				groupParams(values, fn.params).map(args -> GCall(fn, args, [])),
 			at((doesBecomeFunction(_) => {_1: fn, _2: rest}) is Path) => {
 				final args = groupParams(values, fn.params);
