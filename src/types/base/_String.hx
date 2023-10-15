@@ -119,7 +119,7 @@ abstract class _String extends _SeriesOf<Char, Int> {
 	}
 
 	public function insert(value: _String, index: Int, limit: Null<Int>) {
-		(untyped values : {splice: (Int, Int, ...Any) -> Void}).splice(index, 0,
+		values.insertAll(index,
 			...Util._andOr(limit, limit => {
 				if(value.index == 0) value.values.slice(0, value.index + limit);
 				else value.values.slice(value.index, value.index + limit);
@@ -128,6 +128,17 @@ abstract class _String extends _SeriesOf<Char, Int> {
 				else value.values.slice(value.index);
 			})
 		);
+	}
+
+	public function overwrite(value: _String, index: Int, limit: Null<Int>) {
+		final chars = Util._andOr(limit, limit => {
+			if(value.index == 0) value.values.slice(0, value.index + limit);
+			else value.values.slice(value.index, value.index + limit);
+		}, {
+			if(value.index == 0) value.values;
+			else value.values.slice(value.index);
+		});
+		values.fullSplice(index, chars.length, ...chars);
 	}
 
 	public function appendLiteral(value: std.String) {

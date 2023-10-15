@@ -219,6 +219,18 @@ class Main {
 				#get-definition ACT_BACK
 			]
 
+			change: make action! [[
+					series [series! port!]
+					value [any-type!]
+					/part
+						range [number! series!]
+					/only
+					/dup
+						count [number!]
+				]
+				#get-definition ACT_CHANGE
+			]
+
 			clear: make action! [[
 					series	 [series! port! bitset! map! none!]
 					return:  [series! port! bitset! map! none!]
@@ -279,6 +291,16 @@ class Main {
 				#get-definition ACT_LENGTH?
 			]
 
+			move: make action! [[
+					origin	   [series! port!]
+					target	   [series! port!]
+					/part
+						length [integer!]
+					return:    [series! port!]
+				]
+				#get-definition ACT_MOVE
+			]
+
 			next: make action! [[
 					series	 [series! port!]
 					return:  [series! port!]
@@ -309,6 +331,17 @@ class Main {
 					return:  [series! port! bitset!]
 				]
 				#get-definition ACT_POKE
+			]
+
+			remove: make action! [[
+					series	 [series! port! bitset! map! none!]
+					/part
+						length [number! char! series!]
+					/key
+						key-arg [scalar! any-string! any-word! binary! block!]
+					return:  [series! port! bitset! map! none!]
+				]
+				#get-definition ACT_REMOVE
 			]
 
 			reverse: make action! [[
@@ -353,7 +386,19 @@ class Main {
 				]
 				#get-definition ACT_TAKE
 			]
-		
+			
+			trim: make action! [[
+					series	[series! port!]
+					/head
+					/tail
+					/auto
+					/lines
+					/all
+					/with
+						str [char! string! binary! integer!]
+				]
+				#get-definition ACT_TRIM
+			]
 		");
 
 		runtime.Eval.evalCode("

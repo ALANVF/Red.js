@@ -1,5 +1,6 @@
 package runtime.actions.datatypes;
 
+import util.Set;
 import types.base.CompareResult;
 import types.base.ComparisonOp;
 import types.base._ActionOptions;
@@ -7,8 +8,10 @@ import types.base._Path;
 import types.base._String;
 import types.base._BlockLike;
 import types.base._Block;
+import types.base._Integer;
 import types.Value;
 import types.String;
+import types.Binary;
 import types.Char;
 import types.Integer;
 import types.Pair;
@@ -88,6 +91,43 @@ class StringActions<This: _String = String> extends SeriesActions<This, Char, In
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 		0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0xFF, 0x00
 	);
+	static final WHITE_CHAR = new Set(
+		[for(i in 0...33+1) i]
+		.concat([
+			133,
+			160,
+			5760,
+			6158
+		])
+		.concat([for(i in 8192...8202+1) i])
+		.concat([
+			8232,
+			8233,
+			8239,
+			8287,
+			12288
+		])
+	);
+	static final SPACE_CHAR = new Set(
+		[
+			32,
+			9,
+			133,
+			160,
+			5760,
+			6158
+		]
+		.concat([for(i in 8192...8202+1) i])
+		.concat([
+			8232,
+			8233,
+			8239,
+			8287,
+			12288
+		])
+	);
+
+
 	static inline function byteToHex(b: Int) {
 		return b.toString(16).toUpperCase().padStart(2, "0");
 	}
@@ -222,6 +262,180 @@ class StringActions<This: _String = String> extends SeriesActions<This, Char, In
 		}
 
 		return if(isAppend) string else string.skip(added * dupN);
+	}
+
+	public static function changeRange(str: _String, cell: Value, cellIdx: Int, allAdded: {ref: Int}, limit: Int, hasPart: Bool) {
+		var added = 0;
+
+		while(cellIdx < limit) {
+			cell._match(
+				at(c is Char) => {
+					if(hasPart) {
+						str.values.insert(str.index, c.int);
+					} else {
+						str.values[str.index] = c.int;
+					}
+				},
+				_ => {
+					final formBuf = cell._match(
+						at(s is _String, when(!(cell is types.Tag))) => {
+							s.copy();
+						},
+						_ => {
+							final buf = new String([]);
+							Form._call(cell, buf, null, 0);
+							buf;
+						}
+					);
+					final len = allAdded.ref = formBuf.absLength;
+					if(hasPart) {
+						str.insert(formBuf, added, null);
+					} else {
+						str.overwrite(formBuf, added, null);
+					}
+					added += len;
+				}
+			);
+			cellIdx++;
+		}
+
+		return added;
+	}
+
+	static function trimWith(str: _String, with: Null<Value>) {
+		final withChars = with._match(
+			at(i is _Integer) => new Set([i.int]),
+			at(str2 is String | str2 is Binary) => {
+				final s = str2.values;
+
+				if(str2.length == 0) return;
+
+				// fast path
+				if(str2.index == 0) {
+					new Set(s);
+				} else {
+					// ehh maybe get rid of extra allocation
+					new Set(s.slice(str2.index));
+				}
+			},
+			_ => new Set([9, 10, 13, 32])
+		);
+
+		final s = str.values;
+
+		var c = 0;
+		for(i in str.index...str.length) {
+			if(!withChars.has(s[i])) {
+				if(i > 0) {
+					str.removeAt(0, c);
+				}
+				break;
+			} else {
+				c++;
+			}
+		}
+
+		var i = str.length-1; while(i >= 0) {
+			if(!withChars.has(s[i])) {
+				if(i > 0) {
+					str.removeAt(i+1, c);
+				}
+				break;
+			} else {
+				c++;
+			}
+
+			i--;
+		}
+	}
+
+	static function trimLines(str: _String) {
+		var pad = 0;
+		final s = str.values;
+		final head = str.index;
+		final tail = str.absLength;
+		
+		for(cur in head...tail) {
+			final char = s[cur];
+			if(WHITE_CHAR.has(char)) {
+				if(pad == 1) {
+					s[cur] = ' '.code;
+					pad = 2;
+				}
+			} else {
+				pad = 1;
+			}
+		}
+	}
+
+	static function trimHeadTail(str: _String, isHead: Bool, isTail: Bool) {
+		var appendLF = false;
+		final s = str.values;
+		var head = str.index;
+		var tail = str.length;
+		var cur = head;
+
+		if(isHead || !isTail) {
+			var char;
+			while({char = s[head]; head < tail && WHITE_CHAR.has(char);}) {
+				if(char == 10) appendLF = true;
+				head++;
+			}
+		}
+
+		if(isTail || !isHead) {
+			var char;
+			while({char = s[tail - 1]; head < tail && WHITE_CHAR.has(char);}) {
+				if(char == 10) appendLF = true;
+				tail--;
+			}
+		}
+
+		if(!isHead && !isTail) {
+			var outside = false;
+			var left = 0;
+
+			while(head < tail) {
+				var skip = false;
+				final char = s[head];
+				
+				if(SPACE_CHAR.has(char)) {
+					if(outside) {
+						skip = true;
+					} else {
+						if(left == 0) left = cur;
+					}
+				} else if(char == 10) {
+					outside = true;
+					if(left != 0) {
+						cur = left;
+						left = 0;
+					}
+				} else {
+					outside = false;
+					left = 0;
+				}
+
+				if(!skip) {
+					s[cur] = char;
+					cur++;
+				}
+
+				head++;
+			}
+		} else {
+			trace(head, tail);
+			str.removeAt(0, head);
+			str.removeAt(tail, str.length);
+			cur += (tail - head);
+		}
+
+		if(appendLF && !isTail) {
+			s[cur] = 10;
+		}
+
+		trace(head, tail, cur);
+		s.resize(cur);
 	}
 
 
@@ -391,5 +605,14 @@ class StringActions<This: _String = String> extends SeriesActions<This, Char, In
 
 	override function insert(string: This, value: Value, options: AInsertOptions): This {
 		return cast _insert(string, value, options, false);
+	}
+
+	override function trim(series: This, options: ATrimOptions) {
+		if(options.all || options.with != null) trimWith(series, options.with.str);
+		else if(options.auto) throw "NYI";
+		else if(options.lines) trimLines(series);
+		else trimHeadTail(series, options.head, options.tail);
+
+		return series;
 	}
 }

@@ -17,6 +17,7 @@ import types.Object;
 import types.Map;
 import types.String;
 import types.Typeset;
+import types.None;
 
 import runtime.actions.Form;
 import runtime.actions.Mold;
@@ -237,5 +238,17 @@ class BlockActions<This: _Block = Block> extends _BlockLikeActions<This> {
 			},
 			at(res) => res
 		);
+	}
+
+	override function trim(series: This, options: ATrimOptions) {
+		for(i in 0...series.length) {
+			if(series.rawFastPick(i) == None.NONE) {
+				series.removeAt(i);
+			}
+		}
+
+		{}
+
+		return series;
 	}
 }

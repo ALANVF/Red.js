@@ -71,7 +71,7 @@ class ValueActions<This: Value> {
 	function index_q(series: This): Integer invalid();
 	function insert(series: This, value: Value, options: AInsertOptions): This invalid();
 	function length_q(series: This): Value invalid();
-	function move(origin: This, target: Value, options: AMoveOptions): This invalid();
+	function move(origin: This, target: Value, options: AMoveOptions): Value invalid();
 	function next(series: This): This invalid();
 	function pick(series: This, index: Value): Value invalid();
 	function poke(series: This, index: Value, value: Value): Value invalid();

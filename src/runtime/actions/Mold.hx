@@ -36,6 +36,7 @@ class Mold {
 		arg: Null<Int>, part: Int,
 		indent: Int
 	) {
+		value ??= types.Tag.fromString("null");
 		return Actions.getFor(value).mold(value, buffer, isOnly, isAll, isFlat, arg, part, indent);
 	}
 }

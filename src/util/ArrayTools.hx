@@ -138,6 +138,13 @@ class ArrayTools {
 
 	static inline function at<T>(array: Array<T>, index: Int): T
 		return (untyped array).at(index);
+
+	static inline function insertAll<T>(array: Array<T>, index: Int, ...values: T)
+		(cast array : {splice:(Int,Int,...T)->Any}).splice(index, 0, ...values);
+
+	static inline function fullSplice<T>(array: Array<T>, index: Int, remove: Int, ...values: T)
+		(cast array : {splice:(Int,Int,...T)->Any}).splice(index, remove, ...values);
+
 #else
 
 	static function sorted<T>(arr: Array<T>, cmp: (T, T) -> Int) {
@@ -354,6 +361,17 @@ class ArrayTools {
 
 	static inline function at<T>(array: Array<T>, index: Int): T
 		return array[index < 0 ? array.length + index : index];
+	
+	static inline function insertAll<T>(array: Array<T>, index: Int, ...values: T)
+		for(i => v in values)
+			array.insert(index + i, v);
+
+	static inline function fullSplice<T>(array: Array<T>, index: Int, len: Int, ...values: T) {
+		array.splice(index, len);
+		for(i => v in values) {
+			array.insert(index + i, v);
+		}
+	}
 #end
 
 	/*

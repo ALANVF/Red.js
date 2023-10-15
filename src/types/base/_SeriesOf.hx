@@ -91,6 +91,10 @@ abstract class _SeriesOf<T: Value, V> extends Value implements ISeriesOf<T> {
 	public function removePart(count: Int) {
 		return this.values.splice(this.index, count).map(v -> wrap(v));
 	}
+
+	public function removeAt(index: Int, ?count: Int = 1) {
+		this.values.splice(this.index + index, count);
+	}
 	
 	public function at(index: Int) {
 		return this.clone(
