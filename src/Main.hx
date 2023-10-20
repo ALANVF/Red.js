@@ -250,6 +250,27 @@ class Main {
 				#get-definition ACT_COPY
 			]
 
+			find: make action! [[
+					series	 [series! bitset! typeset! map! none!]
+					value 	 [any-type!]
+					/part
+						length [number! series!]
+					/only
+					/case
+					/same
+					/any
+					/with
+						wild [string!]
+					/skip
+						size [integer!]
+					/last
+					/reverse
+					/tail
+					/match
+				]
+				#get-definition ACT_FIND
+			]
+
 			head: make action! [[
 					series	 [series! port!]
 					return:  [series! port!]
@@ -308,14 +329,6 @@ class Main {
 				#get-definition ACT_NEXT
 			]
 
-			skip: make action! [[
-					series	 [series! port!]
-					offset 	 [integer! pair!]
-					return:  [series! port!]
-				]
-				#get-definition ACT_SKIP
-			]
-
 			pick: make action! [[
 					series	 [series! bitset! pair! tuple! money! date! time!]
 					index 	 [scalar! any-string! any-word! block! logic! time!]
@@ -331,6 +344,16 @@ class Main {
 					return:  [series! port! bitset!]
 				]
 				#get-definition ACT_POKE
+			]
+
+			put: make action! [[
+					series	 [series! map! object!]
+					key 	 [scalar! any-string! all-word! binary!]
+					value 	 [any-type!]
+					/case
+					return:  [series! map! object!]
+				]
+				#get-definition ACT_PUT
 			]
 
 			remove: make action! [[
@@ -353,6 +376,52 @@ class Main {
 					return:  [series! port! pair! tuple!]
 				]
 				#get-definition ACT_REVERSE
+			]
+
+
+			select: make action! [[
+					series	 [series! any-object! map! none!]
+					value 	 [any-type!]
+					/part
+						length [number! series!]
+					/only
+					/case
+					/same
+					/any
+					/with
+						wild [string!]
+					/skip
+						size [integer!]
+					/last
+					/reverse
+					return:  [any-type!]
+				]
+				#get-definition ACT_SELECT
+			]
+			
+			sort: make action! [[
+					series	 [series! port!]
+					/case
+					/skip
+						size [integer!]
+					/compare
+						comparator [integer! block! any-function!]
+					/part
+						length [number! series!]
+					/all
+					/reverse
+					/stable
+					return:  [series!]
+				]
+				#get-definition ACT_SORT
+			]
+
+			skip: make action! [[
+					series	 [series! port!]
+					offset 	 [integer! pair!]
+					return:  [series! port!]
+				]
+				#get-definition ACT_SKIP
 			]
 
 			swap: make action! [[

@@ -26,6 +26,7 @@ class Eval {
 		);
 	}
 
+	// TODO: allow refines to be null for perf reasons
 	static function callFunction(fn: Function, args: Array<Value>, refines: Dict<String, Array<Value>>) {
 		final fctx = fn.ctx;
 		final oldValues = fctx.values;

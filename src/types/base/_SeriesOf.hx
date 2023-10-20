@@ -106,6 +106,10 @@ abstract class _SeriesOf<T: Value, V> extends Value implements ISeriesOf<T> {
 		);
 	}
 
+	public inline function rawAt(index: Int) {
+		return this.clone(this.values, index);
+	}
+
 	public function skip(index: Int) {
 		return this.clone(
 			this.values,

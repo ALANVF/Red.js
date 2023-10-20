@@ -7,6 +7,7 @@ import types.base.CompareResult;
 import types.base._Number;
 import types.Value;
 import types.Logic;
+import types.Integer;
 import types.Word;
 import types.Action;
 import types.TypeKind;
@@ -141,13 +142,14 @@ class Actions {
 		});
 	}
 
-	static function compareValue(value1: Value, value2: Value, op: ComparisonOp): CompareResult {
-		return value1._match(
-			at(l1 is Logic) => cast (untyped l1.cond - (untyped value2 : Logic).cond),
-			at(f is types.base._Function) => cast (value1 == value2 ? 0 : -1),
-			at(_ is None | _ is Unset) => IsSame,
-			_ => getFor(value1).compare(value1, value2, op)
+	static function compareValue(value1: Value, value2: Value, op: ComparisonOp, flags: Int = 0): CompareResult {
+		final res = value1._match(
+			at(l1 is Logic) => (untyped l1.cond - (untyped value2 : Logic).cond),
+			at(f is types.base._Function) => (value1 == value2 ? 0 : -1),
+			at(_ is None | _ is Unset) => 0,
+			_ => cast getFor(value1).compare(value1, value2, op)
 		);
+		return cast if(flags & Sort.REVERSE_MASK != 0) -res else res;
 	}
 
 	static function evalPath(parent: Value, element: Value, ?value: Value) {

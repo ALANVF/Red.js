@@ -1,5 +1,6 @@
 package runtime.actions.datatypes;
 
+import haxe.extern.EitherType;
 import types.base.CompareResult;
 import types.base.ComparisonOp;
 import types.base._ActionOptions;
@@ -13,6 +14,12 @@ import types.Integer;
 import types.Float;
 import types.Pair;
 import types.Logic;
+import types.None;
+import types.Datatype;
+import types.Typeset;
+import types.Function;
+
+import runtime.Sort;
 
 function compareEach(blk1: _BlockLike, blk2: _BlockLike, op: ComparisonOp): CompareResult {
 	final isSame = blk1 == blk2 || (
@@ -164,6 +171,33 @@ abstract class _BlockLikeActions<This: _BlockLike> extends SeriesActions<This, V
 		}
 	}
 
+	static function compareCall(value1: Value, value2: Value, fun: Function, flags: Int) {
+		var v1, v2;
+		if(flags & Sort.REVERSE_MASK == 0) {
+			v1 = value2;
+			v2 = value1;
+		} else {
+			v1 = value1;
+			v2 = value2;
+		}
+
+		final isAll = flags & Sort.ALL_MASK != 0;
+		var num = flags >>> 2;
+		if(isAll && num > 0) {
+			// ???????????????????
+		}
+
+		final res = Eval.callFunction(fun, [v1, v2], new Dict());
+		final res2 = res._match(
+			at(l is Logic) => l.cond.asInt(),
+			at(i is Integer) => i.int,
+			at(f is Float) => Std.int(f.float),
+			at(_ is None) => -1,
+			_ => 1
+		);
+		return cast if(flags & Sort.REVERSE_MASK != 0) -res2 else res2;
+	}
+
 
 	override function compare(value1: This, value2: Value, op: ComparisonOp): CompareResult {
 		value2._match(
@@ -190,10 +224,229 @@ abstract class _BlockLikeActions<This: _BlockLike> extends SeriesActions<This, V
 		return cast _insert(series, value, cast options, true);
 	}
 
-	// ...
+	override function find(series: This, value: Value, options: AFindOptions): Value {
+		final s = series.values;
+		final beg = series.index;
+
+		if(series.absLength == 0 || (!options.reverse && beg >= series.absLength)) {
+			return None.NONE;
+		}
+		var step = 1;
+		var isPart = false;
+		var part = null;
+
+		(options.skip?.size)._and(skip => {
+			step = skip.int;
+			if(step <= 0) throw "error";
+		});
+		(options.part?.length)._and(length => {
+			part = length._match(
+				at(i is Integer) => {
+					if(i.int <= 0) return None.NONE;
+					beg + i.int - 1;
+				},
+				at(b is _BlockLike) => {
+					if(!(b.thisType() == series.thisType() && b.values == series.values)) {
+						throw "bad";
+					}
+					b.index;
+				},
+				_ => throw "bad"
+			);
+			if(part >= series.absLength) part = series.absLength - 1;
+			isPart = true;
+		});
+
+		final isDt = !options.only && value is Datatype;
+		final isTs = !options.only && value is Typeset;
+		var isAnyBlk = value is _BlockLike;
+		var op = if(options._case) CStrictEqual else CFind;
+		if(options.same) {
+			op = CSame;
+			if(options.only) isAnyBlk = false;
+		}
+		
+		if(options.match || isAnyBlk || !(series is Hash)) {
+			var valuesOffset = null;
+			var values = null;
+			var valuesCount = if(options.only) 0 else if(isAnyBlk) {
+				final b: _BlockLike = cast value;
+				valuesOffset = b.index;
+				values = b;
+				b.length; // >> 4 - b/head
+			} else 0;
+			if(valuesCount < 0) valuesCount = 0;
+
+			var slot;
+			var end;
+			if(options.last) {
+				step = -step;
+				slot = part ?? if(valuesCount > 0) series.absLength - valuesCount else series.absLength - 1;
+				end = 0;
+			} else if(options.reverse) {
+				step = -step;
+				slot = part ?? if(valuesCount > 0) beg - valuesCount else beg - 1;
+				end = 0;
+				if(slot < end) return None.NONE;
+			} else {
+				slot = beg;
+				end = if(isPart) part + 1 else series.absLength;
+			}
+
+			final isReverse = options.reverse || options.last;
+
+			final type = if(isDt) (cast value : Datatype).kind else cast -1;
+
+			var wasFound = false;
+			do {
+				if(valuesCount == 0) {
+					final stype = s[slot].TYPE_KIND;
+					wasFound =
+						if(isDt) stype == type
+						else if(isTs) (cast value : Typeset).types.has(Datatype.TYPES[stype])
+						else Actions.compare(s[slot], value, op).cond;
+				} else {
+					var n = 0;
+					var slot2 = slot;
+					do {
+						wasFound = Actions.compare(s[slot2], values.values[valuesOffset], op).cond;
+						slot2++;
+						n++;
+					} while(!(
+						!wasFound
+						|| n == valuesOffset
+						|| (isReverse && slot2 <= end)
+						|| (!isReverse && slot2 >= end)
+					));
+					if(n <= valuesOffset && slot2 >= end) wasFound = false;
+				}
+				slot += step;
+			} while(!(
+				options.match
+				|| (!options.match && wasFound)
+				|| (isReverse && slot < end)
+				|| (!isReverse && slot >= end)
+			));
+			if(options.tail) {
+				if(valuesOffset > 0) {
+					slot -= step + valuesOffset;
+				} else if(isReverse) {
+					slot -= step + 1;
+				}
+			} else {
+				slot -= step;
+			}
+
+			if(wasFound) {
+				return series.at(slot - series.index + (!options.reverse).asInt());
+			} else {
+				return None.NONE;
+			}
+		} else {
+			throw "NYI";
+		}
+
+		return series;
+	}
 
 	override function insert(series: This, value: Value, options: AInsertOptions): This {
 		return cast _insert(series, value, options, false);
+	}
+
+	override function select(series: This, value: Value, options: ASelectOptions): Value {
+		var result = find(series, value, Macros.addFields(options, {match: false, tail: false}));
+		
+		if(result != None.NONE) {
+			final offset = if(options.only) 1 else value._match(
+				at(b is _BlockLike, when(!(value is Hash)
+				)) => b.index,
+				_ => 1
+			);
+			final blk: This = cast result;
+			final s = blk.values;
+			final p = blk.index + offset;
+			if(p < blk.absLength) {
+				result = s[p];
+			} else {
+				result = None.NONE;
+			}
+		}
+		return result;
+	}
+
+	override function sort(series: This, options: ASortOptions) {
+		var step = 1;
+		var flags = 0;
+		final s = series.values;
+		var head = series.index;
+		if(head == series.absLength) return series;
+		var len = series.length;
+
+		(options.part?.length)._and(part => {
+			var len2 = part._match(
+				at(i is Integer) => i.int,
+				at(b is _BlockLike) => {
+					if(!(series.thisType() == b.thisType() && series.values == b.values)) {
+						throw "bad";
+					}
+					b.index - series.index;
+				},
+				_ => throw "bad"
+			);
+			if(len2 < len) {
+				len = len2;
+				if(len2 < 0) {
+					len2 = -len2;
+					series.index -= len2;
+					len = if(series.index < 0) {
+						series.index = 0;
+						0;
+					} else len2;
+					head -= len;
+				}
+			}
+		});
+		if(len == 0) return series;
+
+		(options.skip?.size)._andOr(skip => {
+			step = skip.int;
+			if(step <= 0 || len % step != 0 || step > len) throw "bad";
+			if(step > 1) untyped len /= step;
+		}, {
+			if(options.all) throw "bad";
+		});
+
+		if(options.reverse) flags |= Sort.REVERSE_MASK;
+		var op: EitherType<Function, ComparisonOp> = options._case ? CCaseSort : CSort;
+		var cmp: SortingFunc<Value> = Actions.compareValue;
+
+		(options.compare?.comparator)._andOr(comparator => {
+			comparator._match(
+				at(f is Function) => {
+					if(options.all && options.skip != null) {
+						flags |= Sort.ALL_MASK;
+						flags |= step << 2;
+					}
+					cmp = compareCall;
+					op = f;
+				},
+				at(i is Integer) => {
+					if(options.all || options.skip == null) throw "bad";
+					final offset = i.int;
+					if(offset < 1 || offset > step) throw "bad";
+					flags |= (offset - 1) << 2;
+				},
+				_ => throw "bad"
+			);
+		}, {
+			if(options.all) flags |= Sort.ALL_MASK;
+		});
+		if(options.stable) {
+			Sort.mergeSort(series.values, head, len, step, op, flags, cmp);
+		} else {
+			Sort.quickSort(series.values, head, len, step, op, flags, cmp);
+		}
+		return series;
 	}
 
 	override function swap(series1: This, series2: Value): This {
@@ -209,5 +462,20 @@ abstract class _BlockLikeActions<This: _BlockLike> extends SeriesActions<This, V
 			},
 			_ => throw "bad"
 		);
+	}
+
+	override function put(series: This, key: Value, value: Value, options: APutOptions): Value {
+		final blk: This = cast find(series, key, Macros.addFields(Find.defaultOptions, {_case: options._case}));
+
+		if((cast blk) == None.NONE) {
+			series.values.push(key);
+			series.values.push(value);
+		} else {
+			final s = blk.values;
+			final slot = blk.index + 1;
+			s[slot] = value;
+		}
+
+		return value;
 	}
 }

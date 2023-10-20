@@ -6,9 +6,9 @@
 # Datatypes
 |                          | datatype | syntax | `make` | `to` | `form` | `mold` | `compare` | other actions |
 |--------------------------|----------|--------|--------|------|--------|--------|-----------|---------------|
-| `datatype!`              | Y        | NA     | NA     | NA   | Y      | Y      | Y         | N             |
-| `unset!`                 | Y        | NA     | Y      | Y    | Y      | Y      | Y         | N             |
-| `none!`                  | Y        | Y      | Y      | Y    | Y      | Y      | Y         | P            |
+| `datatype!`              | Y        | NA     | NA     | NA   | Y      | Y      | Y         | Y             |
+| `unset!`                 | Y        | NA     | Y      | Y    | Y      | Y      | Y         | Y             |
+| `none!`                  | Y        | Y      | Y      | Y    | Y      | Y      | Y         | P             |
 | `logic!`                 | Y        | Y      | Y      | Y    | Y      | Y      | Y         | P             |
 | `block!`                 | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
 | `paren!`                 | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |

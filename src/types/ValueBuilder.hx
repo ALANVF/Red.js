@@ -104,7 +104,7 @@ class ValueBuilder {
 			if(sc.name != "Value") {
 				for(field in sc.fields.get()) if(
 					!field.isAbstract
-					&& field.kind.match(FMethod(_))
+					&& field.kind.match(FMethod(MethNormal))
 					&& !fields.some(f -> f.name == field.name)
 				) {
 					final cfield = Reflect.copy(field);

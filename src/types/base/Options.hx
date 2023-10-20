@@ -30,7 +30,8 @@ class Options {
 					t: type
 				};
 
-				return Context.getTypedExpr(a);
+				final ctype = Context.toComplexType(type);
+				return macro (${Context.getTypedExpr(a)} : $ctype);
 			default:
 				throw "error";
 		}
@@ -49,7 +50,7 @@ class Options {
 					fields.push({
 						name: field.name,
 						expr: switch field.type {
-							case TAbstract(_.get().name => "Bool", _): Context.typeExpr(macro $refines[$v{name}]);
+							case TAbstract(_.get().name => "Bool", _): Context.typeExpr(macro $refines[$v{name}] != null); // TODO: why is this needed lol? I thought it was already handled somewhere else
 							case TAbstract(_.get().name => "Null", [param]):
 								Context.typeExpr(macro {
 									switch $refines[$v{name}] {

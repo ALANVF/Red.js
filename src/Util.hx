@@ -70,6 +70,22 @@ class Util {
 		}
 	}
 
+	static function toUpperCase(char: Int) {
+		return if("a".code <= char && char <= 'z'.code) {
+			char - 32;
+		} else {
+			char;
+		}
+	}
+
+	static function toLowerCase(char: Int) {
+		return if("A".code <= char && char <= 'Z'.code) {
+			char + 32;
+		} else {
+			char;
+		}
+	}
+
 	private static function _pretty(value: Any, indent: Int): String {
 		final thisLevel = "".lpad("\t", indent);
 		final nextLevel = "".lpad("\t", indent + 1);

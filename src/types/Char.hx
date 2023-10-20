@@ -43,7 +43,7 @@ class Char extends _Integer {
 	}
 
 	public static function fromRed(str: std.String) {
-		return Char.fromCode(
+		return fromCode(
 			if(str.cca(0) == "^".code) {
 				switch(str.substr(1).toUpperCase()) {
 					case "\"": 34;
@@ -106,7 +106,7 @@ class Char extends _Integer {
 
 	public function toUpperCase() {
 		return if("a".code <= this.int && this.int <= 'z'.code) {
-			Char.fromCode(this.int - 32);
+			fromCode(this.int - 32);
 		} else {
 			this;
 		}
@@ -114,7 +114,7 @@ class Char extends _Integer {
 
 	public function toLowerCase() {
 		return if("A".code <= this.int && this.int <= 'Z'.code) {
-			Char.fromCode(this.int + 32);
+			fromCode(this.int + 32);
 		} else {
 			this;
 		}

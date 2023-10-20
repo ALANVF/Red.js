@@ -401,7 +401,7 @@ class SeriesActions<This: _SeriesOf<Elem, Val>, Elem: Value, Val> extends ValueA
 			part = len._match(
 				at(i is Integer) => i.int,
 				at(series2 is _SeriesOf<Elem, Val>) => {
-					if(series2.thisType() == series.thisType() && series2.values == series.values) {
+					if(!(series2.thisType() == series.thisType() && series2.values == series.values)) {
 						throw "bad";
 					}
 					series2.index - series.index;
@@ -413,7 +413,11 @@ class SeriesActions<This: _SeriesOf<Elem, Val>, Elem: Value, Val> extends ValueA
 		});
 
 		options.key?.keyArg._and(key => {
-			throw "NYI";
+			final ser = find(series, key, Macros.addFields(Find.defaultOptions, {_case: true}));
+			if(ser == None.NONE) return cast ser;
+			items++;
+			part++;
+			series = cast ser;
 		});
 
 		series.values.splice(series.index, items);
@@ -433,7 +437,7 @@ class SeriesActions<This: _SeriesOf<Elem, Val>, Elem: Value, Val> extends ValueA
 			part = len._match(
 				at(i is Integer) => i.int,
 				at(series2 is _SeriesOf<Elem, Val>) => {
-					if(series2.thisType() == series.thisType() && series2.values == series.values) {
+					if(!(series2.thisType() == series.thisType() && series2.values == series.values)) {
 						throw "bad";
 					}
 					series2.index - series.index;
@@ -463,14 +467,14 @@ class SeriesActions<This: _SeriesOf<Elem, Val>, Elem: Value, Val> extends ValueA
 				for(j in 0...skip) {
 					final idx1 = minIndex + i + j;
 					final idx2 = maxIndex - i - skip + j + 1;
-					js.Syntax.code("[{0}, {1}] = [{1}, {0}]", s[idx1], s[idx2]);
+					Macros.swap(s[idx1], s[idx2]);
 				}
 			}
 		}, {
 			for(i in 0...half) {
 				final idx1 = minIndex + i;
 				final idx2 = maxIndex - i;
-				js.Syntax.code("[{0}, {1}] = [{1}, {0}]", s[idx1], s[idx2]);
+				Macros.swap(s[idx1], s[idx2]);
 			}
 		});
 
@@ -483,10 +487,7 @@ class SeriesActions<This: _SeriesOf<Elem, Val>, Elem: Value, Val> extends ValueA
 			at(s2 is _String) => {
 				if(s2.length == 0) return series1;
 				final s1 = (cast series1 : _String);
-				final char1 = s1.rawFastPick(0);
-				final char2 = s2.rawFastPick(0);
-				s1.rawFastPoke(0, char2);
-				s2.rawFastPoke(0, char1);
+				Macros.swap(s1.values[s1.index], s2.values[s2.index]);
 				return series1;
 			},
 			_ => throw "bad"

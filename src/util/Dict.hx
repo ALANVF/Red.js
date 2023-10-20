@@ -155,11 +155,11 @@ import haxe.macro.Expr.ComplexType;
 @:forward(clear)
 abstract Dict<K, V>(Map<K, V>) {
 	public overload extern inline function new() {
-		throw "Why am I in a macro";
+		this = null;
 	}
 	
 	public overload extern inline function new(values: Any) {
-		throw "Why am I in a macro";
+		this = null;
 	}
 	
 	public static macro function of(map) {
@@ -210,60 +210,60 @@ abstract Dict<K, V>(Map<K, V>) {
 	}
 
 	public inline function forEach(callback: (value: V, key: K) -> Void) {
-		throw "Why am I in a macro";
+		for(k => v in this) callback(v, k);
 	}
 
 	public inline function iterator() {
-		throw "Why am I in a macro";
+		return this.iterator();
 	}
 
 	public inline function keyValueIterator() {
-		throw "Why am I in a macro";
+		return this.keyValueIterator();
 	}
 
 	@:from
 	static inline function fromIntMap<V>(map: IntMap<V>): Dict<Int, V> {
-		throw "Why am I in a macro";
+		return cast map;
 	}
 
 	@:from
 	static inline function from_IntMap<K: Int, V>(map: Map<K, V>): Dict<K, V> {
-		throw "Why am I in a macro";
+		return cast map;
 	}
 
 	@:from
 	static inline function fromStringMap<V>(map: StringMap<V>): Dict<String, V> {
-		throw "Why am I in a macro";
+		return cast map;
 	}
 
 	@:from
 	static inline function from_StringMap<K: String, V>(map: Map<K, V>): Dict<K, V> {
-		throw "Why am I in a macro";
+		return cast map;
 	}
 
 	@:from
 	static inline function fromObjectMap<K: {}, V>(map: Map<K, V>): Dict<K, V> {
-		throw "Why am I in a macro";
+		return cast map;
 	}
 
 	@:from
 	static function fromEnumValueMap<K: EnumValue, V>(map: EnumValueMap<K, V>): Dict<K, V> {
-		throw "Why am I in a macro";
+		return cast map;
 	}
 
 	@:from
 	static function from_EnumValueMap<K: EnumValue, V>(map: Map<K, V>): Dict<K, V> {
-		throw "Why am I in a macro";
+		return cast map;
 	}
 
 	@:from
 	static function fromAnyMap<K, V>(map: Map<K, V>): Dict<K, V> {
-		throw "Why am I in a macro";
+		return cast map;
 	}
 
 	@:from
 	static inline function fromArray<T, K, V>(array: Array<T>): Dict<K, V> {
-		throw "Why am I in a macro";
+		return null;
 	}
 }
 #end

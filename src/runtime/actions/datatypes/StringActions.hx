@@ -1,5 +1,6 @@
 package runtime.actions.datatypes;
 
+import haxe.extern.EitherType;
 import util.Set;
 import types.base.CompareResult;
 import types.base.ComparisonOp;
@@ -14,9 +15,16 @@ import types.String;
 import types.Binary;
 import types.Char;
 import types.Integer;
+import types.Float;
 import types.Pair;
 import types.Logic;
 import types.Word;
+import types.None;
+import types.Bitset;
+import types.Function;
+
+import runtime.Sort;
+
 import util.UInt8ClampedArray;
 
 class StringActions<This: _String = String> extends SeriesActions<This, Char, Int> {
@@ -424,7 +432,6 @@ class StringActions<This: _String = String> extends SeriesActions<This, Char, In
 				head++;
 			}
 		} else {
-			trace(head, tail);
 			str.removeAt(0, head);
 			str.removeAt(tail, str.length);
 			cur += (tail - head);
@@ -433,9 +440,44 @@ class StringActions<This: _String = String> extends SeriesActions<This, Char, In
 		if(appendLF && !isTail) {
 			s[cur] = 10;
 		}
-
-		trace(head, tail, cur);
+		
 		s.resize(cur);
+	}
+
+	static function compareChar(c1: Int, c2: Int, op: ComparisonOp, flags: Int): CompareResult {
+		// TODO: improve this
+		final res = op._match(
+			at(CCaseSort | CStrictEqual | CSame) => c1 - c2,
+			_ => c1.toUpperCase() - c2.toUpperCase()
+		);
+		return cast if(flags & Sort.REVERSE_MASK != 0) -res else res;
+	}
+
+	static function compareCharCall(value1: Int, value2: Int, fun: Function, flags: Int) {
+		var v1, v2;
+		if(flags & Sort.REVERSE_MASK == 0) {
+			v1 = Char.fromCode(value2);
+			v2 = Char.fromCode(value1);
+		} else {
+			v1 = Char.fromCode(value1);
+			v2 = Char.fromCode(value2);
+		}
+
+		final isAll = flags & Sort.ALL_MASK != 0;
+		var num = flags >>> 2;
+		if(isAll && num > 0) {
+			// ???????????????????
+		}
+
+		final res = Eval.callFunction(fun, [v1, v2], new Dict());
+		final res2 = res._match(
+			at(l is Logic) => l.cond.asInt(),
+			at(i is Integer) => i.int,
+			at(f is Float) => Std.int(f.float),
+			at(_ is None) => -1,
+			_ => 1
+		);
+		return cast if(flags & Sort.REVERSE_MASK != 0) -res2 else res2;
 	}
 
 
@@ -601,10 +643,297 @@ class StringActions<This: _String = String> extends SeriesActions<This, Char, In
 		return cast _insert(string, value, cast options, true);
 	}
 
-	// ...
+	override function find(series: This, value: Value, options: AFindOptions): Value {
+		final s = series.values;
+		var head = series.index;
+		var end = series.absLength;
+		var len = series.length;
+
+		if(head == end || (!options.reverse && head >= end)) {
+			return None.NONE;
+		}
+
+		var step = 1;
+		var isPart = false;
+
+		// Options processing
+
+		if(options.any || options.with != null) throw "NYI";
+
+		(options.skip?.size)._and(skip => {
+			step = skip.int;
+			if(step < 1) throw "bad";
+		});
+		var sz = 0;
+		var limit = 0;
+		(options.part?.length)._and(part => {
+			sz = part._match(
+				at(i is Integer) => i.int,
+				at(str is _String) => {
+					if(!(str.thisType() == series.thisType() && str.values == series.values)) {
+						throw "bad";
+					}
+					str.index - series.index;
+				},
+				_ => throw "bad"
+			);
+			if(sz <= 0) return None.NONE;
+			if(sz > len) sz = len;
+			isPart = true;
+			limit = sz;
+		});
+		if(options.last) {
+			step = -step;
+			end = head;
+			head = isPart ? head + limit : series.absLength;
+			head -= 1;
+		} else if(options.reverse) {
+			step = -step;
+			head = end + (head - 1);
+			if(isPart) end = head - limit + 1;
+			if(head < end || options.match) {
+				return None.NONE;
+			}
+		} else {
+			if(isPart) end = head + limit;
+		}
+
+		var isCase = !(series is Binary) ? !options._case : false;
+		if(options.same) isCase = false;
+		final isReverse = options.reverse || options.last;
+		var pattern = null, end2 = null;
+		var isBs = false;
+		final isFloat = value is types.Float;
+		var sz2 = 0;
+
+		// Value argument processing
+
+		var s2: Array<Int> = null;
+		var c2 = 0;
+		var bs: Bitset = null;
+		var str2: _String = null;
+		var head2 = 0;
+		var cf2 = 0.0;
+		inline function get2() {
+			s2 = str2.values;
+			pattern = str2.index + head2;
+			end2 = str2.absLength;
+			sz2 = end2 - pattern;
+		}
+		value._match(
+			at(c is Char) => {
+				c2 = c.int;
+				if(isCase) c2 = c2.toUpperCase();
+			},
+			at(b is Bitset) => {
+				bs = b;
+				isBs = true;
+				isCase = false;
+			},
+			at(str is _String) => {
+				if(str is Binary && !(series is Binary)) throw "bad";
+				str2 = str;
+				head2 = str.index;
+				get2();
+			},
+			at(w is Word) => {
+				str2 = String.fromString(w.symbol.name);
+				head2 = 0;
+				get2();
+			},
+			_ => {
+				if(series is Binary && (value is Integer || isFloat)) {
+					if(isFloat) {
+						cf2 = (cast value : types.Float).float;
+					} else {
+						c2 = (cast value : Integer).int;
+					}
+				} else {
+					str2 = Form.call(value, Form.defaultOptions);
+					head2 = 0;
+					get2();
+				}
+			}
+		);
+
+		// Search loop
+		var wasFound = false;
+		do {
+			if(pattern == null) {
+				var c1 = s[head];
+				if(isCase && !isFloat) c1 = c1.toUpperCase();
+				if(isBs) {
+					wasFound = bs.testBit(c1);
+				} else {
+					wasFound = /*isFloat ? cf1 == cf2*/ c1 == c2;
+				}
+				if(wasFound && options.tail && !isReverse) {
+					head += step;
+				}
+			} else {
+				var p1 = head;
+				var end1 = end;
+				if(isReverse) {
+					sz = p1 - end + 1;
+					if(sz < sz2) {
+						wasFound = false;
+						break;
+					}
+					p1 -= sz2 - 1;
+					end1 = head + 1;
+				}
+				var p2: Int = pattern;
+				do {
+					var c1 = s[p1];
+					var c2 = s2[p2];
+					if(isCase) {
+						c1 = c1.toUpperCase();
+						c2 = c2.toUpperCase();
+					}
+					wasFound = c1 == c2;
+
+					p1++;
+					p2++;
+				} while(!(
+					!wasFound
+					|| p2 >= end2
+					|| p1 >= end1
+				));
+				if(wasFound && p2 < end2 && p1 >= end1) {
+					wasFound = false;
+				}
+
+				if(wasFound) {
+					if(isReverse) head = end1 - sz2;
+					if(options.tail) head = p1;
+				}
+			}
+			head += step;
+		} while(!(
+			options.match
+			|| (!options.match && wasFound)
+			|| (isReverse && head < end)
+			|| (!isReverse && head >= end)
+		));
+		head -= step;
+		if(options.tail && isReverse && pattern == null) {
+			head -= step;
+		}
+
+		if(wasFound) {
+			return series.rawAt(head - series.index);
+		} else {
+			return None.NONE;
+		}
+		
+		return series;
+	}
 
 	override function insert(string: This, value: Value, options: AInsertOptions): This {
 		return cast _insert(string, value, options, false);
+	}
+
+	override function select(series: This, value: Value, options: ASelectOptions): Value {
+		final result = find(series, value, Macros.addFields(options, {tail: false, match: false}));
+
+		if(result != None.NONE) {
+			final offset = value._match(
+				at(s is _String) => s.length,
+				_ => 1
+			);
+			final str: This = cast result;
+			final s = str.values;
+
+			final p = str.index + offset;
+
+			if(p < str.absLength) {
+				final char = s[p];
+				return str._match(
+					at(_ is Binary) => new Integer(char),
+					_ => Char.fromCode(char)
+				);
+			} else {
+				return None.NONE;
+			}
+		}
+		return result;
+	}
+
+	override function sort(series: This, options: ASortOptions): This {
+		var step = 1;
+		final s = series.values;
+		var head = series.index;
+		var end = series.absLength;
+		var len = series.length;
+
+		(options.part?.length)._and(part => {
+			var len2 = part._match(
+				at(i is Integer) => i.int,
+				at(str is _String) => {
+					if(!(str.thisType() == series.thisType() && str.values == series.values)) {
+						throw "bad";
+					}
+					str.index - series.index;
+				},
+				_ => throw "bad"
+			);
+			if(len2 < len) {
+				len = len2;
+				if(len2 < 0) {
+					len2 = - len2;
+					series.index -= len2;
+					len = if(series.index < 0) {
+						series.index = 0;
+						0;
+					} else len2;
+					head -= len;
+				}
+			}
+		});
+		if(len == 0) return series;
+		
+		(options.skip?.size)._andOr(skip => {
+			step = skip.int;
+			if(step <= 0 || len % step != 0 || step > len) {
+				throw "bad";
+			}
+			if(step > 1) untyped len /= step;
+		}, {
+			if(options.all) throw "bad";
+		});
+
+		var cmp: Sort.SortingFunc<Int> = compareChar;
+		var op: EitherType<Function, ComparisonOp> = options._case ? CStrictEqual : CEqual;
+		var flags = options.reverse ? Sort.REVERSE_MASK : 0;
+
+		(options.compare?.comparator)._andOr(comparator => {
+			comparator._match(
+				at(f is Function) => {
+					if(options.all && options.skip != null) {
+						flags |= Sort.ALL_MASK;
+						flags |= step << 2;
+					}
+					cmp = compareCharCall;
+					op = f;
+				},
+				at(i is Integer) => {
+					if(options.all || options.skip == null) {
+						throw "bad";
+					}
+					flags |= (i.int - 1) << 2;
+				},
+				_ => throw "bad"
+			);
+		}, {
+			if(options.all && options.skip != null) {
+				flags |= Sort.ALL_MASK;
+				flags |= step << 2;
+			}
+		});
+
+		Sort.quickSort(s, head, len, step, op, flags, cmp);
+
+		return series;
 	}
 
 	override function trim(series: This, options: ATrimOptions) {
