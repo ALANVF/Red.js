@@ -12,6 +12,10 @@ import types.Logic;
 import types.String;
 
 class GetPathActions extends PathActions<GetPath> {
+	override function makeThis(values: Array<Value>, ?index: Int) {
+		return new GetPath(values, index);
+	}
+
 	override function form(value: GetPath, buffer: String, arg: Null<Int>, part: Int) {
 		buffer.appendChar(':'.code);
 		return super.form(value, buffer, arg, part - 1);

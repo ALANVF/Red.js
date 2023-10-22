@@ -112,7 +112,7 @@ class BlockActions<This: _Block = Block> extends _BlockLikeActions<This> {
 			at(o is Object) => cast ObjectActions._reflect(o, Words.BODY),
 			at(m is Map) => throw "todo",
 			//Vector
-			//String
+			at(s is String) => makeThis(Tokenizer.parse(s.toJs())),
 			at(t is Typeset) => makeThis(cast t.types.toArray()),
 			at(b is _BlockLike) => {
 				makeThis(b.cloneValues(), 0, b._match(

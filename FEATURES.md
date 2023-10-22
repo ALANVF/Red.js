@@ -48,17 +48,15 @@
 | `binary!`                | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
 | `time!`                  | Y        | Y      | Y      | P    | Y      | Y      | P         | P             |
 | `tag!`                   | Y        | Y      | N      | N    | Y      | Y      | P         | P             |
-| `email!`                 | Y        | N**    | N      | N    | Y      | Y      | P         | P             |
+| `email!`                 | Y        | Y      | N      | N    | Y      | Y      | P         | P             |
 | `handle!`                | NA       | NA     | N      | N    | N      | N      | N         | N             |
 | `date!`                  | Y        | N      | N      | N    | N      | N      | N         | N             |
 | `port!`                  | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `image!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
-| `money!`                 | N        | N**    | N      | N    | N      | N      | N         | N             |
+| `money!`                 | N        | Y      | N      | N    | N      | N      | N         | N             |
 | `ref!`                   | Y        | Y      | N      | N    | Y      | Y      | P         | P             |
 
 \* `raw-string!` literals are slightly more permissive than in Red's normal lexer.
-
-\*\* Parsing rule has been removed from the parser due to it causing a noticable slowdown during parsing.
 
 # Natives
 |                     | status |

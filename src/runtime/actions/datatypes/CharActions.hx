@@ -35,15 +35,18 @@ class CharActions extends IntegerActions<Char> {
 			at(c is Char) => c,
 			at(i is Integer) => {
 				if(i.int > Char.MAX_CODEPOINT || i.int < 0) throw "out of range";
-				makeThis(i.int);
+				inline makeThis(i.int);
 			},
 			at(f is Float | f is Percent) => {
 				final i = Std.int(f.float);
 				if(i > Char.MAX_CODEPOINT || i < 0) throw "out of range";
-				makeThis(i);
+				inline makeThis(i);
 			},
 			// Binary
-			// _String
+			at(s is types.base._String) => {
+				if(s.length == 0) throw "bad";
+				inline makeThis(s.rawFastPick(0));
+			},
 			_ => invalid()
 		);
 	}

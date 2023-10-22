@@ -30,7 +30,7 @@ enum Token {
 	TInteger(int: Int);
 	TFloat(float: Float);
 	TPercent(percent: Float);
-	TMoney(money: Float, region: String);
+	TMoney(money: String, ?region: String);
 
 	TChar(char: String);
 	TString(string: String);

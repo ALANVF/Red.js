@@ -86,6 +86,16 @@ class Util {
 		}
 	}
 
+	static macro function jsRx(rx: ExprOf<EReg>, flags: String = ""): ExprOf<js.lib.RegExp> {
+		switch rx.expr {
+			case EConst(CRegexp(r, opt)):
+				return macro (js.Syntax.plainCode($v{"/" + StringTools.replace(r, "/", "\\/") + "/" + opt + flags}) : js.lib.RegExp);
+			
+			default:
+				throw "Invalid regex" + rx.expr;
+		}
+	}
+
 	private static function _pretty(value: Any, indent: Int): String {
 		final thisLevel = "".lpad("\t", indent);
 		final nextLevel = "".lpad("\t", indent + 1);

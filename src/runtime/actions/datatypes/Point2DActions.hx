@@ -48,10 +48,17 @@ class Point2DActions extends ValueActions<Point2D> {
 				} else throw "bad";
 			},
 			at(p is Pair) => new Point2D(p.x, p.y),
-			// String
+			at(s is String) => Tokenizer.parse(s.toJs())._match(
+				at([p is Point2D]) => p,
+				_ => throw 'Can\'t parse point2D! from "${s.toJs()}"'
+			),
 			at(p is Point2D) => p,
 			_ => throw "bad"
 		);
+	}
+
+	override function to(proto: Null<Point2D>, spec: Value) {
+		return make(proto, spec);
 	}
 
 	override function form(value: Point2D, buffer: String, arg: Null<Int>, part: Int) {

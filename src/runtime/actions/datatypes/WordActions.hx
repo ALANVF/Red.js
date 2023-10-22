@@ -45,7 +45,10 @@ class WordActions<This: _Word = Word> extends ValueActions<This> {
 		return spec._match(
 			at(w is _AnyWord) => makeThis(w.symbol, w.context, w.index),
 			at(w is Refinement | w is Issue) => throw "NYI",
-			//String
+			at(s is types.base._String) => Tokenizer.parse(s.toJs())._match(
+				at([w is _Word]) => if(w.thisType() == cast thisType) w else makeThis(w.symbol, w.context, w.index),
+				_ => throw 'Can\'t parse time! from "${s.toJs()}"'
+			),
 			//Char
 			at(d is Datatype) => makeThis(Context.GLOBAL.getSymbol(d.name)),
 			at(l is Logic) => makeThis(Context.GLOBAL.getSymbol(l.cond ? "true" : "false")),

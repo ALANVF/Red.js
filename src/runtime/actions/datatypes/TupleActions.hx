@@ -43,7 +43,10 @@ class TupleActions extends ValueActions<Tuple> {
 			},
 			// Binary
 			// Issue
-			// _String
+			at(s is types.base._String) => Tokenizer.parse(s.toJs())._match(
+				at([t is Tuple]) => t,
+				_ => throw 'Can\'t parse tuple! from "${s.toJs()}"'
+			),
 			at(t is Tuple) => t,
 			_ => invalid()
 		);

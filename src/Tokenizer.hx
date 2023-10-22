@@ -1,9 +1,11 @@
 import types.Point2D;
 import tokenizer.*;
 //import tokenizer.Token;
+import js.lib.RegExp;
+import Util.jsRx;
 
 class Tokenizer {
-	static function matchRxWithGuardRx(rdr: Reader, guard: EReg, rx: EReg) {
+	static function matchRxWithGuardRx(rdr: Reader, guard: RegExp, rx: RegExp) {
 		return if(rdr.matchesRx(guard)) {
 			rdr.matchRx(rx);
 		} else {
@@ -11,7 +13,7 @@ class Tokenizer {
 		}
 	}
 
-	static function matchRxWithGuard(rdr: Reader, guard: String, rx: EReg) {
+	static function matchRxWithGuard(rdr: Reader, guard: String, rx: RegExp) {
 		return if(rdr.matches(guard)) {
 			rdr.matchRx(rx);
 		} else {
@@ -26,7 +28,7 @@ class Tokenizer {
 	public static function makeNext(rdr: Reader): Token {
 		eatEmpty(rdr);
 		
-		var match: Null<Array<String>> = null;
+		var match: Null<js.lib.RegExp.RegExpMatch> = null;
 		final res = if((match = rdr.tryMatchRx(Regexps.div)) != null) {
 			Token.TWord(match[0]);
 		} else if((match = rdr.tryMatchRx(Regexps.getDiv)) != null) {
@@ -45,20 +47,27 @@ class Tokenizer {
 			Token.TFile(match[1] ?? match[2]);
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.url, Regexps.url)) != null) { // [_, url]
 			Token.TUrl(match[0]);
-		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.word, Regexps.word)) != null) { // [word]
-			final word = match[0];
-			if(rdr.tryMatch(":")) {
-				Token.TSetWord(word);
-			} else if(rdr.peek() == "/") {
-				final path = Actions.path(rdr, Token.TWord(word));
-				if(rdr.tryMatch(":")) {
-					Token.TSetPath(path);
+		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.wordMoney, Regexps.wordMoney)) != null) {
+			final region = match[0];
+			if(rdr.tryMatch("$")) {
+				if((match = matchRxWithGuardRx(rdr, RegexpChecks.float, Regexps.float)) != null
+				|| (match = matchRxWithGuardRx(rdr, RegexpChecks.integer, Regexps.integer)) != null) {
+					Token.TMoney(match[0], region);
 				} else {
-					Token.TPath(path);
+					throw "Invalid money!";
 				}
 			} else {
-				Token.TWord(word);
+				@:privateAccess rdr.pos -= region.length;
+				if((match = matchRxWithGuardRx(rdr, RegexpChecks.word, Regexps.word)) != null) {
+					final word = match[0];
+					Actions.word(rdr, word);
+				} else {
+					throw "Invalid word!";
+				}
 			}
+		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.word, Regexps.word)) != null) { // [word]
+			final word = match[0];
+			Actions.word(rdr, word);
 		} else if((match = rdr.tryMatchRx(Regexps.specialWord)) != null) { // [word]
 			final word = match[0];
 			if(rdr.tryMatch(":")) {
@@ -68,7 +77,7 @@ class Tokenizer {
 			}
 		} else if(rdr.tryMatch(":")) {
 			switch rdr {
-				case matchRxWithGuardRx(_, RegexpChecks.word, Regexps.word) => [word]:
+				case matchRxWithGuardRx(_, RegexpChecks.word, Regexps.word) => (cast _ : Null<Array<String>>) => [word]:
 					if(rdr.peek() == ":") {
 						throw "error!";
 					} else if(rdr.peek() == "/") {
@@ -81,7 +90,7 @@ class Tokenizer {
 					} else {
 						Token.TGetWord(word);
 					}
-				case _.tryMatchRx(Regexps.specialWord) => [word]:
+				case _.tryMatchRx(Regexps.specialWord) => (cast _ : Null<Array<String>>) => [word]:
 					if(rdr.peek() == ":") {
 						throw "error!";
 					} else {
@@ -91,7 +100,7 @@ class Tokenizer {
 			}
 		} else if(rdr.tryMatch("'")) {
 			switch rdr {
-				case matchRxWithGuardRx(_, RegexpChecks.word, Regexps.word) => [word]:
+				case matchRxWithGuardRx(_, RegexpChecks.word, Regexps.word) => (cast _ : Null<Array<String>>) => [word]:
 					if(rdr.peek() == ":") {
 						throw "error!";
 					} else if(rdr.peek() == "/") {
@@ -104,7 +113,7 @@ class Tokenizer {
 					} else {
 						Token.TLitWord(word);
 					}
-				case _.tryMatchRx(Regexps.specialWord) => [word]:
+				case _.tryMatchRx(Regexps.specialWord) => (cast _ : Null<Array<String>>) => [word]:
 					if(rdr.peek() == ":") {
 						throw "error!";
 					} else {
@@ -138,15 +147,20 @@ class Tokenizer {
 			} else {
 				Token.TInteger(integer);
 			}
+		} else if(rdr.tryMatch("$") && (
+			(match = matchRxWithGuardRx(rdr, RegexpChecks.float, Regexps.float)) != null
+			|| (match = matchRxWithGuardRx(rdr, RegexpChecks.integer, Regexps.integer)) != null
+		)) {
+			Token.TMoney(match[0]);
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.tuple, Regexps.tuple)) != null) { // match if(match != null)
 			final end = match.indexOf(js.Lib.undefined);
-			Token.TTuple(match.slice(1, end == -1 ? null : end).map(Util.mustParseInt));
+			Token.TTuple(match.slice(1, end == -1 ? null : end).map(v -> Util.mustParseInt(v)));
 		} else if((match = matchRxWithGuard(rdr, RegexpChecks.char, Regexps.char)) != null) { // [_, char]
 			Token.TChar(match[1]);
 		} else if((match = matchRxWithGuard(rdr, RegexpChecks.string, Regexps.string)) != null) { // [_, string]
 			Token.TString(match[1]);
 		} else if(rdr.tryMatch(RegexpChecks.multiString)) {
-			final out = new StringBuf();
+			var out = "";
 			var level = 1;
 
 			while(level > 0) {
@@ -156,24 +170,24 @@ class Tokenizer {
 
 				switch rdr.next() {
 					case "{":
-						out.add("{");
+						out += "{";
 						level++;
 					case "}" if(level > 0):
-						out.add("}");
+						out += "}";
 						level--;
 					case "}":
 						break;
 					case "^":
-						out.add(switch rdr.next() {
+						out += switch rdr.next() {
 							case c = "{" | "}": c;
 							case c: '^$c';
-						});
+						};
 					case c:
-						out.add(c);
+						out += c;
 				}
 			}
 
-			Token.TString(out.toString());
+			Token.TString(out);
 		} else if((match = rdr.tryMatchRx(Regexps.beginRawString)) != null) {
 			final end = "}" + match[1];
 
@@ -185,14 +199,14 @@ class Tokenizer {
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.tag, Regexps.tag)) != null) { // [_, tag]
 			Token.TTag(match[1]);
 		} else if(rdr.tryMatch("2#{")) {
-			final out = new StringBuf();
+			var out = "";
 
 			eatEmpty(rdr);
 
 			while(!rdr.tryMatch("}")) {
 				for(_ in 0...8) {
 					switch rdr.next() {
-						case c = "0" | "1": out.add(c);
+						case c = "0" | "1": out += c;
 						case c: throw 'Unexpected character "$c" in binary! at ${rdr.getLocStr()}';
 					}
 				}
@@ -200,37 +214,37 @@ class Tokenizer {
 				eatEmpty(rdr);
 			}
 
-			Token.TBinary(out.toString(), 2);
-		} else if((match = rdr.tryMatchRx(~/(?:16)?#\{/)) != null) { // [_]
-			final out = new StringBuf();
+			Token.TBinary(out, 2);
+		} else if((match = rdr.tryMatchRx(jsRx(~/(?:16)?#\{/))) != null) { // [_]
+			var out = "";
 
 			eatEmpty(rdr);
 
 			while(!rdr.tryMatch("}")) {
 				switch rdr.next(2) {
-					case c if(~/^[a-fA-F\d]{2}$/.match(c)): out.add(c);
+					case c if(jsRx(~/[a-fA-F\d]{2}$/).test(c)): out += c;
 					case c: throw 'Unexpected character "$c" in binary! at ${rdr.getLocStr()}';
 				}
 
 				eatEmpty(rdr);
 			}
 
-			Token.TBinary(out.toString(), 16);
+			Token.TBinary(out, 16);
 		} else if(rdr.tryMatch("64#{")) {
-			final out = new StringBuf();
+			var out = "";
 
 			eatEmpty(rdr);
 
 			while(!rdr.tryMatch("}")) {
 				switch rdr.next() {
-					case c if(~/^[a-zA-Z\d=\/+]$/.match(c)): out.add(c);
+					case c if(jsRx(~/[a-zA-Z\d=\/+]$/).test(c)): out += c;
 					case c: throw 'Unexpected character "$c" in binary! at ${rdr.getLocStr()}';
 				}
 
 				eatEmpty(rdr);
 			}
 
-			Token.TBinary(out.toString(), 64);
+			Token.TBinary(out, 64);
 		} else if(rdr.matches("(")) {
 			Actions.parenOrPoint(rdr);
 		} else if(rdr.matches("[")) {
@@ -285,12 +299,12 @@ class Tokenizer {
 			case TRefinement(ref): new types.Refinement(types.base.Symbol.make(ref));
 			case TTag(tag): new types.Tag(types.base._String.codesFromRed(tag));
 			case TRef(ref): new types.Ref(types.base._String.codesFromRed(ref));
-			case TBinary(binary, 2): new types.Binary(js.Syntax.code("{0}.match(/.{{}8}/g).map(x => parseInt(x, 2))", binary));
+			case TBinary(binary, 2): new types.Binary(js.Syntax.code("{0}.match(/.{{8}/g).map(x => parseInt(x, 2))", binary));
 			case TBinary(binary, 16): new types.Binary(js.Syntax.code("{0}.match(/../g).map(x => parseInt(x, 16))", binary));
 			case TBinary(binary, 64): new types.Binary(js.Syntax.code("[...atob({0})].map(c => c.charCodeAt())", binary));
 			case TBinary(_, _): throw "bad";
-			case TBlock(block): new types.Block(block.map(tokenToValue));
-			case TParen(paren): new types.Paren(paren.map(tokenToValue));
+			case TBlock(block): new types.Block(block.map(v -> tokenToValue(v)));
+			case TParen(paren): new types.Paren(paren.map(v -> tokenToValue(v)));
 			case TMap(map): types.Map.fromPairs([for(i => k in map) if(i % 2 == 0) {k: tokenToValue(k), v: tokenToValue(map[i + 1])}]);
 			case TTuple(tuple): new types.Tuple(new util.UInt8ClampedArray(tuple));
 			case TPair(x, y): new types.Pair(x, y);
@@ -306,6 +320,6 @@ class Tokenizer {
 	}
 
 	public static function parse(input: String) {
-		return tokenize(input).map(tokenToValue);
+		return tokenize(input).map(v -> tokenToValue(v));
 	}
 }

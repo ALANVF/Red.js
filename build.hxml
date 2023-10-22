@@ -3,5 +3,6 @@
 --dce full
 -D js-enums-as-arrays
 -D js-es=6
+-D loop-unroll-max-cost=3
 -main Main
 --js bin/main.js

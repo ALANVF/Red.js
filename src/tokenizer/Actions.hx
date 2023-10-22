@@ -44,7 +44,7 @@ class Actions {
 			specialFloat(rdr);
 		}
 	}
-
+	
 	public static function point(rdr: Reader) {
 		final x = number(rdr) ?? throw "Invalid float literal!";
 		rdr.matchRx(Regexps.pointComma);
@@ -61,6 +61,28 @@ class Actions {
 		}
 	}
 
+	public static function word(rdr: Reader, word: String) {
+		return if(rdr.tryMatch(":")) {
+			Token.TSetWord(word);
+		} else if(rdr.peek() == "/") {
+			final path = Actions.path(rdr, Token.TWord(word));
+			if(rdr.tryMatch(":")) {
+				Token.TSetPath(path);
+			} else {
+				Token.TPath(path);
+			}
+		} else if(rdr.tryMatch("@")) {
+			var match;
+			if((match = @:privateAccess Tokenizer.matchRxWithGuardRx(rdr, RegexpChecks.word, Regexps.word)) != null) {
+				Token.TEmail(word + "@" + match[0]);
+			} else {
+				throw "Invalid email!";
+			}
+		} else {
+			Token.TWord(word);
+		}
+	}
+	
 	public static function path(rdr: Reader, head: Token) {
 		final out = [head];
 		

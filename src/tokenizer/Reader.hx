@@ -1,7 +1,6 @@
 package tokenizer;
 
-using StringTools;
-using util.ERegTools;
+import js.lib.RegExp;
 
 typedef Loc = {line: Int, column: Int};
 
@@ -50,31 +49,35 @@ class Reader {
 		}
 	}
 
-	public function matchesRx(rx: EReg) {
-		//return rx.match(this.stream.substr(this.pos)) && rx.matchedPos().pos == 0;
-		return rx.matchSub(this.stream, this.pos) && rx.matchedPos().pos == this.pos;
+	public function matchesRx(rx: RegExp) {
+		rx.lastIndex = this.pos;
+		return rx.test(this.stream);
 	}
 
-	public function matchRx(rx: EReg) {
-		if(this.matchesRx(rx)) {
-			this.pos += rx.matchedPos().len;
-			return rx.matchedGroups();
+	public function matchRx(rx: RegExp) {
+		rx.lastIndex = this.pos;
+		final match = rx.exec(this.stream);
+		if(match != null) {
+			this.pos += match[0].length;
+			return match;
 		} else {
 			throw "did not match!";
 		}
 	}
 
-	public function tryMatchRx(rx: EReg) {
-		return if(this.matchesRx(rx)) {
-			this.pos += rx.matchedPos().len;
-			rx.matchedGroups();
+	public function tryMatchRx(rx: RegExp) {
+		rx.lastIndex = this.pos;
+		final match = rx.exec(this.stream);
+		return if(match != null) {
+			this.pos += match[0].length;
+			match;
 		} else {
 			null;
 		}
 	}
 
 	public function matches(str: String) {
-		return this.stream.substr(this.pos).startsWith(str);
+		return this.stream.startsWith(str, this.pos);
 	}
 
 	public function match(str: String) {
@@ -107,15 +110,16 @@ class Reader {
 	}
 
 	public function trimSpace() {
-		while(this.stream.isSpace(this.pos)) this.pos++;
+		// just reuse StringActions.WHITE_CHAR set
+		while(runtime.actions.datatypes.StringActions.WHITE_CHAR.has(this.stream.cca(this.pos))) this.pos++;
 	}
 
 	public function getLoc() {
 		var line = 1;
 		var column = 0;
 
-		for(char in this.stream.substr(0, this.pos).iterator()) {
-			switch char {
+		for(i in this.pos...this.stream.length) {
+			switch this.stream.cca(i) {
 				case 10 | 13: // FIX
 					line++;
 					column = 0;

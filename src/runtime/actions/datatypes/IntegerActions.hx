@@ -44,7 +44,10 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 			// Binary
 			// Issue
 			// Date
-			// _String
+			at(s is types.base._String) => Tokenizer.parse(s.toJs())._match(
+				at([i is Integer]) => i,
+				_ => throw 'Can\'t parse integer! from "${s.toJs()}"'
+			),
 			_ => invalid()
 		);
 	}

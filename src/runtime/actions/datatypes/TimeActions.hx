@@ -126,7 +126,10 @@ class TimeActions extends FloatActions<Time> {
 				if(isNeg) t = -t;
 				new Time(t);
 			},
-			// _String
+			at(s is types.base._String) => Tokenizer.parse(s.toJs())._match(
+				at([t is Time]) => t,
+				_ => throw 'Can\'t parse time! from "${s.toJs()}"'
+			),
 			_ => invalid()
 		);
 	}

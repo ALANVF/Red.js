@@ -55,7 +55,10 @@ class FloatActions<This: _Float = Float> extends ValueActions<This> {
 			at(i is _Integer) => makeThis(i.int),
 			// Money
 			at(f is _Float) => makeThis(f.float),
-			// _String
+			at(s is types.base._String) => Tokenizer.parse(s.toJs())._match(
+				at([f is Float | f is Percent]) => f, // lazy for now lol
+				_ => throw 'Can\'t parse float! from "${s.toJs()}"'
+			),
 			// Binary
 			at(b is _Block) => {
 				if(b.length != 2) invalid();

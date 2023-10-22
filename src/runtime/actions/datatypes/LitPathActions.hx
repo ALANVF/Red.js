@@ -12,6 +12,10 @@ import types.Logic;
 import types.String;
 
 class LitPathActions extends PathActions<LitPath> {
+	override function makeThis(values: Array<Value>, ?index: Int) {
+		return new LitPath(values, index);
+	}
+
 	override function form(value: LitPath, buffer: String, arg: Null<Int>, part: Int) {
 		buffer.appendChar("'".code);
 		return super.form(value, buffer, arg, part - 1);

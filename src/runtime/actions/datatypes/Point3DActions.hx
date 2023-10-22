@@ -52,10 +52,17 @@ class Point3DActions extends ValueActions<Point3D> {
 			},
 			at(p is Pair) => new Point3D(p.x, p.y, 0.0),
 			at(p is Point2D) => new Point3D(p.x, p.y, 0.0),
-			// String
+			at(s is String) => Tokenizer.parse(s.toJs())._match(
+				at([p is Point3D]) => p,
+				_ => throw 'Can\'t parse point3D! from "${s.toJs()}"'
+			),
 			at(p is Point3D) => p,
 			_ => throw "bad"
 		);
+	}
+
+	override function to(proto: Null<Point3D>, spec: Value) {
+		return make(proto, spec);
 	}
 
 	override function form(value: Point3D, buffer: String, arg: Null<Int>, part: Int) {
