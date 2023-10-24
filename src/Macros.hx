@@ -65,4 +65,8 @@ class Macros {
 	static macro function swap(a, b) {
 		return macro js.Syntax.code("[{0}, {1}] = [{1}, {0}]", $a, $b);
 	}
+
+	static macro function bigInt(n: Int): haxe.macro.Expr.ExprOf<util.BigInt> {
+		return macro js.Syntax.code("{0}n", $v{n});
+	}
 }
