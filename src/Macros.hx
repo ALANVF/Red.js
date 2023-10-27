@@ -66,7 +66,18 @@ class Macros {
 		return macro js.Syntax.code("[{0}, {1}] = [{1}, {0}]", $a, $b);
 	}
 
-	static macro function bigInt(n: Int): haxe.macro.Expr.ExprOf<util.BigInt> {
+	/*static extern inline overload macro function bigInt(n: Int): haxe.macro.Expr.ExprOf<util.BigInt> {
 		return macro js.Syntax.code("{0}n", $v{n});
+	}
+	static extern inline overload macro function bigInt(s: String): haxe.macro.Expr.ExprOf<util.BigInt> {
+		return macro js.Syntax.plainCode($v{s + "n"});
+	}*/
+
+	static macro function bigInt(v): haxe.macro.Expr.ExprOf<util.BigInt> {
+		switch v.expr {
+			case EConst(CInt(n)): return macro (js.Syntax.plainCode($v{n + "n"}) : util.BigInt);
+			case EConst(CString(s)): return macro (js.Syntax.plainCode($v{s + "n"}) : util.BigInt);
+			default: throw "bad";
+		}
 	}
 }

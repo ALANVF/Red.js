@@ -16,8 +16,8 @@
 | `file!`                  | Y        | Y      | N      | N    | Y      | Y      | P         | P             |
 | `url!`                   | Y        | Y      | N      | N    | Y      | Y      | P         | P             |
 | `char!`                  | Y        | Y      | Y      | P    | Y      | Y      | Y         | P             |
-| `integer!`               | Y        | Y      | Y      | P    | Y      | Y      | P         | P             |
-| `float!`                 | Y        | Y      | Y      | P    | P      | Y      | P         | P             |
+| `integer!`               | Y        | Y**    | Y      | P    | Y      | Y      | P         | P             |
+| `float!`                 | Y        | Y**    | Y      | P    | P      | Y      | P         | P             |
 | `word!`                  | Y        | Y      | P      | P    | Y      | Y      | Y         | Y             |
 | `set-word!`              | Y        | Y      | P      | P    | Y      | Y      | Y         | Y             |
 | `lit-word!`              | Y        | Y      | P      | P    | Y      | Y      | Y         | Y             |
@@ -42,7 +42,7 @@
 | `vector!`                | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `hash!`                  | P        | NA     | N      | N    | Y      | Y      | Y         | P             |
 | `pair!`                  | Y        | Y      | P      | Y    | Y      | Y      | Y         | P             |
-| `percent!`               | Y        | Y      | Y      | P    | Y      | Y      | P         | P             |
+| `percent!`               | Y        | Y**    | Y      | P    | Y      | Y      | P         | P             |
 | `tuple!`                 | Y        | Y      | Y      | P    | Y      | Y      | Y         | P             |
 | `map!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
 | `binary!`                | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
@@ -53,10 +53,12 @@
 | `date!`                  | Y        | N      | N      | N    | N      | N      | N         | N             |
 | `port!`                  | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `image!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
-| `money!`                 | N        | Y      | N      | N    | N      | N      | N         | N             |
+| `money!`                 | Y        | Y**    | Y      | Y    | Y      | Y      | Y         | Y             |
 | `ref!`                   | Y        | Y      | N      | N    | Y      | Y      | P         | P             |
 
 \* `raw-string!` literals are slightly more permissive than in Red's normal lexer.
+
+\*\* numeric separators and comma decimal points are not currently supported
 
 # Natives
 |                     | status |

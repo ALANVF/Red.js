@@ -82,7 +82,7 @@ class TimeActions extends FloatActions<Time> {
 
 		final sec = getSeconds(t);
 		formed = sec < 1E-6 ? "00" : sec.toString().padStart(2, "0");
-		if(formed.charCodeAt(1) == '.'.code) formed = "0" + formed;
+		if(formed.cca(1) == '.'.code) formed = "0" + formed;
 		buffer.appendLiteral(formed);
 		return formed.length - 1;
 	}

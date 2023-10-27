@@ -138,7 +138,7 @@ class SeriesActions<This: _SeriesOf<Elem, Val>, Elem: Value, Val> extends ValueA
 			);
 
 			// I'm too lazy to fix this
-			if(hasPart) while(s.contains(null)) s.remove(null);
+			if(hasPart) while(s.contains(null)) (untyped s).remove(null);
 		} else {
 			if(hasPart) {
 				size -= part;

@@ -45,7 +45,7 @@ class Char extends _Integer {
 	public static function fromRed(str: std.String) {
 		return fromCode(
 			if(str.cca(0) == "^".code) {
-				switch(str.substr(1).toUpperCase()) {
+				switch(str._substr(1).toUpperCase()) {
 					case "\"": 34;
 					case "^":  94;
 					case "\\": 28;

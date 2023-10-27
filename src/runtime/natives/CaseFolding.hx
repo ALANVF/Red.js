@@ -10,7 +10,7 @@ import types.*;
 
 inline function toChar(str: std.String) {
 	// should we be using charPointAt instead?
-	return (js.Syntax.code("{0}.charCodeAt(0)", str) : Int);
+	return (str.cca(0) : Int);
 }
 
 function charToUpper(char: Char) {

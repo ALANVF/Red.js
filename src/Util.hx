@@ -5,7 +5,7 @@
 import haxe.ds.Option;
 using util.OptionTools;
 
-using StringTools;
+using util.StringTools;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -89,7 +89,7 @@ class Util {
 	static macro function jsRx(rx: ExprOf<EReg>, flags: String = ""): ExprOf<js.lib.RegExp> {
 		switch rx.expr {
 			case EConst(CRegexp(r, opt)):
-				return macro (js.Syntax.plainCode($v{"/" + StringTools.replace(r, "/", "\\/") + "/" + opt + flags}) : js.lib.RegExp);
+				return macro (js.Syntax.plainCode($v{"/" + std.StringTools.replace(r, "/", "\\/") + "/" + opt + flags}) : js.lib.RegExp);
 			
 			default:
 				throw "Invalid regex" + rx.expr;
@@ -97,8 +97,8 @@ class Util {
 	}
 
 	private static function _pretty(value: Any, indent: Int): String {
-		final thisLevel = "".lpad("\t", indent);
-		final nextLevel = "".lpad("\t", indent + 1);
+		final thisLevel = "".padStart(indent, "\t");
+		final nextLevel = "".padStart(indent + 1, "\t");
 		
 		return if(value is Array) {
 			final array = (value : Array<Any>);
@@ -196,7 +196,6 @@ class Util {
 								$ia: $cta = js.Syntax.code(""),
 								$ib: $ctb = js.Syntax.code("");
 							js.Syntax.code("*/ //");
-							//js.Syntax.code('let [$ia, $ib] = {0}', $rhs);
 							js.Syntax.code('let [{0}, {1}] = {2}', $a, $b, $rhs);
 						};
 
@@ -234,6 +233,69 @@ class Util {
 					default:
 						return Context.error("NYI!", lhs.pos);
 				}
+			
+				case TAbstract(_.get() => {pack: ["util"], name: "Tuple3"}, [ta, tb, tc]):
+					final cta = Context.toComplexType(ta);
+					final ctb = Context.toComplexType(tb);
+					final ctc = Context.toComplexType(tc);
+	
+					switch lhs {
+						case macro @var [${a = macro $i{ia}}, ${b = macro $i{ib}}, ${c = macro $i{ic}}]:
+							return macro @:mergeBlock {
+								js.Syntax.code("/*");
+								var
+									$ia: $cta = js.Syntax.code(""),
+									$ib: $ctb = js.Syntax.code(""),
+									$ic: $ctc = js.Syntax.code("");
+								js.Syntax.code("*/ //");
+								js.Syntax.code('let [{0}, {1}, {2}] = {3}', $a, $b, $c, $rhs);
+							};
+	
+						case macro [$a, $b, $c]:
+							final stmts = [];
+							
+							switch a {
+								case macro @var ${ea = macro $i{ia}}:
+									a = ea;
+									stmts.push(macro var $ia: $cta);
+									stmts.push(macro {
+										js.Syntax.code("/*");
+										$a = js.Syntax.code("*/ //");
+									});
+								default:
+							}
+							
+							switch b {
+								case macro @var ${eb = macro $i{ib}}:
+									b = eb;
+									stmts.push(macro var $ib: $ctb);
+									stmts.push(macro {
+										js.Syntax.code("/*");
+										$b = js.Syntax.code("*/ //");
+									});
+								default:
+							}
+
+							switch c {
+								case macro @var ${ec = macro $i{ic}}:
+									c = ec;
+									stmts.push(macro var $ic: $ctc);
+									stmts.push(macro {
+										js.Syntax.code("/*");
+										$c = js.Syntax.code("*/ //");
+									});
+								default:
+							}
+							
+							stmts.push(
+								macro js.Syntax.code("[{0}, {1}, {2}] = {3}", $a, $b, $c, $rhs)
+							);
+	
+							return macro @:mergeBlock $b{stmts};
+										
+						default:
+							return Context.error("NYI!", lhs.pos);
+					}
 			
 			default:
 				return Context.error("NYI!", rhs.pos);

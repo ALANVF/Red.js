@@ -47,17 +47,29 @@ class Tokenizer {
 			Token.TFile(match[1] ?? match[2]);
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.url, Regexps.url)) != null) { // [_, url]
 			Token.TUrl(match[0]);
+		} else if(rdr.tryMatch("-$") && (
+			(match = matchRxWithGuardRx(rdr, RegexpChecks.float, Regexps.float)) != null
+			|| (match = matchRxWithGuardRx(rdr, RegexpChecks.integer, Regexps.integer)) != null
+		)) {
+			Token.TMoney("-" + match[0]);
+		} else if((rdr.tryMatch("$") || rdr.tryMatch("+$")) && (
+			(match = matchRxWithGuardRx(rdr, RegexpChecks.float, Regexps.float)) != null
+			|| (match = matchRxWithGuardRx(rdr, RegexpChecks.integer, Regexps.integer)) != null
+		)) {
+			Token.TMoney(match[0]);
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.wordMoney, Regexps.wordMoney)) != null) {
-			final region = match[0];
+			final neg = match[1];
+			final region = match[2];
 			if(rdr.tryMatch("$")) {
+				// TODO: add check for sign here
 				if((match = matchRxWithGuardRx(rdr, RegexpChecks.float, Regexps.float)) != null
 				|| (match = matchRxWithGuardRx(rdr, RegexpChecks.integer, Regexps.integer)) != null) {
-					Token.TMoney(match[0], region);
+					Token.TMoney(neg + match[0], region);
 				} else {
 					throw "Invalid money!";
 				}
 			} else {
-				@:privateAccess rdr.pos -= region.length;
+				@:privateAccess rdr.pos -= region.length + neg.length;
 				if((match = matchRxWithGuardRx(rdr, RegexpChecks.word, Regexps.word)) != null) {
 					final word = match[0];
 					Actions.word(rdr, word);
@@ -147,11 +159,6 @@ class Tokenizer {
 			} else {
 				Token.TInteger(integer);
 			}
-		} else if(rdr.tryMatch("$") && (
-			(match = matchRxWithGuardRx(rdr, RegexpChecks.float, Regexps.float)) != null
-			|| (match = matchRxWithGuardRx(rdr, RegexpChecks.integer, Regexps.integer)) != null
-		)) {
-			Token.TMoney(match[0]);
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.tuple, Regexps.tuple)) != null) { // match if(match != null)
 			final end = match.indexOf(js.Lib.undefined);
 			Token.TTuple(match.slice(1, end == -1 ? null : end).map(v -> Util.mustParseInt(v)));
@@ -254,7 +261,7 @@ class Tokenizer {
 		} else if(rdr.matches("#[")) {
 			Token.TConstruct(Actions.construct(rdr));
 		} else {
-			throw 'Syntax error: Invalid token "${rdr.peek()}" near "${rdr.stream.substr(rdr.pos, 5)}" at ${rdr.getLocStr()}';
+			throw 'Syntax error: Invalid token "${rdr.peek()}" near "${rdr.stream._substr(rdr.pos, 5)}" at ${rdr.getLocStr()}';
 		}
 		
 		eatEmpty(rdr);
@@ -288,7 +295,11 @@ class Tokenizer {
 			case TInteger(int): new types.Integer(int);
 			case TFloat(float): new types.Float(float);
 			case TPercent(percent): new types.Percent(percent / 100);
-			case TMoney(_, _): throw 'NYI';
+			case TMoney(money, region):
+				new types.Money(
+					util.Dec64.fromString(money),
+					if(region == null || region == "") null else new types.Word(types.base.Symbol.make(region))
+				);
 			case TChar(char): types.Char.fromRed(char);
 			case TString(str): types.String.fromRed(str);
 			case TRawString(str): types.String.fromString(str);

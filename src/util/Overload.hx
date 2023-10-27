@@ -207,7 +207,7 @@ class Overload {
 					final a = access.copy();
 					a.remove(AOverload);
 					a.remove(APublic);
-					a.push(APrivate);
+					if(!a.contains(APrivate)) a.push(APrivate);
 					a;
 				},
 				kind: field.kind,

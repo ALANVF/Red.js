@@ -107,7 +107,7 @@ class FloatActions<This: _Float = Float> extends ValueActions<This> {
 		
 		final other = value2._match(
 			at(i is _Integer) => i.int,
-			at(_ is Money) => throw "todo!",
+			at(m is Money) => return Actions.get(DMoney).compare(MoneyActions.fromFloat(cast value1), m, op),
 			at(f is _Float) => f.float,
 			// ...
 			_ => return IsInvalid
@@ -161,7 +161,7 @@ class FloatActions<This: _Float = Float> extends ValueActions<This> {
 
 		right._match(
 			at(_ is Tuple) => return Actions.get(DTuple).doMath(left, right, op),
-			// Money
+			at(m is Money) => return Actions.get(DMoney).doMath(MoneyActions.fromFloat(cast left), m, op),
 			at(_ is Pair, when(!(left is Time))) => {
 				if(op == OSub || op == ODiv) throw "not related";
 				return Actions.get(DPair).doMath(right, left, op);

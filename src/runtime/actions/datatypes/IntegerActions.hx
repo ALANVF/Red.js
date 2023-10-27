@@ -69,7 +69,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 		
 		final other = value2._match(
 			at(i is _Integer) => i.int,
-			at(_ is Money) => throw "todo!",
+			at(m is Money) => return Actions.get(DMoney).compare(MoneyActions.fromInteger(cast value1), m, op),
 			at(f is _Float) => f.float,
 			// ...
 			_ => return IsInvalid
@@ -103,7 +103,7 @@ class IntegerActions<This: _Integer = Integer> extends ValueActions<This> {
 					if(res % 1.0 != 0.0) new Float(res);
 					else makeThis(cast res);
 				},
-				// Money,
+				at(m is Money) => return Actions.get(DMoney).doMath(MoneyActions.fromInteger(cast left), m, op),
 				at(r is _Float) => Actions.get(DFloat).doMath(l, r, op),
 				at(r is Pair) => {
 					final pairActions = Actions.get(DPair);

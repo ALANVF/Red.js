@@ -21,7 +21,7 @@ class Reader {
 		return if(this.eof() || this.pos + length > this.stream.length) {
 			null;
 		} else {
-			this.stream.substr(this.pos, length);
+			this.stream._substr(this.pos, length);
 		}
 	}
 
@@ -29,7 +29,7 @@ class Reader {
 		return if(this.eof() || this.pos + pos + length > this.stream.length) {
 			null;
 		} else {
-			this.stream.substr(this.pos + pos, length);
+			this.stream._substr(this.pos + pos, length);
 		}
 	}
 
@@ -45,7 +45,7 @@ class Reader {
 		if(this.eof() || this.pos + length > this.stream.length) {
 			throw "range error!";
 		} else {
-			return this.stream.substr((this.pos += length) - length, length);
+			return this.stream._substr((this.pos += length) - length, length);
 		}
 	}
 

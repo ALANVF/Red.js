@@ -73,7 +73,7 @@ class MathTools {
 
 	static extern inline overload function asInt(bool: Bool): Int {
 		#if js
-		return js.Syntax.code("+{0}", bool);
+		return js.Syntax.code("+({0})", bool);
 		#else
 		return bool ? 1 : 0;
 		#end
@@ -112,5 +112,42 @@ class MathTools {
 		} else {
 			return new Tuple2(arg, 0);
 		}
+	}
+
+	// taken from https://gist.github.com/jtmcdole/297434f327077dbfe5fb19da3b4ef5be
+	static final ctzLut32 = #if js js.lib.Int8Array.of(
+		32, 0, 1, 26, 2, 23, 27, 0,
+		3, 16, 24, 30, 28, 11, 0, 13,
+		4, 7, 17, 0, 25, 22, 31, 15,
+		29, 10, 12, 6, 0, 21, 14, 9,
+		5, 20, 8, 19, 18
+	) #else null #end;
+	static inline function ctz32(_: Class<Math>, x: Int) return _ctz32(x);
+	private static function _ctz32(x: Int) return ctzLut32[(x & -x) % 37];
+	static inline function ctz64(_: Class<Math>, x: BigInt) return _ctz64(x);
+	private static function _ctz64(x: BigInt) {
+		var c = 0;
+		while(x & bigInt(1) != 1) {
+			x >>= bigInt(1);
+			c++;
+		}
+		//trace(x == 0 ? 0 : x.toString(2).split("1").last().length);
+		return c;
+	}
+
+	static inline function clz64(_: Class<Math>, x: BigInt) return _clz64(x);
+	private static function _clz64(x: BigInt) {
+		#if js
+		//trace(x.toString(2));
+		final high = (x >> bigInt(64)).toInt()|0;
+		//trace(high.toString(2));
+		final res = high == 0 ? 32 : js.lib.Math.clz32(high);
+		//trace(res);
+		final low = x.toInt()|0;
+		//trace(low.toString(2));
+		//trace(x, res, res + js.lib.Math.clz32(low));
+		if(res == 32) return res + js.lib.Math.clz32(low);
+		else return res;
+		#else return 0; #end
 	}
 }

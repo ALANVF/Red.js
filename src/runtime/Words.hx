@@ -22,6 +22,8 @@ class Words {
 	static var CLASS: Symbol;
 	static var VALUES: Symbol;
 	static var OWNER: Symbol;
+	static var AMOUNT: Symbol;
+	static var CODE: Symbol;
 
 	static function build() {
 		Context.GLOBAL.addSymbol(SELF = Symbol.make("self"));
@@ -41,5 +43,7 @@ class Words {
 		Context.GLOBAL.addSymbol(CLASS = Symbol.make("class"));
 		Context.GLOBAL.addSymbol(VALUES = Symbol.make("values"));
 		Context.GLOBAL.addSymbol(OWNER = Symbol.make("owner"));
+		Context.GLOBAL.addSymbol(AMOUNT = Symbol.make("amount"));
+		Context.GLOBAL.addSymbol(CODE = Symbol.make("code"));
 	}
 }

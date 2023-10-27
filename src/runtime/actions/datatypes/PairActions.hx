@@ -46,7 +46,10 @@ class PairActions extends ValueActions<Pair> {
 					_ => throw "syntax malconstruct"
 				);
 			},
-			// String
+			at(s is types.base._String) => Tokenizer.parse(s.toJs())._match(
+				at([p is Pair]) => p,
+				_ => throw 'Can\'t parse pair! from "${s.toJs()}"'
+			),
 			at(p is Pair) => return p,
 			_ => invalid()
 		);

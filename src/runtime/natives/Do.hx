@@ -342,13 +342,15 @@ class Do {
 					{
 						final res = new Dict();
 						for(k => v in refines) {
-							if(js.Syntax.code("{0}?.has({1})", dynamicRefines, k)) {
-								if(!evalGroupedExpr(dynamicRefines[k]).isTruthy()) {
+							// we should really try to find a better option than regex
+							final name = k.replace(Util.jsRx(~/-([a-z])/g), (_, l) -> l.toUpperCase());
+							if(js.Syntax.code("{0}?.has({1})", dynamicRefines, name)) {
+								if(!evalGroupedExpr(dynamicRefines[name]).isTruthy()) {
 									if(!safer) v.forEach(a -> evalGroupedExpr(a));
 									continue;
 								}
 							}
-							res[k] = v.map(a -> evalGroupedExpr(a));
+							res[name] = v.map(a -> evalGroupedExpr(a));
 						}
 						res;
 					}
@@ -416,7 +418,7 @@ class Do {
 					if(Util.IS_NODE) {
 						var f = file.toJs();
 						if(f.startsWith("/c/") || f.startsWith("/C/")) {
-							f = "C:/" + f.substr(3);
+							f = "C:/" + f._substr(3);
 						}
 						evalValues(Transcode._call(Util.FS.readFileSync(f).toString()));
 					} else {

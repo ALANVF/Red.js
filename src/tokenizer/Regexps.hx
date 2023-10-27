@@ -4,7 +4,7 @@ import Util.jsRx;
 
 @:publicFields
 class Regexps {
-	static final wordMoney = jsRx(~/([a-zA-Z]{1,3})/, "y");
+	static final wordMoney = jsRx(~/([+-]?)([a-zA-Z]{1,3})/, "y");
 	static final wordEmail = jsRx(~/([a-zA-Z\.\-]+)/, "y");
 	static final word = jsRx(~/(?:[a-zA-Z_*=>&|!?~`^]|<+(?=[-:=>\[\](){}l^"\s]|$)|(?:\.|[+-]\.?)(?!\d))(?:[\w+\-*=>&|!?~`\.'^]|<(?!<))*/, "y");
 	static final hexa = jsRx(~/([A-F\d]{2,})h/, "y");

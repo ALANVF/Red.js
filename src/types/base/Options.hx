@@ -45,8 +45,9 @@ class Options {
 				final fields = [];
 			
 				for(field in t.fields) {
-					final name = field.name.startsWith("_") ? field.name.substr(1) : field.name;
-
+					var name = field.name.startsWith("_") ? field.name.substr(1) : field.name;
+					name = ~/-([a-z])/g.map(name, r -> r.matched(1).toUpperCase());
+					
 					fields.push({
 						name: field.name,
 						expr: switch field.type {
@@ -82,7 +83,8 @@ class Options {
 																}
 															};
 														};
-														obj.push({name: f.name, expr: Context.typeExpr(expr)});
+														final name = ~/-([a-z])/g.map(f.name, r -> r.matched(1).toUpperCase());
+														obj.push({name: name, expr: Context.typeExpr(expr)});
 													}
 													Context.getTypedExpr({
 														expr: TObjectDecl(obj),

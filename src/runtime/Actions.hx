@@ -60,6 +60,7 @@ class Actions {
 		DTag => new TagActions(),
 		DEmail => new EmailActions(),
 		DDate => new DateActions(),
+		DMoney => new MoneyActions(),
 		DRef => new RefActions()
 	] : Dict<TypeKind, ValueActions<Value>>));
 

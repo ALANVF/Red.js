@@ -80,6 +80,10 @@ class Natives {
 				x is Integer | x is types.Float,
 				y is Integer | y is types.Float
 			]]) => f(x, y),
+			at([NAsMoney(f), [
+				w is Word,
+				a is Integer | a is types.Float
+			]]) => f(w, a),
 			at([NBreak(f), []]) => f(Options.fromRefines(NBreakOptions, refines)),
 			at([NReturn(f) | NUnset(f), [v]]) => f(v),
 			at([NExit(f) | NContinue(f), []]) => f(),

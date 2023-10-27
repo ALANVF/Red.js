@@ -1,4 +1,6 @@
+import util.BigInt;
 import js.Browser.console;
+import util.Dec64;
 
 class Main {
 	static inline final DEBUG = false;
@@ -865,7 +867,13 @@ class Main {
 				#get-definition NAT_AS_PAIR
 			]
 
-			; ...
+			as-money: make native! [[
+					currency [word!]
+					amount   [integer! float!]
+					return:  [money!]
+				]
+				#get-definition NAT_AS_MONEY
+			]
 
 			break: make native! [[
 					/return
@@ -1029,6 +1037,39 @@ class Main {
 			newline: #\"^/\"
 			tab: #\"^-\"
 		");
+
+		/*trace(Dec64.make(bigInt(52), -1));
+		trace(Dec64.make(bigInt(520), -2));
+		trace(Dec64.make(bigInt(52), -1) == Dec64.make(bigInt(520), -2));
+		trace(Dec64.ONE < Dec64.TWO);
+		trace(Dec64.make(bigInt(1), 0) + Dec64.make(bigInt(2), 0));
+		trace(Dec64.make(bigInt(1), 0) + Dec64.make(bigInt(-2), 0));
+		trace(Dec64.ONE + Dec64.TWO);
+		trace(Dec64.PI + Dec64.ONE);
+		trace(Dec64.make(bigInt(2), 0) - Dec64.make(bigInt(2), 0));
+		trace(Dec64.make(bigInt(2), 0) - Dec64.make(bigInt(20), -1));
+		trace(Dec64.make(bigInt(2), 0) * Dec64.make(bigInt(3), 0));
+		trace(Dec64.make(bigInt(2), 0) * Dec64.make(bigInt(15), -1));
+		trace(Dec64.make(bigInt(1), 1) / Dec64.make(bigInt(2), 0));
+		trace(Dec64.make(bigInt(3), 0) / Dec64.make(bigInt(2), 0));
+		trace(Dec64.make(bigInt(1), 1).intDiv(Dec64.make(bigInt(2), 0)));
+		trace(Dec64.make(bigInt(3), 0).intDiv(Dec64.make(bigInt(2), 0)));
+		trace(Dec64.make(bigInt(6), 0) % Dec64.make(bigInt(2), 0));
+		trace(Dec64.make(bigInt(5), 0) % Dec64.make(bigInt(2), 0));
+		trace(Dec64.make(bigInt(10), 0) % Dec64.make(bigInt(15), -1));
+		trace(Dec64.make(bigInt(10), 0) % Dec64.make(bigInt(25), -1));
+		trace(Dec64.fromDouble(1));
+		trace(Dec64.fromDouble(2.3));
+		trace(Dec64.fromDouble(Math.PI));
+		trace(Dec64.fromString("0"));
+		trace(Dec64.fromString("1"));
+		trace(Dec64.fromString("-2.3"));
+		//trace(Dec64.make(bigInt(4), 0).sqrt());
+		//trace(Dec64.make(bigInt(16), 0).sqrt());
+		//trace(Dec64.make(bigInt(16), 0) / Dec64.make(bigInt(413), -2));
+
+		//return;
+		*/
 
 		(untyped setTimeout)(() -> {
 			if(!DEBUG) console.clear();

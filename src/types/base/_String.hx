@@ -1,6 +1,6 @@
 package types.base;
 
-using StringTools;
+using util.StringTools;
 
 macro function inlineMap(kIdent, vIdent, mapExpr, body) {
 	final kName = switch kIdent { case macro $i{n}: n; default: throw "error!"; };
@@ -51,7 +51,7 @@ abstract class _String extends _SeriesOf<Char, Int> {
 					at("~".code) => {code = 127; len = 2;},
 
 					at("(".code) => {
-						final nstr = str.substr(2).toUpperCase();
+						final nstr = str._substr(2).toUpperCase();
 						var res = null;
 
 						inlineMap(k, v, [
@@ -86,7 +86,7 @@ abstract class _String extends _SeriesOf<Char, Int> {
 				code = str.cca(0); len = 1;
 			};
 
-			str = str.substr(len);
+			str = str._substr(len);
 			code;
 		}];
 	}

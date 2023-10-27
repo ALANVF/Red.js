@@ -37,8 +37,10 @@ class Eval {
 		}
 
 		for(refine in fn.refines) {
-			refines[refine.name]._and(refArgs => {
-				fctx.set(refine.name, Logic.TRUE);
+			final name = refine.name.replace(Util.jsRx(~/-([a-z])/g), (_, l) -> l.toUpperCase());
+			trace(refine,name, name);
+			refines[name]._and(refArgs => {
+				fctx.set(name, Logic.TRUE);
 				for(j => param in refine.params) {
 					fctx.set(param.name, refArgs[j]);
 				}
