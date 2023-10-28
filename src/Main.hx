@@ -1038,7 +1038,8 @@ class Main {
 			tab: #\"^-\"
 		");
 
-		/*trace(Dec64.make(bigInt(52), -1));
+		/*
+		trace(Dec64.make(bigInt(52), -1));
 		trace(Dec64.make(bigInt(520), -2));
 		trace(Dec64.make(bigInt(52), -1) == Dec64.make(bigInt(520), -2));
 		trace(Dec64.ONE < Dec64.TWO);
@@ -1064,12 +1065,12 @@ class Main {
 		trace(Dec64.fromString("0"));
 		trace(Dec64.fromString("1"));
 		trace(Dec64.fromString("-2.3"));
-		//trace(Dec64.make(bigInt(4), 0).sqrt());
-		//trace(Dec64.make(bigInt(16), 0).sqrt());
+		trace(Dec64.make(bigInt(4), 0).sqrt());
+		trace(Dec64.make(bigInt(16), 0).sqrt());
 		//trace(Dec64.make(bigInt(16), 0) / Dec64.make(bigInt(413), -2));
 
 		//return;
-		*/
+		//*/
 
 		(untyped setTimeout)(() -> {
 			if(!DEBUG) console.clear();

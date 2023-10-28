@@ -24,9 +24,10 @@ class Foreach {
 
 		Util._match([words, series],
 			at([[key, value], map is Map]) => {
-				for(i in 0...map.size) {
-					key.set(map.keys[i]);
-					value.set(map.values[i]);
+				var i = 0;
+				while(i < map.size) {
+					key.set(map.values[i]);
+					value.set(map.values[i + 1]);
 
 					try {
 						Do.evalValues(body);
@@ -39,6 +40,8 @@ class Foreach {
 							throw e;
 						}
 					}
+
+					i += 2;
 				}
 			},
 			at([[word], series is ISeriesOf<Value>]) => {

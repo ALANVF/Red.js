@@ -94,7 +94,7 @@ class Set {
 				value._match(
 					at(b is _Block) => _setMany(symbols, b, any, some),
 					at(p is _Path) => _setMany(symbols, p, any, some),
-					at(m is Map) => _setMany(symbols, m.keys.flatMap((k, i) -> [k, m.values[i]]), any, some),
+					at(m is Map) => _setMany(symbols, m.values.flatMap((k, i) -> [k, m.values[i]]), any, some),
 					_ => for(s in symbols) s.set(value)
 				);
 			} else {

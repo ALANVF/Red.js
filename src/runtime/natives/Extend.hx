@@ -1,5 +1,6 @@
 package runtime.natives;
 
+import types.base.ComparisonOp;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.Value;
@@ -15,6 +16,7 @@ class Extend {
 
 	public static function call(obj: Value, spec: Value, options: NExtendOptions) {
 		final ignoreCase = !options._case;
+		final op = options._case ? CStrictEqual : CEqual;
 
 		obj._match(
 			at(map is Map) => spec._match(
@@ -26,8 +28,10 @@ class Extend {
 					}
 				},
 				at(m is Map) => {
-					for(i => key in m.keys) {
-						map.set(key, m.values[i], ignoreCase);
+					var i = 0;
+					while(i < m.size) {
+						map.set(m.values[i], m.values[i + 1], op);
+						i += 2;
 					}
 				},
 				_ => throw "Invalid value!"

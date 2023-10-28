@@ -100,7 +100,7 @@ class BlockActions<This: _Block = Block> extends _BlockLikeActions<This> {
 				));
 			},
 			at(o is Object) => cast ObjectActions._reflect(o, Words.BODY),
-			at(m is Map) => throw "todo",
+			at(m is Map) => makeThis(m.values.copy()),
 			//Vector
 			_ => invalid()
 
@@ -110,7 +110,7 @@ class BlockActions<This: _Block = Block> extends _BlockLikeActions<This> {
 	override function to(proto: Null<This>, spec: Value) {
 		return spec._match(
 			at(o is Object) => cast ObjectActions._reflect(o, Words.BODY),
-			at(m is Map) => throw "todo",
+			at(m is Map) => makeThis(m.values.copy()),
 			//Vector
 			at(s is String) => makeThis(Tokenizer.parse(s.toJs())),
 			at(t is Typeset) => makeThis(cast t.types.toArray()),

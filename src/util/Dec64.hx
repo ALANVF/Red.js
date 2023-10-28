@@ -150,6 +150,7 @@ abstract Dec64(BigInt) {
 			else 0;
 		log10Scale = JsMath.min(e - 127, log10Scale);
 		x *= POWER[log10Scale]; // in theory, this shouldn't overflow
+		e -= log10Scale;
 
 		while(e > 127) {
 			// try multiplying the coefficient by 10
@@ -571,13 +572,13 @@ abstract Dec64(BigInt) {
 				if(r == 0) {
 					return ZERO;
 				} else {
-					return make(r, xExp.toInt());
+					return make(r, xExp.toInt()) .normal();
 				}
 			} else {
-				return make(xCoef + yCoef, xExp.toInt());
+				return make(xCoef + yCoef, xExp.toInt()) .normal();
 			}
 		} else {
-			return addSlow(coefficient, xExp.toInt(), other.coefficient, yExp.toInt());
+			return addSlow(coefficient, xExp.toInt(), other.coefficient, yExp.toInt()) .normal();
 		}
 	}
 
@@ -612,13 +613,13 @@ abstract Dec64(BigInt) {
 				if(r == 0) {
 					return ZERO;
 				} else {
-					return of(r, xExp);
+					return of(r, xExp) .normal();
 				}
 			} else {
-				return make(xCoef - yCoef, xExp.toInt());
+				return make(xCoef - yCoef, xExp.toInt()) .normal();
 			}
 		} else {
-			return addSlow(coefficient, xExp.toInt(), -other.coefficient, yExp.toInt());
+			return addSlow(coefficient, xExp.toInt(), -other.coefficient, yExp.toInt()) .normal();
 		}
 	}
 
@@ -642,7 +643,7 @@ abstract Dec64(BigInt) {
 		final r = rBig;
 		final e = ex + ey;
 		if(rHigh == r >> bigInt(63)) { // no overflow
-			return make(r, e);
+			return make(r, e) .normal();
 		}
 
 		final rHighAbs = rHigh.abs();
@@ -652,7 +653,7 @@ abstract Dec64(BigInt) {
 		
 		// divide by the power of ten & pack the final result
 		final r2 = rBig / POWER[deltaEr];
-		return make(r2, e + deltaEr);
+		return make(r2, e + deltaEr) .normal();
 	}
 
 	private static final FAST_TAB1 = UInt8ClampedArray.of(
@@ -749,7 +750,7 @@ abstract Dec64(BigInt) {
 		return
 			if(status == 0) ZERO
 			else if(status == -1) NAN
-			else make(q, qexp);
+			else make(q, qexp) .normal();
 	}
 
 	function fda(y: Dec64, z: Dec64) {
@@ -1750,18 +1751,19 @@ abstract Dec64(BigInt) {
 
 	// TODO: figure out what the fuck is wrong with this
 	function sqrt() {
-		throw "Dec64#sqrt() does not work properly right now";
 		final coef = coefficient;
 		if(!isNaN() && coef >= 0) {
 			if(coef == 0) return ZERO;
 			var result = abstract;
-			while(true) {
+			for(_ in 0...56) {
 				final progress = ((result + (abstract / result).normal()) / TWO).normal();
 				trace(progress > of(MAX64, 0));
 				trace(abstract, result, (abstract / result).normal(), result + (abstract / result).normal(), progress);
 				if(progress == result) return result;
 				result = progress;
 			}
+			trace("didn't converge");
+			return result;
 		} else {
 			return NAN;
 		}

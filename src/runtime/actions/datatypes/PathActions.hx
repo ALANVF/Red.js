@@ -12,7 +12,6 @@ import types.Pair;
 import types.Logic;
 import types.String;
 import types.Object;
-import types.Map;
 import types.Typeset;
 
 import runtime.actions.Form;
@@ -30,7 +29,6 @@ class PathActions<This: _Path = Path> extends _BlockLikeActions<This> {
 			at(_ is Integer | _ is Float) => makeThis([]),
 			at(b is _BlockLike) => makeThis(b.cloneValues(), 0),
 			at(o is Object) => makeThis((cast ObjectActions._reflect(o, Words.BODY)).values),
-			at(m is Map) => throw "todo",
 			//Vector
 			_ => invalid()
 
@@ -40,7 +38,6 @@ class PathActions<This: _Path = Path> extends _BlockLikeActions<This> {
 	override function to(proto: Null<This>, spec: Value) {
 		return spec._match(
 			at(o is Object) => makeThis((cast ObjectActions._reflect(o, Words.BODY)).values),
-			at(m is Map) => throw "todo",
 			//Vector
 			at(s is String) => makeThis(Tokenizer.parse(s.toJs())),
 			at(t is Typeset) => makeThis(cast t.types.toArray()),

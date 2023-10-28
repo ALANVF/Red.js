@@ -44,7 +44,7 @@
 | `pair!`                  | Y        | Y      | P      | Y    | Y      | Y      | Y         | P             |
 | `percent!`               | Y        | Y**    | Y      | P    | Y      | Y      | P         | P             |
 | `tuple!`                 | Y        | Y      | Y      | P    | Y      | Y      | Y         | P             |
-| `map!`                   | Y        | Y      | N      | N    | N      | N      | N         | N             |
+| `map!`                   | Y        | Y      | Y      | Y    | Y      | Y      | P         | Y             |
 | `binary!`                | Y        | Y      | N      | N    | Y      | Y      | Y         | P             |
 | `time!`                  | Y        | Y      | Y      | P    | Y      | Y      | P         | P             |
 | `tag!`                   | Y        | Y      | N      | N    | Y      | Y      | P         | P             |

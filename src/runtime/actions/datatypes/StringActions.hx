@@ -100,7 +100,7 @@ class StringActions<This: _String = String> extends SeriesActions<This, Char, In
 		0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0xFF, 0x00
 	);
 	static final WHITE_CHAR = new Set(
-		[for(i in 0...33+1) i]
+		[for(i in 0...32+1) i]
 		.concat([
 			133,
 			160,

@@ -316,7 +316,10 @@ class Tokenizer {
 			case TBinary(_, _): throw "bad";
 			case TBlock(block): new types.Block(block.map(v -> tokenToValue(v)));
 			case TParen(paren): new types.Paren(paren.map(v -> tokenToValue(v)));
-			case TMap(map): types.Map.fromPairs([for(i => k in map) if(i % 2 == 0) {k: tokenToValue(k), v: tokenToValue(map[i + 1])}]);
+			case TMap(map): new types.Map([for(i => v in map) {
+				final value = tokenToValue(v);
+				if(i % 2 == 0) types.Map.preprocessKey(value) else value;
+			}]);
 			case TTuple(tuple): new types.Tuple(new util.UInt8ClampedArray(tuple));
 			case TPair(x, y): new types.Pair(x, y);
 			case TPoint2D(x, y): new types.Point2D(x, y);
