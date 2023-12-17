@@ -170,8 +170,9 @@ class ObjectActions extends ValueActions<Object> {
 
 		spec._match(
 			at(obj2 is Object) => {
-				final changed = extend(obj.ctx, proto.ctx, obj);
+				final changed = proto == null || extend(obj.ctx, proto.ctx, obj);
 				obj.classID = if(changed) ++Object.maxID else proto.classID;
+				extend(obj.ctx, obj2.ctx, obj);
 			},
 			at(block is Block) => {
 				final isNew = obj.ctx.collectSetWords(block);
