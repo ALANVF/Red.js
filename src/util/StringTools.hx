@@ -71,6 +71,9 @@ class StringTools {
 		#end
 	}
 
+	static #if js inline #end function asInt(self: String): Int
+		return #if js js.Syntax.code("+{0}", self) #else Std.parseInt(self) #end;
+
 	#if js
 	static inline function match(self: String, rx: RegExp): Null<RegExpMatch> {
 		return (untyped self).match(rx);

@@ -1,5 +1,6 @@
 package runtime.natives;
 
+import runtime.actions.datatypes.DateActions;
 import types.base.Options;
 import types.base._NativeOptions;
 import types.Value;
@@ -30,7 +31,7 @@ class Now {
 		else if(options.zone) return res.zone
 		else if(options.date) return res.getDate()
 		else if(options.weekday) return new Integer(res.getWeekday())
-		else if(options.yearday) throw "NYI!"
+		else if(options.yearday) DateActions.getYearday(res.date)
 		;
 		
 		return res;

@@ -1,5 +1,7 @@
 package tokenizer;
 
+import tokenizer.DateMatch;
+
 import Util;
 
 class Actions {
@@ -117,6 +119,117 @@ class Actions {
 		}
 
 		return out;
+	}
+
+	public static function date(match: DateMatch.Match) {
+		var day:   Int,
+			month: Int,
+			year:  Int;
+		
+		final date: DateKind = if(DateMatch.isDDMMMY(match)) {
+			day = match.date_ddmmmy_dd.asInt();
+			
+			if(match.date_ddmmmy_mmm_m != null) {
+				month = match.date_ddmmmy_mmm_m.asInt();
+			} else if(match.date_ddmmmy_mmm_mon != null) {
+				month = DateMatch.getMonth(match.date_ddmmmy_mmm_mon) + 1;
+			} else if(match.date_ddmmmy_mmm_month != null) {
+				month = DateMatch.getMonth(match.date_ddmmmy_mmm_month) + 1;
+			} else {
+				throw "Error 1!";
+			}
+			
+			if(match.date_ddmmmy_yyyy != null) {
+				year = match.date_ddmmmy_yyyy.asInt();
+			} else if(match.date_ddmmmy_yy != null) {
+				year = match.date_ddmmmy_yy.asInt();
+				year += (year > 50) ? 1900 : 2000;
+			} else {
+				throw "Error 2!";
+			}
+
+			YYYYMDD(year, month, day);
+		} else if(DateMatch.isYYYYMMMDD(match)) {
+			day = match.date_yyyymmmdd_dd.asInt();
+			
+			if(match.date_yyyymmmdd_mmm_m != null) {
+				month = match.date_yyyymmmdd_mmm_m.asInt();
+			} else if(match.date_yyyymmmdd_mmm_mon != null) {
+				month = DateMatch.getMonth(match.date_yyyymmmdd_mmm_mon) + 1;
+			} else if(match.date_yyyymmmdd_mmm_month != null) {
+				month = DateMatch.getMonth(match.date_yyyymmmdd_mmm_month) + 1;
+			} else {
+				throw "Error 3!";
+			}
+			
+			if(match.date_yyyymmmdd_yyyy != null) {
+				year = match.date_yyyymmmdd_yyyy.asInt();
+			} else {
+				throw "Error 4!";
+			}
+			
+			YYYYMDD(year, month, day);
+		} else if(DateMatch.isYYYYDDD(match)) {
+			YYYYDDD(
+				match.date_yyyyddd_yyyy.asInt(),
+				match.date_yyyyddd_ddd.asInt()
+			);
+		} else if(DateMatch.isYYYYW(match)) {
+			YYYYWWD(
+				match.date_yyyyW_yyyy.asInt(),
+				match.date_yyyyW_ww.asInt(),
+				match.date_yyyyW_d == null ? 1 : match.date_yyyyW_d.asInt()
+			);
+		} else if(DateMatch.isDateT(match)) {
+			YYYYMDD(
+				match.dateT_yyyy.asInt(),
+				match.dateT_mm.asInt(),
+				match.dateT_dd.asInt()
+			);
+		} else {
+			throw "Error 5!";
+		}
+		
+		final time: Null<TimeKind> = if(match.time != null) {
+			if(DateMatch.isHMS(match)) {
+				HMS(
+					match.time_hms_hour.asInt(),
+					match.time_hms_min.asInt(),
+					match.time_hms_sec == null ? 0 : match.time_hms_sec.asInt()
+				);
+			} else if(DateMatch.isHHMM(match)) {
+				HHMM(match.time_hhmm.asInt() * 100);
+			} else if(DateMatch.isHHMMSS(match)) {
+				final ms = (match.time_hhmmss_dec == null) ? 0 : '${match.time_hhmmss_dec}'.asInt();
+				HHMMSS(match.time_hhmmss_hhmmss.asInt(), ms);
+			} else {
+				throw "Error 6!";
+			}
+		} else null;
+		
+		final zone: Null<ZoneKind> = if(match.zone != null) {
+			if(DateMatch.isZoneHM15(match)) {
+				ZoneHM15(
+					match.zone_sign,
+					match.zone_hm15_hour.asInt(),
+					match.zone_hm15_min15.asInt()
+				);
+			} else if(DateMatch.isZoneHHMM(match)) {
+				ZoneHHMM(
+					match.zone_sign,
+					match.zone_hhmm.asInt()
+				);
+			} else if(DateMatch.isZoneHour(match)) {
+				ZoneHour(
+					match.zone_sign,
+					match.zone_hour.asInt()
+				);
+			} else {
+				throw "Error 7!";
+			}
+		} else null;
+
+		return Token.TDate(date, time, zone);
 	}
 
 	static function delim(rdr: Reader, name: String, start: String, stop: String) {

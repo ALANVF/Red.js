@@ -141,8 +141,8 @@ class Tokenizer {
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.time, Regexps.time)) != null) { // [_, h, m, s]
 			final s = match[3];
 			Token.TTime(Util.mustParseInt(match[1]), Util.mustParseInt(match[2]), if(s == null) 0 else Std.parseFloat(s));
-		} else if(rdr.matchesRx(RegexpChecks.date)) {
-			throw "todo!";
+		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.date, Regexps.date)) != null) {
+			Actions.date(cast match.groups);
 		} else if(rdr.matchesRx(RegexpChecks.specialFloat)) {
 			Token.TFloat(Actions.specialFloat(rdr) ?? throw "Invalid float literal!");
 		} else if((match = matchRxWithGuardRx(rdr, RegexpChecks.float, Regexps.float)) != null) { // [Std.parseFloat(_) => float]
@@ -324,7 +324,81 @@ class Tokenizer {
 			case TPair(x, y): new types.Pair(x, y);
 			case TPoint2D(x, y): new types.Point2D(x, y);
 			case TPoint3D(x, y, z): new types.Point3D(x, y, z);
-			case TDate(_, _, _): throw 'NYI';
+			case TDate(date, time, zone):	
+				var res = new js.lib.Date();
+
+				switch date {
+					case YYYYMDD(yyyy, m, dd): res._setFullYear(yyyy, m - 1, dd);
+					case YYYYWWD(yyyy, ww, d):
+						res = cast util.DateTools.weekToDate(yyyy, ww);
+						if(d > 1) {
+							res.setDate(res.getDate() + (d - 1));
+						}
+					case YYYYDDD(yyyy, ddd): res._setFullYear(yyyy, 0, ddd);
+				}
+
+				if(time != null) switch time {
+					case HMS(h, m, s):
+						res.setHours(h);
+						res.setMinutes(m);
+						res.setSeconds(Math.trunc(s));
+						res.setMilliseconds(cast (s * 1000) % 1000);
+					case HHMM(hhmm):
+						res.setHours(Math.floor(hhmm / 10000) % 100);
+						res.setMinutes(Math.floor(hhmm / 100) % 100);
+						res.setSeconds(0);
+						res.setMilliseconds(0);
+					case HHMMSS(hhmmss, ms):
+						res.setHours(Math.floor(hhmmss / 10000) % 100);
+						res.setMinutes(Math.floor(hhmmss / 100) % 100);
+						res.setSeconds(hhmmss % 100);
+						res.setMilliseconds(ms);
+				} else {
+					res.setHours(0);
+					res.setMinutes(0);
+					res.setSeconds(0);
+					res.setMilliseconds(0);
+				}
+
+				if(zone != null) {
+					var sign;
+					var hours;
+					var minutes;
+
+					switch zone {
+						case ZoneHM15(sign0, hour, min15):
+							sign = sign0;
+							hours = hour;
+							minutes = min15;
+						case ZoneHHMM(sign0, hhmm):
+							sign = sign0;
+							hours = Math.floor(hhmm / 100);
+							minutes = hhmm % 100;
+						case ZoneHour(sign0, hour):
+							sign = sign0;
+							hours = hour;
+							minutes = 0;
+					}
+
+					if(minutes < 15) {
+						minutes = 0;
+					} else if(minutes < 30) {
+						minutes = 15;
+					} else if(minutes < 45) {
+						minutes = 30;
+					} else if(minutes < 60) {
+						minutes = 45;
+					} else if(minutes >= 60) {
+						hours += Math.floor(minutes / 60);
+						minutes %= 60;
+					}
+
+					if(sign == Neg) hours *= -1;
+
+					new types.Date(cast res, types.Time.fromHMS(hours, minutes, 0));
+				} else {
+					new types.Date(cast res, new types.Time(0));
+				}
 			case TTime(h, m, s): types.Time.fromHMS(h, m, s);
 			case TConstruct([TWord("true")]): types.Logic.TRUE;
 			case TConstruct([TWord("false")]): types.Logic.FALSE;

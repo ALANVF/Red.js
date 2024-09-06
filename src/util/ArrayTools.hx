@@ -128,6 +128,13 @@ class ArrayTools {
 	static overload extern inline function flatMap<T, U>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> Array<U>): Array<U>
 		return (untyped array).flatMap(callback);
 
+	static overload extern inline function _map<T, U>(array: Array<T>, callback: (element: T) -> U): Array<U>
+		return (untyped array).map(callback);
+	static overload extern inline function _map<T, U>(array: Array<T>, callback: (element: T, index: Int) -> U): Array<U>
+		return (untyped array).map(callback);
+	static overload extern inline function _map<T, U>(array: Array<T>, callback: (element: T, index: Int, array: Array<T>) -> U): Array<U>
+		return (untyped array).map(callback);
+
 	
 	static overload extern inline function copyWithin<T>(array: Array<T>, target: Int): Array<T>
 		return (untyped array).copyWithin(target);

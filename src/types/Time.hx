@@ -5,6 +5,8 @@ import types.base._Float;
 import haxe.ds.Option;
 
 class Time extends _Float implements IGetPath {
+	public static final ZERO = new Time(0);
+
 	public var hours(get, never): Int;
 	inline function get_hours() {
 		return float < 0 ? Math.ceil(float / 3600) : Math.floor(float / 3600);
@@ -12,7 +14,7 @@ class Time extends _Float implements IGetPath {
 	
 	public var minutes(get, never): Int;
 	inline function get_minutes() {
-		return Math.floor(Math.abs(float) / 60);
+		return Math.floor(Math.abs(float) / 60) % 60;
 	}
 	
 	public var seconds(get, never): Float;
@@ -21,7 +23,7 @@ class Time extends _Float implements IGetPath {
 	}
 	
 	public static inline function fromHMS(h: Int, m: Int, s: StdTypes.Float) {
-		return new Time((Math.iabs(h)*3600 + m*60 + s) * h.sign());
+		return new Time((Math.iabs(h)*3600 + (m*60) + s) * h.sign());
 	}
 	
 	function make(value: StdTypes.Float): Time {

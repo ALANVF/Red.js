@@ -19,3 +19,6 @@ Natives:
 
 Parser:
 - date! literals
+
+API:
+- add hooks for input/output

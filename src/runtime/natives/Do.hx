@@ -75,6 +75,7 @@ class Do {
 	static function _doesBecomeFunction(value: Value, values: Values) {
 		return value._match(
 			at(fn is IFunction) => mkResult(fn, values),
+			// TODO: change this
 			at(g is IGetPath, when(values.isNotTail())) => switch g.getPath(values.getNext()) {
 				case Some(v): _doesBecomeFunction(v, values);
 				case None: null;

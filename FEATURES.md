@@ -50,7 +50,7 @@
 | `tag!`                   | Y        | Y      | N      | N    | Y      | Y      | P         | P             |
 | `email!`                 | Y        | Y      | N      | N    | Y      | Y      | P         | P             |
 | `handle!`                | NA       | NA     | N      | N    | N      | N      | N         | N             |
-| `date!`                  | Y        | N      | N      | N    | N      | N      | N         | N             |
+| `date!`                  | Y        | Y      | Y      | Y    | Y      | Y      | Y         | P             |
 | `port!`                  | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `image!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `money!`                 | Y        | Y**    | Y      | Y    | Y      | Y      | Y         | Y             |

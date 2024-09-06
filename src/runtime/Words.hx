@@ -24,6 +24,18 @@ class Words {
 	static var OWNER: Symbol;
 	static var AMOUNT: Symbol;
 	static var CODE: Symbol;
+	static var DATE: Symbol;
+	static var YEAR: Symbol;
+	static var MONTH: Symbol;
+	static var DAY: Symbol;
+	static var ZONE: Symbol;
+	static var TIME: Symbol;
+	static var WEEKDAY: Symbol;
+	static var YEARDAY: Symbol;
+	static var JULIAN: Symbol;
+	static var TIMEZONE: Symbol;
+	static var WEEK: Symbol;
+	static var ISOWEEK: Symbol;
 
 	static function build() {
 		Context.GLOBAL.addSymbol(SELF = Symbol.make("self"));
@@ -45,5 +57,36 @@ class Words {
 		Context.GLOBAL.addSymbol(OWNER = Symbol.make("owner"));
 		Context.GLOBAL.addSymbol(AMOUNT = Symbol.make("amount"));
 		Context.GLOBAL.addSymbol(CODE = Symbol.make("code"));
+		Context.GLOBAL.addSymbol(DATE = Symbol.make("date"));
+		Context.GLOBAL.addSymbol(YEAR = Symbol.make("year"));
+		Context.GLOBAL.addSymbol(MONTH = Symbol.make("month"));
+		Context.GLOBAL.addSymbol(DAY = Symbol.make("day"));
+		Context.GLOBAL.addSymbol(ZONE = Symbol.make("zone"));
+		Context.GLOBAL.addSymbol(TIME = Symbol.make("time"));
+		Context.GLOBAL.addSymbol(WEEKDAY = Symbol.make("weekday"));
+		Context.GLOBAL.addSymbol(YEARDAY = Symbol.make("yearday"));
+		Context.GLOBAL.addSymbol(JULIAN = Symbol.make("julian"));
+		Context.GLOBAL.addSymbol(TIMEZONE = Symbol.make("timezone"));
+		Context.GLOBAL.addSymbol(WEEK = Symbol.make("week"));
+		Context.GLOBAL.addSymbol(ISOWEEK = Symbol.make("isoweek"));
+
+		@:privateAccess runtime.actions.datatypes.DateActions.ACCESSORS = [
+			cast null, // to offset index by 1
+			Words.DATE,
+			Words.YEAR,
+			Words.MONTH,
+			Words.DAY,
+			Words.ZONE,
+			Words.TIME,
+			Words.HOUR,
+			Words.MINUTE,
+			Words.SECOND,
+			Words.WEEKDAY,
+			Words.YEARDAY,
+			Words.JULIAN,
+			Words.TIMEZONE,
+			Words.WEEK,
+			Words.ISOWEEK
+		];
 	}
 }

@@ -1,20 +1,6 @@
 package tokenizer;
 
-enum DateToken {
-	YearMonthDay(year: Int, month: Int, day: Int);
-	YearWeekDay(year: Int, week: Int, day: Int);
-	YearDay(year: Int, day: Int);
-}
-
-enum DateTimeToken {
-	HH_MM_SS(hour: Int, minute: Int, second: Float);
-	HHMMSS(time: Float);
-}
-
-enum DateZoneToken {
-	HH_MM(sign: DateMatch.Sign, hour: Int, minute: Int);
-	HHMM(sign: DateMatch.Sign, time: Int);
-}
+import tokenizer.DateMatch;
 
 enum Token {
 	TWord(word: String);
@@ -52,7 +38,7 @@ enum Token {
 	TPoint2D(x: Float, y: Float);
 	TPoint3D(x: Float, y: Float, z: Float);
 
-	TDate(date: DateToken, time: Null<DateTimeToken>, zone: Null<DateZoneToken>);
+	TDate(date: DateKind, time: Null<TimeKind>, zone: Null<ZoneKind>);
 	TTime(hour: Int, minute: Int, second: Float);
 	
 	TConstruct(construct: Array<Token>);
