@@ -15,7 +15,8 @@ class String extends _String {
 		return new String(values, index);
 	}
 
-	public function form(): std.String {
-		return std.String.fromCharCodes(values);
+	public inline function form(): std.String {
+		//return std.String.fromCharCodes(values);
+		return this.toJs();
 	}
 }

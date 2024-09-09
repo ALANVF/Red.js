@@ -4,6 +4,8 @@ import types.base.IValue;
 import types.base.IDatatype;
 
 #if !macro
+@:expose
+@:native("Value")
 @:autoBuild(types.ValueBuilder.build())
 #end
 abstract class Value implements IValue {

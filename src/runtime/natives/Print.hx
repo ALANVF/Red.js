@@ -8,7 +8,7 @@ import runtime.actions.Form;
 @:build(runtime.NativeBuilder.build())
 class Print {
 	public static function call(value: Value) {
-		js.html.Console.log(Form.call(Reduce.call(value, Reduce.defaultOptions), Form.defaultOptions).form());
+		RedJS.printHandler(Form.call(Reduce.call(value, Reduce.defaultOptions), Form.defaultOptions).toJs());
 
 		return Unset.UNSET;
 	}
