@@ -17,6 +17,10 @@ abstract class Value implements IValue {
 	public function isTruthy() {
 		return true;
 	}
+
+	public function isUnset() {
+		return false;
+	}
 	
 	public inline function isA(type: IDatatype) {
 		return type.matchesTypeOfValue(this);

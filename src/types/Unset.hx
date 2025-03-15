@@ -8,4 +8,8 @@ class Unset extends Value {
 	/*override function isTruthy(): Bool {
 		return false;
 	}*/
+
+	override function isUnset() {
+		return true;
+	}
 }
