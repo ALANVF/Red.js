@@ -16,7 +16,7 @@ term.open(document.getElementById('terminal'));
 fitAddon.fit();
 
 // Optionally, you can add some text to the terminal
-term.writeln('Welcome to Red.js!');
+term.writeln('Welcome to Red.js! Running build ' + RedJS.BUILD);
 
 // Handle window resize events to keep the terminal size updated
 window.addEventListener('resize', () => {
@@ -35,7 +35,9 @@ function readLine(/*callback /* (input: string) => void */) /* Promise<string> *
 			const DOWN = "\x1b[B";
 			const LEFT = "\x1b[D";
 			const RIGHT = "\x1b[C";
-			const ENTER = "\r"; // why does it use cr instead of nl?????
+			const LF = "\n";
+			const CR = "\r";
+			const CRLF = "\r\n";
 			const TAB = "\t";
 			const BACKSPACE = "\x7f";
 
@@ -63,7 +65,7 @@ function readLine(/*callback /* (input: string) => void */) /* Promise<string> *
 					}
 				break;
 
-				case ENTER:
+				case LF: case CR: case CRLF:
 					term.writeln(data);
 					replHistory.push(input);
 					disposable.dispose();
