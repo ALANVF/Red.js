@@ -18,7 +18,7 @@ class NoneActions extends ValueActions<None> {
 
 	override function mold(_, buffer: String, _, isAll: Bool, _, _, part: Int, _) {
 		if(isAll) {
-			buffer.appendLiteral("#[none]");
+			buffer.appendLiteral("#(none)");
 			return part - 7;
 		} else {
 			return form(null, buffer, null, part);

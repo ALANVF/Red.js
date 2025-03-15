@@ -256,9 +256,9 @@ class Tokenizer {
 			Actions.parenOrPoint(rdr);
 		} else if(rdr.matches("[")) {
 			Token.TBlock(Actions.block(rdr));
-		} else if(rdr.matches("#(")) {
-			Token.TMap(Actions.map(rdr));
 		} else if(rdr.matches("#[")) {
+			Token.TMap(Actions.map(rdr));
+		} else if(rdr.matches("#(")) {
 			Token.TConstruct(Actions.construct(rdr));
 		} else {
 			throw 'Syntax error: Invalid token "${rdr.peek()}" near "${rdr.stream._substr(rdr.pos, 5)}" at ${rdr.getLocStr()}';

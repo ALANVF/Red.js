@@ -173,11 +173,11 @@ class MapActions extends ValueActions<Map> {
 		Util.detuple([part, @var cycle], Cycles.detect(value, buffer, part, true));
 		if(cycle) return part;
 
-		buffer.appendLiteral("#(");
+		buffer.appendLiteral("#[");
 		final prev = part - 2;
 		part = serialize(value, buffer, false, isAll, isFlat, arg, prev, true, indent + 1, true);
 		if(part != prev && indent > 0) part = ObjectActions.doIndent(buffer, indent, part);
-		buffer.appendChar(')'.code);
+		buffer.appendChar(']'.code);
 		return part - 1;
 	}
 

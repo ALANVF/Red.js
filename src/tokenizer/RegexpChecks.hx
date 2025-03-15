@@ -30,8 +30,8 @@ class RegexpChecks {
 	static final paren = "(";
 	static final block = "[";
 	static final multiString = "{";
-	static final map = "#(";
-	static final construct = "#[";
+	static final map = "#[";
+	static final construct = "#(";
 	static final binary = jsRx(~/(?:2|16|64)?#\{/, "y");
 	static final rawString = jsRx(~/%+\{/, "y");
 }

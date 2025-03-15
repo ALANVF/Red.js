@@ -8,6 +8,7 @@ import runtime.actions.Mold;
 	static var printHandler: (String) -> Void;
 	static var prinHandler: (String) -> Void;
 	static var inputHandler: () -> String;
+	static final BUILD: String = Macros.getBuild();
 	
 	/**
 	 * Initialize the runtime

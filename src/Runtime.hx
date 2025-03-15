@@ -1031,9 +1031,9 @@ import types.base.Context;
 			default!:		union series! union immediate! union any-object! union external! union any-function! make typeset! [map! bitset!]
 			any-type!:		union default! internal!
 
-			Red: none: #[none]
-			true: yes: on: #[true]
-			false: no: off: #[false]
+			Red: none: #(none)
+			true: yes: on: #(true)
+			false: no: off: #(false)
 
 			newline: #\"^/\"
 			tab: #\"^-\"

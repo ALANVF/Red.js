@@ -35,7 +35,7 @@ class LogicActions extends ValueActions<Logic> {
 
 	override function mold(value: Logic, buffer: String, _, isAll: Bool, _, _, part: Int, _) {
 		if(isAll) {
-			final str = value.cond ? "#[true]" : "#[false]";
+			final str = value.cond ? "#(true)" : "#(false)";
 			buffer.appendLiteral(str);
 			return part - str.length;
 		} else {

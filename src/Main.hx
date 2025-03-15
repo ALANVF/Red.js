@@ -8,7 +8,7 @@ class Main {
 
 		(untyped setTimeout)(() -> {
 			if(!DEBUG) console.clear();
-			console.log('Build ${Macros.getBuild()}\n');
+			console.log('Build ${RedJS.BUILD}\n');
 
 			final readline: Readline = untyped require('readline');
 			final stdout: { function write(s: String): Void; } = untyped process.stdout;

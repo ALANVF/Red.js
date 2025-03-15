@@ -30,8 +30,8 @@ class Regexps {
 	static final beginParen = "(";
 	static final beginBlock = "[";
 	static final beginMultiString = "{";
-	static final beginMap = "#(";
-	static final beginConstruct = "#[";
+	static final beginMap = "#[";
+	static final beginConstruct = "#(";
 	static final beginBinary = jsRx(~/(2|16|64)?#\{/, "y");
 	static final beginRawString = jsRx(~/(%+)\{/, "y");
 	static final comment = jsRx(~/;.*$/m, "y");

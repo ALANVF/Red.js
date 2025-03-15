@@ -51,7 +51,7 @@ class Cycles {
 				value._match(
 					at(_ is types.Block | _ is types.Hash) => { s = "[...]"; size = 5; },
 					at(_ is types.Paren) => { s = "(...)"; size = 5; },
-					at(_ is types.Map) => { s = "#(...)"; size = 6; },
+					at(_ is types.Map) => { s = "#[...]"; size = 6; },
 					at(_ is types.Object) => { s = "make object! [...]"; size = 18; },
 					at(_ is types.base._Path) => { s = "..."; size = 3; },
 					_ => throw "bad"

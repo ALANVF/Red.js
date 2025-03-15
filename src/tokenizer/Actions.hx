@@ -271,11 +271,11 @@ class Actions {
 	}
 
 	public static inline function map(rdr: Reader) {
-		return delim(rdr, "map!", "#(", ")");
+		return delim(rdr, "map!", "#[", "]");
 	}
 
 	public static inline function construct(rdr: Reader) {
-		return delim(rdr, "constructor!", "#[", "]");
+		return delim(rdr, "constructor!", "#(", ")");
 	}
 
 	/*public static function date(rdr: Reader) {
