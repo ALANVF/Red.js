@@ -24183,7 +24183,7 @@ class runtime_natives_Reduce {
 runtime_natives_Reduce.__name__ = true;
 class runtime_natives_Print {
 	static call(value) {
-		let tmp = runtime_actions_Form.call(runtime_natives_Reduce.call(value,runtime_natives_Reduce.defaultOptions),runtime_actions_Form.defaultOptions).toJs();
+		let tmp = runtime_actions_Form.call(((value) instanceof types_Block) ? runtime_natives_Reduce.call(value,runtime_natives_Reduce.defaultOptions) : value,runtime_actions_Form.defaultOptions).toJs();
 		RedJS.printHandler(tmp);
 		return types_Unset.UNSET;
 	}
