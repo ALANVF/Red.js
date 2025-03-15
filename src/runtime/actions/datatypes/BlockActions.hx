@@ -188,7 +188,13 @@ class BlockActions<This: _Block = Block> extends _BlockLikeActions<This> {
 					pick(parent, i);
 				});
 			},
-			_ => throw "todo"
+			_ => {
+				value._andOr(value => {
+					put(parent, element, value, runtime.actions.Put.defaultOptions);
+				}, {
+					select(parent, element, Macros.addFields(runtime.actions.Select.defaultOptions, {only: true}));
+				});
+			}
 		);
 	}
 
