@@ -23,6 +23,8 @@ window.addEventListener('resize', () => {
 	fitAddon.fit();
 });
 
+term.options.convertEol = true;
+
 // TODO: multiline input support
 let replHistory = [];
 function readLine(/*callback /* (input: string) => void */) /* Promise<string> */ {
