@@ -55,6 +55,7 @@
 | `image!`                 | N        | NA     | N      | N    | N      | N      | N         | N             |
 | `money!`                 | Y        | Y**    | Y      | Y    | Y      | Y      | Y         | Y             |
 | `ref!`                   | Y        | Y      | N      | N    | Y      | Y      | P         | P             |
+| `js-routine!`            | Y        | NA     | NA     | NA   | Y      | Y      | Y         | P             |
 
 \* `raw-string!` literals are slightly more permissive than in Red's normal lexer.
 

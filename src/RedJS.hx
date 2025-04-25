@@ -94,4 +94,27 @@ import runtime.actions.Mold;
 	static function setInputHandler(handler: () -> String) {
 		inputHandler = handler;
 	}
+
+	/**
+	 * Add a JS function hook to the Red global environment
+	**/
+	static function addJsRoutine(name: String, spec: String, func: types.JsRoutine._Routine) {
+		final specCode: types.Block = cast evalCode(spec);
+		if(!(specCode is types.Block)) throw "bad";
+
+		final routine = switch runtime.natives.Func.parseSpec(specCode) {
+			case {doc: doc, params: params, refines: refines, ret: ret}:
+				new types.JsRoutine(specCode, doc, params, refines, ret, func);
+			default:
+				throw "error: invalid js routine spec";
+		};
+
+		types.base.Context.GLOBAL.add(name, routine, false);
+	}
+
+	static function makeNone() return types.None.NONE;
+	static function makeUnset() return types.Unset.UNSET;
+	static function makeInteger(int: Int) return new types.Integer(int);
+	static function makeFloat(float: Float) return new types.Float(float);
+	static function makeString(str: String) return types.String.fromString(str);
 }

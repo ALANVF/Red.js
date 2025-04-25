@@ -1,10 +1,12 @@
 package runtime.actions.datatypes;
 
+import types.None;
 import types.base.IFunction;
 import types.Value;
 import types.Action;
 import types.Native;
 import types.Function;
+import types.JsRoutine;
 import types.Op;
 import types.Word;
 import types.Integer;
@@ -21,6 +23,7 @@ class _IFunctionActions<This: IFunction & Value> extends ValueActions<This> {
 					at(f is Function) => f.body,
 					at(n is Native) => new Integer(n.fn.getIndex() + 1),
 					at(a is Action) => new Integer(a.fn.getIndex() + 1),
+					at(r is JsRoutine) => None.NONE,
 					_ => throw "bad"
 				);
 			},

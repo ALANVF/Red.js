@@ -6,6 +6,15 @@ class Main {
 	static function main() {
 		RedJS.initRuntime();
 
+		RedJS.addJsRoutine("native-add", "[
+			a [integer!]
+			b [integer!]
+			return: [integer!]
+		]", (args, _) -> args._match(
+			at([a is types.Integer, b is types.Integer]) => RedJS.makeInteger(a.int + b.int),
+			_ => throw "bad"
+		));
+
 		(untyped setTimeout)(() -> {
 			if(!DEBUG) console.clear();
 			console.log('Build ${RedJS.BUILD}\n');

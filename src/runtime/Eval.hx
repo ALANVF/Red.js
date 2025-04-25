@@ -1,5 +1,7 @@
 package runtime;
 
+import types.Unset;
+import types.JsRoutine;
 import types.None;
 import types.Logic;
 import types.base.Context;
@@ -7,6 +9,7 @@ import types.Native;
 import types.Action;
 import types.Function;
 import types.Op;
+import types.JsRoutine;
 import types.base.IFunction;
 import types.Value;
 
@@ -22,6 +25,7 @@ class Eval {
 			at(a is Action) => Actions.callAction(a, args, refines),
 			at(f is Function) => callFunction(f, args, refines),
 			at(o is Op) => callAnyFunction(o.fn, args, refines),
+			at(r is JsRoutine) => callJsRoutine(r, args, refines),
 			_ => throw "error!"
 		);
 	}
@@ -59,5 +63,25 @@ class Eval {
 				throw e;
 			}
 		};
+	}
+
+	static function callJsRoutine(r: JsRoutine, args: Array<Value>, refines: Dict<String, Array<Value>>) {
+		final refs: _Refs = {};
+
+		for(ref in r.refines) {
+			final name = ref.name.replace(Util.jsRx(~/-([a-z])/g), (_, l) -> l.toUpperCase());
+
+			refines[ref.name]._andOr(refArgs => {
+				Reflect.setField(refs, name, if(ref.params.length == 0) true else refArgs);
+			}, {
+				Reflect.setField(refs, name, if(ref.params.length == 0) false else null);
+			});
+		}
+
+		final res = r.fn(args, refs);
+
+		return js.Syntax.strictEq(res, js.Lib.undefined) ? cast Unset.UNSET
+				: js.Syntax.strictEq(res, null) ? cast None.NONE
+				: res;
 	}
 }

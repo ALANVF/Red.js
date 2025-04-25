@@ -61,7 +61,8 @@ class Actions {
 		DEmail => new EmailActions(),
 		DDate => new DateActions(),
 		DMoney => new MoneyActions(),
-		DRef => new RefActions()
+		DRef => new RefActions(),
+		DJsRoutine => new JsRoutineActions()
 	] : Dict<TypeKind, ValueActions<Value>>));
 
 	static inline function get(kind: TypeKind) {

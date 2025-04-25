@@ -74,6 +74,7 @@ class Load {
 		//["event!", DEvent],
 		//["closure!", DClosure],
 		["money!", DMoney],
-		["ref!", DRef]
+		["ref!", DRef],
+		["js-routine!", DJsRoutine]
 	);
 }
