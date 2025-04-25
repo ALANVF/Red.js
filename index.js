@@ -32,7 +32,7 @@ function readLine(/*callback /* (input: string) => void */) /* Promise<string> *
 		let historyPos = 0;
 		let input = '', oldInput = null, pos = 0;
 		const disposable = term.onData((data) => {
-			console.log(data, data.charCodeAt(0));
+			//console.log(data, data.charCodeAt(0));
 			const UP = "\x1b[A";
 			const DOWN = "\x1b[B";
 			const LEFT = "\x1b[D";
@@ -53,7 +53,7 @@ function readLine(/*callback /* (input: string) => void */) /* Promise<string> *
 				break;
 
 				case LEFT:
-					console.log(pos);
+					//console.log(pos);
 					if(pos !== 0) {
 						term.write(data);
 						pos--;
@@ -130,20 +130,41 @@ RedJS.setPrinHandler(input => {
 	term.write(input);
 });
 
+/* I hate js async model
+globalThis.isWaitingForInput = false;
+globalThis.inputPromise = null;
+globalThis.finishInput = null
+
 RedJS.setInputHandler(() => {
 	//return await readLine(); // doesn't work >:(
-	let result = [null];
-	readLine().then(res => {
-		result[0] = res;
-	});
+	globalThis.isWaitingForInput = true;
+	globalThis.inputPromise = readLine();
 
-	while(result[0] === null) {}
-
-	return result[0];
+	try {
+		globalThis.finishInput = inputResult => {
+			globalThis.inputPromise = null;
+			globalThis.isWaitingForInput = false;
+			throw inputResult;
+		}
+	} catch (v) {
+		console.dir(v);
+		return v;
+	}
 });
+
+RedJS.addJsRoutine("input", "[return: [string!]]", ([], _) => {
+	const res = (RedJS.inputHandler)();
+	return RedJS.makeString(res);
+});*/
 
 async function main() {
 	while(true) {
+		/*if(globalThis.isWaitingForInput) {
+			const inputResult = await globalThis.inputPromise;
+			(globalThis.finishInput)(inputResult);
+			continue;
+		}*/
+
 		term.write('>> ');
 		const input = await readLine();
 		try {

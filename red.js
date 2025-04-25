@@ -172,7 +172,7 @@ class Lambda {
 Lambda.__name__ = true;
 class Load {
 	static _DATATYPES_() {
-		return [[types_base_Context.GLOBAL.add("datatype!",Load__dummy = new types_Datatype("datatype!",0)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("unset!",Load__dummy = new types_Datatype("unset!",1)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("none!",Load__dummy = new types_Datatype("none!",2)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("logic!",Load__dummy = new types_Datatype("logic!",3)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("block!",Load__dummy = new types_Datatype("block!",4)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("paren!",Load__dummy = new types_Datatype("paren!",5)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("string!",Load__dummy = new types_Datatype("string!",6)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("file!",Load__dummy = new types_Datatype("file!",7)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("url!",Load__dummy = new types_Datatype("url!",8)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("char!",Load__dummy = new types_Datatype("char!",9)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("integer!",Load__dummy = new types_Datatype("integer!",10)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("float!",Load__dummy = new types_Datatype("float!",11)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("word!",Load__dummy = new types_Datatype("word!",12)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("set-word!",Load__dummy = new types_Datatype("set-word!",13)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("lit-word!",Load__dummy = new types_Datatype("lit-word!",14)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("get-word!",Load__dummy = new types_Datatype("get-word!",15)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("refinement!",Load__dummy = new types_Datatype("refinement!",16)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("issue!",Load__dummy = new types_Datatype("issue!",17)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("native!",Load__dummy = new types_Datatype("native!",18)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("action!",Load__dummy = new types_Datatype("action!",19)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("op!",Load__dummy = new types_Datatype("op!",20)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("function!",Load__dummy = new types_Datatype("function!",21)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("path!",Load__dummy = new types_Datatype("path!",22)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("lit-path!",Load__dummy = new types_Datatype("lit-path!",23)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("set-path!",Load__dummy = new types_Datatype("set-path!",24)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("get-path!",Load__dummy = new types_Datatype("get-path!",25)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("bitset!",Load__dummy = new types_Datatype("bitset!",26)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("point2D!",Load__dummy = new types_Datatype("point2D!",27)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("point3D!",Load__dummy = new types_Datatype("point3D!",28)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("object!",Load__dummy = new types_Datatype("object!",29)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("typeset!",Load__dummy = new types_Datatype("typeset!",30)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("error!",Load__dummy = new types_Datatype("error!",31)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("hash!",Load__dummy = new types_Datatype("hash!",32)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("pair!",Load__dummy = new types_Datatype("pair!",33)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("percent!",Load__dummy = new types_Datatype("percent!",34)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("tuple!",Load__dummy = new types_Datatype("tuple!",35)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("map!",Load__dummy = new types_Datatype("map!",36)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("binary!",Load__dummy = new types_Datatype("binary!",37)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("time!",Load__dummy = new types_Datatype("time!",38)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("tag!",Load__dummy = new types_Datatype("tag!",39)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("email!",Load__dummy = new types_Datatype("email!",40)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("date!",Load__dummy = new types_Datatype("date!",41)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("money!",Load__dummy = new types_Datatype("money!",42)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("ref!",Load__dummy = new types_Datatype("ref!",43)).symbol,Load__dummy]];
+		return [[types_base_Context.GLOBAL.add("datatype!",Load__dummy = new types_Datatype("datatype!",0)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("unset!",Load__dummy = new types_Datatype("unset!",1)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("none!",Load__dummy = new types_Datatype("none!",2)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("logic!",Load__dummy = new types_Datatype("logic!",3)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("block!",Load__dummy = new types_Datatype("block!",4)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("paren!",Load__dummy = new types_Datatype("paren!",5)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("string!",Load__dummy = new types_Datatype("string!",6)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("file!",Load__dummy = new types_Datatype("file!",7)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("url!",Load__dummy = new types_Datatype("url!",8)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("char!",Load__dummy = new types_Datatype("char!",9)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("integer!",Load__dummy = new types_Datatype("integer!",10)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("float!",Load__dummy = new types_Datatype("float!",11)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("word!",Load__dummy = new types_Datatype("word!",12)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("set-word!",Load__dummy = new types_Datatype("set-word!",13)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("lit-word!",Load__dummy = new types_Datatype("lit-word!",14)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("get-word!",Load__dummy = new types_Datatype("get-word!",15)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("refinement!",Load__dummy = new types_Datatype("refinement!",16)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("issue!",Load__dummy = new types_Datatype("issue!",17)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("native!",Load__dummy = new types_Datatype("native!",18)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("action!",Load__dummy = new types_Datatype("action!",19)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("op!",Load__dummy = new types_Datatype("op!",20)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("function!",Load__dummy = new types_Datatype("function!",21)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("path!",Load__dummy = new types_Datatype("path!",22)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("lit-path!",Load__dummy = new types_Datatype("lit-path!",23)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("set-path!",Load__dummy = new types_Datatype("set-path!",24)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("get-path!",Load__dummy = new types_Datatype("get-path!",25)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("bitset!",Load__dummy = new types_Datatype("bitset!",26)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("point2D!",Load__dummy = new types_Datatype("point2D!",27)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("point3D!",Load__dummy = new types_Datatype("point3D!",28)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("object!",Load__dummy = new types_Datatype("object!",29)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("typeset!",Load__dummy = new types_Datatype("typeset!",30)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("error!",Load__dummy = new types_Datatype("error!",31)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("hash!",Load__dummy = new types_Datatype("hash!",32)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("pair!",Load__dummy = new types_Datatype("pair!",33)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("percent!",Load__dummy = new types_Datatype("percent!",34)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("tuple!",Load__dummy = new types_Datatype("tuple!",35)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("map!",Load__dummy = new types_Datatype("map!",36)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("binary!",Load__dummy = new types_Datatype("binary!",37)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("time!",Load__dummy = new types_Datatype("time!",38)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("tag!",Load__dummy = new types_Datatype("tag!",39)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("email!",Load__dummy = new types_Datatype("email!",40)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("date!",Load__dummy = new types_Datatype("date!",41)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("money!",Load__dummy = new types_Datatype("money!",42)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("ref!",Load__dummy = new types_Datatype("ref!",43)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("js-routine!",Load__dummy = new types_Datatype("js-routine!",44)).symbol,Load__dummy]];
 	}
 }
 Load.__name__ = true;
@@ -180,6 +180,27 @@ var Load__dummy = null;
 class Main {
 	static main() {
 		RedJS.initRuntime();
+		RedJS.addJsRoutine("native-add","[\n\t\t\ta [integer!]\n\t\t\tb [integer!]\n\t\t\treturn: [integer!]\n\t\t]",function(args,_) {
+			if(args.length == 2) {
+				let _g = args[0];
+				let _g1 = args[1];
+				if(((_g) instanceof types_Integer) == true) {
+					if(((_g1) instanceof types_Integer) == true) {
+						let __anon0__a = _g;
+						let __anon1__b = _g1;
+						let a = __anon0__a;
+						let b = __anon1__b;
+						return RedJS.makeInteger(a.int + b.int);
+					} else {
+						throw haxe_Exception.thrown("bad");
+					}
+				} else {
+					throw haxe_Exception.thrown("bad");
+				}
+			} else {
+				throw haxe_Exception.thrown("bad");
+			}
+		});
 		setTimeout(function() {
 			return (function($this) {
 				var $r;
@@ -260,6 +281,30 @@ class RedJS {
 	}
 	static setInputHandler(handler) {
 		RedJS.inputHandler = handler;
+	}
+	static addJsRoutine(name,spec,func) {
+		let specCode = RedJS.evalCode(spec);
+		if(!((specCode) instanceof types_Block)) {
+			throw haxe_Exception.thrown("bad");
+		}
+		let _g = runtime_natives_Func.parseSpec(specCode);
+		let routine = new types_JsRoutine(specCode,_g.doc,_g.params,_g.refines,_g.ret,func);
+		types_base_Context.GLOBAL.add(name,routine,false);
+	}
+	static makeNone() {
+		return types_None.NONE;
+	}
+	static makeUnset() {
+		return types_Unset.UNSET;
+	}
+	static makeInteger(int) {
+		return new types_Integer(int);
+	}
+	static makeFloat(float) {
+		return new types_Float(float);
+	}
+	static makeString(str) {
+		return types_String.fromString(str);
 	}
 }
 $hx_exports["RedJS"] = RedJS;
@@ -6868,24 +6913,32 @@ class runtime_actions_datatypes__$IFunctionActions extends runtime_actions_datat
 				}
 				let _hx_tmp;
 				let _hx_tmp1;
+				let _hx_tmp2;
 				if(((value) instanceof types_Function) == true) {
 					let __anon0__f = value;
 					let f = __anon0__f;
 					return f.body;
 				} else {
-					_hx_tmp1 = ((value) instanceof types_Native);
-					if(_hx_tmp1 == true) {
+					_hx_tmp2 = ((value) instanceof types_Native);
+					if(_hx_tmp2 == true) {
 						let __anon0__n = value;
 						let n = __anon0__n;
 						return new types_Integer(n.fn[1] + 1);
 					} else {
-						_hx_tmp = ((value) instanceof types_Action);
-						if(_hx_tmp == true) {
+						_hx_tmp1 = ((value) instanceof types_Action);
+						if(_hx_tmp1 == true) {
 							let __anon0__a = value;
 							let a = __anon0__a;
 							return new types_Integer(a.fn[1] + 1);
 						} else {
-							throw haxe_Exception.thrown("bad");
+							_hx_tmp = ((value) instanceof types_JsRoutine);
+							if(_hx_tmp == true) {
+								let __anon0__r = value;
+								let r = __anon0__r;
+								return types_None.NONE;
+							} else {
+								throw haxe_Exception.thrown("bad");
+							}
 						}
 					}
 				}
@@ -12353,6 +12406,53 @@ runtime_actions_datatypes_RefActions.__super__ = runtime_actions_datatypes_Strin
 Object.assign(runtime_actions_datatypes_RefActions.prototype, {
 	__class__: runtime_actions_datatypes_RefActions
 });
+class runtime_actions_datatypes_JsRoutineActions extends runtime_actions_datatypes__$IFunctionActions {
+	constructor() {
+		super();
+	}
+	form(value,buffer,arg,part) {
+		buffer.appendLiteral("?js-routine?");
+		return part - 12;
+	}
+	mold(value,buffer,isOnly,isAll,isFlat,arg,part,indent) {
+		buffer.appendLiteral("make js-routine! [");
+		let value1 = value.get_origSpec();
+		if(value1 == null) {
+			value1 = types_Tag.fromString("null");
+		}
+		let value2 = runtime_Actions.ACTIONS.get(value1.get_TYPE_KIND());
+		if(value2 == null) {
+			throw new util_errors_NullException(null,null,{ fileName : "src/Util.hx", lineNumber : 385, className : "Util", methodName : "nonNull"});
+		}
+		part = value2.mold(value1,buffer,isOnly,isAll,isFlat,arg,part - 18,indent);
+		buffer.values.push(93);
+		return part - 1;
+	}
+	compare(value1,value2,op) {
+		if(((value2) instanceof types_JsRoutine) == true) {
+			let __anon0__other = value2;
+			let other = __anon0__other;
+			switch(op) {
+			case 0:case 1:case 2:case 7:case 8:case 9:case 11:
+				if(value1 == other) {
+					return 0;
+				} else {
+					return -1;
+				}
+				break;
+			default:
+				return -2;
+			}
+		} else {
+			return -2;
+		}
+	}
+}
+runtime_actions_datatypes_JsRoutineActions.__name__ = true;
+runtime_actions_datatypes_JsRoutineActions.__super__ = runtime_actions_datatypes__$IFunctionActions;
+Object.assign(runtime_actions_datatypes_JsRoutineActions.prototype, {
+	__class__: runtime_actions_datatypes_JsRoutineActions
+});
 class runtime_Actions {
 	static callAction(action,args,refines) {
 		let _g = action.fn;
@@ -13405,31 +13505,39 @@ class runtime_Eval {
 			let _hx_tmp;
 			let _hx_tmp1;
 			let _hx_tmp2;
+			let _hx_tmp3;
 			if(((fn) instanceof types_Native) == true) {
 				let __anon0__n = fn;
 				let n = __anon0__n;
 				return runtime_Natives.callNative(n,args,refines);
 			} else {
-				_hx_tmp2 = ((fn) instanceof types_Action);
-				if(_hx_tmp2 == true) {
+				_hx_tmp3 = ((fn) instanceof types_Action);
+				if(_hx_tmp3 == true) {
 					let __anon0__a = fn;
 					let a = __anon0__a;
 					return runtime_Actions.callAction(a,args,refines);
 				} else {
-					_hx_tmp1 = ((fn) instanceof types_Function);
-					if(_hx_tmp1 == true) {
+					_hx_tmp2 = ((fn) instanceof types_Function);
+					if(_hx_tmp2 == true) {
 						let __anon0__f = fn;
 						let f = __anon0__f;
 						return runtime_Eval.callFunction(f,args,refines);
 					} else {
-						_hx_tmp = ((fn) instanceof types_Op);
-						if(_hx_tmp == true) {
+						_hx_tmp1 = ((fn) instanceof types_Op);
+						if(_hx_tmp1 == true) {
 							let __anon0__o = fn;
 							let o = __anon0__o;
 							fn = o.fn;
 							continue;
 						} else {
-							throw haxe_Exception.thrown("error!");
+							_hx_tmp = ((fn) instanceof types_JsRoutine);
+							if(_hx_tmp == true) {
+								let __anon0__r = fn;
+								let r = __anon0__r;
+								return runtime_Eval.callJsRoutine(r,args,refines);
+							} else {
+								throw haxe_Exception.thrown("error!");
+							}
 						}
 					}
 				}
@@ -13453,7 +13561,7 @@ class runtime_Eval {
 			let name = self.replace(rx,function(_,l) {
 				return l.toUpperCase();
 			});
-			haxe_Log.trace(refine,{ fileName : "src/runtime/Eval.hx", lineNumber : 41, className : "runtime.Eval", methodName : "callFunction", customParams : [name,name]});
+			haxe_Log.trace(refine,{ fileName : "src/runtime/Eval.hx", lineNumber : 45, className : "runtime.Eval", methodName : "callFunction", customParams : [name,name]});
 			let _g2 = refines.get(name);
 			if(_g2 != null) {
 				fctx.set(name,types_Logic.TRUE);
@@ -13480,6 +13588,34 @@ class runtime_Eval {
 			} else {
 				throw _g;
 			}
+		}
+	}
+	static callJsRoutine(r,args,refines) {
+		let refs = { };
+		let _g = 0;
+		let _g1 = r.get_refines();
+		while(_g < _g1.length) {
+			let ref = _g1[_g];
+			++_g;
+			let self = ref.name;
+			let rx = /-([a-z])/g;
+			let name = self.replace(rx,function(_,l) {
+				return l.toUpperCase();
+			});
+			let _g2 = refines.get(ref.name);
+			if(_g2 == null) {
+				refs[name] = ref.params.length == 0 ? false : null;
+			} else {
+				refs[name] = ref.params.length == 0 ? true : _g2;
+			}
+		}
+		let res = r.fn(args,refs);
+		if(((res) === undefined)) {
+			return types_Unset.UNSET;
+		} else if(((res) === null)) {
+			return types_None.NONE;
+		} else {
+			return res;
 		}
 	}
 }
@@ -19826,6 +19962,20 @@ types_Function.__name__ = true;
 types_Function.__super__ = types_base__$Function;
 Object.assign(types_Function.prototype, {
 	__class__: types_Function
+});
+class types_JsRoutine extends types_base__$Function {
+	constructor(origSpec,doc,params,refines,retSpec,fn) {
+		super(origSpec,doc,params,refines,retSpec);
+		this.fn = fn;
+	}
+	get_TYPE_KIND() {
+		return 44;
+	}
+}
+types_JsRoutine.__name__ = true;
+types_JsRoutine.__super__ = types_base__$Function;
+Object.assign(types_JsRoutine.prototype, {
+	__class__: types_JsRoutine
 });
 class types_Action extends types_base__$Function {
 	constructor(origSpec,doc,params,refines,retSpec,fn) {
@@ -26454,10 +26604,10 @@ Cycles.size = 1000;
 Cycles.cycles = new Array(Cycles.size);
 Cycles.top = 0;
 Cycles.end = Cycles.size;
-RedJS.BUILD = "2025.3.15";
+RedJS.BUILD = "2025.4.24";
 types_base_Context.GLOBAL = (types_base_Symbol.TABLE = new Map(), types_base_Symbol.INDEXES = new Map(), types_base_Symbol.MAX_INDEX = 0, new types_base_Context());
 types_Datatype.TYPES = new Map();
-Runtime.DATATYPES = [[types_base_Context.GLOBAL.add("datatype!",Load__dummy = new types_Datatype("datatype!",0)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("unset!",Load__dummy = new types_Datatype("unset!",1)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("none!",Load__dummy = new types_Datatype("none!",2)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("logic!",Load__dummy = new types_Datatype("logic!",3)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("block!",Load__dummy = new types_Datatype("block!",4)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("paren!",Load__dummy = new types_Datatype("paren!",5)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("string!",Load__dummy = new types_Datatype("string!",6)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("file!",Load__dummy = new types_Datatype("file!",7)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("url!",Load__dummy = new types_Datatype("url!",8)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("char!",Load__dummy = new types_Datatype("char!",9)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("integer!",Load__dummy = new types_Datatype("integer!",10)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("float!",Load__dummy = new types_Datatype("float!",11)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("word!",Load__dummy = new types_Datatype("word!",12)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("set-word!",Load__dummy = new types_Datatype("set-word!",13)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("lit-word!",Load__dummy = new types_Datatype("lit-word!",14)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("get-word!",Load__dummy = new types_Datatype("get-word!",15)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("refinement!",Load__dummy = new types_Datatype("refinement!",16)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("issue!",Load__dummy = new types_Datatype("issue!",17)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("native!",Load__dummy = new types_Datatype("native!",18)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("action!",Load__dummy = new types_Datatype("action!",19)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("op!",Load__dummy = new types_Datatype("op!",20)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("function!",Load__dummy = new types_Datatype("function!",21)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("path!",Load__dummy = new types_Datatype("path!",22)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("lit-path!",Load__dummy = new types_Datatype("lit-path!",23)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("set-path!",Load__dummy = new types_Datatype("set-path!",24)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("get-path!",Load__dummy = new types_Datatype("get-path!",25)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("bitset!",Load__dummy = new types_Datatype("bitset!",26)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("point2D!",Load__dummy = new types_Datatype("point2D!",27)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("point3D!",Load__dummy = new types_Datatype("point3D!",28)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("object!",Load__dummy = new types_Datatype("object!",29)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("typeset!",Load__dummy = new types_Datatype("typeset!",30)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("error!",Load__dummy = new types_Datatype("error!",31)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("hash!",Load__dummy = new types_Datatype("hash!",32)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("pair!",Load__dummy = new types_Datatype("pair!",33)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("percent!",Load__dummy = new types_Datatype("percent!",34)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("tuple!",Load__dummy = new types_Datatype("tuple!",35)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("map!",Load__dummy = new types_Datatype("map!",36)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("binary!",Load__dummy = new types_Datatype("binary!",37)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("time!",Load__dummy = new types_Datatype("time!",38)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("tag!",Load__dummy = new types_Datatype("tag!",39)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("email!",Load__dummy = new types_Datatype("email!",40)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("date!",Load__dummy = new types_Datatype("date!",41)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("money!",Load__dummy = new types_Datatype("money!",42)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("ref!",Load__dummy = new types_Datatype("ref!",43)).symbol,Load__dummy]];
+Runtime.DATATYPES = [[types_base_Context.GLOBAL.add("datatype!",Load__dummy = new types_Datatype("datatype!",0)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("unset!",Load__dummy = new types_Datatype("unset!",1)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("none!",Load__dummy = new types_Datatype("none!",2)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("logic!",Load__dummy = new types_Datatype("logic!",3)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("block!",Load__dummy = new types_Datatype("block!",4)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("paren!",Load__dummy = new types_Datatype("paren!",5)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("string!",Load__dummy = new types_Datatype("string!",6)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("file!",Load__dummy = new types_Datatype("file!",7)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("url!",Load__dummy = new types_Datatype("url!",8)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("char!",Load__dummy = new types_Datatype("char!",9)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("integer!",Load__dummy = new types_Datatype("integer!",10)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("float!",Load__dummy = new types_Datatype("float!",11)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("word!",Load__dummy = new types_Datatype("word!",12)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("set-word!",Load__dummy = new types_Datatype("set-word!",13)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("lit-word!",Load__dummy = new types_Datatype("lit-word!",14)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("get-word!",Load__dummy = new types_Datatype("get-word!",15)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("refinement!",Load__dummy = new types_Datatype("refinement!",16)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("issue!",Load__dummy = new types_Datatype("issue!",17)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("native!",Load__dummy = new types_Datatype("native!",18)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("action!",Load__dummy = new types_Datatype("action!",19)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("op!",Load__dummy = new types_Datatype("op!",20)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("function!",Load__dummy = new types_Datatype("function!",21)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("path!",Load__dummy = new types_Datatype("path!",22)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("lit-path!",Load__dummy = new types_Datatype("lit-path!",23)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("set-path!",Load__dummy = new types_Datatype("set-path!",24)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("get-path!",Load__dummy = new types_Datatype("get-path!",25)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("bitset!",Load__dummy = new types_Datatype("bitset!",26)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("point2D!",Load__dummy = new types_Datatype("point2D!",27)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("point3D!",Load__dummy = new types_Datatype("point3D!",28)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("object!",Load__dummy = new types_Datatype("object!",29)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("typeset!",Load__dummy = new types_Datatype("typeset!",30)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("error!",Load__dummy = new types_Datatype("error!",31)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("hash!",Load__dummy = new types_Datatype("hash!",32)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("pair!",Load__dummy = new types_Datatype("pair!",33)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("percent!",Load__dummy = new types_Datatype("percent!",34)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("tuple!",Load__dummy = new types_Datatype("tuple!",35)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("map!",Load__dummy = new types_Datatype("map!",36)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("binary!",Load__dummy = new types_Datatype("binary!",37)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("time!",Load__dummy = new types_Datatype("time!",38)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("tag!",Load__dummy = new types_Datatype("tag!",39)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("email!",Load__dummy = new types_Datatype("email!",40)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("date!",Load__dummy = new types_Datatype("date!",41)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("money!",Load__dummy = new types_Datatype("money!",42)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("ref!",Load__dummy = new types_Datatype("ref!",43)).symbol,Load__dummy],[types_base_Context.GLOBAL.add("js-routine!",Load__dummy = new types_Datatype("js-routine!",44)).symbol,Load__dummy]];
 Util.IS_NODE = globalThis.XMLHttpRequest == null;
 Util.CHILD_PROCESS = Util.IS_NODE ? require("child_process") : null;
 Util.FS = Util.IS_NODE ? require("fs") : null;
@@ -26491,7 +26641,7 @@ runtime_actions_datatypes_StringActions.SPACE_CHAR = (function($this) {
 	return $r;
 }(this));
 runtime_actions_datatypes_DateActions.MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-runtime_Actions.ACTIONS = new Map([[0,new runtime_actions_datatypes_DatatypeActions()],[1,new runtime_actions_datatypes_UnsetActions()],[2,new runtime_actions_datatypes_NoneActions()],[3,new runtime_actions_datatypes_LogicActions()],[4,new runtime_actions_datatypes_BlockActions()],[5,new runtime_actions_datatypes_ParenActions()],[6,new runtime_actions_datatypes_StringActions()],[7,new runtime_actions_datatypes_FileActions()],[8,new runtime_actions_datatypes_UrlActions()],[9,new runtime_actions_datatypes_CharActions()],[10,new runtime_actions_datatypes_IntegerActions()],[11,new runtime_actions_datatypes_FloatActions()],[12,new runtime_actions_datatypes_WordActions()],[13,new runtime_actions_datatypes_SetWordActions()],[14,new runtime_actions_datatypes_LitWordActions()],[15,new runtime_actions_datatypes_GetWordActions()],[16,new runtime_actions_datatypes_RefinementActions()],[17,new runtime_actions_datatypes_IssueActions()],[18,new runtime_actions_datatypes_NativeActions()],[19,new runtime_actions_datatypes_ActionActions()],[20,new runtime_actions_datatypes_OpActions()],[21,new runtime_actions_datatypes_FunctionActions()],[22,new runtime_actions_datatypes_PathActions()],[23,new runtime_actions_datatypes_LitPathActions()],[24,new runtime_actions_datatypes_SetPathActions()],[25,new runtime_actions_datatypes_GetPathActions()],[26,new runtime_actions_datatypes_BitsetActions()],[27,new runtime_actions_datatypes_Point2DActions()],[28,new runtime_actions_datatypes_Point3DActions()],[29,new runtime_actions_datatypes_ObjectActions()],[31,new runtime_actions_datatypes_ErrorActions()],[30,new runtime_actions_datatypes_TypesetActions()],[32,new runtime_actions_datatypes_HashActions()],[33,new runtime_actions_datatypes_PairActions()],[34,new runtime_actions_datatypes_PercentActions()],[35,new runtime_actions_datatypes_TupleActions()],[36,new runtime_actions_datatypes_MapActions()],[37,new runtime_actions_datatypes_BinaryActions()],[38,new runtime_actions_datatypes_TimeActions()],[39,new runtime_actions_datatypes_TagActions()],[40,new runtime_actions_datatypes_EmailActions()],[41,new runtime_actions_datatypes_DateActions()],[42,new runtime_actions_datatypes_MoneyActions()],[43,new runtime_actions_datatypes_RefActions()]]);
+runtime_Actions.ACTIONS = new Map([[0,new runtime_actions_datatypes_DatatypeActions()],[1,new runtime_actions_datatypes_UnsetActions()],[2,new runtime_actions_datatypes_NoneActions()],[3,new runtime_actions_datatypes_LogicActions()],[4,new runtime_actions_datatypes_BlockActions()],[5,new runtime_actions_datatypes_ParenActions()],[6,new runtime_actions_datatypes_StringActions()],[7,new runtime_actions_datatypes_FileActions()],[8,new runtime_actions_datatypes_UrlActions()],[9,new runtime_actions_datatypes_CharActions()],[10,new runtime_actions_datatypes_IntegerActions()],[11,new runtime_actions_datatypes_FloatActions()],[12,new runtime_actions_datatypes_WordActions()],[13,new runtime_actions_datatypes_SetWordActions()],[14,new runtime_actions_datatypes_LitWordActions()],[15,new runtime_actions_datatypes_GetWordActions()],[16,new runtime_actions_datatypes_RefinementActions()],[17,new runtime_actions_datatypes_IssueActions()],[18,new runtime_actions_datatypes_NativeActions()],[19,new runtime_actions_datatypes_ActionActions()],[20,new runtime_actions_datatypes_OpActions()],[21,new runtime_actions_datatypes_FunctionActions()],[22,new runtime_actions_datatypes_PathActions()],[23,new runtime_actions_datatypes_LitPathActions()],[24,new runtime_actions_datatypes_SetPathActions()],[25,new runtime_actions_datatypes_GetPathActions()],[26,new runtime_actions_datatypes_BitsetActions()],[27,new runtime_actions_datatypes_Point2DActions()],[28,new runtime_actions_datatypes_Point3DActions()],[29,new runtime_actions_datatypes_ObjectActions()],[31,new runtime_actions_datatypes_ErrorActions()],[30,new runtime_actions_datatypes_TypesetActions()],[32,new runtime_actions_datatypes_HashActions()],[33,new runtime_actions_datatypes_PairActions()],[34,new runtime_actions_datatypes_PercentActions()],[35,new runtime_actions_datatypes_TupleActions()],[36,new runtime_actions_datatypes_MapActions()],[37,new runtime_actions_datatypes_BinaryActions()],[38,new runtime_actions_datatypes_TimeActions()],[39,new runtime_actions_datatypes_TagActions()],[40,new runtime_actions_datatypes_EmailActions()],[41,new runtime_actions_datatypes_DateActions()],[42,new runtime_actions_datatypes_MoneyActions()],[43,new runtime_actions_datatypes_RefActions()],[44,new runtime_actions_datatypes_JsRoutineActions()]]);
 runtime_actions_Copy.defaultOptions = { deep : false, part : null, types : null};
 runtime_actions_Find.defaultOptions = { _case : false, any : false, last : false, match : false, only : false, part : null, reverse : false, same : false, skip : null, tail : false, 'with' : null};
 runtime_actions_Form.defaultOptions = { part : null};
